@@ -46,11 +46,10 @@ public class ResultPullParserHelper {
                   }
                }
                xmlPullParser.next();
-
             }
             //at this point we should be seeing a tag with .getName as "exception"
          } catch (XmlPullParserException e) {
-            e.printStackTrace();
+            log("next() threw exception : " + e.getMessage());
          } catch (IOException e) {
             e.printStackTrace();
          }
@@ -83,7 +82,7 @@ public class ResultPullParserHelper {
             }
             //at this point we should be seeing a tag with .getName as "exception"
          } catch (XmlPullParserException e) {
-            e.printStackTrace();
+            log("next() threw exception : " + e.getMessage());
          } catch (IOException e) {
             e.printStackTrace();
          }
