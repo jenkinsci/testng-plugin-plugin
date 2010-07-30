@@ -1,0 +1,12 @@
+<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout"
+         xmlns:t="/lib/hudson" xmlns:f="/lib/form" xmlns:i="jelly:fmt">
+   <t:summary icon="${it.iconFileName}">
+      <a href="${it.urlName}">${it.displayName}</a>
+      ${it.summary} a summary in AbstractBuildAction
+   </t:summary>
+   <j:if test="${it.floatingBoxActive}">
+      <div style="float:right">
+         <st:include page="floatingBox.jelly"/>
+      </div>
+   </j:if>
+</j:jelly>

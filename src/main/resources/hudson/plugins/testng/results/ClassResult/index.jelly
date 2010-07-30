@@ -1,0 +1,12 @@
+<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout"
+         xmlns:t="/lib/hudson" xmlns:f="/lib/form">
+   <l:layout title="testng classes">
+      <!--<st:include page="sidepanel.jelly" />-->
+      <l:main-panel>
+         <h1>Class
+            <st:out value="${it.name}"/>
+         </h1>
+         <st:include page="reportDetail.jelly"/>
+      </l:main-panel>
+   </l:layout>
+</j:jelly>

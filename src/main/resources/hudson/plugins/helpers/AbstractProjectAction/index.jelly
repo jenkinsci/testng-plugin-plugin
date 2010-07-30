@@ -1,0 +1,18 @@
+<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout"
+         xmlns:t="/lib/hudson" xmlns:f="/lib/form">
+   <l:layout title="project action">
+      <st:include it="${it.project}" page="sidepanel.jelly"/>
+      <l:main-panel>
+         <h1>${it.displayName}</h1>
+         <h1>seriously!!</h1>
+         <j:if test="${it.graphActive}">
+            <j:set var="relativeUrlPath" value=""/>
+
+            <h2>${it.graphName}</h2>
+            <st:include page="normalGraph.jelly"/>
+         </j:if>
+         <!-- commenting out because it makes no sense to have project level test results. A graph is just fine -->
+         <st:include page="reportDetail.jelly"/>
+      </l:main-panel>
+   </l:layout>
+</j:jelly>

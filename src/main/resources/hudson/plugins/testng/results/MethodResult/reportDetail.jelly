@@ -1,0 +1,42 @@
+<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout"
+         xmlns:t="/lib/hudson" xmlns:f="/lib/form">
+   <j:invokeStatic className="hudson.plugins.testng.util.FormatUtil"
+                   method="formatTimeInMilliSeconds" var="duration">
+      <j:arg type="long" value="${it.duration}"/>
+   </j:invokeStatic>
+   <h1>
+      <span class="${it.cssClass}">
+         ${it.status}
+      </span>
+   </h1>
+   <p>
+      <span style="font-weight:bold">
+         <st:out value="${it.name}"/>
+      </span>
+      <j:if test="${it.className != it.parent.name}">
+         (from<st:out value="${it.parent.name}"/>)
+      </j:if>
+   </p>
+
+   <div style="text-align:right;">
+      took ${duration}
+   </div>
+
+   <t:editableDescription permission="${it.owner.UPDATE}"/>
+
+   <j:if test="${!empty(it.exception)}">
+      <h3>${%Exception Stack Trace : }</h3>
+      <p>
+         <div style="font-weight:bold">message :</div>
+         <div>${it.exception.message}</div>
+      </p>
+      <p>
+         <div style="font-weight:bold">short stack trace :</div>
+         <div>${it.exception.shortStackTrace}</div>
+      </p>
+      <p>
+         <div style="font-weight:bold">full stack trace :</div>
+         <div>${it.exception.fullStackTrace}</div>
+      </p>
+   </j:if>
+</j:jelly>

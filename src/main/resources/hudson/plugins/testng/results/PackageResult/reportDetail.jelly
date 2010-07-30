@@ -1,0 +1,77 @@
+<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout"
+         xmlns:t="/lib/hudson" xmlns:f="/lib/form">
+   <h2>Classes</h2>
+   <table border="1px" class="pane sortable">
+      <thead>
+         <tr>
+            <th class="pane-header">Class</th>
+            <th class="pane-header" style="width:5em" title="Duration">Duration</th>
+            <th class="pane-header" style="width:5em" title="Failed Test Count">Fail</th>
+            <th class="pane-header" style="width:5em" title="Skipped Test Count">Skip</th>
+            <th class="pane-header" style="width:5em" title="Total Test Count">Total</th>
+         </tr>
+      </thead>
+      <tbody>
+         <j:forEach var="clazz" items="${it.classList}">
+            <tr>
+               <td align="left">
+                  <a href="${clazz.url}">${clazz.name}</a>
+               </td>
+               <td align="right">
+                  <j:invokeStatic className="hudson.plugins.testng.util.FormatUtil"
+                                  method="formatTimeInMilliSeconds" var="duration">
+                     <j:arg type="long" value="${clazz.duration}"/>
+                  </j:invokeStatic>
+                  ${duration}
+               </td>
+               <td align="right">${clazz.fail}</td>
+               <td align="right">${clazz.skip}</td>
+               <td align="right">${clazz.total}</td>
+            </tr>
+         </j:forEach>
+      </tbody>
+   </table>
+
+   <j:choose>
+      <j:when test="${size(it.sortedMethodsByStartTime) == 0}">
+         hello what the fuck
+      </j:when>
+   </j:choose>
+   <h2>Order of Execution by Test Method</h2>
+   <table border="1px" class="pane sortable">
+      <thead>
+         <tr>
+            <th class="pane-header">Method</th>
+            <th class="pane-header" style="width:5em" title="Duration">Duration</th>
+            <th class="pane-header" style="width:5em" title="Start Time">Start Time</th>
+            <th class="pane-header" style="width:5em" title="Status">Fail</th>
+         </tr>
+      </thead>
+      <tbody>
+         <j:forEach var="method" items="${it.sortedMethodsByStartTime}">
+            <j:choose>
+               <j:when test="${method.config==false}">
+                  <tr>
+                     <td align="left">
+                        <a href="../${method.fullUrl}">${method.fullName}</a>
+                     </td>
+                     <td align="right">
+                        <j:invokeStatic className="hudson.plugins.testng.util.FormatUtil"
+                                        method="formatTimeInMilliSeconds" var="duration">
+                           <j:arg type="long" value="${method.duration}"/>
+                        </j:invokeStatic>
+                        ${duration}
+                     </td>
+                     <td align="right">${method.startedAt}</td>
+                     <td align="right">
+                        <span class="${method.cssClass}">
+                           ${method.status}
+                        </span>
+                     </td>
+                  </tr>
+               </j:when>
+            </j:choose>
+         </j:forEach>
+      </tbody>
+   </table>
+</j:jelly>

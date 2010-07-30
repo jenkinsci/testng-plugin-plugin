@@ -1,0 +1,105 @@
+package hudson.plugins.testng.results;
+
+import hudson.model.AbstractBuild;
+import hudson.model.ModelObject;
+import org.kohsuke.stapler.StaplerRequest;
+import org.kohsuke.stapler.StaplerResponse;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class ClassResult extends BaseResult implements ModelObject {
+   private List<MethodResult> testMethodList = new ArrayList<MethodResult>();
+   private long duration;
+   private int fail;
+   private int skip;
+   private int total;
+
+   public String getUrl() {
+      return getName();
+   }
+
+   public void setOwner(AbstractBuild<?, ?> owner) {
+      super.setOwner(owner);
+      for (MethodResult _m : testMethodList) {
+         _m.setOwner(owner);
+      }
+   }
+
+   public long getDuration() {
+      return duration;
+   }
+
+   public void setDuration(long duration) {
+      this.duration = duration;
+   }
+
+   public int getFail() {
+      return fail;
+   }
+
+   public void setFail(int fail) {
+      this.fail = fail;
+   }
+
+   public int getSkip() {
+      return skip;
+   }
+
+   public void setSkip(int skip) {
+      this.skip = skip;
+   }
+
+   public int getTotal() {
+      return total;
+   }
+
+   public void setTotal(int total) {
+      this.total = total;
+   }
+
+   public List<MethodResult> getTestMethodList() {
+      return testMethodList;
+   }
+
+   public void setTestMethodList(List<MethodResult> testMethodList) {
+      this.testMethodList = testMethodList;
+   }
+
+   public void tally() {
+      duration = 0;
+      fail = 0;
+      skip = 0;
+      total = testMethodList.size();
+      for (MethodResult _m : testMethodList) {
+         duration += _m.getDuration();
+         if ("FAIL".equals(_m.getStatus())) {
+            fail++;
+         } else {
+            if ("SKIP".equals(_m.getStatus())) {
+               skip++;
+            }
+         }
+         _m.setParent(this);
+      }
+   }
+
+   public String getDisplayName() {
+      return getName();
+   }
+
+
+   public Object getDynamic(String token, StaplerRequest req, StaplerResponse rsp) {
+      if (token.equals("/" + getName())) {
+         return this;
+      }
+      if (this.testMethodList != null) {
+         for (MethodResult testNGMethod : testMethodList) {
+            if (token.equals(testNGMethod.getName())) {
+               return testNGMethod;
+            }
+         }
+      }
+      return null;
+   }
+}
