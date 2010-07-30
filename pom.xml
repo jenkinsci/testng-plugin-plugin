@@ -4,15 +4,14 @@
    <parent>
       <groupId>org.jvnet.hudson.plugins</groupId>
       <artifactId>plugin</artifactId>
-      <version>0.9</version>
-      <!-- which version of Hudson is this plugin built against? -->
+      <version>1.323</version>
       <relativePath>../pom.xml</relativePath>
    </parent>
 
-   <groupId>testng</groupId>
    <artifactId>testng-plugin</artifactId>
-   <version>1.0</version>
+   <version>0.9</version>
    <packaging>hpi</packaging>
+   <name>TestNG Test Results Plugin</name>
 
    <!-- get every artifact through maven.glassfish.org, which proxies all the artifacts that we need -->
    <repositories>
@@ -41,4 +40,16 @@
          <scope>test</scope>
       </dependency>
    </dependencies>
+   <developers>
+      <developer>
+         <id>farshidce</id>
+         <name>Farshid Ghods</name>
+         <email>farshid.ghods@gmail.com</email>
+      </developer>
+      <developer>
+         <id>nalin.makar</id>
+         <name>Nalin Makar</name>
+         <email>nalin.makar@gmail.com</email>
+      </developer>
+   </developers>
 </project>
