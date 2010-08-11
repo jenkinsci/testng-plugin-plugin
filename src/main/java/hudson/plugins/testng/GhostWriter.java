@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.logging.Logger;
 
 
 public class GhostWriter
@@ -63,7 +64,9 @@ public class GhostWriter
          final String pathStr = path.getRemote();
          if (!parsedFiles.contains(pathStr)) {
             parsedFiles.add(pathStr);
-            Collection<TestResults> result = ResultsParser.parse(new File(pathStr));
+            Logger log;
+            Collection<TestResults> result =
+                  ResultsParser.parse(new File(pathStr), listener.getLogger());
             if (results == null) {
                results = result;
             } else {

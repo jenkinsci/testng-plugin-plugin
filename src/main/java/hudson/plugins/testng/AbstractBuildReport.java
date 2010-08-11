@@ -76,7 +76,7 @@ public abstract class AbstractBuildReport<T extends AbstractBuild<?, ?>> extends
     * {@inheritDoc}
     */
    public String getDisplayName() {
-      return PluginImpl.DISPLAY_NAME + " waht !! ";
+      return PluginImpl.DISPLAY_NAME;
    }
 
    /**

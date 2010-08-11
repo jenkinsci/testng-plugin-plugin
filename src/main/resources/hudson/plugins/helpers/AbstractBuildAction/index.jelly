@@ -4,7 +4,6 @@
       <st:include it="${it.build}" page="sidepanel.jelly"/>
       <l:main-panel>
          <h1>${it.displayName}</h1>
-         <h1>get out of here</h1>
          <st:include page="bar.jelly"/>
          <st:include page="reportDetail.jelly"/>
       </l:main-panel>

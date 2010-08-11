@@ -17,17 +17,16 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 public class ResultPullParserHelper {
 
-   /**
-    * 
-    */
+   private static final Logger log = Logger.getLogger(ResultPullParserHelper.class.getName());
+
    public ResultPullParserHelper() {
    }
 
    /**
-    *
     * @param xmlPullParser
     * @param name
     * @param initialDepth
@@ -40,7 +39,7 @@ public class ResultPullParserHelper {
          try {
             while (xmlPullParser.getDepth() >= initialDepth) {
                if (isStartTag(xmlPullParser)) {
-                  log("current node name : " + xmlPullParser.getName());
+                  log.info("current node name : " + xmlPullParser.getName());
                   if (name.equals(xmlPullParser.getName())) {
                      return true;
                   }
@@ -49,7 +48,7 @@ public class ResultPullParserHelper {
             }
             //at this point we should be seeing a tag with .getName as "exception"
          } catch (XmlPullParserException e) {
-            log("next() threw exception : " + e.getMessage());
+            log.info("next() threw exception : " + e.getMessage());
          } catch (IOException e) {
             e.printStackTrace();
          }
@@ -59,7 +58,6 @@ public class ResultPullParserHelper {
 
 
    /**
-    *
     * @param xmlPullParser
     * @param tags
     * @param initialDepth
@@ -73,7 +71,7 @@ public class ResultPullParserHelper {
          try {
             while (xmlPullParser.getDepth() >= initialDepth) {
                if (isStartTag(xmlPullParser)) {
-                  log("current node name : " + xmlPullParser.getName());
+                  log.info("current node name : " + xmlPullParser.getName());
                   if (tags.contains(xmlPullParser.getName())) {
                      return xmlPullParser.getName();
                   }
@@ -82,7 +80,7 @@ public class ResultPullParserHelper {
             }
             //at this point we should be seeing a tag with .getName as "exception"
          } catch (XmlPullParserException e) {
-            log("next() threw exception : " + e.getMessage());
+            log.info("next() threw exception : " + e.getMessage());
          } catch (IOException e) {
             e.printStackTrace();
          }
@@ -92,7 +90,6 @@ public class ResultPullParserHelper {
 
 
    /**
-    *
     * @param xmlPullParser
     * @param testNGClass
     * @return
@@ -114,14 +111,14 @@ public class ResultPullParserHelper {
             testNGTestMethod.setDuration(Long.parseLong(xmlPullParser.getAttributeValue(
                   null, "duration-ms")));
          } catch (NumberFormatException e) {
-            log("unable to obtain duration-ms");
+            log.info("unable to obtain duration-ms");
          }
          try {
             testNGTestMethod.setStartedAt(simpleDateFormat.parse(xmlPullParser.getAttributeValue(
                   null, "started-at")));
          } catch (ParseException e) {
-            log("unable to obtain started-at");
-         }         
+            log.info("unable to obtain started-at");
+         }
          String isConfigStr = xmlPullParser.getAttributeValue(null,
                "is-config");
          testNGTestMethod.setFullName(testNGClass.getFullName() +
@@ -139,24 +136,23 @@ public class ResultPullParserHelper {
    }
 
    /**
-    *
     * @param testMethod
     */
    public void printTestMethod(MethodResult
          testMethod) {
       if (testMethod != null) {
-         log("name : " + testMethod.getName());
-         log("duration : " + testMethod.getDuration());
-         log("name : " + testMethod.getException());
-         log("status : " + testMethod.getStatus());
-         log("description : " + testMethod.getDescription());
-         log("startedAt : " + testMethod.getStartedAt());
+         log.info("name : " + testMethod.getName());
+         log.info("duration : " + testMethod.getDuration());
+         log.info("name : " + testMethod.getException());
+         log.info("status : " + testMethod.getStatus());
+         log.info("description : " + testMethod.getDescription());
+         log.info("startedAt : " + testMethod.getStartedAt());
          if (testMethod.getException() != null) {
-            log("exceptionMessage : " + testMethod.getException().getMessage());
+            log.info("exceptionMessage : " + testMethod.getException().getMessage());
          }
 
       } else {
-         log("testMethod is null");
+         log.info("testMethod is null");
       }
    }
 
@@ -175,7 +171,7 @@ public class ResultPullParserHelper {
                String tagFound =
                      parseToTagIfAnyFound(xmlPullParser, tags, exceptionDepth);
                if (tagFound == null) {
-                  log("did not find any of the tags. break from the loop");
+                  log.info("did not find any of the tags. break from the loop");
                   break;
                } else {
                   try {
@@ -205,7 +201,6 @@ public class ResultPullParserHelper {
    }
 
    /**
-    *
     * @param xmlPullParser
     * @return
     */
@@ -222,7 +217,6 @@ public class ResultPullParserHelper {
    }
 
    /**
-    *
     * @param xmlPullParser
     * @return
     */
@@ -240,7 +234,6 @@ public class ResultPullParserHelper {
 
 
    /**
-    *
     * @param file
     * @return
     */
@@ -277,8 +270,8 @@ public class ResultPullParserHelper {
                   e.printStackTrace();
                }
             } catch (XmlPullParserException e) {
-               e.printStackTrace();
-               log("unable to create a new XmlPullParserFactory instance");
+               log.severe("unable to create a new XmlPullParserFactory instance : error message : "
+                     + e.getMessage());
             }
          }
       } catch (IOException e) {
@@ -287,11 +280,5 @@ public class ResultPullParserHelper {
       return null;
       //define a  custom exception saying could not initialize the parser
    }
-
-
-   private static void log(Object s) {
-      System.out.println(s);
-   }
-
 }
 

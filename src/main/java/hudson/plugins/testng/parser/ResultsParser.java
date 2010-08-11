@@ -1,12 +1,10 @@
 package hudson.plugins.testng.parser;
 
+import hudson.model.BuildListener;
 import hudson.plugins.testng.results.*;
 
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileInputStream;
+import java.io.*;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -18,11 +16,11 @@ public class ResultsParser {
 
 
    /**
-    *
     * @param file
     * @return
     */
-   public static Collection<TestResults> parse(File file) {
+   public static Collection<TestResults> parse(File file,
+                                               PrintStream hudsonLogger) {
 
       ResultPullParserHelper xmlParserHelper = new ResultPullParserHelper();
       Collection<TestResults> results = new ArrayList<TestResults>();
@@ -58,7 +56,7 @@ public class ResultsParser {
                               "name"));
                         List<MethodResult> testMethodList = new ArrayList<MethodResult>();
                         while (xmlParserHelper.parseToTagIfFound(xmlPullParser, "test-method", classDepth)) {
-                           MethodResult testNGTestMethod = xmlParserHelper.createTestMethod(xmlPullParser,testNGTestClass);
+                           MethodResult testNGTestMethod = xmlParserHelper.createTestMethod(xmlPullParser, testNGTestClass);
                            if (testNGTestMethod != null) {
                               MethodResultException exception =
                                     xmlParserHelper.createExceptionObject(xmlPullParser);
@@ -79,21 +77,27 @@ public class ResultsParser {
                   testNGTestResults.setTestList(testNGTestList);
                   testNGTestResults.tally();
                   results.add(testNGTestResults);
+                  if (hudsonLogger != null) {
+                     if (testNGTestResults.getTotalTestCount() > 0) {
+                        hudsonLogger.println("parsed file : " + file.getAbsolutePath()
+                              + " and collected testng results . populated "
+                              + testNGTestResults.getTotalTestCount() + " test case results");
+                     } else {
+                        hudsonLogger.println("parsed file : " + file.getAbsolutePath()
+                              + " and did not find any test result");
+                     }
+                  }
                }
             }
          }
          try {
             bufferedInputStream.close();
          } catch (IOException e) {
-            //ignore
-            e.printStackTrace();
          }
          if (fileInputStream != null) {
             try {
                fileInputStream.close();
             } catch (IOException e) {
-               //ignore
-               e.printStackTrace();
             }
          }
 

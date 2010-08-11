@@ -13,7 +13,7 @@ public class TestParser {
    public void testTestngXmlWithSuite() {
       String filename =
          "/space/testng-plugin/work/jobs/hello/workspace/new-test-result.xml";
-      ResultsParser.parse(new File(filename));
+      ResultsParser.parse(new File(filename),null);
    }
 
    @Test
@@ -24,7 +24,7 @@ public class TestParser {
       try {
          dt = sdf.parse(dateString);
       } catch (ParseException e) {
-         e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+         e.printStackTrace();
       }
       System.out.println(dt);
    }
