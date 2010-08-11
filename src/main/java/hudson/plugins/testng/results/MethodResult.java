@@ -93,8 +93,8 @@ public class MethodResult extends BaseResult implements ModelObject {
          } else if(this.status.equalsIgnoreCase("fail")) {
             return "result-failed";
          }
+         
       }
-
-      return "";
+      return "result-passed";
    }
 }

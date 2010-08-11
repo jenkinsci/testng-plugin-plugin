@@ -14,7 +14,7 @@ public class PackageResult extends BaseResult implements ModelObject {
    private int fail;
    private int skip;
    private int total;
-   private List<MethodResult> sortedMethodsByStartTime = new ArrayList<MethodResult>();
+   private List<MethodResult> sortedTestMethodsByStartTime = new ArrayList<MethodResult>();
 
    public String getUrl() {
       return getName();
@@ -67,9 +67,9 @@ public class PackageResult extends BaseResult implements ModelObject {
       this.total = total;
    }
 
-   public List<MethodResult> getSortedMethodsByStartTime() {
+   public List<MethodResult> getSortedTestMethodsByStartTime() {
       sortTestMethods();
-      return sortedMethodsByStartTime;
+      return sortedTestMethodsByStartTime;
    }
 
    public void tally() {
@@ -116,7 +116,7 @@ public class PackageResult extends BaseResult implements ModelObject {
       for (ClassResult aClass : classList) {
          if (aClass.getTestMethodList() != null) {
             for (MethodResult aMethod : aClass.getTestMethodList()) {
-               if (!aMethod.getStatus().equals("SKIP")) {
+               if (aMethod.isConfig() == false && !aMethod.getStatus().equals("SKIP")) {
                   if (aMethod.getStartedAt() != null) {
                      if (map.containsKey(aMethod.getStartedAt())) {
                         map.get(aMethod.getStartedAt()).add(aMethod);
@@ -135,7 +135,7 @@ public class PackageResult extends BaseResult implements ModelObject {
       //now create the list with the order
       for (Date key : keys) {
          if (map.containsKey(key)) {
-            this.sortedMethodsByStartTime.addAll(map.get(key));
+            this.sortedTestMethodsByStartTime.addAll(map.get(key));
          }
       }
    }
@@ -146,7 +146,7 @@ public class PackageResult extends BaseResult implements ModelObject {
       for (ClassResult aClass : classList) {
          if (aClass.getTestMethodList() != null) {
             for (MethodResult aMethod : aClass.getTestMethodList()) {
-               if (aMethod.getStatus().equals("FAIL")) {
+               if (!aMethod.isConfig() && aMethod.getStatus().equals("FAIL")) {
                   failedTests++;
                }
             }

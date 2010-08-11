@@ -1,13 +1,26 @@
 <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout"
          xmlns:t="/lib/hudson" xmlns:f="/lib/form">
 
+   <script type="text/javascript">
+      function showorHideTable(id) {
+         var element = document.getElementById(id)
+         if (document.getElementById(id).style.display == "none") {
+            document.getElementById(id).style.display = "";
+         } else if (document.getElementById(id).style.display == "") {
+            document.getElementById(id).style.display = "none";
+         }
+      }
+   </script>
+
    <h2>Failed Tests</h2>
    <j:choose>
       <j:when test="${it.results.failedTestCount != 0}">
-         <table border="1px" class="pane sortable">
+         <a href="javascript:showorHideTable('failedTestsTable')">hide/expand the table</a>
+         <table id="failedTestsTable" border="1px" class="pane sortable">
             <thead>
                <tr>
                   <th class="pane-header">Test Method</th>
+                  <th class="pane-header">Duration</th>
                </tr>
             </thead>
             <tbody>
@@ -15,6 +28,13 @@
                   <tr>
                      <td align="left">
                         <a href="${r.fullUrl}">${r.fullName}</a>
+                     </td>
+                     <td align="right" data="${r.duration}">
+                        <j:invokeStatic className="hudson.plugins.testng.util.FormatUtil"
+                                        method="formatTimeInMilliSeconds" var="duration">
+                           <j:arg type="long" value="${r.duration}"/>
+                        </j:invokeStatic>
+                        ${duration}
                      </td>
                   </tr>
                </j:forEach>
@@ -27,7 +47,8 @@
    <h2>Failed Configuration Methods</h2>
    <j:choose>
       <j:when test="${it.results.failedConfigurationMethodsCount != 0}">
-         <table border="1px" class="pane sortable">
+         <a href="javascript:showorHideTable('failedConfigurationsTable')">hide/expand the table</a>
+         <table id="failedConfigurationsTable" border="1px" class="pane sortable">
             <thead>
                <tr>
                   <th class="pane-header">Configuration Method</th>
@@ -51,7 +72,8 @@
    <h2>Skipped Tests</h2>
    <j:choose>
       <j:when test="${it.results.skippedTestCount != 0}">
-         <table border="1px" class="pane sortable">
+         <a href="javascript:showorHideTable('skippedTestsTable')">hide/expand the table</a>
+         <table id="skippedTestsTable" border="1px" class="pane sortable">
             <thead>
                <tr>
                   <th class="pane-header">Test Method</th>
@@ -74,7 +96,8 @@
    <h2>Skipped Configuration Methods</h2>
    <j:choose>
       <j:when test="${it.results.skippedConfigurationMethodsCount != 0}">
-         <table border="1px" class="pane sortable">
+         <a href="javascript:showorHideTable('skippedConfigurationsTable')">hide/expand the table</a>
+         <table id="skippedConfigurationsTable" border="1px" class="pane sortable">
             <thead>
                <tr>
                   <th class="pane-header">Test Method</th>
@@ -94,12 +117,13 @@
       <j:otherwise>No Configuration Method Was Skipped</j:otherwise>
    </j:choose>
 
-   <h2>All Tests</h2>
-   <table border="1px" class="pane sortable">
+   <h2>All Tests ( grouped by their packages )</h2>
+   <a href="javascript:showorHideTable('allTestsTable')">hide/expand the table</a>
+   <table id="allTestsTable" border="1px" class="pane sortable">
       <thead>
          <tr>
             <th class="pane-header">Package</th>
-            <th class="pane-header" style="width:5em" title="Duration">Duration (ms)</th>
+            <th class="pane-header" style="width:5em" title="Duration">Duration</th>
             <th class="pane-header" style="width:5em" title="Failed Test Count">Fail</th>
             <th class="pane-header" style="width:5em" title="Skipped Test Count">Skip</th>
             <th class="pane-header" style="width:5em" title="Total Test Count">Total</th>
@@ -111,7 +135,7 @@
                <td align="left">
                   <a href="${pkg.url}">${pkg.name}</a>
                </td>
-               <td align="right">
+               <td align="right" data="${pkg.duration}">
                   <j:invokeStatic className="hudson.plugins.testng.util.FormatUtil"
                                   method="formatTimeInMilliSeconds" var="duration">
                      <j:arg type="long" value="${pkg.duration}"/>

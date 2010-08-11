@@ -19,7 +19,7 @@
                      <td align="left">
                         <a href="${method.url}">${method.name}</a>
                      </td>
-                     <td align="right">
+                     <td align="right" data="${method.duration}">
                         <j:invokeStatic className="hudson.plugins.testng.util.FormatUtil"
                                         method="formatTimeInMilliSeconds" var="duration">
                            <j:arg type="long" value="${method.duration}"/>
@@ -39,7 +39,7 @@
       <thead>
          <tr>
             <th class="pane-header">Method</th>
-            <th class="pane-header" style="width:5em" title="duration">Duration (ms)</th>
+            <th class="pane-header" style="width:5em" title="duration">Duration</th>
             <th class="pane-header" style="width:5em" title="status">Status</th>
             <th class="pane-header" style="width:5em" title="start time">Start Time</th>
          </tr>
@@ -52,7 +52,7 @@
                      <td align="left">
                         <a href="${method.url}">${method.name}</a>
                      </td>
-                     <td align="right">
+                     <td align="right" data="${method.duration}">
                         <j:invokeStatic className="hudson.plugins.testng.util.FormatUtil"
                                         method="formatTimeInMilliSeconds" var="duration">
                            <j:arg type="long" value="${method.duration}"/>

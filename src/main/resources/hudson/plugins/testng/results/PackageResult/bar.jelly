@@ -16,21 +16,18 @@
             <div style="width:100%; height:1em; background-color: #729FCF">
                <!-- Failed tests part of the bar. -->
                <j:set var="failedTestPercentage"
-                      value="${it.failedTestsCount *100 / it.totalTestsCount}" />
+                      value="${ (it.failedTestsCount * 100) / it.totalTestsCount}" />
                <j:set var="skippedTestPercentage"
-                      value="${it.skippedTestsCount*100/it.totalTestsCount}"/>
+                      value="${ (it.skippedTestsCount * 100) /it.totalTestsCount}"/>
                <div style="width:${failedTestPercentage}%; height: 1em; background-color: #EF2929; float: left"></div>
                <!-- Skipped tests part of the bar. -->
                <div style="width:${skippedTestPercentage}%; height: 1em; background-color: #FCE94F; float: left"></div>
             </div>
             <div align="right">
-               ${it.totalTestCount} tests
+               ${it.totalTestsCount} tests
                <j:if test="${it.previousResults!=null}">
                   (${h.getDiffString(it.totalTestsCount-it.previousResults.totalTestsCount)})
                </j:if>
-            </div>
-            <div align="right">
-               ${it.totalTestsCount} tests
             </div>
          </j:otherwise>
       </j:choose>
