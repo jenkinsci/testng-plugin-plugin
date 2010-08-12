@@ -1,7 +1,6 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
    <modelVersion>4.0.0</modelVersion>
-    <url>http://wiki.hudson-ci.org/display/HUDSON/testng-plugin</url>
+   <url>http://wiki.hudson-ci.org/display/HUDSON/testng-plugin</url>
    <parent>
       <groupId>org.jvnet.hudson.plugins</groupId>
       <artifactId>plugin</artifactId>
@@ -10,15 +9,18 @@
    </parent>
 
    <artifactId>testng-plugin</artifactId>
-   <version>0.9</version>
+   <version>0.1</version>
    <packaging>hpi</packaging>
-   <name>TestNG Test Results Plugin</name>
+   <name>TestNG Results Plugin</name>
 
    <!-- get every artifact through maven.glassfish.org, which proxies all the artifacts that we need -->
    <repositories>
       <repository>
          <id>m.g.o-public</id>
          <url>http://maven.glassfish.org/content/groups/public/</url>
+         <snapshots>
+            <enabled>false</enabled>
+         </snapshots>
       </repository>
    </repositories>
 
@@ -53,4 +55,10 @@
          <email>nalin.makar@gmail.com</email>
       </developer>
    </developers>
+
+  <scm>
+    <connection>scm:svn:https://guest@svn.dev.java.net/svn/hudson/tags/testng-plugin-0.1</connection>
+    <developerConnection>scm:svn:https://svn.dev.java.net/svn/hudson/tags/testng-plugin-0.1</developerConnection>
+    <url>https://hudson.dev.java.net/source/browse/hudson/hudson/plugins/testng-plugin/tags/testng-plugin-0.1</url>
+  </scm>
 </project>
