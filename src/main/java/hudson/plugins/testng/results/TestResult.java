@@ -5,7 +5,7 @@ import hudson.model.ModelObject;
 
 import java.util.List;
 
-public class TestResult implements ModelObject {
+public class TestResult extends BaseResult implements ModelObject {
    private AbstractBuild<?, ?> owner;
    String name;
    List<ClassResult> classList;
