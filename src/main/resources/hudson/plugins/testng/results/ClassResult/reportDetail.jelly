@@ -1,20 +1,20 @@
 <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout"
          xmlns:t="/lib/hudson" xmlns:f="/lib/form">
    <h2>Test Methods</h2>
-   <table border="1px" class="pane sortable">
-      <thead>
-         <tr>
-            <th class="pane-header">Method</th>
-            <th class="pane-header" style="width:5em" title="duration">Duration (ms)</th>
-            <th class="pane-header" style="width:5em" title="status">Status</th>
-            <th class="pane-header" style="width:5em" title="start time">Start Time</th>
+   <j:choose>
+      <j:when test="${size(it.testMethods) > 0}">
+         <table border="1px" class="pane sortable">
+            <thead>
+               <tr>
+                  <th class="pane-header">Method</th>
+                  <th class="pane-header" style="width:5em" title="duration">Duration (ms)</th>
+                  <th class="pane-header" style="width:5em" title="status">Status</th>
+                  <th class="pane-header" style="width:5em" title="start time">Start Time</th>
 
-         </tr>
-      </thead>
-      <tbody>
-         <j:forEach var="method" items="${it.testMethodList}">
-            <j:choose>
-               <j:when test="${method.config==false}">
+               </tr>
+            </thead>
+            <tbody>
+               <j:forEach var="method" items="${it.testMethods}">
                   <tr>
                      <td align="left">
                         <a href="${method.url}">${method.name}</a>
@@ -29,25 +29,29 @@
                      <td align="right">${method.status}</td>
                      <td align="right">${method.startedAt}</td>
                   </tr>
-               </j:when>
-            </j:choose>
-         </j:forEach>
-      </tbody>
-   </table>
+               </j:forEach>
+            </tbody>
+         </table>
+      </j:when>
+      <j:otherwise>
+         <div>No Test Method Was Found in This Class</div>
+      </j:otherwise>
+   </j:choose>
+
    <h2>Configuration Methods</h2>
-   <table border="1px" class="pane sortable">
-      <thead>
-         <tr>
-            <th class="pane-header">Method</th>
-            <th class="pane-header" style="width:5em" title="duration">Duration</th>
-            <th class="pane-header" style="width:5em" title="status">Status</th>
-            <th class="pane-header" style="width:5em" title="start time">Start Time</th>
-         </tr>
-      </thead>
-      <tbody>
-         <j:forEach var="method" items="${it.testMethodList}">
-            <j:choose>
-               <j:when test="${method.config==true}">
+   <j:choose>
+      <j:when test="${size(it.configurationMethods) > 0}">
+         <table border="1px" class="pane sortable">
+            <thead>
+               <tr>
+                  <th class="pane-header">Method</th>
+                  <th class="pane-header" style="width:5em" title="duration">Duration</th>
+                  <th class="pane-header" style="width:5em" title="status">Status</th>
+                  <th class="pane-header" style="width:5em" title="start time">Start Time</th>
+               </tr>
+            </thead>
+            <tbody>
+               <j:forEach var="method" items="${it.configurationMethods}">
                   <tr>
                      <td align="left">
                         <a href="${method.url}">${method.name}</a>
@@ -66,9 +70,13 @@
                      </td>
                      <td align="right">${method.startedAt}</td>
                   </tr>
-               </j:when>
-            </j:choose>
-         </j:forEach>
-      </tbody>
-   </table>
+               </j:forEach>
+            </tbody>
+         </table>
+      </j:when>
+      <j:otherwise>
+         <div>No Test Method Was Found in This Class</div>
+      </j:otherwise>
+   </j:choose>
+
 </j:jelly>

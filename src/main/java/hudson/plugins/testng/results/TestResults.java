@@ -258,7 +258,7 @@ public class TestResults extends BaseResult implements Serializable {
 
    public String toSummary() {
       return "<ul>" + diff(0, totalTestCount, "Total Tests")
-            + diff(0, failedTestCount, "Failed  Fucking Tests")
+            + diff(0, failedTestCount, "Failed Tests")
             + diff(0, skippedTestCount, "Skipped Tests")
             + diff(0, failedConfigurationMethodsCount, "Failed Configurations")
             + diff(0, skippedConfigurationMethodsCount, "Skipped Configurations") + "</ul>";

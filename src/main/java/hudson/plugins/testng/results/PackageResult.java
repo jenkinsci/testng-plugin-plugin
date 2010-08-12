@@ -114,9 +114,9 @@ public class PackageResult extends BaseResult implements ModelObject {
       //for each class
       Map<Date, List<MethodResult>> map = new HashMap<Date, List<MethodResult>>();
       for (ClassResult aClass : classList) {
-         if (aClass.getTestMethodList() != null) {
-            for (MethodResult aMethod : aClass.getTestMethodList()) {
-               if (aMethod.isConfig() == false && !aMethod.getStatus().equals("SKIP")) {
+         if (aClass.getTestMethods() != null) {
+            for (MethodResult aMethod : aClass.getTestMethods()) {
+               if (!aMethod.getStatus().equals("SKIP")) {
                   if (aMethod.getStartedAt() != null) {
                      if (map.containsKey(aMethod.getStartedAt())) {
                         map.get(aMethod.getStartedAt()).add(aMethod);
@@ -144,9 +144,9 @@ public class PackageResult extends BaseResult implements ModelObject {
    getFailedTestsCount() {
       int failedTests = 0;
       for (ClassResult aClass : classList) {
-         if (aClass.getTestMethodList() != null) {
-            for (MethodResult aMethod : aClass.getTestMethodList()) {
-               if (!aMethod.isConfig() && aMethod.getStatus().equals("FAIL")) {
+         if (aClass.getTestMethods() != null) {
+            for (MethodResult aMethod : aClass.getTestMethods()) {
+               if (aMethod.getStatus().equals("FAIL")) {
                   failedTests++;
                }
             }
@@ -159,8 +159,8 @@ public class PackageResult extends BaseResult implements ModelObject {
    getSkippedTestsCount() {
       int skippedTests = 0;
       for (ClassResult aClass : classList) {
-         if (aClass.getTestMethodList() != null) {
-            for (MethodResult aMethod : aClass.getTestMethodList()) {
+         if (aClass.getTestMethods() != null) {
+            for (MethodResult aMethod : aClass.getTestMethods()) {
                if (!aMethod.isConfig() && aMethod.getStatus().equals("SKIP")) {
                   skippedTests++;
                }
@@ -174,9 +174,9 @@ public class PackageResult extends BaseResult implements ModelObject {
    getPassedTestsCount() {
       int passTests = 0;
       for (ClassResult aClass : classList) {
-         if (aClass.getTestMethodList() != null) {
-            for (MethodResult aMethod : aClass.getTestMethodList()) {
-               if (!aMethod.isConfig() && aMethod.getStatus().equals("PASS")) {
+         if (aClass.getTestMethods() != null) {
+            for (MethodResult aMethod : aClass.getTestMethods()) {
+               if (aMethod.getStatus().equals("PASS")) {
                   passTests++;
                }
             }
@@ -189,11 +189,9 @@ public class PackageResult extends BaseResult implements ModelObject {
    getTotalTestsCount() {
       int totalTests = 0;
       for (ClassResult aClass : classList) {
-         if (aClass.getTestMethodList() != null) {
-            for (MethodResult aMethod : aClass.getTestMethodList()) {
-               if (!aMethod.isConfig()) {
-                  totalTests++;
-               }
+         if (aClass.getTestMethods() != null) {
+            for (MethodResult aMethod : aClass.getTestMethods()) {
+               totalTests++;
             }
          }
       }

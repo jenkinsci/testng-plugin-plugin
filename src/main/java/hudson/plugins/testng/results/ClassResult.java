@@ -58,10 +58,6 @@ public class ClassResult extends BaseResult implements ModelObject {
       this.total = total;
    }
 
-   public List<MethodResult> getTestMethodList() {
-      return testMethodList;
-   }
-
    public void setTestMethodList(List<MethodResult> testMethodList) {
       this.testMethodList = testMethodList;
    }
@@ -101,5 +97,27 @@ public class ClassResult extends BaseResult implements ModelObject {
          }
       }
       return null;
+   }
+
+   public List<MethodResult>
+   getTestMethods() {
+      List<MethodResult> list = new ArrayList<MethodResult>();
+      for (MethodResult methodResult : testMethodList) {
+         if (!methodResult.isConfig()) {
+            list.add(methodResult);
+         }
+      }
+      return list;
+   }
+
+   public List<MethodResult>
+   getConfigurationMethods() {
+      List<MethodResult> list = new ArrayList<MethodResult>();
+      for (MethodResult methodResult : testMethodList) {
+         if (methodResult.isConfig()) {
+            list.add(methodResult);
+         }
+      }
+      return list;
    }
 }
