@@ -30,15 +30,7 @@ public final class BuildProxy implements Serializable {
          new ArrayList<AbstractBuildAction<AbstractBuild<?, ?>>>();
    private Result result = null;
    private boolean continueBuild = true;
-   private AbstractBuild<?,?> build;
 
-   public void setBuild(AbstractBuild<?, ?> build) {
-      this.build = build;
-   }
-
-   public AbstractBuild<?, ?> getBuild() {
-      return build;
-   }
    // -------------------------- STATIC METHODS --------------------------
 
    /**
@@ -68,7 +60,6 @@ public final class BuildProxy implements Serializable {
                new FilePath(build.getRootDir()),
                build.getModuleRoot(),
                build.getTimestamp());
-         buildProxy.setBuild(build);
 
          BuildProxyCallableHelper callableHelper = new BuildProxyCallableHelper(buildProxy, ghostwriter, listener);
 
