@@ -1,6 +1,8 @@
 package hudson.plugins.testng.results;
 
-public class MethodResultException {
+import java.io.Serializable;
+
+public class MethodResultException implements Serializable {
 
    private String message;
    private String shortStackTrace;

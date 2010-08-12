@@ -2,7 +2,9 @@ package hudson.plugins.testng.results;
 
 import hudson.model.AbstractBuild;
 
-public abstract class BaseResult {
+import java.io.Serializable;
+
+public abstract class BaseResult implements Serializable {
    protected AbstractBuild<?, ?> owner;
    protected String name;
    protected BaseResult parent;

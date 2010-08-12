@@ -86,14 +86,18 @@ public class MethodResult extends BaseResult implements ModelObject {
 
    public Object getCssClass() {
       if (this.status != null) {
-         if(this.status.equalsIgnoreCase("pass")) {
+         if (this.status.equalsIgnoreCase("pass")) {
             return "result-passed";
-         } else if(this.status.equalsIgnoreCase("skip")) {
-           return "result-skipped";
-         } else if(this.status.equalsIgnoreCase("fail")) {
-            return "result-failed";
+         } else {
+            if (this.status.equalsIgnoreCase("skip")) {
+               return "result-skipped";
+            } else {
+               if (this.status.equalsIgnoreCase("fail")) {
+                  return "result-failed";
+               }
+            }
          }
-         
+
       }
       return "result-passed";
    }
