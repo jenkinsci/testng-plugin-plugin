@@ -133,6 +133,7 @@ public class PackageResult extends BaseResult implements ModelObject {
       List<Date> keys = new ArrayList<Date>(map.keySet());
       Collections.sort(keys);
       //now create the list with the order
+      this.sortedTestMethodsByStartTime.clear();
       for (Date key : keys) {
          if (map.containsKey(key)) {
             this.sortedTestMethodsByStartTime.addAll(map.get(key));
