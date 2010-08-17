@@ -125,7 +125,7 @@ public class MavenPublisher extends AbstractMavenReporterImpl {
        * {@inheritDoc}
        */
       public String getDisplayName() {
-         return "Publish really :) " + PluginImpl.DISPLAY_NAME;
+         return PluginImpl.DISPLAY_NAME;
       }
 
       @Override
