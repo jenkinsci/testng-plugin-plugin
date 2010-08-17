@@ -9,7 +9,7 @@
    </parent>
 
    <artifactId>testng-plugin</artifactId>
-   <version>0.4</version>
+   <version>0.5-SNAPSHOT</version>
    <packaging>hpi</packaging>
    <name>TestNG Results Plugin</name>
 
@@ -55,10 +55,4 @@
          <email>nalin.makar@gmail.com</email>
       </developer>
    </developers>
-
-  <scm>
-    <connection>scm:svn:https://guest@svn.dev.java.net/svn/hudson/tags/testng-plugin-0.4</connection>
-    <developerConnection>scm:svn:https://svn.dev.java.net/svn/hudson/tags/testng-plugin-0.4</developerConnection>
-    <url>https://hudson.dev.java.net/source/browse/hudson/hudson/plugins/testng-plugin/tags/testng-plugin-0.4</url>
-  </scm>
 </project>
