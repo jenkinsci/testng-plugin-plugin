@@ -1,0 +1,14 @@
+TestNG Plugin for Hudson
+=============
+
+
+Release Notes
+-------
+
+### upcoming
+
+* Fixed: parser test cases were failing with IOException
+
+### v0.4
+
+* New: Initial release
