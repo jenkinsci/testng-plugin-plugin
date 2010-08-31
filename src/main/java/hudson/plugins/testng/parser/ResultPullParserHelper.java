@@ -1,6 +1,5 @@
 package hudson.plugins.testng.parser;
 
-
 import hudson.plugins.testng.results.ClassResult;
 import hudson.plugins.testng.results.MethodResult;
 import hudson.plugins.testng.results.MethodResultException;
@@ -17,14 +16,15 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
+/**
+ * Helper class for parsing TestNG result XML files
+ */
 public class ResultPullParserHelper {
 
    private static final Logger log = Logger.getLogger(ResultPullParserHelper.class.getName());
-
-   public ResultPullParserHelper() {
-   }
 
    /**
     * @param xmlPullParser
@@ -39,7 +39,7 @@ public class ResultPullParserHelper {
          try {
             while (xmlPullParser.getDepth() >= initialDepth) {
                if (isStartTag(xmlPullParser)) {
-                  log.info("current node name : " + xmlPullParser.getName());
+                  log.fine("current node name : " + xmlPullParser.getName());
                   if (name.equals(xmlPullParser.getName())) {
                      return true;
                   }
@@ -48,7 +48,7 @@ public class ResultPullParserHelper {
             }
             //at this point we should be seeing a tag with .getName as "exception"
          } catch (XmlPullParserException e) {
-            log.info("next() threw exception : " + e.getMessage());
+            log.warning("next() threw exception : " + e.getMessage());
          } catch (IOException e) {
             e.printStackTrace();
          }
@@ -71,7 +71,7 @@ public class ResultPullParserHelper {
          try {
             while (xmlPullParser.getDepth() >= initialDepth) {
                if (isStartTag(xmlPullParser)) {
-                  log.info("current node name : " + xmlPullParser.getName());
+                  log.fine("current node name : " + xmlPullParser.getName());
                   if (tags.contains(xmlPullParser.getName())) {
                      return xmlPullParser.getName();
                   }
@@ -80,14 +80,13 @@ public class ResultPullParserHelper {
             }
             //at this point we should be seeing a tag with .getName as "exception"
          } catch (XmlPullParserException e) {
-            log.info("next() threw exception : " + e.getMessage());
+            log.warning("next() threw exception : " + e.getMessage());
          } catch (IOException e) {
             e.printStackTrace();
          }
       }
       return null;
    }
-
 
    /**
     * @param xmlPullParser
@@ -101,26 +100,23 @@ public class ResultPullParserHelper {
       MethodResult testNGTestMethod = null;
       if (xmlPullParser != null) {
          testNGTestMethod = new MethodResult();
-         testNGTestMethod.setName(xmlPullParser.getAttributeValue(
-               null, "name"));
-         testNGTestMethod.setStatus(xmlPullParser.getAttributeValue(
-               null, "status"));
+         testNGTestMethod.setName(xmlPullParser.getAttributeValue(null, "name"));
+         testNGTestMethod.setStatus(xmlPullParser.getAttributeValue(null, "status"));
          testNGTestMethod.setDescription(xmlPullParser
                .getAttributeValue(null, "description"));
          try {
             testNGTestMethod.setDuration(Long.parseLong(xmlPullParser.getAttributeValue(
                   null, "duration-ms")));
          } catch (NumberFormatException e) {
-            log.info("unable to obtain duration-ms");
+            log.warning("unable to obtain duration-ms");
          }
          try {
             testNGTestMethod.setStartedAt(simpleDateFormat.parse(xmlPullParser.getAttributeValue(
                   null, "started-at")));
          } catch (ParseException e) {
-            log.info("unable to obtain started-at");
+            log.warning("unable to obtain started-at");
          }
-         String isConfigStr = xmlPullParser.getAttributeValue(null,
-               "is-config");
+         String isConfigStr = xmlPullParser.getAttributeValue(null, "is-config");
          testNGTestMethod.setFullName(testNGClass.getFullName() +
                "." + testNGTestMethod.getName());
          if (isConfigStr == null) {
@@ -131,15 +127,17 @@ public class ResultPullParserHelper {
             testNGTestMethod.setConfig(true);
          }
       }
-      printTestMethod(testNGTestMethod);
+      
+      if (log.getLevel() == Level.FINE) {
+         printTestMethod(testNGTestMethod);
+      }
       return testNGTestMethod;
    }
 
    /**
     * @param testMethod
     */
-   public void printTestMethod(MethodResult
-         testMethod) {
+   private void printTestMethod(MethodResult testMethod) {
       if (testMethod != null) {
          log.info("name : " + testMethod.getName());
          log.info("duration : " + testMethod.getDuration());
@@ -150,7 +148,6 @@ public class ResultPullParserHelper {
          if (testMethod.getException() != null) {
             log.info("exceptionMessage : " + testMethod.getException().getMessage());
          }
-
       } else {
          log.info("testMethod is null");
       }
@@ -171,7 +168,7 @@ public class ResultPullParserHelper {
                String tagFound =
                      parseToTagIfAnyFound(xmlPullParser, tags, exceptionDepth);
                if (tagFound == null) {
-                  log.info("did not find any of the tags. break from the loop");
+                  log.fine("did not find any of the tags. break from the loop");
                   break;
                } else {
                   try {
@@ -232,13 +229,11 @@ public class ResultPullParserHelper {
       return false;
    }
 
-
    /**
     * @param file
     * @return
     */
-   public FileInputStream createFileInputStream(File
-         file) {
+   public FileInputStream createFileInputStream(File file) {
       if (file != null && file.exists()) {
          try {
             return new FileInputStream(file);
@@ -251,31 +246,19 @@ public class ResultPullParserHelper {
 
    public XmlPullParser createXmlPullParser(BufferedInputStream
          bufferedInputStream) {
-      try {
-         if (bufferedInputStream != null) {
-            bufferedInputStream.available();
-            try {
-               XmlPullParserFactory xmlPullParserFactory = XmlPullParserFactory.newInstance();
-               xmlPullParserFactory.setNamespaceAware(true);
-               xmlPullParserFactory.setValidating(false);
-               try {
-                  XmlPullParser xmlPullParser = xmlPullParserFactory.newPullParser();
-                  try {
-                     xmlPullParser.setInput(bufferedInputStream, null);
-                     return xmlPullParser;
-                  } catch (XmlPullParserException e) {
-                     e.printStackTrace();
-                  }
-               } catch (XmlPullParserException e) {
-                  e.printStackTrace();
-               }
-            } catch (XmlPullParserException e) {
-               log.severe("unable to create a new XmlPullParserFactory instance : error message : "
-                     + e.getMessage());
-            }
+      if (bufferedInputStream != null) {
+         try {
+            XmlPullParserFactory xmlPullParserFactory = XmlPullParserFactory.newInstance();
+            xmlPullParserFactory.setNamespaceAware(true);
+            xmlPullParserFactory.setValidating(false);
+            
+            XmlPullParser xmlPullParser = xmlPullParserFactory.newPullParser();
+            xmlPullParser.setInput(bufferedInputStream, null);
+            return xmlPullParser;
+         } catch (XmlPullParserException e) {
+            log.severe("unable to create a new XmlPullParserFactory instance : error message : "
+                  + e.getMessage());
          }
-      } catch (IOException e) {
-         e.printStackTrace();
       }
       return null;
       //define a  custom exception saying could not initialize the parser
