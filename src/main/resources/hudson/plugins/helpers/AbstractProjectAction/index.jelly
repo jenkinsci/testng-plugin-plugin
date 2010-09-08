@@ -11,7 +11,6 @@
             <h2>${it.graphName}</h2>
             <st:include page="normalGraph.jelly"/>
          </j:if>
-         <!-- commenting out because it makes no sense to have project level test results. A graph is just fine -->
          <st:include page="reportDetail.jelly"/>
       </l:main-panel>
    </l:layout>
