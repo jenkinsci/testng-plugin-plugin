@@ -1,5 +1,5 @@
 <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout"
-         xmlns:t="/lib/hudson" xmlns:f="/lib/form" xmlns:i="jelly:fmt" xmlns:local="local">
+         xmlns:t="/lib/hudson" xmlns:f="/lib/form">
    <j:if test="${from.graphActive}">
       <div style="width:500px;">
          <div class="test-trend-caption">
@@ -7,9 +7,7 @@
          </div>
 
          <j:set var="relativeUrlPath" value="${from.urlName}/"/>
-         <a href="testngreports/">
-            <st:include it="${from}" page="normalGraph.jelly"/>
-         </a>
+         <st:include it="${from}" page="normalGraph.jelly"/>
          <div style="text-align:right">
             <a href="${relativeUrlPath}enlargedGraph">enlarge</a>
          </div>
