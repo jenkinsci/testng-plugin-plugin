@@ -11,8 +11,8 @@
       }
    </script>
    <h2>All Classes</h2>
-   <a href="javascript:showorHideTable('executionOrderTable')">hide/expand the table</a>
-   <table id="executionOrderTable" border="1px" class="pane sortable">
+   <a href="javascript:showorHideTable('allClasses')">hide/expand the table</a>
+   <table id="allClasses" border="1px" class="pane sortable">
       <thead>
          <tr>
             <th class="pane-header">Class</th>
@@ -52,8 +52,8 @@
    </j:choose>
    <j:choose>
       <j:when test="${size(it.sortedTestMethodsByStartTime) > 0}">
-         <a href="javascript:showorHideTable('executionOrderTable')">hide/expand the table</a> 
-         <table border="1px" class="pane sortable" id="executionOrderTable">
+         <a href="javascript:showorHideTable('executionOrderTable')">hide/expand the table</a>
+         <table border="1px" class="pane sortable" id="executionOrderTable" style="display:none;">
             <thead>
                <tr>
                   <th class="pane-header">Method</th>
