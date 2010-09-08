@@ -22,18 +22,18 @@ public class ResultsParser {
                                                PrintStream printStream) {
       if (null == file) {
          if (printStream != null) {
-            printStream.println("file not specified");
+            printStream.println("File not specified");
          }
          return Collections.EMPTY_LIST;
       }
-      
+
       if (!file.exists() || file.isDirectory()) {
          if (printStream != null) {
             printStream.println("'" + file.getAbsolutePath() + "' points to a non-existent file or directory");
          }
          return Collections.EMPTY_LIST;
       }
-      
+
       ResultPullParserHelper xmlParserHelper = new ResultPullParserHelper();
       Collection<TestResults> results = new ArrayList<TestResults>();
       FileInputStream fileInputStream = xmlParserHelper.createFileInputStream(file);
@@ -64,7 +64,7 @@ public class ResultsParser {
                         ClassResult testNGTestClass = new ClassResult();
                         testNGTestClass.setName(xmlPullParser.getAttributeValue(null, "name"));
                         testNGTestClass.setFullName(xmlPullParser.getAttributeValue(null, "name"));
-                        
+
                         List<MethodResult> testMethodList = new ArrayList<MethodResult>();
                         while (xmlParserHelper.parseToTagIfFound(xmlPullParser, "test-method", classDepth)) {
                            MethodResult testNGTestMethod = xmlParserHelper.createTestMethod(xmlPullParser, testNGTestClass);
@@ -88,21 +88,21 @@ public class ResultsParser {
                   testNGTestResults.setTestList(testNGTestList);
                   testNGTestResults.tally();
                   results.add(testNGTestResults);
-                  
+
                   if (printStream != null) {
                      if (testNGTestResults.getTotalTestCount() > 0) {
-                        printStream.println("parsed file : " + file.getAbsolutePath()
-                              + " and collected testng results . populated "
-                              + testNGTestResults.getTotalTestCount() + " test case results");
+                        printStream.println("Parsed TestNG XML Report at '" + file.getAbsolutePath()
+                              + "' and collected "
+                              + testNGTestResults.getTotalTestCount() + " test results");
                      } else {
-                        printStream.println("parsed file : " + file.getAbsolutePath()
-                              + " and did not find any test result");
+                        printStream.println("Parsed TestNG XML Report at '" + file.getAbsolutePath()
+                              + "' and did not find any test results");
                      }
                   }
                }
             }
          }
-         
+
          try {
             bufferedInputStream.close();
          } catch (IOException e) {
