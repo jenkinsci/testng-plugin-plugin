@@ -21,12 +21,16 @@ import org.jfree.ui.RectangleInsets;
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
 
+/**
+ * Helper class for trend graph generation
+ *
+ */
 public class GraphHelper {
+
    /**
     * Do not instantiate GraphHelper.
     */
-   private GraphHelper() {
-   }
+   private GraphHelper() {}
 
    /**
     * Getter for property 'graphUnsupported'.
@@ -45,9 +49,9 @@ public class GraphHelper {
    public static JFreeChart buildChart(CategoryDataset dataset) {
 
       final JFreeChart chart = ChartFactory.createLineChart(
-            null,                   // chart title
-            null,                   // unused
-            "Test count",                    // range axis label
+            null,                     // chart title
+            null,                     // unused
+            "Test count",             // range axis label
             dataset,                  // data
             PlotOrientation.VERTICAL, // orientation
             true,                     // include legend
@@ -56,19 +60,16 @@ public class GraphHelper {
       );
 
       // NOW DO SOME OPTIONAL CUSTOMISATION OF THE CHART...
-
       final LegendTitle legend = chart.getLegend();
       legend.setPosition(RectangleEdge.RIGHT);
 
       chart.setBackgroundPaint(Color.white);
 
       final CategoryPlot plot = chart.getCategoryPlot();
-
-      // plot.setAxisOffset(new Spacer(Spacer.ABSOLUTE, 5.0, 5.0, 5.0, 5.0));
       plot.setBackgroundPaint(Color.WHITE);
       plot.setOutlinePaint(null);
       plot.setRangeGridlinesVisible(true);
-      plot.setRangeGridlinePaint(Color.black);
+      plot.setRangeGridlinePaint(Color.BLACK);
 
       CategoryAxis domainAxis = new ShiftedCategoryAxis(null);
       plot.setDomainAxis(domainAxis);
@@ -80,7 +81,14 @@ public class GraphHelper {
       final NumberAxis rangeAxis = (NumberAxis) plot.getRangeAxis();
       rangeAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
 
-      plot.setRenderer(new StackedAreaRenderer2());
+      //Set the colors for trend graph to match the colors for JUnit trend graph and bar
+      StackedAreaRenderer2 renderer = new StackedAreaRenderer2();
+      renderer.setSeriesPaint(0, Color.decode("0xEF2929")); //fail
+      renderer.setSeriesPaint(1, Color.decode("0x729FCF")); //pass
+      renderer.setSeriesPaint(2, Color.decode("0xFCE94F")); //skip
+
+      plot.setRenderer(renderer);
+
       // crop extra space around the graph
       plot.setInsets(new RectangleInsets(5.0, 0, 0, 5.0));
 

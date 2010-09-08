@@ -8,6 +8,7 @@ Release Notes
 ### upcoming
 
 * Fixed: parser test cases were failing with IOException
+* Fixed: Updated colors for Trend Graph to match JUnit graph and bar colors
 
 ### v0.4
 
