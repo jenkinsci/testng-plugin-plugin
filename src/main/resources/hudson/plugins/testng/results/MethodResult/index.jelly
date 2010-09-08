@@ -1,8 +1,7 @@
 <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout"
          xmlns:t="/lib/hudson" xmlns:f="/lib/form">
-   <l:layout title="testng methods">
+   <l:layout title="Test method - ${it.name}">
       <l:main-panel>
-         <h1>${it.displayName}</h1>
          <st:include page="reportDetail.jelly"/>
       </l:main-panel>
    </l:layout>

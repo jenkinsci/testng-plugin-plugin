@@ -4,39 +4,53 @@
                    method="formatTimeInMilliSeconds" var="duration">
       <j:arg type="long" value="${it.duration}"/>
    </j:invokeStatic>
+
+   <div>
+      <h1><st:out value="${it.name}"/></h1>
+      (from <a href="${it.parent.url}">${it.parent.name}</a> took ${duration})
+   </div>
+
    <h1>
       <span class="${it.cssClass}">
          ${it.status}
       </span>
    </h1>
-   <p>
-      <span style="font-weight:bold">
-         <st:out value="${it.name}"/>
-      </span>
-      <j:if test="${it.className != it.parent.name}">
-         (from<st:out value="${it.parent.name}"/>)
-      </j:if>
-   </p>
 
-   <div style="text-align:right;">
-      took ${duration}
+   <div id="description">
+      <div>
+         <j:invokeStatic className="hudson.plugins.testng.util.FormatUtil"
+                      method="replaceNewLineWithBR" var="msg">
+            <j:arg type="java.lang.String" value="${it.description}"/>
+         </j:invokeStatic>
+         ${msg}
+      </div>
    </div>
 
-   <t:editableDescription permission="${it.owner.UPDATE}"/>
-
    <j:if test="${!empty(it.exception)}">
-      <h3>${%Exception Stack Trace : }</h3>
+      <h3>Exception Stack Trace</h3>
       <p>
-         <div style="font-weight:bold">message :</div>
-         <div>${it.exception.message}</div>
+         <j:choose>
+            <j:when test="${it.exception.message!=null}">
+               <b>Message:</b><br/>${it.exception.message}
+            </j:when>
+            <j:otherwise>
+               <b>Message:</b><br/>(none)
+            </j:otherwise>
+         </j:choose>
       </p>
-      <p>
-         <div style="font-weight:bold">short stack trace :</div>
-         <div>${it.exception.shortStackTrace}</div>
-      </p>
-      <p>
-         <div style="font-weight:bold">full stack trace :</div>
-         <div>${it.exception.fullStackTrace}</div>
-      </p>
+      <j:if test="${it.exception.shortStackTrace!=null}">
+         <j:invokeStatic className="hudson.plugins.testng.util.FormatUtil"
+                      method="formatStackTraceForHTML" var="sst">
+            <j:arg type="java.lang.String" value="${it.exception.shortStackTrace}"/>
+         </j:invokeStatic>
+         <p><b>Short Stacktrace:</b><br/>${sst}</p>
+      </j:if>
+      <j:if test="${it.exception.fullStackTrace!=null}">
+         <j:invokeStatic className="hudson.plugins.testng.util.FormatUtil"
+                      method="formatStackTraceForHTML" var="fst">
+            <j:arg type="java.lang.String" value="${it.exception.fullStackTrace}"/>
+         </j:invokeStatic>
+         <p><b>Full Stacktrace:</b><br/>${fst}</p>
+      </j:if>
    </j:if>
 </j:jelly>
