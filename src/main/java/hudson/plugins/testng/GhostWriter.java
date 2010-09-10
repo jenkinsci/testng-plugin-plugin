@@ -1,9 +1,9 @@
 package hudson.plugins.testng;
 
 import hudson.FilePath;
-import hudson.model.AbstractBuild;
 import hudson.model.BuildListener;
 import hudson.model.Result;
+import hudson.model.AbstractBuild;
 import hudson.plugins.helpers.BuildProxy;
 import hudson.plugins.helpers.Ghostwriter;
 import hudson.plugins.testng.parser.ResultsParser;

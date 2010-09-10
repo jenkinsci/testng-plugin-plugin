@@ -1,12 +1,13 @@
 package hudson.plugins.testng.results;
 
-import hudson.model.AbstractBuild;
 import hudson.model.ModelObject;
-import org.kohsuke.stapler.StaplerRequest;
-import org.kohsuke.stapler.StaplerResponse;
+import hudson.model.AbstractBuild;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import org.kohsuke.stapler.StaplerRequest;
+import org.kohsuke.stapler.StaplerResponse;
 
 public class ClassResult extends BaseResult implements ModelObject {
    private List<MethodResult> testMethodList = new ArrayList<MethodResult>();

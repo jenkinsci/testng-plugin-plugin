@@ -1,11 +1,11 @@
 package hudson.plugins.testng;
 
 import hudson.Extension;
-import hudson.maven.MavenBuild;
-import hudson.maven.MavenModule;
 import hudson.maven.MavenReporter;
 import hudson.maven.MavenReporterDescriptor;
 import hudson.maven.MojoInfo;
+import hudson.maven.MavenBuild;
+import hudson.maven.MavenModule;
 import hudson.model.Action;
 import hudson.plugins.helpers.AbstractMavenReporterImpl;
 import hudson.plugins.helpers.Ghostwriter;
@@ -76,7 +76,6 @@ public class MavenPublisher extends AbstractMavenReporterImpl {
          searchPath = "**/" + tempFileName;
       }
 
-//      return new GhostWriter(searchPath, targets);
       return new GhostWriter(searchPath);
    }
 

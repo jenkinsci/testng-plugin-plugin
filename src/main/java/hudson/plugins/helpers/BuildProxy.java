@@ -2,9 +2,9 @@ package hudson.plugins.helpers;
 
 import hudson.FilePath;
 import hudson.maven.MavenBuildProxy;
-import hudson.model.AbstractBuild;
 import hudson.model.BuildListener;
 import hudson.model.Result;
+import hudson.model.AbstractBuild;
 import hudson.util.IOException2;
 
 import java.io.IOException;

@@ -1,7 +1,7 @@
 package hudson.plugins.helpers;
 
-import hudson.maven.MavenBuild;
 import hudson.maven.MavenBuildProxy;
+import hudson.maven.MavenBuild;
 import hudson.model.BuildListener;
 import hudson.remoting.Callable;
 

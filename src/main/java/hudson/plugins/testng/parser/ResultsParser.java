@@ -1,9 +1,16 @@
 package hudson.plugins.testng.parser;
 
-import hudson.plugins.testng.results.*;
+import hudson.plugins.testng.results.ClassResult;
+import hudson.plugins.testng.results.MethodResult;
+import hudson.plugins.testng.results.MethodResultException;
+import hudson.plugins.testng.results.TestResult;
+import hudson.plugins.testng.results.TestResults;
 
-import java.io.*;
-
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;

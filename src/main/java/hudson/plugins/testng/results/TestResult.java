@@ -1,7 +1,7 @@
 package hudson.plugins.testng.results;
 
-import hudson.model.AbstractBuild;
 import hudson.model.ModelObject;
+import hudson.model.AbstractBuild;
 
 import java.util.List;
 

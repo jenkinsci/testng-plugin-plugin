@@ -1,8 +1,8 @@
 package hudson.plugins.helpers;
 
 import hudson.FilePath;
-import hudson.model.AbstractBuild;
 import hudson.model.BuildListener;
+import hudson.model.AbstractBuild;
 
 import java.io.IOException;
 import java.io.Serializable;

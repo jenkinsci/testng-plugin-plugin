@@ -1,10 +1,11 @@
 package hudson.plugins.testng.results;
 
 import hudson.model.ModelObject;
-import org.kohsuke.stapler.StaplerRequest;
-import org.kohsuke.stapler.StaplerResponse;
 
 import java.util.Date;
+
+import org.kohsuke.stapler.StaplerRequest;
+import org.kohsuke.stapler.StaplerResponse;
 
 public class MethodResult extends BaseResult implements ModelObject {
    private String status;
