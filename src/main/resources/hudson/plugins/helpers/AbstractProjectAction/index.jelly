@@ -1,17 +1,22 @@
 <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout"
          xmlns:t="/lib/hudson" xmlns:f="/lib/form">
-   <l:layout title="project action">
+   <l:layout title="TestNG Results Trend">
       <st:include it="${it.project}" page="sidepanel.jelly"/>
       <l:main-panel>
-         <h1>${it.displayName}</h1>
-         <h1>seriously!!</h1>
-         <j:if test="${it.graphActive}">
-            <j:set var="relativeUrlPath" value=""/>
-
-            <h2>${it.graphName}</h2>
-            <st:include page="normalGraph.jelly"/>
-         </j:if>
-         <st:include page="reportDetail.jelly"/>
+         <h1>${it.displayName} Trend</h1>
+         <j:choose>
+            <j:when test="${it.graphActive}">
+               <img src="graph" lazymap="graphMap?rel=/${it.project.url}" alt="[Test result trend chart]"/>
+               <!-- FIXME: For later <img src="graph?width=800&amp;height=600"
+                  lazymap="graphMap?width=800&amp;height=600" alt="[Test result trend chart]"/> -->
+            </j:when>
+            <j:otherwise>Need at least 2 builds with results to show trend graph
+            </j:otherwise>
+         </j:choose>
+         <br/>
+         <j:set var="_buildNumber" value="${it.project.lastCompletedBuild.number}"/>
+         <h2>Latest Test Results (<a href="/${it.project.url}${_buildNumber}/${it.urlName}">build #${_buildNumber}</a>)</h2>
+         ${it.lastCompletedBuildAction.summary}
       </l:main-panel>
    </l:layout>
 </j:jelly>

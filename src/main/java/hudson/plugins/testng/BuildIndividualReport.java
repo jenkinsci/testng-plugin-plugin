@@ -5,17 +5,19 @@ import hudson.maven.MavenAggregatedReport;
 import hudson.maven.MavenBuild;
 import hudson.maven.MavenModule;
 import hudson.maven.MavenModuleSetBuild;
-import hudson.model.AbstractBuild;
 import hudson.model.HealthReport;
+import hudson.model.AbstractBuild;
+import hudson.plugins.helpers.AbstractBuildAction;
 import hudson.plugins.testng.results.TestResults;
 
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-public class BuildIndividualReport extends AbstractBuildReport<AbstractBuild<?, ?>>
+public class BuildIndividualReport extends AbstractBuildAction<AbstractBuild<?, ?>>
       implements AggregatableAction {
 
+   //TODO: Work on exposing health
    private HealthReport healthReport;
 
    public BuildIndividualReport(Collection<TestResults> testNGResultsCollection) {

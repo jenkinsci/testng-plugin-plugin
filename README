@@ -12,6 +12,9 @@ Release Notes
 * Fixed: Better display of content on the test method result page
 * Fixed: Open/Close js behavior on Package results page
 * Fixed: Removed a lot of dead code and unnecessary files
+* Fixed: Trend Graph is shown for Projects and not for Builds
+* Changed: TestNG Results link at Project page doesn't take you to latest build results anymore
+* New: Trend graph has tooltips and links to different builds
 
 ### v0.4
 

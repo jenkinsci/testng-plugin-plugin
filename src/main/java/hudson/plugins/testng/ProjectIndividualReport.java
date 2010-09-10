@@ -1,18 +1,20 @@
 package hudson.plugins.testng;
 
+import hudson.model.AbstractBuild;
 import hudson.model.AbstractProject;
-import hudson.model.ProminentProjectAction;
+import hudson.plugins.helpers.AbstractBuildAction;
+import hudson.plugins.helpers.AbstractProjectAction;
 
 /**
  * TODO javadoc.
  *
  */
-public class ProjectIndividualReport extends AbstractProjectReport<AbstractProject<?, ?>> implements ProminentProjectAction {
+public class ProjectIndividualReport extends AbstractProjectAction<AbstractProject<?, ?>> {
    public ProjectIndividualReport(AbstractProject<?, ?> project) {
       super(project);
    }
 
-   protected Class<? extends AbstractBuildReport> getBuildActionClass() {
+   protected Class<? extends AbstractBuildAction<AbstractBuild<?,?>>> getBuildActionClass() {
       return BuildIndividualReport.class;
    }
 }

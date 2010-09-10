@@ -1,6 +1,9 @@
 package hudson.plugins.helpers;
 
+import hudson.plugins.testng.BuildIndividualReport;
 import hudson.util.ChartUtil;
+import hudson.util.ChartUtil.NumberOnlyBuildLabel;
+import hudson.util.ColorPalette;
 import hudson.util.ShiftedCategoryAxis;
 import hudson.util.StackedAreaRenderer2;
 
@@ -14,6 +17,7 @@ import org.jfree.chart.axis.CategoryLabelPositions;
 import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.chart.renderer.category.StackedAreaRenderer;
 import org.jfree.chart.title.LegendTitle;
 import org.jfree.data.category.CategoryDataset;
 import org.jfree.ui.RectangleEdge;
@@ -46,17 +50,19 @@ public class GraphHelper {
       rsp.sendRedirect2(req.getContextPath() + "/images/headless.png");
    }
 
-   public static JFreeChart buildChart(CategoryDataset dataset) {
+   public static JFreeChart createChart(StaplerRequest req, CategoryDataset dataset) {
 
-      final JFreeChart chart = ChartFactory.createLineChart(
-            null,                     // chart title
-            null,                     // unused
-            "Test count",             // range axis label
-            dataset,                  // data
-            PlotOrientation.VERTICAL, // orientation
-            true,                     // include legend
-            true,                     // tooltips
-            false                     // urls
+      final String relPath = getRelPath(req);
+
+      final JFreeChart chart = ChartFactory.createStackedAreaChart(
+          null,                     // chart title
+          null,                     // unused
+          "Test count",             // range axis label
+          dataset,                  // data
+          PlotOrientation.VERTICAL, // orientation
+          true,                     // include legend
+          true,                     // tooltips
+          false                     // urls
       );
 
       // NOW DO SOME OPTIONAL CUSTOMISATION OF THE CHART...
@@ -68,8 +74,11 @@ public class GraphHelper {
       final CategoryPlot plot = chart.getCategoryPlot();
       plot.setBackgroundPaint(Color.WHITE);
       plot.setOutlinePaint(null);
+      plot.setForegroundAlpha(0.8f);
+      plot.setDomainGridlinesVisible(true);
+      plot.setDomainGridlinePaint(Color.white);
       plot.setRangeGridlinesVisible(true);
-      plot.setRangeGridlinePaint(Color.BLACK);
+      plot.setRangeGridlinePaint(Color.black);
 
       CategoryAxis domainAxis = new ShiftedCategoryAxis(null);
       plot.setDomainAxis(domainAxis);
@@ -81,17 +90,44 @@ public class GraphHelper {
       final NumberAxis rangeAxis = (NumberAxis) plot.getRangeAxis();
       rangeAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
 
-      //Set the colors for trend graph to match the colors for JUnit trend graph and bar
-      StackedAreaRenderer2 renderer = new StackedAreaRenderer2();
-      renderer.setSeriesPaint(0, Color.decode("0xEF2929")); //fail
-      renderer.setSeriesPaint(1, Color.decode("0x729FCF")); //pass
-      renderer.setSeriesPaint(2, Color.decode("0xFCE94F")); //skip
+      StackedAreaRenderer ar = new StackedAreaRenderer2() {
+          @Override
+          public String generateURL(CategoryDataset dataset, int row, int column) {
+              NumberOnlyBuildLabel label = (NumberOnlyBuildLabel) dataset.getColumnKey(column);
+              return relPath + label.build.getNumber() + "/testngreports/";
+          }
 
-      plot.setRenderer(renderer);
+          @Override
+          public String generateToolTip(CategoryDataset dataset, int row, int column) {
+              NumberOnlyBuildLabel label = (NumberOnlyBuildLabel) dataset.getColumnKey(column);
+              BuildIndividualReport report = label.build.getAction(BuildIndividualReport.class);
+              switch (row) {
+                  case 0:
+                      return String.valueOf(report.getResults().getFailedTestCount()) + " Failure(s)";
+                  case 1:
+                     return String.valueOf(report.getResults().getPassedTestCount()) + " Pass";
+                  case 2:
+                     return String.valueOf(report.getResults().getSkippedTestCount()) + " Skip(s)";
+                  default:
+                     return "";
+              }
+          }
+      };
+
+      plot.setRenderer(ar);
+      ar.setSeriesPaint(0,ColorPalette.RED); // Failures.
+      ar.setSeriesPaint(1,ColorPalette.BLUE); // Pass.
+      ar.setSeriesPaint(2,ColorPalette.YELLOW); // Skips.
 
       // crop extra space around the graph
-      plot.setInsets(new RectangleInsets(5.0, 0, 0, 5.0));
+      plot.setInsets(new RectangleInsets(0,0,0,5.0));
 
       return chart;
-   }
+  }
+
+   private static String getRelPath(StaplerRequest req) {
+      String relPath = req.getParameter("rel");
+      if(relPath==null)   return "";
+      return relPath;
+  }
 }

@@ -8,13 +8,14 @@ import hudson.maven.MavenModuleSet;
 import hudson.maven.MavenModuleSetBuild;
 import hudson.model.Action;
 import hudson.model.HealthReport;
+import hudson.plugins.helpers.AbstractBuildAction;
 import hudson.plugins.testng.results.TestResults;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class BuildAggregatedReport extends AbstractBuildReport<MavenModuleSetBuild> implements MavenAggregatedReport {
+public class BuildAggregatedReport extends AbstractBuildAction<MavenModuleSetBuild> implements MavenAggregatedReport {
    private HealthReport buildHealth = null;
 
    public BuildAggregatedReport(MavenModuleSetBuild build, Map<MavenModule, List<MavenBuild>> moduleBuilds) {

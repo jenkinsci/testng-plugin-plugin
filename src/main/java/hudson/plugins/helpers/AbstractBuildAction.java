@@ -1,10 +1,15 @@
 package hudson.plugins.helpers;
 
-import hudson.model.AbstractBuild;
 import hudson.model.HealthReportingAction;
+import hudson.model.AbstractBuild;
+import hudson.plugins.testng.PluginImpl;
+import hudson.plugins.testng.results.TestResults;
 
 import java.io.Serializable;
+import java.util.Collection;
 
+import org.kohsuke.stapler.StaplerRequest;
+import org.kohsuke.stapler.StaplerResponse;
 
 public abstract class AbstractBuildAction<BUILD extends AbstractBuild<?, ?>>
       implements HealthReportingAction, Serializable {
@@ -19,10 +24,14 @@ public abstract class AbstractBuildAction<BUILD extends AbstractBuild<?, ?>>
     */
    private BUILD build = null;
 
+   private final TestResults results;
+
    /**
-    * Constructs a new AbstractBuildAction.
+    * Constructs a new AbstractBuildReport.
+    * @param results - testng test results
     */
-   protected AbstractBuildAction() {
+   public AbstractBuildAction(Collection<TestResults> results) {
+      this.results = TestResults.total(results);
    }
 
    /**
@@ -64,21 +73,63 @@ public abstract class AbstractBuildAction<BUILD extends AbstractBuild<?, ?>>
       return false;
    }
 
-   /**
-    * Override to define the graph name.
-    *
-    * @return The graph name.
-    */
-   public String getGraphName() {
-      return getDisplayName();
+   public TestResults getResults() {
+      return results;
+   }
+
+   public TestResults getPreviousResults() {
+      AbstractBuild<?, ?> prevBuild = getBuild().getPreviousBuild();
+      while (prevBuild != null && prevBuild.getAction(getClass()) == null) {
+         prevBuild = prevBuild.getPreviousBuild();
+      }
+      if (prevBuild == null) {
+         return new TestResults("");
+      } else {
+         AbstractBuildAction action = prevBuild.getAction(getClass());
+         return action.getResults();
+      }
    }
 
    /**
-    * Override to control the build summary detail.
+    * The summary of this build report for display on the build index page.
     *
-    * @return the summary string for the main build page.
+    * @return
     */
    public String getSummary() {
-      return "";
+      AbstractBuild<?, ?> prevBuild = getBuild().getPreviousBuild();
+      while (prevBuild != null && prevBuild.getAction(getClass()) == null) {
+         prevBuild = prevBuild.getPreviousBuild();
+      }
+      if (prevBuild == null) {
+         return results.toSummary();
+      } else {
+         AbstractBuildAction action = prevBuild.getAction(getClass());
+         return results.toSummary(action.getResults());
+      }
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+   public String getIconFileName() {
+      return PluginImpl.ICON_FILE_NAME;
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+   public String getDisplayName() {
+      return PluginImpl.DISPLAY_NAME;
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+   public String getUrlName() {
+      return PluginImpl.URL;
+   }
+
+   public Object getDynamic(String token, StaplerRequest req, StaplerResponse rsp) {
+      return getResults().getDynamic(token, req, rsp);
    }
 }
