@@ -31,10 +31,10 @@
       <p>
          <j:choose>
             <j:when test="${it.exception.message!=null}">
-               <b>Message:</b><br/>${it.exception.message}
+               <b>Message:</b> ${it.exception.message}
             </j:when>
             <j:otherwise>
-               <b>Message:</b><br/>(none)
+               <b>Message:</b> (none)
             </j:otherwise>
          </j:choose>
       </p>
@@ -43,14 +43,14 @@
                       method="formatStackTraceForHTML" var="sst">
             <j:arg type="java.lang.String" value="${it.exception.shortStackTrace}"/>
          </j:invokeStatic>
-         <p><b>Short Stacktrace:</b><br/>${sst}</p>
+         <p><b>Short Stacktrace:</b>${sst}</p>
       </j:if>
       <j:if test="${it.exception.fullStackTrace!=null}">
          <j:invokeStatic className="hudson.plugins.testng.util.FormatUtil"
                       method="formatStackTraceForHTML" var="fst">
             <j:arg type="java.lang.String" value="${it.exception.fullStackTrace}"/>
          </j:invokeStatic>
-         <p><b>Full Stacktrace:</b><br/>${fst}</p>
+         <p><b>Full Stacktrace:</b>${fst}</p>
       </j:if>
    </j:if>
 </j:jelly>
