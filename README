@@ -7,6 +7,9 @@ Release Notes
 
 ### upcoming
 
+### v0.7
+* Fixed: Plugin fails to find testng-results.xml file when project is configured to checkout sources from SVN SCM.
+
 ### v0.5
 
 * Fixed: parser test cases were failing with IOException

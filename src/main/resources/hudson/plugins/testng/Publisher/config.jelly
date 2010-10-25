@@ -9,4 +9,9 @@
            TestNG must be configured to generate XML reports using org.testng.reporters.XMLReporter for this plug-in to function.">
       <f:textbox name="testng.reportFilenamePattern" value="${instance.reportFilenamePattern}"/>
    </f:entry>
+   <f:entry title="Is Relative Path?"
+            description="If checked, the plugin considers the value entered in the &lt;b&gt;report
+            pattern&lt;/b&gt; text box as a relative path of the testng-results.xml file." field="isRelativePath">
+       <f:checkbox name="testng.isRelativePath" />
+   </f:entry>
 </j:jelly>

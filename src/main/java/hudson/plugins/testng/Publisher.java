@@ -21,18 +21,22 @@ import org.kohsuke.stapler.StaplerRequest;
 public class Publisher extends AbstractPublisherImpl {
 
    private String reportFilenamePattern;
+   private boolean isRelativePath;
 
    @DataBoundConstructor
-   public Publisher(String reportFilenamePattern) {
+   public Publisher(String reportFilenamePattern, boolean isRelativePath) {
       reportFilenamePattern.getClass();
       this.reportFilenamePattern = reportFilenamePattern;
+      this.isRelativePath = isRelativePath;
    }
-
 
    public String getReportFilenamePattern() {
       return reportFilenamePattern;
    }
 
+   public boolean getIsRelativePath() {
+       return isRelativePath;
+   }
 
    /**
     * {@inheritDoc}
@@ -67,7 +71,7 @@ public class Publisher extends AbstractPublisherImpl {
 
    protected Ghostwriter newGhostwriter() {
       //return new GhostWriter(reportFilenamePattern, targets);
-      return new GhostWriter(reportFilenamePattern);
+      return new GhostWriter(reportFilenamePattern, isRelativePath);
    }
 
    public static final class DescriptorImpl extends BuildStepDescriptor<hudson.tasks.Publisher> {

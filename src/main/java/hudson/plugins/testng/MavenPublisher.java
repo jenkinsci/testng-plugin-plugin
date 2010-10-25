@@ -76,7 +76,7 @@ public class MavenPublisher extends AbstractMavenReporterImpl {
          searchPath = "**/" + tempFileName;
       }
 
-      return new GhostWriter(searchPath);
+      return new GhostWriter(searchPath, false);
    }
 
    private String makeDirEndWithFileSeparator(String baseDirPath) {

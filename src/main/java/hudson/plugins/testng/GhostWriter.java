@@ -23,10 +23,11 @@ public class GhostWriter
       Ghostwriter.SlaveGhostwriter {
 
    private final String reportFilenamePattern;
+   private final boolean isRelativePath;
 
-
-   public GhostWriter(String reportFilenamePattern) {
+   public GhostWriter(String reportFilenamePattern, boolean isRelativePath) {
       this.reportFilenamePattern = reportFilenamePattern;
+      this.isRelativePath = isRelativePath;
    }
 
    /**
@@ -56,24 +57,41 @@ public class GhostWriter
    public boolean performFromSlave(BuildProxy build,
                                    BuildListener listener)
          throws InterruptedException, IOException {
-      FilePath[] paths = build.getExecutionRootDir().list(reportFilenamePattern);
       Collection<TestResults> results = null;
       Set<String> parsedFiles = new HashSet<String>();
-      //loop through all the files and get the results
-      for (FilePath path : paths) {
-         final String pathStr = path.getRemote();
-         if (!parsedFiles.contains(pathStr)) {
-            parsedFiles.add(pathStr);
-            Logger log;
-            Collection<TestResults> result =
-                  ResultsParser.parse(new File(pathStr), listener.getLogger());
-            if (results == null) {
-               results = result;
-            } else {
-               results.addAll(result);
+      if (!isRelativePath) {
+         //TODO : fix this code to handle relative and absolute path together
+         //instead of branching here
+         FilePath[] paths = build.getExecutionRootDir().list(reportFilenamePattern);
+
+         //loop through all the files and get the results
+         for (FilePath path : paths) {
+            final String pathStr = path.getRemote();
+            if (!parsedFiles.contains(pathStr)) {
+               parsedFiles.add(pathStr);
+               Logger log;
+               Collection<TestResults> result =
+                     ResultsParser.parse(new File(pathStr), listener.getLogger());
+               if (results == null) {
+                  results = result;
+               } else {
+                  results.addAll(result);
+               }
             }
          }
+      } else {
+         String executionRootDirRemotePath = build.getExecutionRootDir().getRemote();
+         String testngResultXmlRelativePath = reportFilenamePattern;
+         String testngResultXmlRemotePath = executionRootDirRemotePath + "/" + testngResultXmlRelativePath;
+         Collection<TestResults> result =
+               ResultsParser.parse(new File(testngResultXmlRemotePath), listener.getLogger());
+         if (results == null) {
+            results = result;
+         } else {
+            results.addAll(result);
+         }
       }
+
       if (results != null) {
          //create an individual report for all of the results and add it to the build
          BuildIndividualReport action = new BuildIndividualReport(results);
