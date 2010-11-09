@@ -2,7 +2,7 @@
          xmlns:t="/lib/hudson" xmlns:f="/lib/form">
    <script type="text/javascript">
       function showorHideTable(id) {
-         var element = document.getElementById(id)
+         var element = document.getElementById(id);
          if (document.getElementById(id).style.display == "none") {
             document.getElementById(id).style.display = "";
          } else if (document.getElementById(id).style.display == "") {
@@ -18,8 +18,12 @@
             <th class="pane-header">Class</th>
             <th class="pane-header" style="width:5em" title="Duration">Duration</th>
             <th class="pane-header" style="width:5em" title="Failed Test Count">Fail</th>
+            <th class="pane-header" style="width:5em" title="Failed Test Count Diff">(diff)</th>
             <th class="pane-header" style="width:5em" title="Skipped Test Count">Skip</th>
+            <th class="pane-header" style="width:5em" title="Skipped Test Count Diff">(diff)</th>
             <th class="pane-header" style="width:5em" title="Total Test Count">Total</th>
+            <th class="pane-header" style="width:5em" title="Total Test Count Diff">(diff)</th>
+            <th class="pane-header" style="width:5em" title="Skipped Test Count">Age</th>
          </tr>
       </thead>
       <tbody>
@@ -28,17 +32,38 @@
                <td align="left">
                   <a href="${clazz.url}">${clazz.name}</a>
                </td>
-               <td align="right">
+               <td align="center">
                   <j:invokeStatic className="hudson.plugins.testng.util.FormatUtil"
                                   method="formatTimeInMilliSeconds" var="duration">
                      <j:arg type="long" value="${clazz.duration}"/>
                   </j:invokeStatic>
                   ${duration}
                </td>
-               <td align="right">${clazz.fail}</td>
-               <td align="right">${clazz.fail}</td>
-               <td align="right">${clazz.skip}</td>
-               <td align="right">${clazz.total}</td>
+               <td align="center">${clazz.fail}</td>
+               <td align="center">
+                  <j:invokeStatic className="hudson.plugins.testng.util.FormatUtil"
+                                  method="formatLong" var="diff">
+                     <j:arg type="long" value="${clazz.failedTestsDiffCount}"/>
+                  </j:invokeStatic>
+                  ${diff}
+               </td>
+               <td align="center">${clazz.skip}</td>
+               <td align="center">
+                  <j:invokeStatic className="hudson.plugins.testng.util.FormatUtil"
+                                  method="formatLong" var="diff">
+                     <j:arg type="long" value="${clazz.skippedTestsDiffCount}"/>
+                  </j:invokeStatic>
+                  ${diff}
+               </td>
+               <td align="center">${clazz.total}</td>
+               <td align="center">
+                  <j:invokeStatic className="hudson.plugins.testng.util.FormatUtil"
+                                  method="formatLong" var="diff">
+                     <j:arg type="long" value="${clazz.totalTestsDiffCount}"/>
+                  </j:invokeStatic>
+                  ${diff}
+               </td>
+               <td align="center">${clazz.age}</td>
             </tr>
          </j:forEach>
       </tbody>
@@ -53,7 +78,7 @@
    <j:choose>
       <j:when test="${size(it.sortedTestMethodsByStartTime) > 0}">
          <a href="javascript:showorHideTable('executionOrderTable')">hide/expand the table</a>
-         <table border="1px" class="pane sortable" id="executionOrderTable" style="display:none;">
+         <table border="1px" class="pane sortable" id="executionOrderTable">
             <thead>
                <tr>
                   <th class="pane-header">Method</th>
@@ -69,15 +94,15 @@
                         <td align="left">
                            <a href="../${method.fullUrl}">${method.fullName}</a>
                         </td>
-                        <td align="right" data="${method.duration}">
+                        <td align="center" data="${method.duration}">
                            <j:invokeStatic className="hudson.plugins.testng.util.FormatUtil"
                                            method="formatTimeInMilliSeconds" var="duration">
                               <j:arg type="long" value="${method.duration}"/>
                            </j:invokeStatic>
                            ${duration}
                         </td>
-                        <td align="right">${method.startedAt}</td>
-                        <td align="right">
+                        <td align="center">${method.startedAt}</td>
+                        <td align="center">
                            <span class="${method.cssClass}">
                               ${method.status}
                            </span>
@@ -89,4 +114,49 @@
          </table>
       </j:when>
    </j:choose>
+   <!--<h2>Package History Table</h2>-->
+   <!--<j:choose>-->
+      <!--<j:when test="${size(it.sortedTestMethodsByStartTime) == 0}">-->
+         <!--<div>No Tests Found or All Tests Were Skipped</div>-->
+      <!--</j:when>-->
+   <!--</j:choose>-->
+   <!--<j:choose>-->
+      <!--<j:when test="${size(it.sortedTestMethodsByStartTime) > 0}">-->
+         <!--<a href="javascript:showorHideTable('executionOrderTable')">hide/expand the table</a>-->
+         <!--<table border="1px" class="pane sortable" id="executionOrderTable">-->
+            <!--<thead>-->
+               <!--<tr>-->
+                  <!--<th class="pane-header">Method</th>-->
+                  <!--<th class="pane-header" style="width:5em" title="Duration">Duration</th>-->
+                  <!--<th class="pane-header" style="width:5em" title="Start Time">Start Time</th>-->
+                  <!--<th class="pane-header" style="width:5em" title="Status">Fail</th>-->
+               <!--</tr>-->
+            <!--</thead>-->
+            <!--<tbody>-->
+               <!--<j:forEach var="method" items="${it.sortedTestMethodsByStartTime}">-->
+                  <!--<j:choose>-->
+                     <!--<tr>-->
+                        <!--<td align="left">-->
+                           <!--<a href="../${method.fullUrl}">${method.fullName}</a>-->
+                        <!--</td>-->
+                        <!--<td align="right" data="${method.duration}">-->
+                           <!--<j:invokeStatic className="hudson.plugins.testng.util.FormatUtil"-->
+                                           <!--method="formatTimeInMilliSeconds" var="duration">-->
+                              <!--<j:arg type="long" value="${method.duration}"/>-->
+                           <!--</j:invokeStatic>-->
+                           <!--${duration}-->
+                        <!--</td>-->
+                        <!--<td align="right">${method.startedAt}</td>-->
+                        <!--<td align="right">-->
+                           <!--<span class="${method.cssClass}">-->
+                              <!--${method.status}-->
+                           <!--</span>-->
+                        <!--</td>-->
+                     <!--</tr>-->
+                  <!--</j:choose>-->
+               <!--</j:forEach>-->
+            <!--</tbody>-->
+         <!--</table>-->
+      <!--</j:when>-->
+   <!--</j:choose>-->
 </j:jelly>

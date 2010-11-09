@@ -7,7 +7,7 @@
 
    <div>
       <h1><st:out value="${it.name}"/></h1>
-      (from <a href="${it.parent.url}">${it.parent.name}</a> took ${duration})
+      (from <a href="../">${it.parent.name}</a> took ${duration})
    </div>
 
    <h1>

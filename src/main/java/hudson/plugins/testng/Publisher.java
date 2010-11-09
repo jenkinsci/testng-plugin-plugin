@@ -20,8 +20,8 @@ import org.kohsuke.stapler.StaplerRequest;
  */
 public class Publisher extends AbstractPublisherImpl {
 
-   private String reportFilenamePattern;
-   private boolean isRelativePath;
+   private final String reportFilenamePattern;
+   private final boolean isRelativePath;
 
    @DataBoundConstructor
    public Publisher(String reportFilenamePattern, boolean isRelativePath) {

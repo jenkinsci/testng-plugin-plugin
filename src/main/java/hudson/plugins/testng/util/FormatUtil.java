@@ -26,6 +26,22 @@ public class FormatUtil {
    }
 
    /**
+    * Formats a long value and prepends it with a - or +
+    * This functions is used for showing the diff values for test runs
+    * @param value - long value
+    * @return
+    */
+   public static String formatLong(long value) {
+      if (value == 0) {
+         return "0";
+      } else if (value < 0) {
+         return "-" + (value);
+      } else { // if (a < b)
+         return "-" + (value);
+      }
+   }
+
+   /**
     * Replaces newline characters in string with <code>&lt;br/&gt;</code> to retain
     * the newlines when the string is displayed in HTML
     *

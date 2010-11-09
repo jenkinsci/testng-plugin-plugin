@@ -11,6 +11,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import hudson.plugins.helpers.AbstractBuildAction;
+import hudson.plugins.helpers.AbstractProjectAction;
+import hudson.plugins.testng.util.TestResultHistoryUtil;
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
 
@@ -35,6 +38,16 @@ public class TestResults extends BaseResult implements Serializable {
    private int failedConfigurationMethodsCount;
    private int skippedConfigurationMethodsCount;
    private Map<String, PackageResult> packageMap = new HashMap<String, PackageResult>();
+
+   public long getAge() {
+      List<TestResults> previousTestResults =
+            TestResultHistoryUtil.getPreviousBuildTestResults(getOwner());
+      if (previousTestResults == null) {
+         return 1;
+      } else {
+         return 1 + previousTestResults.size();
+      }
+   }
 
    public List<MethodResult> getFailedTests() {
       return failedTests;
@@ -173,7 +186,7 @@ public class TestResults extends BaseResult implements Serializable {
       add(r, true);
    }
 
-   public static Collection<TestResults> merge(Collection<TestResults>... results) {
+   private static Collection<TestResults> merge(Collection<TestResults>... results) {
       Collection<TestResults> newResults = new ArrayList<TestResults>();
       if (results.length == 0) {
          return Collections.emptySet();
@@ -192,7 +205,7 @@ public class TestResults extends BaseResult implements Serializable {
             for (String indivName : indivNames) {
                TestResults indivStat = new TestResults(indivName);
                for (Collection<TestResults> result : results) {
-                  
+
                   for (TestResults individual : result) {
                      if (indivName.equals(individual.name)) {
                         indivStat.add(individual);
@@ -232,14 +245,8 @@ public class TestResults extends BaseResult implements Serializable {
          return false;
       }
       TestResults statistic = (TestResults) o;
-      if (!name.equals(statistic.name)) {
-         return false;
-      }
-      if (owner != null ? !owner.equals(statistic.owner)
-            : statistic.owner != null) {
-         return false;
-      }
-      return true;
+      return name.equals(statistic.name) && !(owner != null ? !owner.equals(statistic.owner)
+            : statistic.owner != null);
    }
 
    public int hashCode() {
@@ -257,11 +264,32 @@ public class TestResults extends BaseResult implements Serializable {
    }
 
    public String toSummary() {
-      return "<ul>" + diff(0, totalTestCount, "Total Tests")
-            + diff(0, failedTestCount, "Failed Tests")
-            + diff(0, skippedTestCount, "Skipped Tests")
-            + diff(0, failedConfigurationMethodsCount, "Failed Configurations")
-            + diff(0, skippedConfigurationMethodsCount, "Skipped Configurations") + "</ul>";
+      //lets get the previous failed count
+      int previouseFailedTestCount = 0;
+      int previousSkippedTestCount = 0;
+      int previousFailedConfigurationCount = 0;
+      int previousSkippedConfigurationCount = 0;
+      int previousTotalTestCount = 0;
+      List<TestResults> previousTestResults =
+            TestResultHistoryUtil.getPreviousBuildTestResults(getOwner());
+      if (previousTestResults != null && previousTestResults.size() > 0) {
+         TestResults previousResult = previousTestResults.get(0);
+         previouseFailedTestCount = previousResult.getFailedTestCount();
+         previousSkippedTestCount = previousResult.getSkippedTestCount();
+         previousFailedConfigurationCount = previousResult.getFailedConfigurationMethodsCount();
+         previousSkippedConfigurationCount = previousResult.getSkippedConfigurationMethodsCount();
+         previousTotalTestCount = previousResult.getTotalTestCount();
+      }
+      return "<ul>" + diff(previousTotalTestCount, totalTestCount, "Total Tests")
+            + diff(previouseFailedTestCount, failedTestCount, "Failed Tests")
+            + printTestsUrls(getFailedTests())
+            + diff(previousSkippedTestCount, skippedTestCount, "Skipped Tests")
+            + printTestsUrls(getSkippedTests())
+            + diff(previousFailedConfigurationCount, failedConfigurationMethodsCount, "Failed Configurations")
+            + printTestsUrls(getFailedConfigurationMethods())
+            + diff(previousSkippedConfigurationCount, skippedConfigurationMethodsCount, "Skipped Configurations")
+            + printTestsUrls(getSkippedConfigurationMethods())
+            + "</ul>";
    }
 
    private static String diff(long prev, long curr, String name) {
@@ -272,17 +300,36 @@ public class TestResults extends BaseResult implements Serializable {
       }
    }
 
-   public String toSummary(TestResults totals) {
-      return "<ul>"
-            + diff(totals.getTotalTestCount(), totalTestCount, "Total Tests")
-            + diff(totals.getFailedTestCount(), failedTestCount,
-            "Failed Tests")
-            + diff(totals.getSkippedTestCount(), skippedTestCount,
-            "Skipped Tests")
-            + diff(totals.getFailedConfigurationMethodsCount(), failedConfigurationMethodsCount,
-            "Failed Configurations")
-            + diff(totals.getSkippedConfigurationMethodsCount(), skippedConfigurationMethodsCount,
-            "Skipped Configurations") + "</ul>";
+
+   /*<OL start="10">
+           <LI><a href="url">test_full_name</a> </LI>
+        </OL>
+   **/
+
+   public String printTestsUrls(List<MethodResult> methodResults) {
+      StringBuffer htmlString = new StringBuffer();
+      htmlString.append("<OL>");
+      if (methodResults != null && methodResults.size() > 0) {
+         for (MethodResult methodResult : methodResults) {
+            htmlString.append("<LI>");
+            if (methodResult.getParent() instanceof ClassResult) {
+               // /${it.project.url}${_buildNumber}/${it.urlName}
+               htmlString.append("<a href=\"");
+               htmlString.append("/").append(getOwner().getProject().getUrl());
+               htmlString.append("/").append(getOwner().getNumber());
+               htmlString.append("/").append(getOwner().getProject().getAction(AbstractProjectAction.class).getUrlName());
+               htmlString.append("/").append(methodResult.getFullUrl());
+               htmlString.append("\">");
+               htmlString.append(methodResult.getFullName()).append("</a>");
+            } else {
+               htmlString.append(methodResult.getFullName());
+            }
+            htmlString.append("</LI>");
+         }
+
+      }
+      htmlString.append("</OL>");
+      return htmlString.substring(0);
    }
 
    public void set(TestResults that) {

@@ -3,7 +3,7 @@
 
    <script type="text/javascript">
       function showorHideTable(id) {
-         var element = document.getElementById(id)
+         var element = document.getElementById(id);
          if (document.getElementById(id).style.display == "none") {
             document.getElementById(id).style.display = "";
          } else if (document.getElementById(id).style.display == "") {
@@ -47,7 +47,7 @@
    <h2>Failed Configuration Methods</h2>
    <j:choose>
       <j:when test="${it.results.failedConfigurationMethodsCount != 0}">
-         <a href="javascript:showorHideTable('failedConfigurationsTable')">hide/expand the table</a>
+         <a href="javascript:showOrHideTable('failedConfigurationsTable')">hide/expand the table</a>
          <table id="failedConfigurationsTable" border="1px" class="pane sortable">
             <thead>
                <tr>
@@ -72,7 +72,7 @@
    <h2>Skipped Tests</h2>
    <j:choose>
       <j:when test="${it.results.skippedTestCount != 0}">
-         <a href="javascript:showorHideTable('skippedTestsTable')">hide/expand the table</a>
+         <a href="javascript:showOrHideTable('skippedTestsTable')">hide/expand the table</a>
          <table id="skippedTestsTable" border="1px" class="pane sortable">
             <thead>
                <tr>
@@ -96,7 +96,7 @@
    <h2>Skipped Configuration Methods</h2>
    <j:choose>
       <j:when test="${it.results.skippedConfigurationMethodsCount != 0}">
-         <a href="javascript:showorHideTable('skippedConfigurationsTable')">hide/expand the table</a>
+         <a href="javascript:showOrHideTable('skippedConfigurationsTable')">hide/expand the table</a>
          <table id="skippedConfigurationsTable" border="1px" class="pane sortable">
             <thead>
                <tr>
@@ -118,7 +118,7 @@
    </j:choose>
 
    <h2>All Tests ( grouped by their packages )</h2>
-   <a href="javascript:showorHideTable('allTestsTable')">hide/expand the table</a>
+   <a href="javascript:showOrHideTable('allTestsTable')">hide/expand the table</a>
    <table id="allTestsTable" border="1px" class="pane sortable">
       <thead>
          <tr>

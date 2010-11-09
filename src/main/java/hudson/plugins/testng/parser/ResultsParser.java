@@ -23,6 +23,7 @@ public class ResultsParser {
 
    /**
     * @param file
+    * @param printStream
     * @return
     */
    public static Collection<TestResults> parse(File file,

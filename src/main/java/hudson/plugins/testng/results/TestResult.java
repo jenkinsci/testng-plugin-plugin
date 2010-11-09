@@ -7,8 +7,7 @@ import java.util.List;
 
 public class TestResult extends BaseResult implements ModelObject {
    private AbstractBuild<?, ?> owner;
-   String name;
-   List<ClassResult> classList;
+   private List<ClassResult> classList;
 
    public void setOwner(AbstractBuild<?, ?> owner) {
       this.owner = owner;
@@ -16,14 +15,6 @@ public class TestResult extends BaseResult implements ModelObject {
 
    public AbstractBuild<?, ?> getOwner() {
       return owner;
-   }
-
-   public String getName() {
-      return name;
-   }
-
-   public void setName(String name) {
-      this.name = name;
    }
 
    public List<ClassResult> getClassList() {

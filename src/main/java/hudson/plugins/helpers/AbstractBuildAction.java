@@ -6,13 +6,14 @@ import hudson.plugins.testng.PluginImpl;
 import hudson.plugins.testng.results.TestResults;
 
 import java.io.Serializable;
-import java.util.Collection;
+import java.util.*;
 
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
 
 public abstract class AbstractBuildAction<BUILD extends AbstractBuild<?, ?>>
       implements HealthReportingAction, Serializable {
+
    /**
     * Unique identifier for this class.
     */
@@ -30,7 +31,7 @@ public abstract class AbstractBuildAction<BUILD extends AbstractBuild<?, ?>>
     * Constructs a new AbstractBuildReport.
     * @param results - testng test results
     */
-   public AbstractBuildAction(Collection<TestResults> results) {
+   protected AbstractBuildAction(Collection<TestResults> results) {
       this.results = TestResults.total(results);
    }
 
@@ -78,14 +79,14 @@ public abstract class AbstractBuildAction<BUILD extends AbstractBuild<?, ?>>
    }
 
    public TestResults getPreviousResults() {
-      AbstractBuild<?, ?> prevBuild = getBuild().getPreviousBuild();
-      while (prevBuild != null && prevBuild.getAction(getClass()) == null) {
-         prevBuild = prevBuild.getPreviousBuild();
+      AbstractBuild<?, ?> previousBuild = getBuild().getPreviousBuild();
+      while (previousBuild != null && previousBuild.getAction(getClass()) == null) {
+         previousBuild = previousBuild.getPreviousBuild();
       }
-      if (prevBuild == null) {
+      if (previousBuild == null) {
          return new TestResults("");
       } else {
-         AbstractBuildAction action = prevBuild.getAction(getClass());
+         AbstractBuildAction action = previousBuild.getAction(getClass());
          return action.getResults();
       }
    }
@@ -96,16 +97,7 @@ public abstract class AbstractBuildAction<BUILD extends AbstractBuild<?, ?>>
     * @return
     */
    public String getSummary() {
-      AbstractBuild<?, ?> prevBuild = getBuild().getPreviousBuild();
-      while (prevBuild != null && prevBuild.getAction(getClass()) == null) {
-         prevBuild = prevBuild.getPreviousBuild();
-      }
-      if (prevBuild == null) {
-         return results.toSummary();
-      } else {
-         AbstractBuildAction action = prevBuild.getAction(getClass());
-         return results.toSummary(action.getResults());
-      }
+      return results.toSummary();
    }
 
    /**

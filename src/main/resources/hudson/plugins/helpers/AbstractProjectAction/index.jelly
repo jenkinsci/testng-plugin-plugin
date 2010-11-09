@@ -3,10 +3,11 @@
    <l:layout title="TestNG Results Trend">
       <st:include it="${it.project}" page="sidepanel.jelly"/>
       <l:main-panel>
-         <h1>${it.displayName} Trend</h1>
+         <h1>TestNG Results Trend</h1>
          <j:choose>
             <j:when test="${it.graphActive}">
-               <img src="graph" lazymap="graphMap?rel=/${it.project.url}" alt="[Test result trend chart]"/>
+               <img src="graph" lazymap="graphMap?rel=/${it.project.url}"
+                    alt="[Test result trend chart]"/>
                <!-- FIXME: For later <img src="graph?width=800&amp;height=600"
                   lazymap="graphMap?width=800&amp;height=600" alt="[Test result trend chart]"/> -->
             </j:when>
@@ -15,8 +16,11 @@
          </j:choose>
          <br/>
          <j:set var="_buildNumber" value="${it.project.lastCompletedBuild.number}"/>
-         <h2>Latest Test Results (<a href="/${it.project.url}${_buildNumber}/${it.urlName}">build #${_buildNumber}</a>)</h2>
+         <h2>Latest Test Results (<a href="/${it.project.url}${_buildNumber}/${it.urlName}">build
+            #${_buildNumber}</a>)
+         </h2>
          ${it.lastCompletedBuildAction.summary}
+         
       </l:main-panel>
    </l:layout>
 </j:jelly>

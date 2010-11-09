@@ -6,8 +6,8 @@ import hudson.Plugin;
  * Entry point of TestNG Results plugin.
  */
 public class PluginImpl extends Plugin {
-   public static String DISPLAY_NAME = "TestNG Results";
-   public static String GRAPH_NAME = "TestNG Results Trend";
-   public static String URL = "testngreports";
-   public static String ICON_FILE_NAME = "graph.gif";
+   public static final String DISPLAY_NAME = "TestNG Results";
+   public static final String GRAPH_NAME = "TestNG Results Trend";
+   public static final String URL = "testngreports";
+   public static final String ICON_FILE_NAME = "/plugin/testng-plugin/icons/report.png";
 }

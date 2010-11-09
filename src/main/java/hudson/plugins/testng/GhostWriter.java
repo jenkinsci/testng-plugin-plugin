@@ -11,10 +11,7 @@ import hudson.plugins.testng.results.TestResults;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.logging.Logger;
+import java.util.*;
 
 
 public class GhostWriter
@@ -69,7 +66,6 @@ public class GhostWriter
             final String pathStr = path.getRemote();
             if (!parsedFiles.contains(pathStr)) {
                parsedFiles.add(pathStr);
-               Logger log;
                Collection<TestResults> result =
                      ResultsParser.parse(new File(pathStr), listener.getLogger());
                if (results == null) {
@@ -83,13 +79,7 @@ public class GhostWriter
          String executionRootDirRemotePath = build.getExecutionRootDir().getRemote();
          String testngResultXmlRelativePath = reportFilenamePattern;
          String testngResultXmlRemotePath = executionRootDirRemotePath + "/" + testngResultXmlRelativePath;
-         Collection<TestResults> result =
-               ResultsParser.parse(new File(testngResultXmlRemotePath), listener.getLogger());
-         if (results == null) {
-            results = result;
-         } else {
-            results.addAll(result);
-         }
+         results = ResultsParser.parse(new File(testngResultXmlRemotePath), listener.getLogger());
       }
 
       if (results != null) {

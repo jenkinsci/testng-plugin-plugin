@@ -25,9 +25,9 @@
                       value="${it.results.failedTestCount *100 / it.results.totalTestCount}" />
                <j:set var="skippedTestPercentage"
                       value="${it.results.skippedTestCount*100/it.results.totalTestCount}"/>
-               <div style="width:${failedTestPercentage}%; height: 1em; background-color: #EF2929; float: left"></div>
+               <div style="width:${failedTestPercentage}%; height: 1em; background-color: #EF2929; float: left"/>
                <!-- Skipped tests part of the bar. -->
-               <div style="width:${skippedTestPercentage}%; height: 1em; background-color: #FCE94F; float: left"></div>
+               <div style="width:${skippedTestPercentage}%; height: 1em; background-color: #FCE94F; float: left"/>
             </div>
             <div align="right">
                ${it.results.totalTestCount} tests

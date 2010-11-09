@@ -3,7 +3,7 @@
 
    <script type="text/javascript">
       function showorHideTable(id) {
-         var element = document.getElementById(id)
+         var element = document.getElementById(id);
          if (document.getElementById(id).style.display == "none") {
             document.getElementById(id).style.display = "";
          } else if (document.getElementById(id).style.display == "") {
@@ -15,7 +15,7 @@
    <h2>Failed Tests</h2>
    <j:choose>
       <j:when test="${it.results.failedTestCount != 0}">
-         <a href="javascript:showorHideTable('failedTestsTable')">hide/expand the table</a>
+         <a href="javascript:showOrHideTable('failedTestsTable')">hide/expand the table</a>
          <table id="failedTestsTable" border="1px" class="pane sortable">
             <thead>
                <tr>
@@ -47,7 +47,7 @@
    <h2>Failed Configuration Methods</h2>
    <j:choose>
       <j:when test="${it.results.failedConfigurationMethodsCount != 0}">
-         <a href="javascript:showorHideTable('failedConfigurationsTable')">hide/expand the table</a>
+         <a href="javascript:showOrHideTable('failedConfigurationsTable')">hide/expand the table</a>
          <table id="failedConfigurationsTable" border="1px" class="pane sortable">
             <thead>
                <tr>
@@ -72,7 +72,7 @@
    <h2>Skipped Tests</h2>
    <j:choose>
       <j:when test="${it.results.skippedTestCount != 0}">
-         <a href="javascript:showorHideTable('skippedTestsTable')">hide/expand the table</a>
+         <a href="javascript:showOrHideTable('skippedTestsTable')">hide/expand the table</a>
          <table id="skippedTestsTable" border="1px" class="pane sortable">
             <thead>
                <tr>
@@ -96,7 +96,7 @@
    <h2>Skipped Configuration Methods</h2>
    <j:choose>
       <j:when test="${it.results.skippedConfigurationMethodsCount != 0}">
-         <a href="javascript:showorHideTable('skippedConfigurationsTable')">hide/expand the table</a>
+         <a href="javascript:showOrHideTable('skippedConfigurationsTable')">hide/expand the table</a>
          <table id="skippedConfigurationsTable" border="1px" class="pane sortable">
             <thead>
                <tr>
@@ -118,15 +118,19 @@
    </j:choose>
 
    <h2>All Tests ( grouped by their packages )</h2>
-   <a href="javascript:showorHideTable('allTestsTable')">hide/expand the table</a>
+   <a href="javascript:showOrHideTable('allTestsTable')">hide/expand the table</a>
    <table id="allTestsTable" border="1px" class="pane sortable">
       <thead>
          <tr>
             <th class="pane-header">Package</th>
             <th class="pane-header" style="width:5em" title="Duration">Duration</th>
             <th class="pane-header" style="width:5em" title="Failed Test Count">Fail</th>
+            <th class="pane-header" style="width:5em" title="Failed Test Count Diff">(diff)</th>
             <th class="pane-header" style="width:5em" title="Skipped Test Count">Skip</th>
+            <th class="pane-header" style="width:5em" title="Skipped Test Count Diff">(diff)</th>
             <th class="pane-header" style="width:5em" title="Total Test Count">Total</th>
+            <th class="pane-header" style="width:5em" title="Total Test Count Diff">(diff)</th>
+            <th class="pane-header" style="width:5em" title="Package Age">Age</th>
          </tr>
       </thead>
       <tbody>
@@ -135,16 +139,38 @@
                <td align="left">
                   <a href="${pkg.url}">${pkg.name}</a>
                </td>
-               <td align="right" data="${pkg.duration}">
+               <td align="center" data="${pkg.duration}">
                   <j:invokeStatic className="hudson.plugins.testng.util.FormatUtil"
                                   method="formatTimeInMilliSeconds" var="duration">
                      <j:arg type="long" value="${pkg.duration}"/>
                   </j:invokeStatic>
                   ${duration}
                </td>
-               <td align="right">${pkg.fail}</td>
-               <td align="right">${pkg.skip}</td>
-               <td align="right">${pkg.total}</td>
+               <td align="center">${pkg.failedTestsCount}</td>
+               <td align="center">
+                  <j:invokeStatic className="hudson.plugins.testng.util.FormatUtil"
+                                  method="formatLong" var="diff">
+                     <j:arg type="long" value="${pkg.failedTestsDiffCount}"/>
+                  </j:invokeStatic>
+                  ${diff}
+               </td>
+               <td align="center">${pkg.skippedTestsCount}</td>
+               <td align="center">
+                  <j:invokeStatic className="hudson.plugins.testng.util.FormatUtil"
+                                  method="formatLong" var="diff">
+                     <j:arg type="long" value="${pkg.skippedTestsDiffCount}"/>
+                  </j:invokeStatic>
+                  ${diff}
+               </td>
+               <td align="center">${pkg.totalTestsCount}</td>
+               <td align="center">
+                  <j:invokeStatic className="hudson.plugins.testng.util.FormatUtil"
+                                  method="formatLong" var="diff">
+                     <j:arg type="long" value="${pkg.totalTestsDiffCount}"/>
+                  </j:invokeStatic>
+                  ${diff}
+               </td>
+               <td align="center">${pkg.age}</td>
             </tr>
          </j:forEach>
       </tbody>

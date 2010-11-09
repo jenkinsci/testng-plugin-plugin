@@ -10,6 +10,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import hudson.plugins.helpers.AbstractBuildAction;
+import hudson.plugins.testng.util.TestResultHistoryUtil;
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
 
@@ -19,7 +21,7 @@ public class PackageResult extends BaseResult implements ModelObject {
    private int fail;
    private int skip;
    private int total;
-   private List<MethodResult> sortedTestMethodsByStartTime = new ArrayList<MethodResult>();
+   private final List<MethodResult> sortedTestMethodsByStartTime = new ArrayList<MethodResult>();
 
    public String getUrl() {
       return getName();
@@ -72,6 +74,16 @@ public class PackageResult extends BaseResult implements ModelObject {
       this.total = total;
    }
 
+
+   public long getAge() {
+      List<PackageResult> packageResults = getPreviousPackageResults();
+      if (packageResults == null) {
+         return 1;
+      } else {
+         return 1 + packageResults.size();
+      }
+   }
+
    public List<MethodResult> getSortedTestMethodsByStartTime() {
       sortTestMethods();
       return sortedTestMethodsByStartTime;
@@ -93,9 +105,6 @@ public class PackageResult extends BaseResult implements ModelObject {
    }
 
    public Object getDynamic(String token, StaplerRequest req, StaplerResponse rsp) {
-//      if (token.equals(getId())) {
-//          return this;
-//      }
       if (token.equals("/" + getName())) {
          return this;
       }
@@ -113,7 +122,6 @@ public class PackageResult extends BaseResult implements ModelObject {
    public String getDisplayName() {
       return getName();
    }
-
 
    public void sortTestMethods() {
       //for each class
@@ -152,7 +160,7 @@ public class PackageResult extends BaseResult implements ModelObject {
       for (ClassResult aClass : classList) {
          if (aClass.getTestMethods() != null) {
             for (MethodResult aMethod : aClass.getTestMethods()) {
-               if (aMethod.getStatus().equals("FAIL")) {
+               if (!aMethod.isConfig() && aMethod.getStatus().equals("FAIL")) {
                   failedTests++;
                }
             }
@@ -182,7 +190,7 @@ public class PackageResult extends BaseResult implements ModelObject {
       for (ClassResult aClass : classList) {
          if (aClass.getTestMethods() != null) {
             for (MethodResult aMethod : aClass.getTestMethods()) {
-               if (aMethod.getStatus().equals("PASS")) {
+               if (!aMethod.isConfig() && aMethod.getStatus().equals("PASS")) {
                   passTests++;
                }
             }
@@ -192,12 +200,74 @@ public class PackageResult extends BaseResult implements ModelObject {
    }
 
    public long
+   getFailedTestsDiffCount() {
+      //get the previous build test_results
+      long diff = 0;
+      List<PackageResult> previousPackageResults = getPreviousPackageResults();
+      if (previousPackageResults != null && previousPackageResults.size() > 0) {
+         diff = getFailedTestsCount() - previousPackageResults.get(0).getFailedTestsCount();
+      }
+      return diff;
+   }
+
+   /**
+    * Create a list that contains previous builds results for this package
+    * <p/>
+    * (foreach package in previousbuilds tests results packages)
+    *  if package.name matches this method's package name then
+    *  add this package to the return list
+    *
+    * @return list of previous builds results for this class
+    */
+   public List<PackageResult>
+   getPreviousPackageResults() {
+      List<PackageResult> packageResults = new ArrayList<PackageResult>();
+      List<TestResults> previousTestResults =
+            TestResultHistoryUtil.getPreviousBuildTestResults(getOwner());
+      if (previousTestResults != null) {
+         for (TestResults previousTestResult : previousTestResults) {
+            Map<String, PackageResult> previousPackageMap = previousTestResult.getPackageMap();
+            for (String packageName : previousPackageMap.keySet()) {
+               if (packageName.equals(this.getName())) {
+                  packageResults.add(previousPackageMap.get(packageName));
+                  break;
+               }
+            }
+         }
+      }
+      return packageResults;
+   }
+
+   public long
+   getTotalTestsDiffCount() {
+      long diff = 0;
+      List<PackageResult> previousPackageResults = getPreviousPackageResults();
+      if (previousPackageResults != null && previousPackageResults.size() > 0) {
+         diff = getTotalTestsCount() - previousPackageResults.get(0).getTotalTestsCount();
+      }
+      return diff;
+
+   }
+
+   public long
+   getSkippedTestsDiffCount() {
+      long diff = 0;
+      List<PackageResult> previousPackageResults = getPreviousPackageResults();
+      if (previousPackageResults != null && previousPackageResults.size() > 0) {
+         diff = getSkippedTestsCount() - previousPackageResults.get(0).getSkippedTestsCount();
+      }
+      return diff;
+   }
+
+   public long
    getTotalTestsCount() {
       int totalTests = 0;
       for (ClassResult aClass : classList) {
          if (aClass.getTestMethods() != null) {
             for (MethodResult aMethod : aClass.getTestMethods()) {
-               totalTests++;
+               if (!aMethod.isConfig()) {
+                  totalTests++;
+               }
             }
          }
       }
