@@ -8,6 +8,8 @@ Release Notes
 ### upcoming
 * display the test history on the trend graph
 * add unit testing for testng results
+### v0.9
+* Fixed : Checked in the missing sidebar icon files
 
 ### v0.8
 * New : added diff and age  column for all test esults
