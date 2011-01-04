@@ -56,7 +56,7 @@
       </developer>
    </developers>
    <scm>
-      <connection></connection>
+      <connection>scm:git:git://github.com/hudson/testng-plugin-plugin.git</connection>
       <developerConnection>scm:git:git@github.com:hudson/testng-plugin-plugin.git</developerConnection>
       <url>https://github.com/hudson/testng-plugin-plugin</url>
    </scm>   
