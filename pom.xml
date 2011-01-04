@@ -55,4 +55,9 @@
          <email>nalin.makar@gmail.com</email>
       </developer>
    </developers>
+   <scm>
+      <connection></connection>
+      <developerConnection>scm:git:git@github.com:hudson/testng-plugin-plugin.git</developerConnection>
+      <url>https://github.com/hudson/testng-plugin-plugin</url>
+   </scm>   
 </project>
