@@ -9,7 +9,7 @@
    </parent>
 
    <artifactId>testng-plugin</artifactId>
-   <version>0.10-SNAPSHOT</version>
+   <version>0.10</version>
    <packaging>hpi</packaging>
    <name>TestNG Results Plugin</name>
 
@@ -57,11 +57,11 @@
    </developers>
    <scm>
       <connection>
-         scm:svn:https://guest@svn.java.net/svn/hudson~svn/trunk/hudson/plugins/testng-plugin
+         scm:svn:https://guest@svn.java.net/svn/hudson~svn/tags/testng-plugin-0.10
       </connection>
       <developerConnection>
-         scm:svn:https://svn.java.net/svn/hudson~svn/trunk/hudson/plugins/testng-plugin
+         scm:svn:https://svn.java.net/svn/hudson~svn/tags/testng-plugin-0.10
       </developerConnection>
-     <url>https://hudson.dev.java.net/source/browse/hudson/hudson/plugins/testng-plugin</url>
+     <url>https://hudson.dev.java.net/source/browse/hudson/hudson/plugins/testng-plugin/tags/testng-plugin-0.10</url>
   </scm>
 </project>
