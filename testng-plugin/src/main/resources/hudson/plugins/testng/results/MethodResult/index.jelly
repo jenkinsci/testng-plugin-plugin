@@ -1,0 +1,9 @@
+<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout"
+         xmlns:t="/lib/hudson" xmlns:f="/lib/form">
+   <l:layout title="Test method - ${it.name}">
+      <l:main-panel>
+         <st:include page="reportDetail.jelly"/>
+      </l:main-panel>
+   </l:layout>
+</j:jelly>
+

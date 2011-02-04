@@ -1,0 +1,67 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+   <modelVersion>4.0.0</modelVersion>
+   <url>http://wiki.hudson-ci.org/display/HUDSON/testng-plugin</url>
+   <parent>
+      <groupId>org.jvnet.hudson.plugins</groupId>
+      <artifactId>plugin</artifactId>
+      <version>1.323</version>
+      <relativePath>../pom.xml</relativePath>
+   </parent>
+
+   <artifactId>testng-plugin</artifactId>
+   <version>0.9</version>
+   <packaging>hpi</packaging>
+   <name>TestNG Results Plugin</name>
+
+   <!-- get every artifact through maven.glassfish.org, which proxies all the artifacts that we need -->
+   <repositories>
+      <repository>
+         <id>m.g.o-public</id>
+         <url>http://maven.glassfish.org/content/groups/public/</url>
+         <snapshots>
+            <enabled>false</enabled>
+         </snapshots>
+      </repository>
+   </repositories>
+
+   <pluginRepositories>
+      <pluginRepository>
+         <id>m.g.o-public</id>
+         <url>http://maven.glassfish.org/content/groups/public/</url>
+      </pluginRepository>
+   </pluginRepositories>
+
+   <dependencies>
+      <dependency>
+         <groupId>org.jvnet.hudson.main</groupId>
+         <artifactId>maven-plugin</artifactId>
+      </dependency>
+      <dependency>
+         <groupId>junit</groupId>
+         <artifactId>junit</artifactId>
+         <version>4.4</version>
+         <scope>test</scope>
+      </dependency>
+   </dependencies>
+   <developers>
+      <developer>
+         <id>farshidce</id>
+         <name>Farshid Ghods</name>
+         <email>farshid.ghods@gmail.com</email>
+      </developer>
+      <developer>
+         <id>nalin_makar</id>
+         <name>Nalin Makar</name>
+         <email>nalin.makar@gmail.com</email>
+      </developer>
+   </developers>
+   <scm>
+      <connection>
+         scm:svn:https://guest@svn.java.net/svn/hudson~svn/tags/testng-plugin-0.9
+      </connection>
+      <developerConnection>
+         scm:svn:https://svn.java.net/svn/hudson~svn/tags/testng-plugin-0.9
+      </developerConnection>
+     <url>https://hudson.dev.java.net/source/browse/hudson/hudson/plugins/testng-plugin/tags/testng-plugin-0.9</url>
+  </scm>
+</project>
