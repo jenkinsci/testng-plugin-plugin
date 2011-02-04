@@ -1,4 +1,6 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
    <modelVersion>4.0.0</modelVersion>
    <url>http://wiki.hudson-ci.org/display/HUDSON/testng-plugin</url>
    <parent>
@@ -55,4 +57,12 @@
          <email>nalin.makar@gmail.com</email>
       </developer>
    </developers>
+   <scm>
+      <connection>
+         scm:svn:https://guest@svn.java.net/svn/hudson~svn/trunk/hudson/plugins/testng-plugin
+      </connection>
+      <developerConnection>
+         scm:svn:https://svn.java.net/svn/hudson~svn/trunk/hudson/plugins/testng-plugin
+      </developerConnection>
+   </scm>
 </project>
