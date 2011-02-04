@@ -1,6 +1,4 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
    <modelVersion>4.0.0</modelVersion>
    <url>http://wiki.hudson-ci.org/display/HUDSON/testng-plugin</url>
    <parent>
@@ -11,7 +9,7 @@
    </parent>
 
    <artifactId>testng-plugin</artifactId>
-   <version>0.9-SNAPSHOT</version>
+   <version>0.9</version>
    <packaging>hpi</packaging>
    <name>TestNG Results Plugin</name>
 
@@ -59,10 +57,11 @@
    </developers>
    <scm>
       <connection>
-         scm:svn:https://guest@svn.java.net/svn/hudson~svn/trunk/hudson/plugins/testng-plugin
+         scm:svn:https://guest@svn.java.net/svn/hudson~svn/tags/testng-plugin-0.9
       </connection>
       <developerConnection>
-         scm:svn:https://svn.java.net/svn/hudson~svn/trunk/hudson/plugins/testng-plugin
+         scm:svn:https://svn.java.net/svn/hudson~svn/tags/testng-plugin-0.9
       </developerConnection>
-   </scm>
+     <url>https://hudson.dev.java.net/source/browse/hudson/hudson/plugins/testng-plugin/tags/testng-plugin-0.9</url>
+  </scm>
 </project>
