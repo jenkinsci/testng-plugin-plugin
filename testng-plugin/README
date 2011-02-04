@@ -1,0 +1,35 @@
+TestNG Plugin for Hudson
+=============
+
+
+Release Notes
+-------
+
+### upcoming
+* display the test history on the trend graph
+* add unit testing for testng results
+### v0.9
+* Fixed : Checked in the missing sidebar icon files
+
+### v0.8
+* New : added diff and age  column for all test esults
+* New : list failures/skipped tests under "Latest Test Results" summary section
+
+
+### v0.7
+* Fixed: Plugin fails to find testng-results.xml file when project is configured to checkout sources from SVN SCM.
+
+### v0.5
+
+* Fixed: parser test cases were failing with IOException
+* Fixed: Updated colors for Trend Graph to match JUnit graph and bar colors
+* Fixed: Better display of content on the test method result page
+* Fixed: Open/Close js behavior on Package results page
+* Fixed: Removed a lot of dead code and unnecessary files
+* Fixed: Trend Graph is shown for Projects and not for Builds
+* Changed: TestNG Results link at Project page doesn't take you to latest build results anymore
+* New: Trend graph has tooltips and links to different builds
+
+### v0.4
+
+* New: Initial release
