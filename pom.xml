@@ -56,8 +56,8 @@
       </developer>
    </developers>
    <scm>
-    <connection>scm:git:git://github.com/jenkinsci/testng-plugin-plugin.git</connection>
-    <developerConnection>scm:git:git@github.com:jenkinsci/testng-plugin-plugin.git</developerConnection>
+    <connection>scm:git:https://github.com/jenkinsci/testng-plugin-plugin.git</connection>
+    <developerConnection>scm:git:https://farshidce@github.com/jenkinsci/testng-plugin-plugin.git</developerConnection>
   </scm>
   <distributionManagement>
     <repository>
