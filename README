@@ -8,6 +8,10 @@ Release Notes
 ### upcoming
 * display the test history on the trend graph
 * add unit testing for testng results
+
+### v0.10
+* Fixed : diff value was display as --3 instead of 3 and -3 instead of +3
+
 ### v0.9
 * Fixed : Checked in the missing sidebar icon files
 

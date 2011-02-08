@@ -35,9 +35,9 @@ public class FormatUtil {
       if (value == 0) {
          return "0";
       } else if (value < 0) {
-         return "-" + (value);
+         return Long.toString(value);
       } else { // if (a < b)
-         return "-" + (value);
+         return "+" + Long.toString(value);
       }
    }
 
