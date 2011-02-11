@@ -74,6 +74,7 @@ public class ResultsParser {
                         testNGTestClass.setFullName(xmlPullParser.getAttributeValue(null, "name"));
 
                         List<MethodResult> testMethodList = new ArrayList<MethodResult>();
+                        String uuid = UUID.randomUUID().toString();
                         while (xmlParserHelper.parseToTagIfFound(xmlPullParser, "test-method", classDepth)) {
                            MethodResult testNGTestMethod = xmlParserHelper.createTestMethod(xmlPullParser, testNGTestClass);
                            if (testNGTestMethod != null) {
@@ -82,6 +83,8 @@ public class ResultsParser {
                               if (exception != null) {
                                  testNGTestMethod.setException(exception);
                               }
+                              //this uuid is used later to group the tests and config-methods together
+                              testNGTestMethod.setTestRunId(uuid);
                               ResultsParser.updateTestMethodLists(testNGTestResults, testNGTestMethod);
                               // add to test methods list for each class
                               testMethodList.add(testNGTestMethod);

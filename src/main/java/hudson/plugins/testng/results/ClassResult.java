@@ -4,6 +4,7 @@ import hudson.model.ModelObject;
 import hudson.model.AbstractBuild;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -18,6 +19,32 @@ public class ClassResult extends BaseResult implements ModelObject {
    private int fail;
    private int skip;
    private int total;
+   private Map<String,GroupedTestRun> testRunMap;
+
+   public Map<String, GroupedTestRun> getTestRunMap() {
+      //group all the test methods based on their run
+      this.testRunMap = new HashMap<String, GroupedTestRun>();
+      for (MethodResult methodResult : this.testMethodList) {
+         if (this.testRunMap.containsKey(methodResult.getTestRunId())) {
+            GroupedTestRun group = this.testRunMap.get(methodResult.getTestRunId());
+            if (methodResult.isConfig()) {
+               group.addConfigurationMethod(methodResult);
+            } else {
+               group.addTestMethod(methodResult);
+            }
+         } else {
+            GroupedTestRun group = new GroupedTestRun();
+            group.setTestRunId(methodResult.getTestRunId());
+            if (methodResult.isConfig()) {
+               group.addConfigurationMethod(methodResult);
+            } else {
+               group.addTestMethod(methodResult);
+            }
+            this.testRunMap.put(methodResult.getTestRunId(), group);
+         }
+      }
+      return testRunMap;
+   }
 
    public String getUrl() {
       return getName();
@@ -222,7 +249,5 @@ public class ClassResult extends BaseResult implements ModelObject {
          }
       }
       return classResults;
-
    }
-
 }

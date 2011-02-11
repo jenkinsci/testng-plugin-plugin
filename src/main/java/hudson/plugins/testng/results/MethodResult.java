@@ -20,7 +20,15 @@ public class MethodResult extends BaseResult implements ModelObject {
    private long duration;
    private MethodResultException exception;
    private Date startedAt;
+   private String testRunId;
 
+   public String getTestRunId() {
+      return testRunId;
+   }
+
+   public void setTestRunId(String testRunId) {
+      this.testRunId = testRunId;
+   }
 
    public Date getStartedAt() {
       return startedAt;
