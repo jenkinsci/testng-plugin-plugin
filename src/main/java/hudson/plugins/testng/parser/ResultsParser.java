@@ -87,14 +87,27 @@ public class ResultsParser {
                               testMethodList.add(testNGTestMethod);
                            }
                         }
-                        testNGTestClass.setTestMethodList(testMethodList);
-                        testNGClassList.add(testNGTestClass);
+
+                        //if a class with the same name already exists we should add these new
+                        //methods to that class
+                        boolean classAlreadyAdded = false;
+                        for (ClassResult classResult : testNGClassList) {
+                           if (classResult.getName().equals(testNGTestClass.getName())) {
+                              //we should merge test classes
+                              classResult.addTestMethods(testMethodList);
+                              classAlreadyAdded = true;
+                              break;
+                           }
+                        }
+                        if (!classAlreadyAdded) {
+                           testNGTestClass.setTestMethodList(testMethodList);
+                           testNGClassList.add(testNGTestClass);
+                        }
                      }
                      testngTest.setClassList(testNGClassList);
                      testNGTestList.add(testngTest);
                   }
                   testNGTestResults.setTestList(testNGTestList);
-                  testNGTestResults.tally();
                   results.add(testNGTestResults);
 
                   if (printStream != null) {

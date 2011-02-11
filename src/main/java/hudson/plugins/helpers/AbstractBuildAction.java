@@ -32,7 +32,7 @@ public abstract class AbstractBuildAction<BUILD extends AbstractBuild<?, ?>>
     * @param results - testng test results
     */
    protected AbstractBuildAction(Collection<TestResults> results) {
-      this.results = TestResults.total(results);
+      this.results = TestResults.total(true, results);
    }
 
    /**

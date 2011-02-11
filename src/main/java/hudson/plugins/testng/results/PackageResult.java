@@ -129,7 +129,7 @@ public class PackageResult extends BaseResult implements ModelObject {
       for (ClassResult aClass : classList) {
          if (aClass.getTestMethods() != null) {
             for (MethodResult aMethod : aClass.getTestMethods()) {
-               if (!aMethod.getStatus().equals("SKIP")) {
+               if (!aMethod.getStatus().equalsIgnoreCase("skip")) {
                   if (aMethod.getStartedAt() != null) {
                      if (map.containsKey(aMethod.getStartedAt())) {
                         map.get(aMethod.getStartedAt()).add(aMethod);
@@ -160,7 +160,7 @@ public class PackageResult extends BaseResult implements ModelObject {
       for (ClassResult aClass : classList) {
          if (aClass.getTestMethods() != null) {
             for (MethodResult aMethod : aClass.getTestMethods()) {
-               if (!aMethod.isConfig() && aMethod.getStatus().equals("FAIL")) {
+               if (!aMethod.isConfig() && aMethod.getStatus().equalsIgnoreCase("fail")) {
                   failedTests++;
                }
             }
@@ -175,7 +175,7 @@ public class PackageResult extends BaseResult implements ModelObject {
       for (ClassResult aClass : classList) {
          if (aClass.getTestMethods() != null) {
             for (MethodResult aMethod : aClass.getTestMethods()) {
-               if (!aMethod.isConfig() && aMethod.getStatus().equals("SKIP")) {
+               if (!aMethod.isConfig() && aMethod.getStatus().equalsIgnoreCase("skip")) {
                   skippedTests++;
                }
             }
@@ -190,7 +190,7 @@ public class PackageResult extends BaseResult implements ModelObject {
       for (ClassResult aClass : classList) {
          if (aClass.getTestMethods() != null) {
             for (MethodResult aMethod : aClass.getTestMethods()) {
-               if (!aMethod.isConfig() && aMethod.getStatus().equals("PASS")) {
+               if (!aMethod.isConfig() && aMethod.getStatus().equalsIgnoreCase("pass")) {
                   passTests++;
                }
             }

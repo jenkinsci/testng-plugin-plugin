@@ -62,9 +62,28 @@ public class ClassResult extends BaseResult implements ModelObject {
       this.total = total;
    }
 
-   public void setTestMethodList(List<MethodResult> testMethodList) {
-      this.testMethodList = testMethodList;
+   public void setTestMethodList(List<MethodResult> list) {
+      this.testMethodList = list;
    }
+
+   public List<MethodResult> getTestMethodList() {
+      return this.testMethodList;
+   }
+
+   public void addTestMethods(List<MethodResult> list) {
+      if (this.testMethodList == null) {
+         this.testMethodList = new ArrayList<MethodResult>();
+      }
+      this.testMethodList.addAll(list);
+   }
+
+   public void addTestMethod(MethodResult testMethod) {
+      if (this.testMethodList == null) {
+         this.testMethodList = new ArrayList<MethodResult>();
+      }
+      this.testMethodList.add(testMethod);
+   }
+
 
    public long
    getFailedTestsDiffCount() {

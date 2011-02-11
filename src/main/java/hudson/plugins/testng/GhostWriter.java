@@ -86,7 +86,7 @@ public class GhostWriter
          //create an individual report for all of the results and add it to the build
          BuildIndividualReport action = new BuildIndividualReport(results);
          build.getActions().add(action);
-         TestResults r = TestResults.total(results);
+         TestResults r = TestResults.total(true, results);
          if (r.getFailedConfigurationMethodsCount() > 0 || r.getSkippedConfigurationMethodsCount() > 0 ||
                r.getFailedTestCount() > 0 || r.getSkippedTestCount() > 0) {
             build.setResult(Result.UNSTABLE);

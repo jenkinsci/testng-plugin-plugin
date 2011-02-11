@@ -159,15 +159,18 @@ public class TestResults extends BaseResult implements Serializable {
       this.skippedConfigurationMethods = skippedConfigurationMethods;
    }
 
-   public static TestResults total(Collection<TestResults>... results) {
+   public static TestResults total(boolean tally,Collection<TestResults>... results) {
       Collection<TestResults> merged = merge(results);
       TestResults total = new TestResults("");
       for (TestResults individual : merged) {
          total.add(individual, false);
       }
-      total.tally();
+      if(tally) {
+         total.tally();
+      }
       return total;
    }
+
 
    private void add(TestResults r, boolean tally) {
       testList.addAll(r.getTestList());
@@ -176,10 +179,6 @@ public class TestResults extends BaseResult implements Serializable {
       failedTests.addAll(r.getFailedTests());
       passedTests.addAll(r.getPassedTests());
       skippedTests.addAll(r.getSkippedTests());
-      if (tally) {
-         // save cycles while getting total results
-         tally();
-      }
    }
 
    public void add(TestResults r) {
@@ -362,7 +361,36 @@ public class TestResults extends BaseResult implements Serializable {
                pkg = pkg.substring(0, lastDot);
             }
             if (packageMap.containsKey(pkg)) {
-               packageMap.get(pkg).getClassList().add(_class);
+               List<ClassResult> classResults = packageMap.get(pkg).getClassList();
+               boolean classAlreadyAddedToPackage = false;
+               for (ClassResult classResult : classResults) {
+                  if (classResult.getName().equals(_class.getName())) {
+                     //let's merge the testMethods
+                     //loop through and dont add them if the name ,  startTime , endTime and
+                     //other fields are identical
+                     List<MethodResult> methods = classResult.getTestMethods();
+                     List<MethodResult> _methods = _class.getTestMethodList();
+                     for (MethodResult _method : _methods) {
+                        boolean _methodAlreadyAdded = false;
+                        for (MethodResult method : methods) {
+                           if(_method.getName().equals(method.getName()) &&
+                                _method.getDuration() == method.getDuration() &&
+                                   _method.getStartedAt().equals(method.getStartedAt())) {
+                              _methodAlreadyAdded = true;
+                              break;
+                           }
+                        }
+                        if(!_methodAlreadyAdded) {
+                           classResult.addTestMethod(_method);
+                        }
+                     }
+                     classAlreadyAddedToPackage = true;
+                     break;
+                  }
+               }
+               if (!classAlreadyAddedToPackage) {
+                  packageMap.get(pkg).getClassList().add(_class);
+               }
             } else {
                PackageResult tpkg = new PackageResult();
                tpkg.setName(pkg);
