@@ -1,5 +1,6 @@
 *.svn
 *.idea
+.idea/*
 *.iml
 work/*
 target/*

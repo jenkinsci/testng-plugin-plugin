@@ -12,12 +12,19 @@ public class FormatUtil {
    public static String formatTimeInMilliSeconds(long duration) {
       try {
          StringBuffer durationInString = new StringBuffer("");
-         long minutes = TimeUnit.MILLISECONDS.toMinutes(duration);
+         //TODO: add hours here as well
+         long minutes = TimeUnit.MILLISECONDS.toSeconds(duration) / 60;
          long seconds = TimeUnit.MILLISECONDS.toSeconds(duration - minutes * 60 * 1000);
          long milliseconds = duration - (minutes * 60 * 1000) - seconds * 1000;
-         durationInString.append(minutes).append(" min ");
-         durationInString.append(seconds).append(" sec ");
-         durationInString.append(milliseconds).append(" msec");
+         if (minutes > 0) {
+            durationInString.append(minutes).append(" min ");
+         }
+         if (seconds > 0) {
+            durationInString.append(seconds).append(" sec ");
+         }
+         if (milliseconds > 0) {
+            durationInString.append(milliseconds).append(" msec");
+         }
          return durationInString.toString();
       } catch (Exception e) {
          e.printStackTrace();
