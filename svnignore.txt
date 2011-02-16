@@ -1,6 +1,0 @@
-#Run 'svn propset svn:ignore -F svnignore.txt .' without quotes to ignore following files from svn view 
-.DS_Store
-.settings
-target
-.classpath
-.project
