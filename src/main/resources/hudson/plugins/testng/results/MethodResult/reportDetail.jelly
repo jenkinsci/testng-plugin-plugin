@@ -31,7 +31,11 @@
       <p>
          <j:choose>
             <j:when test="${it.exception.message!=null}">
-               <b>Message:</b> ${it.exception.message}
+               <j:invokeStatic className="hudson.plugins.testng.util.FormatUtil"
+                            method="formatStackTraceForHTML" var="sst">
+                  <j:arg type="java.lang.String" value="${it.exception.message}"/>
+               </j:invokeStatic>
+               <p><b>Message:</b>${sst}</p>
             </j:when>
             <j:otherwise>
                <b>Message:</b> (none)
