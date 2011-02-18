@@ -10,6 +10,10 @@ Release Notes
 * add unit testing for testng results
 * fixing the plugin to display results of suites that have data provider tests
 
+### v0.13
+ * Fixed JENKINS-8828 : exception.message is not displayed correctly for failed tests
+ * Fixed JENKINS-7916 : FormatUtil method is using TimeUnit.toMinutes which is not defined in Java 1.5
+
 ### v0.10
 * Fixed : diff value was display as --3 instead of 3 and -3 instead of +3
 
