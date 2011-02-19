@@ -51,12 +51,21 @@ public class FormatUtil {
    /**
     * Replaces newline characters in string with <code>&lt;br/&gt;</code> to retain
     * the newlines when the string is displayed in HTML
+    * It also replaces < , > , & and " characters with their corresponding html code
+    * ref : http://www.theukwebdesigncompany.com/articles/entity-escape-characters.php 
     *
     * @param str
     * @return
     */
    public static String replaceNewLineWithBR(String str) {
-      return str == null ? "" : str.replace("\n", "<br/>");
+      //escape the < with &lt
+      String string = str == null ? "" : str;
+      string = string.replace("&","&amp;");
+      string = string.replace("<","&lt;");
+      string = string.replace(">","&gt;");
+      string = string.replace("\"","&quot;");
+      string = string.replace("\n", "<br/>");
+      return string;
    }
 
    /**
