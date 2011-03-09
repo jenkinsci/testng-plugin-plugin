@@ -58,7 +58,13 @@ public class ResultsParser {
                         + "_TestNGResults");
                   List<TestResult> testNGTestList = new ArrayList<TestResult>();
                   int suiteDepth = xmlPullParser.getDepth();
+                  //TODO: changes need to be made for jira # 8926
                   // skip until we get to the <test> tag
+                  //see if there is a groups tag , then lets parse all the groups and 
+                  //later on we have to create a map of groups and test methods ?
+                  //we have some sort of unique identifier for each test method which we should be able
+                  //to reuse for rendering purposes
+                  //so let's have a class called GroupResult
                   while (xmlParserHelper.parseToTagIfFound(xmlPullParser, "test", suiteDepth)) {
                      //for-each <test> tag
                      int testDepth = xmlPullParser.getDepth();
