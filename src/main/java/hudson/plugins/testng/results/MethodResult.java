@@ -21,8 +21,18 @@ public class MethodResult extends BaseResult implements ModelObject {
    private MethodResultException exception;
    private Date startedAt;
    private String testRunId;
+   private String testUuid;
 
-   public String getTestRunId() {
+
+    public String getTestUuid() {
+        return testUuid;
+    }
+
+    public void setTestUuid(String testUuid) {
+        this.testUuid = testUuid;
+    }
+
+    public String getTestRunId() {
       return testRunId;
    }
 
@@ -39,6 +49,7 @@ public class MethodResult extends BaseResult implements ModelObject {
    }
 
    public String getFullUrl() {
+       //let's add the test uuid to this url
       return super.getParent().getParent().getName()
             + "/" + super.getParent().getName() + "/" + getUrl();
    }
@@ -52,7 +63,7 @@ public class MethodResult extends BaseResult implements ModelObject {
    }
 
    public String getUrl() {
-      return getName();
+      return getName() + "--" + this.testUuid;
    }
 
    public long getDuration() {
@@ -92,7 +103,7 @@ public class MethodResult extends BaseResult implements ModelObject {
    }
 
    public Object getDynamic(String token, StaplerRequest req, StaplerResponse rsp) {
-      if (token.equals("/" + getName())) {
+      if (token.equals("/" + getName() + "--" + this.testUuid)) {
          return this;
       }
 

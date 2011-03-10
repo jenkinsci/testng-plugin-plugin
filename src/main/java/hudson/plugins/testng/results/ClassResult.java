@@ -184,7 +184,8 @@ public class ClassResult extends BaseResult implements ModelObject {
       }
       if (this.testMethodList != null) {
          for (MethodResult methodResult : this.testMethodList) {
-            if (token.equals(methodResult.getName())) {
+            //append the uuid as well
+            if (token.equals(methodResult.getName() + "--" + methodResult.getTestUuid())) {
                return methodResult;
             }
          }
