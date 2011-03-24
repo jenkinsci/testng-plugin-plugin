@@ -95,12 +95,12 @@ public class PackageResult extends BaseResult implements ModelObject {
       skip = 0;
       total = 0;
       for (ClassResult _c : classList) {
+          _c.setParent(this);
+          _c.tally();
          duration += _c.getDuration();
          fail += _c.getFail();
          skip += _c.getSkip();
          total += _c.getTotal();
-         _c.setParent(this);
-         _c.tally();
       }
    }
 
