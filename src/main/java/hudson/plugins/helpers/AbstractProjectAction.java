@@ -7,6 +7,7 @@ import hudson.plugins.testng.PluginImpl;
 import hudson.plugins.testng.results.TestResults;
 import hudson.util.ChartUtil;
 import hudson.util.DataSetBuilder;
+import org.jfree.chart.JFreeChart;
 
 import java.io.IOException;
 import java.util.Calendar;
@@ -82,7 +83,7 @@ abstract public class AbstractProjectAction<PROJECT extends AbstractProject<?, ?
     * @param rsp -
     * @throws IOException -
     */
-   public void doGraph(StaplerRequest req,
+   public void doGraph(final StaplerRequest req,
                        StaplerResponse rsp) throws IOException {
       if (GraphHelper.isGraphUnsupported()) {
          GraphHelper.redirectWhenGraphUnsupported(rsp, req);
@@ -95,28 +96,34 @@ abstract public class AbstractProjectAction<PROJECT extends AbstractProject<?, ?
          return; // up to date
       }
 
-      DataSetBuilder<String, ChartUtil.NumberOnlyBuildLabel> dataSetBuilder =
+      final DataSetBuilder<String, ChartUtil.NumberOnlyBuildLabel> dataSetBuilder =
             new DataSetBuilder<String, ChartUtil.NumberOnlyBuildLabel>();
 
       populateDataSetBuilder(dataSetBuilder);
-      ChartUtil.generateGraph(req, rsp, GraphHelper.createChart(req, dataSetBuilder.build()),
-               getGraphWidth(), getGraphHeight());
+      new hudson.util.Graph(-1, getGraphWidth(), getGraphHeight()) {
+         protected JFreeChart createGraph() {
+            return GraphHelper.createChart(req, dataSetBuilder.build());
+         }
+      }.doMap(req, rsp);
    }
 
-   public void doGraphMap(StaplerRequest req,
+   public void doGraphMap(final StaplerRequest req,
             StaplerResponse rsp) throws IOException {
       Calendar t = getProject().getLastCompletedBuild().getTimestamp();
       if (req.checkIfModified(t, rsp)) {
          return; // up to date
       }
 
-      DataSetBuilder<String, ChartUtil.NumberOnlyBuildLabel> dataSetBuilder =
+      final DataSetBuilder<String, ChartUtil.NumberOnlyBuildLabel> dataSetBuilder =
        new DataSetBuilder<String, ChartUtil.NumberOnlyBuildLabel>();
 
       //TODO: optimize by using cache
       populateDataSetBuilder(dataSetBuilder);
-      ChartUtil.generateClickableMap(req, rsp, GraphHelper.createChart(req, dataSetBuilder.build()),
-               getGraphWidth(), getGraphHeight());
+      new hudson.util.Graph(-1, getGraphWidth(), getGraphHeight()) {
+         protected JFreeChart createGraph() {
+            return GraphHelper.createChart(req, dataSetBuilder.build());
+         }
+      }.doMap(req, rsp);
    }
 
    /**

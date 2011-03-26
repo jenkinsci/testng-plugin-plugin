@@ -42,7 +42,7 @@ public class GraphHelper {
     * @return Value for property 'graphUnsupported'.
     */
    public static boolean isGraphUnsupported() {
-      return ChartUtil.awtProblemCause != null;
+      return false;
    }
 
    public static void redirectWhenGraphUnsupported(StaplerResponse rsp, StaplerRequest req) throws IOException {
