@@ -6,9 +6,11 @@ Release Notes
 -------
 
 ### upcoming
-* display the test history on the trend graph
 * add unit testing for testng results
-* fixing the plugin to display results of suites that have data provider tests
+
+### v0.17
+ * Fixed JENKINS-9299 : test results trend chart not showing
+ * Updated pom dependency to jenkins 1.396
 
 ### v0.14
  * Fixed JENKINS-8828 : exception.message is not displayed correctly for failed tests
