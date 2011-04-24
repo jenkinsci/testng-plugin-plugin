@@ -1,7 +1,6 @@
 package hudson.plugins.helpers;
 
 import hudson.plugins.testng.BuildIndividualReport;
-import hudson.util.ChartUtil;
 import hudson.util.ChartUtil.NumberOnlyBuildLabel;
 import hudson.util.ColorPalette;
 import hudson.util.ShiftedCategoryAxis;
@@ -57,7 +56,7 @@ public class GraphHelper {
       final JFreeChart chart = ChartFactory.createStackedAreaChart(
           null,                     // chart title
           null,                     // unused
-          "Test count",             // range axis label
+          "Tests Count",             // range axis label
           dataset,                  // data
           PlotOrientation.VERTICAL, // orientation
           true,                     // include legend

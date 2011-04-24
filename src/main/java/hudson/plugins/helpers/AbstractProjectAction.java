@@ -104,7 +104,7 @@ abstract public class AbstractProjectAction<PROJECT extends AbstractProject<?, ?
          protected JFreeChart createGraph() {
             return GraphHelper.createChart(req, dataSetBuilder.build());
          }
-      }.doMap(req, rsp);
+      }.doPng(req,rsp);
    }
 
    public void doGraphMap(final StaplerRequest req,

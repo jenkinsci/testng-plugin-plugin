@@ -124,12 +124,12 @@
          <tr>
             <th class="pane-header">Package</th>
             <th class="pane-header" style="width:5em" title="Duration">Duration</th>
-            <th class="pane-header" style="width:5em" title="Failed Test Count">Fail</th>
-            <th class="pane-header" style="width:5em" title="Failed Test Count Diff">(diff)</th>
-            <th class="pane-header" style="width:5em" title="Skipped Test Count">Skip</th>
-            <th class="pane-header" style="width:5em" title="Skipped Test Count Diff">(diff)</th>
-            <th class="pane-header" style="width:5em" title="Total Test Count">Total</th>
-            <th class="pane-header" style="width:5em" title="Total Test Count Diff">(diff)</th>
+            <th class="pane-header" style="width:5em" title="Failed Tests Count">Fail</th>
+            <th class="pane-header" style="width:5em" title="Failed Tests Count Diff">(diff)</th>
+            <th class="pane-header" style="width:5em" title="Skipped Tests Count">Skip</th>
+            <th class="pane-header" style="width:5em" title="Skipped Tests Count Diff">(diff)</th>
+            <th class="pane-header" style="width:5em" title="Total Tests Count">Total</th>
+            <th class="pane-header" style="width:5em" title="Total Tests Count Diff">(diff)</th>
             <th class="pane-header" style="width:5em" title="Package Age">Age</th>
          </tr>
       </thead>
