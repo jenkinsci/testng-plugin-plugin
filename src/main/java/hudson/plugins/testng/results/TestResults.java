@@ -313,9 +313,8 @@ public class TestResults extends BaseResult implements Serializable {
             htmlString.append("<LI>");
             if (methodResult.getParent() instanceof ClassResult) {
                // /${it.project.url}${_buildNumber}/${it.urlName}
-               htmlString.append("<a href=\"");
-               htmlString.append("/").append(getOwner().getProject().getUrl());
-               htmlString.append("/").append(getOwner().getNumber());
+               htmlString.append("<a href=\"").append(getOwner().getUpUrl());
+               htmlString.append(getOwner().getNumber());
                htmlString.append("/").append(getOwner().getProject().getAction(AbstractProjectAction.class).getUrlName());
                htmlString.append("/").append(methodResult.getFullUrl());
                htmlString.append("\">");
