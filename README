@@ -9,22 +9,22 @@ Release Notes
 * add unit testing for testng results
 
 ### v0.17
- * Fixed JENKINS-9299 : test results trend chart not showing
+ * Fixed: JENKINS-9299 - test results trend chart not showing
  * Updated pom dependency to jenkins 1.396
 
 ### v0.14
- * Fixed JENKINS-8828 : exception.message is not displayed correctly for failed tests
- * Fixed JENKINS-7916 : FormatUtil method is using TimeUnit.toMinutes which is not defined in Java 1.5
+ * Fixed: JENKINS-8828 - Exception message is not displayed correctly for failed tests
+ * Fixed: JENKINS-7916 - FormatUtil method is using TimeUnit.toMinutes which is not defined in Java 1.5
 
 ### v0.10
-* Fixed : diff value was display as --3 instead of 3 and -3 instead of +3
+* Fixed: diff value was display as --3 instead of 3 and -3 instead of +3
 
 ### v0.9
-* Fixed : Checked in the missing sidebar icon files
+* Fixed: Checked in the missing sidebar icon files
 
 ### v0.8
-* New : added diff and age  column for all test esults
-* New : list failures/skipped tests under "Latest Test Results" summary section
+* New: added diff and age column for all test results
+* New: list failures/skipped tests under "Latest Test Results" summary section
 
 
 ### v0.7
