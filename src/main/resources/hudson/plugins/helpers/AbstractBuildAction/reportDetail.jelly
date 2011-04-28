@@ -41,7 +41,7 @@
             </tbody>
          </table>
       </j:when>
-      <j:otherwise>No Test Failed</j:otherwise>
+      <j:otherwise>No Test method failed</j:otherwise>
    </j:choose>
 
    <h2>Failed Configuration Methods</h2>
@@ -65,7 +65,7 @@
             </tbody>
          </table>
       </j:when>
-      <j:otherwise>No Configuration Method Failed</j:otherwise>
+      <j:otherwise>No Configuration method failed</j:otherwise>
    </j:choose>
 
 
@@ -90,7 +90,7 @@
             </tbody>
          </table>
       </j:when>
-      <j:otherwise>No Test Was Skipped</j:otherwise>
+      <j:otherwise>No Test method was skipped</j:otherwise>
    </j:choose>
 
    <h2>Skipped Configuration Methods</h2>
@@ -114,7 +114,7 @@
             </tbody>
          </table>
       </j:when>
-      <j:otherwise>No Configuration Method Was Skipped</j:otherwise>
+      <j:otherwise>No Configuration method was skipped</j:otherwise>
    </j:choose>
 
    <h2>All Tests ( grouped by their packages )</h2>
