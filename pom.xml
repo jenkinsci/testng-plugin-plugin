@@ -5,7 +5,6 @@
         <groupId>org.jenkins-ci.plugins</groupId>
         <artifactId>plugin</artifactId>
         <version>1.399</version>
-<!--         <relativePath>../pom.xml</relativePath> -->
     </parent>
 
     <artifactId>testng-plugin</artifactId>
@@ -58,27 +57,8 @@
 
     <scm>
         <connection>scm:git:https://github.com/jenkinsci/testng-plugin-plugin.git</connection>
-        <!--<developerConnection>scm:git:https://farshidce@github.com/jenkinsci/testng-plugin-plugin.git</developerConnection>-->
-        <!--<developerConnection>scm:git:https://nullin@github.com/jenkinsci/testng-plugin-plugin.git</developerConnection>-->
         <developerConnection>scm:git:ssh://git@github.com/jenkinsci/testng-plugin-plugin.git</developerConnection>
         <url>https://github.com/jenkinsci/testng-plugin-plugin</url>
     </scm>
 
-    <!--<distributionManagement>
-        <repository>
-            <id>maven.jenkins-ci.org</id>
-            <url>http://maven.jenkins-ci.org:8081/content/repositories/releases/</url>
-        </repository>
-    </distributionManagement>-->
-
-    <!--<build>
-        <plugins>
-            <plugin>
-                <artifactId>maven-release-plugin</artifactId>
-                <configuration>
-                    <goals>deploy</goals>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>-->
 </project>
