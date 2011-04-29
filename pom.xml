@@ -4,12 +4,12 @@
     <parent>
         <groupId>org.jenkins-ci.plugins</groupId>
         <artifactId>plugin</artifactId>
-        <version>1.396</version>
-        <relativePath>../pom.xml</relativePath>
+        <version>1.399</version>
+<!--         <relativePath>../pom.xml</relativePath> -->
     </parent>
 
     <artifactId>testng-plugin</artifactId>
-    <version>0.18-SNAPSHOT</version>
+    <version>0.18</version>
     <packaging>hpi</packaging>
     <name>TestNG Results Plugin</name>
 
@@ -36,13 +36,13 @@
             <groupId>org.jenkins-ci.main</groupId>
             <artifactId>maven-plugin</artifactId>
         </dependency>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.4</version>
-            <scope>test</scope>
-        </dependency>
     </dependencies>
+
+    <issueManagement>
+      <system>JIRA</system>
+      <url>https://issues.jenkins-ci.org</url>
+    </issueManagement>
+
     <developers>
         <developer>
             <id>farshidce</id>
@@ -55,18 +55,23 @@
             <email>nalin.makar@gmail.com</email>
         </developer>
     </developers>
+
     <scm>
         <connection>scm:git:https://github.com/jenkinsci/testng-plugin-plugin.git</connection>
-        <developerConnection>scm:git:https://farshidce@github.com/jenkinsci/testng-plugin-plugin.git
-        </developerConnection>
+        <!--<developerConnection>scm:git:https://farshidce@github.com/jenkinsci/testng-plugin-plugin.git</developerConnection>-->
+        <!--<developerConnection>scm:git:https://nullin@github.com/jenkinsci/testng-plugin-plugin.git</developerConnection>-->
+        <developerConnection>scm:git:ssh://git@github.com/jenkinsci/testng-plugin-plugin.git</developerConnection>
+        <url>https://github.com/jenkinsci/testng-plugin-plugin</url>
     </scm>
-    <distributionManagement>
+
+    <!--<distributionManagement>
         <repository>
             <id>maven.jenkins-ci.org</id>
             <url>http://maven.jenkins-ci.org:8081/content/repositories/releases/</url>
         </repository>
-    </distributionManagement>
-    <build>
+    </distributionManagement>-->
+
+    <!--<build>
         <plugins>
             <plugin>
                 <artifactId>maven-release-plugin</artifactId>
@@ -75,5 +80,5 @@
                 </configuration>
             </plugin>
         </plugins>
-    </build>
+    </build>-->
 </project>
