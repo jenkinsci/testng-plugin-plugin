@@ -8,6 +8,9 @@ Release Notes
 ### upcoming
 * add unit testing for testng results
 
+### v0.19
+ * Fixed: JENKINS-9083 - fix urls in results trend chart
+
 ### v0.18 
  * Fixed: JENKINS-9083 - handle jenkins context path in URLs properly
  * Updated pom dependency to jenkins 1.399 (make it simpler to release plugins)
