@@ -6,7 +6,7 @@
          <h1>TestNG Results Trend</h1>
          <j:choose>
             <j:when test="${it.graphActive}">
-               <img src="graph" lazymap="graphMap?rel=/${it.project.url}"
+               <img src="graph" lazymap="graphMap?rel=${it.project.lastCompletedBuild.upUrl}"
                     alt="[Test result trend chart]"/>
                <!-- FIXME: For later <img src="graph?width=800&amp;height=600"
                   lazymap="graphMap?width=800&amp;height=600" alt="[Test result trend chart]"/> -->
