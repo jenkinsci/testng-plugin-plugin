@@ -5,6 +5,12 @@ import hudson.model.AbstractBuild;
 
 import java.util.List;
 
+/**
+ * Represents a single TestNG XML Suite
+ *
+ * @author nullin
+ *
+ */
 public class TestResult extends BaseResult implements ModelObject {
    private AbstractBuild<?, ?> owner;
    private List<ClassResult> classList;

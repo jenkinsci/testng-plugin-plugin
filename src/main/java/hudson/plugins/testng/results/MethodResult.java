@@ -1,19 +1,19 @@
 package hudson.plugins.testng.results;
 
-import hudson.model.AbstractBuild;
 import hudson.model.ModelObject;
+import hudson.plugins.testng.util.TestResultHistoryUtil;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import hudson.plugins.helpers.AbstractBuildAction;
-import hudson.plugins.testng.util.TestResultHistoryUtil;
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
 
+@SuppressWarnings("serial")
 public class MethodResult extends BaseResult implements ModelObject {
+
    private String status;
    private String description;
    private boolean isConfig;
@@ -22,7 +22,6 @@ public class MethodResult extends BaseResult implements ModelObject {
    private Date startedAt;
    private String testRunId;
    private String testUuid;
-
 
     public String getTestUuid() {
         return testUuid;

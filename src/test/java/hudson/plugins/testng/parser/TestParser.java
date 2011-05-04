@@ -22,7 +22,8 @@ public class TestParser {
       String filename = "sample-testng-results.xml";
       URL resource = TestParser.class.getClassLoader().getResource(filename);
       Assert.assertNotNull(resource);
-      Collection<TestResults> results = ResultsParser.parse(new File(resource.getFile()), null);
+      ResultsParser parser = new ResultsParser(System.out);
+      Collection<TestResults> results = parser.parse(new File(resource.getFile()));
       Assert.assertFalse("Collection shouldn't have been empty", results.isEmpty());
    }
 
@@ -31,24 +32,27 @@ public class TestParser {
       String filename = "sample-testng-dp-result.xml";
       URL resource = TestParser.class.getClassLoader().getResource(filename);
       Assert.assertNotNull(resource);
-      Collection<TestResults> results = ResultsParser.parse(new File(resource.getFile()), null);
+      ResultsParser parser = new ResultsParser(System.out);
+      Collection<TestResults> results = parser.parse(new File(resource.getFile()));
       Assert.assertFalse("Collection shouldn't have been empty", results.isEmpty());
 
-      // This test assumes that there is only 1 package in sample-testng-dp-result that contains tests that add to 12 ms
+      // This test assumes that there is only 1 package in
+      // sample-testng-dp-result that contains tests that add to 12 ms
       for(TestResults tr : results) {
-    	  tr.tally();
-    	  Map<String, PackageResult> packageResults= tr.getPackageMap();
-    	  for(PackageResult result: packageResults.values()) {
-    		  Assert.assertEquals("org.farshid", result.getName());
-    		  Assert.assertEquals(12, result.getDuration());
-    	  }
+        tr.tally();
+        Map<String, PackageResult> packageResults= tr.getPackageMap();
+        for(PackageResult result: packageResults.values()) {
+          Assert.assertEquals("org.farshid", result.getName());
+          Assert.assertEquals(12, result.getDuration());
+        }
       }
    }
 
    @Test
    public void testTestngXmlWithNonExistingResultXml() {
       String filename = "/invalid/path/to/file/new-test-result.xml";
-      Collection<TestResults> results = ResultsParser.parse(new File(filename), null);
+      ResultsParser parser = new ResultsParser(System.out);
+      Collection<TestResults> results = parser.parse(new File(filename));
       Assert.assertTrue("Collection should have been empty. Number of results : "
                + results.size(), results.isEmpty());
    }

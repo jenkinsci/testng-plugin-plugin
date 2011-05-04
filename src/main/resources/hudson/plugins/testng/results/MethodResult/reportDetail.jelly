@@ -19,7 +19,7 @@
    <div id="description">
       <div>
          <j:invokeStatic className="hudson.plugins.testng.util.FormatUtil"
-                      method="replaceNewLineWithBR" var="msg">
+                      method="escapeString" var="msg">
             <j:arg type="java.lang.String" value="${it.description}"/>
          </j:invokeStatic>
          ${msg}

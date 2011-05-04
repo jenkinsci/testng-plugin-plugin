@@ -3,7 +3,12 @@ package hudson.plugins.testng.results;
 import java.util.ArrayList;
 import java.util.List;
 
-//this class is used for rendering Class Results
+/**
+ * Class used for rendering Class Results
+ *
+ * @author farshidce
+ *
+ */
 public class GroupedTestRun {
 
    private List<MethodResult> testMethods;
@@ -32,22 +37,12 @@ public class GroupedTestRun {
       }
       this.testMethods.add(methodResult);
    }
+
    public void addConfigurationMethod(MethodResult methodResult) {
       if (this.configurationMethods == null) {
          this.configurationMethods = new ArrayList<MethodResult>();
       }
       this.configurationMethods.add(methodResult);
    }
-   public void addTestMethods(List<MethodResult> methodResults) {
-      if (this.testMethods == null) {
-         this.testMethods = new ArrayList<MethodResult>();
-      }
-      this.configurationMethods.addAll(methodResults);
-   }
-   public void addConfigurationMethods(List<MethodResult> methodResults) {
-      if (this.configurationMethods == null) {
-         this.configurationMethods = new ArrayList<MethodResult>();
-      }
-      this.configurationMethods.addAll(methodResults);
-   }
+
 }

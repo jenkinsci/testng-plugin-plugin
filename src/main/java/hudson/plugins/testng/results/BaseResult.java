@@ -4,7 +4,9 @@ import hudson.model.AbstractBuild;
 
 import java.io.Serializable;
 
+@SuppressWarnings("serial")
 public abstract class BaseResult implements Serializable {
+
    protected AbstractBuild<?, ?> owner;
    protected String name;
    protected BaseResult parent;
@@ -41,6 +43,5 @@ public abstract class BaseResult implements Serializable {
    public void setOwner(AbstractBuild<?, ?> owner) {
       this.owner = owner;
    }
-
 
 }

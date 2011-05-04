@@ -20,8 +20,8 @@ public class BuildIndividualReport extends AbstractBuildAction<AbstractBuild<?, 
    //TODO: Work on exposing health
    private HealthReport healthReport;
 
-   public BuildIndividualReport(Collection<TestResults> testNGResultsCollection) {
-      super(testNGResultsCollection);
+   public BuildIndividualReport(Collection<TestResults> testngResults) {
+      super(testngResults);
    }
 
    /**

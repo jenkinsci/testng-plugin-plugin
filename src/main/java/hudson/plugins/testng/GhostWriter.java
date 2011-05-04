@@ -13,7 +13,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
-
 public class GhostWriter
       implements Ghostwriter,
       Ghostwriter.MasterGhostwriter,
@@ -66,8 +65,8 @@ public class GhostWriter
             final String pathStr = path.getRemote();
             if (!parsedFiles.contains(pathStr)) {
                parsedFiles.add(pathStr);
-               Collection<TestResults> result =
-                     ResultsParser.parse(new File(pathStr), listener.getLogger());
+               ResultsParser parser = new ResultsParser(listener.getLogger());
+               Collection<TestResults> result = parser.parse(new File(pathStr));
                if (results == null) {
                   results = result;
                } else {
@@ -79,7 +78,8 @@ public class GhostWriter
          String executionRootDirRemotePath = build.getExecutionRootDir().getRemote();
          String testngResultXmlRelativePath = reportFilenamePattern;
          String testngResultXmlRemotePath = executionRootDirRemotePath + "/" + testngResultXmlRelativePath;
-         results = ResultsParser.parse(new File(testngResultXmlRemotePath), listener.getLogger());
+         ResultsParser parser = new ResultsParser(listener.getLogger());
+         results = parser.parse(new File(testngResultXmlRemotePath));
       }
 
       if (results != null) {

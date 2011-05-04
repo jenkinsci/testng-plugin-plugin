@@ -56,7 +56,7 @@ public class GraphHelper {
       final JFreeChart chart = ChartFactory.createStackedAreaChart(
           null,                     // chart title
           null,                     // unused
-          "Tests Count",             // range axis label
+          "Tests Count",            // range axis label
           dataset,                  // data
           PlotOrientation.VERTICAL, // orientation
           true,                     // include legend
@@ -114,9 +114,9 @@ public class GraphHelper {
       };
 
       plot.setRenderer(ar);
-      ar.setSeriesPaint(0,ColorPalette.RED); // Failures.
-      ar.setSeriesPaint(1,ColorPalette.BLUE); // Pass.
-      ar.setSeriesPaint(2,ColorPalette.YELLOW); // Skips.
+      ar.setSeriesPaint(0, ColorPalette.RED); // Failures
+      ar.setSeriesPaint(1, ColorPalette.BLUE); // Pass
+      ar.setSeriesPaint(2, ColorPalette.YELLOW); // Skips
 
       // crop extra space around the graph
       plot.setInsets(new RectangleInsets(0,0,0,5.0));

@@ -14,13 +14,10 @@ import java.io.IOException;
  */
 class BuildProxyCallableHelper implements Callable<BuildProxy, Exception>,
       MavenBuildProxy.BuildCallable<Boolean, Exception> {
-   // ------------------------------ FIELDS ------------------------------
 
    private final BuildProxy buildProxy;
    private final Ghostwriter ghostwriter;
    private final BuildListener listener;
-
-   // --------------------------- CONSTRUCTORS ---------------------------
 
    /**
     * Creates a new BuildProxyCallableHelper.
@@ -37,10 +34,6 @@ class BuildProxyCallableHelper implements Callable<BuildProxy, Exception>,
       this.listener = listener;
    }
 
-   // ------------------------ INTERFACE METHODS ------------------------
-
-   // --------------------- Interface BuildCallable ---------------------
-
    /**
     * {@inheritDoc}
     */
@@ -53,8 +46,6 @@ class BuildProxyCallableHelper implements Callable<BuildProxy, Exception>,
       }
       return true;
    }
-
-   // --------------------- Interface Callable ---------------------
 
    /**
     * {@inheritDoc}

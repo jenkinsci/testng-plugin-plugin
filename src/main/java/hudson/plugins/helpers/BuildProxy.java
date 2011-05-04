@@ -19,7 +19,6 @@ import org.apache.maven.project.MavenProject;
  * Proxy for the key build information.
  */
 public final class BuildProxy implements Serializable {
-// ------------------------------ FIELDS ------------------------------
 
    private final FilePath artifactsDir;
    private final FilePath projectRootDir;
@@ -31,7 +30,28 @@ public final class BuildProxy implements Serializable {
    private Result result = null;
    private boolean continueBuild = true;
 
-   // -------------------------- STATIC METHODS --------------------------
+   /**
+    * Constructs a new build proxy that encapsulates all the information that a build step should need from the
+    * slave.
+    *
+    * @param artifactsDir     The artifacts directory on the master.
+    * @param projectRootDir   The project directory on the master (i.e. the .../hudson/jobs/ProjectName/). Note for
+    *                         multi-module projects it will be .../hudson/jobs/ProjectName/modules/ModuleName/.
+    * @param buildRootDir     The build results directory on the master.
+    * @param executionRootDir The build base directory on the slave.
+    * @param timestamp        The time when the build started executing.
+    */
+   private BuildProxy(FilePath artifactsDir,
+                      FilePath projectRootDir,
+                      FilePath buildRootDir,
+                      FilePath executionRootDir,
+                      Calendar timestamp) {
+      this.artifactsDir = artifactsDir;
+      this.projectRootDir = projectRootDir;
+      this.buildRootDir = buildRootDir;
+      this.executionRootDir = executionRootDir;
+      this.timestamp = timestamp;
+   }
 
    /**
     * (Call from master) Invokes the ghostwriter on the master and slave nodes for this build.
@@ -49,11 +69,9 @@ public final class BuildProxy implements Serializable {
          throws IOException, InterruptedException {
 
       // first, do we need to do anything on the slave
-
       if (ghostwriter instanceof Ghostwriter.SlaveGhostwriter) {
 
          // construct the BuildProxy instance that we will use
-
          BuildProxy buildProxy = new BuildProxy(
                new FilePath(build.getArtifactsDir()),
                new FilePath(build.getProject().getRootDir()),
@@ -65,7 +83,6 @@ public final class BuildProxy implements Serializable {
 
          try {
             buildProxy = buildProxy.getExecutionRootDir().act(callableHelper);
-
             buildProxy.updateBuild(build);
 
             // terminate the build if necessary
@@ -78,7 +95,6 @@ public final class BuildProxy implements Serializable {
       }
 
       // finally, on to the master
-
       final Ghostwriter.MasterGhostwriter masterGhostwriter = Ghostwriter.MasterGhostwriter.class.cast(ghostwriter);
 
       return masterGhostwriter == null
@@ -152,7 +168,6 @@ public final class BuildProxy implements Serializable {
          throws InterruptedException, IOException {
 
       // first, construct the BuildProxy instance that we will use
-
       BuildProxy buildProxy = new BuildProxy(
             mavenBuildProxy.getArtifactsDir(),
             mavenBuildProxy.getProjectRootDir(),
@@ -161,7 +176,6 @@ public final class BuildProxy implements Serializable {
             mavenBuildProxy.getTimestamp());
 
       // do we need to do anything on the slave
-
       if (ghostwriter instanceof Ghostwriter.SlaveGhostwriter) {
          final Ghostwriter.SlaveGhostwriter slaveGhostwriter = (Ghostwriter.SlaveGhostwriter) ghostwriter;
 
@@ -172,40 +186,12 @@ public final class BuildProxy implements Serializable {
       }
 
       // finally, on to the master
-
       try {
          return mavenBuildProxy.execute(new BuildProxyCallableHelper(buildProxy, ghostwriter, listener));
       } catch (Exception e) {
          throw unwrapException(e, listener);
       }
    }
-
-// --------------------------- CONSTRUCTORS ---------------------------
-
-   /**
-    * Constructs a new build proxy that encapsulates all the information that a build step should need from the
-    * slave.
-    *
-    * @param artifactsDir     The artifacts directory on the master.
-    * @param projectRootDir   The project directory on the master (i.e. the .../hudson/jobs/ProjectName/). Note for
-    *                         multi-module projects it will be .../hudson/jobs/ProjectName/modules/ModuleName/.
-    * @param buildRootDir     The build results directory on the master.
-    * @param executionRootDir The build base directory on the slave.
-    * @param timestamp        The time when the build started executing.
-    */
-   private BuildProxy(FilePath artifactsDir,
-                      FilePath projectRootDir,
-                      FilePath buildRootDir,
-                      FilePath executionRootDir,
-                      Calendar timestamp) {
-      this.artifactsDir = artifactsDir;
-      this.projectRootDir = projectRootDir;
-      this.buildRootDir = buildRootDir;
-      this.executionRootDir = executionRootDir;
-      this.timestamp = timestamp;
-   }
-
-// --------------------- GETTER / SETTER METHODS ---------------------
 
    /**
     * Getter for property 'actions'.

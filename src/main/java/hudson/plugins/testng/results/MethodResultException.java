@@ -2,6 +2,7 @@ package hudson.plugins.testng.results;
 
 import java.io.Serializable;
 
+@SuppressWarnings("serial")
 public class MethodResultException implements Serializable {
 
    private String message;

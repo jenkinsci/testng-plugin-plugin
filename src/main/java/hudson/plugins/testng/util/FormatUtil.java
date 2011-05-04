@@ -2,6 +2,13 @@ package hudson.plugins.testng.util;
 
 import java.util.concurrent.TimeUnit;
 
+/**
+ * These methods are used to format strings in jelly files
+ *
+ * @author nullin
+ * @author farshidce
+ *
+ */
 public class FormatUtil {
 
    /**
@@ -52,12 +59,12 @@ public class FormatUtil {
     * Replaces newline characters in string with <code>&lt;br/&gt;</code> to retain
     * the newlines when the string is displayed in HTML
     * It also replaces < , > , & and " characters with their corresponding html code
-    * ref : http://www.theukwebdesigncompany.com/articles/entity-escape-characters.php 
+    * ref : http://www.theukwebdesigncompany.com/articles/entity-escape-characters.php
     *
     * @param str
     * @return
     */
-   public static String replaceNewLineWithBR(String str) {
+   public static String escapeString(String str) {
       //escape the < with &lt
       String string = str == null ? "" : str;
       string = string.replace("&","&amp;");
@@ -74,6 +81,6 @@ public class FormatUtil {
     * @return
     */
    public static String formatStackTraceForHTML(String stackTrace) {
-      return replaceNewLineWithBR(stackTrace);
+      return escapeString(stackTrace);
    }
 }

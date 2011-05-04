@@ -2,18 +2,19 @@ package hudson.plugins.testng.results;
 
 import hudson.model.ModelObject;
 import hudson.model.AbstractBuild;
+import hudson.plugins.testng.util.TestResultHistoryUtil;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import hudson.plugins.helpers.AbstractBuildAction;
-import hudson.plugins.testng.util.TestResultHistoryUtil;
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
 
+@SuppressWarnings("serial")
 public class ClassResult extends BaseResult implements ModelObject {
+
    private List<MethodResult> testMethodList = new ArrayList<MethodResult>();
    private long duration;
    private int fail;
