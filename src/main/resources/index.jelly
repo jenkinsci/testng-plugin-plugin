@@ -1,5 +1,5 @@
 <div>
    This plugin integrates
    <a href="http://testng.org/documentation-main.html#logging-xml-reports">TestNG test reports</a>
-   to Hudson.
+   to Jenkins.
 </div>
