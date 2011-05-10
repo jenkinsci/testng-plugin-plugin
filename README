@@ -8,6 +8,9 @@ Release Notes
 ### upcoming
 * add unit testing for testng results
 
+### v0.20
+ * New: JENKINS-9605 - Add option to not HTML-sanitize localized messages of exceptions
+
 ### v0.19
  * Fixed: JENKINS-9083 - fix urls in results trend chart
 
