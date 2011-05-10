@@ -1,6 +1,8 @@
 package hudson.plugins.testng.results;
 
 import hudson.model.ModelObject;
+import hudson.plugins.testng.ProjectIndividualReport;
+import hudson.plugins.testng.util.FormatUtil;
 import hudson.plugins.testng.util.TestResultHistoryUtil;
 
 import java.util.ArrayList;
@@ -84,6 +86,24 @@ public class MethodResult extends BaseResult implements ModelObject {
    public String getDescription() {
       return description;
    }
+
+   public String getDescriptionForDisplay() {
+     ProjectIndividualReport projAction
+        = super.getOwner().getProject().getAction(ProjectIndividualReport.class);
+     if (projAction.getEscapeTestDescp()) {
+         return FormatUtil.escapeString(description);
+      }
+      return description;
+   }
+
+   public String getExceptionMessageForDisplay() {
+     ProjectIndividualReport projAction
+        = super.getOwner().getProject().getAction(ProjectIndividualReport.class);
+     if (projAction.getEscapeExceptionMsg()) {
+        return FormatUtil.escapeString(this.exception.getMessage());
+     }
+     return exception.getMessage();
+  }
 
    public void setDescription(String description) {
       this.description = description;

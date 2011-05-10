@@ -18,11 +18,7 @@
 
    <div id="description">
       <div>
-         <j:invokeStatic className="hudson.plugins.testng.util.FormatUtil"
-                      method="escapeString" var="msg">
-            <j:arg type="java.lang.String" value="${it.description}"/>
-         </j:invokeStatic>
-         ${msg}
+         ${it.descriptionForDisplay}
       </div>
    </div>
 
@@ -31,11 +27,7 @@
       <p>
          <j:choose>
             <j:when test="${it.exception.message!=null}">
-               <j:invokeStatic className="hudson.plugins.testng.util.FormatUtil"
-                            method="formatStackTraceForHTML" var="sst">
-                  <j:arg type="java.lang.String" value="${it.exception.message}"/>
-               </j:invokeStatic>
-               <p><b>Message:</b>${sst}</p>
+               <p><b>Message:</b>${it.exceptionMessageForDisplay}</p>
             </j:when>
             <j:otherwise>
                <b>Message:</b> (none)

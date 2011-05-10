@@ -10,11 +10,27 @@ import hudson.plugins.helpers.AbstractProjectAction;
  *
  */
 public class ProjectIndividualReport extends AbstractProjectAction<AbstractProject<?, ?>> {
-   public ProjectIndividualReport(AbstractProject<?, ?> project) {
+
+   private boolean escapeTestDescp;
+   private boolean escapeExceptionMsg;
+
+   public ProjectIndividualReport(AbstractProject<?, ?> project, boolean escapeTestDescp, boolean escapeExceptionMsg) {
       super(project);
+      this.escapeExceptionMsg = escapeExceptionMsg;
+      this.escapeTestDescp = escapeTestDescp;
    }
 
    protected Class<? extends AbstractBuildAction<AbstractBuild<?,?>>> getBuildActionClass() {
       return BuildIndividualReport.class;
    }
+
+  public boolean getEscapeTestDescp()
+  {
+    return escapeTestDescp;
+  }
+
+  public boolean getEscapeExceptionMsg()
+  {
+    return escapeExceptionMsg;
+  }
 }

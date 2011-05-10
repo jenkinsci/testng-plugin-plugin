@@ -94,7 +94,8 @@ public class MavenPublisher extends AbstractMavenReporterImpl {
    public Action getProjectAction(MavenModule module) {
       for (MavenBuild build : module.getBuilds()) {
          if (build.getAction(BuildIndividualReport.class) != null) {
-            return new ProjectIndividualReport(module);
+            //FIXME: only default values for now. Maven side of things needs testing anyways
+            return new ProjectIndividualReport(module, true /*escapeTestDescp*/, true/*escapeExceptionMsg*/);
          }
       }
       return null;

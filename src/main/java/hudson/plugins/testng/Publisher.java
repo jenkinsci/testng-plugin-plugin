@@ -22,12 +22,17 @@ public class Publisher extends AbstractPublisherImpl {
 
    private final String reportFilenamePattern;
    private final boolean isRelativePath;
+   public final boolean escapeTestDescp;
+   public final boolean escapeExceptionMsg;
 
    @DataBoundConstructor
-   public Publisher(String reportFilenamePattern, boolean isRelativePath) {
+   public Publisher(String reportFilenamePattern, boolean isRelativePath,
+         boolean escapeTestDescp, boolean escapeExceptionMsg) {
       reportFilenamePattern.getClass();
       this.reportFilenamePattern = reportFilenamePattern;
       this.isRelativePath = isRelativePath;
+      this.escapeTestDescp = escapeTestDescp;
+      this.escapeExceptionMsg = escapeExceptionMsg;
    }
 
    public String getReportFilenamePattern() {
@@ -66,7 +71,7 @@ public class Publisher extends AbstractPublisherImpl {
     */
    @Override
    public Action getProjectAction(AbstractProject<?, ?> project) {
-      return new ProjectIndividualReport(project);
+      return new ProjectIndividualReport(project, escapeTestDescp, escapeExceptionMsg);
    }
 
    protected Ghostwriter newGhostwriter() {

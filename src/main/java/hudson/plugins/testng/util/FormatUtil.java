@@ -66,13 +66,16 @@ public class FormatUtil {
     */
    public static String escapeString(String str) {
       //escape the < with &lt
-      String string = str == null ? "" : str;
-      string = string.replace("&","&amp;");
-      string = string.replace("<","&lt;");
-      string = string.replace(">","&gt;");
-      string = string.replace("\"","&quot;");
-      string = string.replace("\n", "<br/>");
-      return string;
+      if (str == null) {
+         return "";
+      }
+
+      str = str.replace("&","&amp;");
+      str = str.replace("<","&lt;");
+      str = str.replace(">","&gt;");
+      str = str.replace("\"","&quot;");
+      str = str.replace("\n", "<br/>");
+      return str;
    }
 
    /**
