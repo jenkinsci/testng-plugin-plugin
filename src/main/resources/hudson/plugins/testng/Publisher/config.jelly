@@ -17,11 +17,11 @@
    <f:entry title="Escape Test description string?"
             description="If checked, the plugin escapes the Test description string while displaying
             test method related information" field="escapeTestDescp">
-       <f:checkbox name="testng.escapeTestDescp" />
+       <f:checkbox name="testng.escapeTestDescp" default="true" />
    </f:entry>
    <f:entry title="Escape exception messages?"
             description="If checked, the plugin escapes the messages from exceptions thrown by the
             test methods" field="escapeExceptionMsg">
-       <f:checkbox name="testng.escapeExceptionMsg" />
+       <f:checkbox name="testng.escapeExceptionMsg" default="true" />
    </f:entry>
 </j:jelly>

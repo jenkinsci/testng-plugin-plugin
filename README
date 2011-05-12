@@ -7,6 +7,7 @@ Release Notes
 
 ### upcoming
 * add unit testing for testng results
+* Have checkboxes for escaping test description and exception message selected by default
 
 ### v0.20
  * New: JENKINS-9605 - Add option to not HTML-sanitize localized messages of exceptions
