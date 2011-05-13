@@ -17,12 +17,18 @@ public class FormatUtil {
     * @return
     */
    public static String formatTimeInMilliSeconds(long duration) {
+      if (duration == 0) {
+         return "0 msec";
+      }
       try {
          StringBuffer durationInString = new StringBuffer("");
-         //TODO: add hours here as well
-         long minutes = TimeUnit.MILLISECONDS.toSeconds(duration) / 60;
+         long hours = TimeUnit.MILLISECONDS.toSeconds(duration) / 3600;
+         long minutes = TimeUnit.MILLISECONDS.toSeconds(duration - hours * 60 *60 * 1000) / 60;
          long seconds = TimeUnit.MILLISECONDS.toSeconds(duration - minutes * 60 * 1000);
-         long milliseconds = duration - (minutes * 60 * 1000) - seconds * 1000;
+         long milliseconds = duration - (hours * 60 * 60 * 1000) - (minutes * 60 * 1000) - seconds * 1000;
+         if (hours > 0) {
+           durationInString.append(hours).append(" hrs ");
+         }
          if (minutes > 0) {
             durationInString.append(minutes).append(" min ");
          }
@@ -65,7 +71,6 @@ public class FormatUtil {
     * @return
     */
    public static String escapeString(String str) {
-      //escape the < with &lt
       if (str == null) {
          return "";
       }
