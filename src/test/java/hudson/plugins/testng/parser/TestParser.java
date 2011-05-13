@@ -1,7 +1,5 @@
 package hudson.plugins.testng.parser;
 
-import org.junit.Test;
-
 import hudson.plugins.testng.results.TestResults;
 import hudson.plugins.testng.results.PackageResult;
 
@@ -14,6 +12,8 @@ import java.util.Date;
 import java.util.Map;
 
 import junit.framework.Assert;
+
+import org.junit.Test;
 
 public class TestParser {
 
@@ -60,7 +60,7 @@ public class TestParser {
    @Test
    public void testDateParser() {
       String dateString = "2010-07-20T11:49:17Z";
-      SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+      SimpleDateFormat sdf = new SimpleDateFormat(ResultsParser.DATE_FORMAT);
       Date dt = null;
       try {
          dt = sdf.parse(dateString);

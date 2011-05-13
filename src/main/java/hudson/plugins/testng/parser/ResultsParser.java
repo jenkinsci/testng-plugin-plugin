@@ -28,6 +28,7 @@ public class ResultsParser {
 
    private PrintStream printStream;
    private static Logger log = Logger.getLogger(ResultsParser.class.getName());
+   public static String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss";
 
    public ResultsParser(PrintStream printStream) {
      if (printStream == null) {
@@ -189,7 +190,7 @@ public class ResultsParser {
    private MethodResult createTestMethod(XmlPullParser
          xmlPullParser, ClassResult testNGClass) {
       SimpleDateFormat simpleDateFormat =
-            new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+            new SimpleDateFormat(DATE_FORMAT);
       MethodResult testNGTestMethod = null;
       if (xmlPullParser != null) {
          testNGTestMethod = new MethodResult();
