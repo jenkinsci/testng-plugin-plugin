@@ -9,6 +9,7 @@ Release Notes
 * add unit testing for testng results
 * Have checkboxes for escaping test description and exception message selected by default
 * Changes to how exceptions are displayed. No need to repeat message, highlight exception class etc
+* Removed code supposed to make this work as Maven plugin. Was all unnecessary code.
 
 ### v0.20
  * New: JENKINS-9605 - Add option to not HTML-sanitize localized messages of exceptions

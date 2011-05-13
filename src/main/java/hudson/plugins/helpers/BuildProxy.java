@@ -1,7 +1,6 @@
 package hudson.plugins.helpers;
 
 import hudson.FilePath;
-import hudson.maven.MavenBuildProxy;
 import hudson.model.BuildListener;
 import hudson.model.Result;
 import hudson.model.AbstractBuild;
@@ -12,8 +11,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
-
-import org.apache.maven.project.MavenProject;
 
 /**
  * Proxy for the key build information.
@@ -147,49 +144,6 @@ public final class BuildProxy implements Serializable {
       // update the result
       if (result != null && result.isWorseThan(build.getResult())) {
          build.setResult(result);
-      }
-   }
-
-   /**
-    * (Call from slave) Invokes the ghostwriter on the master and slave nodes for this build.
-    *
-    * @param ghostwriter     The ghostwriter that will be doing the work for the publisher.
-    * @param mavenBuildProxy The build (proxy).
-    * @param pom             The maven pom.
-    * @param listener        The build listener.
-    * @return <code>true</code> if the build can continue.
-    * @throws IOException          on IOException.
-    * @throws InterruptedException on InterruptedException.
-    */
-   public static boolean doPerform(Ghostwriter ghostwriter,
-                                   MavenBuildProxy mavenBuildProxy,
-                                   MavenProject pom,
-                                   final BuildListener listener)
-         throws InterruptedException, IOException {
-
-      // first, construct the BuildProxy instance that we will use
-      BuildProxy buildProxy = new BuildProxy(
-            mavenBuildProxy.getArtifactsDir(),
-            mavenBuildProxy.getProjectRootDir(),
-            mavenBuildProxy.getRootDir(),
-            new FilePath(pom.getBasedir()),
-            mavenBuildProxy.getTimestamp());
-
-      // do we need to do anything on the slave
-      if (ghostwriter instanceof Ghostwriter.SlaveGhostwriter) {
-         final Ghostwriter.SlaveGhostwriter slaveGhostwriter = (Ghostwriter.SlaveGhostwriter) ghostwriter;
-
-         // terminate the build if necessary
-         if (!slaveGhostwriter.performFromSlave(buildProxy, listener)) {
-            return false;
-         }
-      }
-
-      // finally, on to the master
-      try {
-         return mavenBuildProxy.execute(new BuildProxyCallableHelper(buildProxy, ghostwriter, listener));
-      } catch (Exception e) {
-         throw unwrapException(e, listener);
       }
    }
 

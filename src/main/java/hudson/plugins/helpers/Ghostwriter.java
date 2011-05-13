@@ -43,7 +43,6 @@ public interface Ghostwriter extends Serializable {
    }
 
    public static interface MasterGhostwriter extends Ghostwriter {
-// -------------------------- OTHER METHODS --------------------------
 
       /**
        * Runs (on the master) the step over the given build and reports the progress to the listener.

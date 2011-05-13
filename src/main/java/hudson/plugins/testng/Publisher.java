@@ -1,8 +1,6 @@
 package hudson.plugins.testng;
 
 import hudson.Extension;
-import hudson.maven.MavenModule;
-import hudson.maven.MavenModuleSet;
 import hudson.model.Action;
 import hudson.model.AbstractProject;
 import hudson.plugins.helpers.AbstractPublisherImpl;
@@ -101,8 +99,7 @@ public class Publisher extends AbstractPublisherImpl {
       }
 
       public boolean isApplicable(Class<? extends AbstractProject> aClass) {
-         return !MavenModuleSet.class.isAssignableFrom(aClass)
-               && !MavenModule.class.isAssignableFrom(aClass);
+         return true;
       }
    }
 

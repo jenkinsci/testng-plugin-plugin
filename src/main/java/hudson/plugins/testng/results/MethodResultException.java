@@ -17,7 +17,7 @@ public class MethodResultException implements Serializable {
         String shortStackTrace,
         String fullStackTrace)
    {
-      this.message = message.trim();
+      this.message = message == null ? null : message.trim();
       trySettingData(shortStackTrace, fullStackTrace);
    }
 

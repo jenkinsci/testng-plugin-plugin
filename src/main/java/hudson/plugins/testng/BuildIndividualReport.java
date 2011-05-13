@@ -1,21 +1,13 @@
 package hudson.plugins.testng;
 
-import hudson.maven.AggregatableAction;
-import hudson.maven.MavenAggregatedReport;
-import hudson.maven.MavenBuild;
-import hudson.maven.MavenModule;
-import hudson.maven.MavenModuleSetBuild;
 import hudson.model.HealthReport;
 import hudson.model.AbstractBuild;
 import hudson.plugins.helpers.AbstractBuildAction;
 import hudson.plugins.testng.results.TestResults;
 
 import java.util.Collection;
-import java.util.List;
-import java.util.Map;
 
-public class BuildIndividualReport extends AbstractBuildAction<AbstractBuild<?, ?>>
-      implements AggregatableAction {
+public class BuildIndividualReport extends AbstractBuildAction<AbstractBuild<?, ?>> {
 
    //TODO: Work on exposing health
    private HealthReport healthReport;
@@ -35,14 +27,6 @@ public class BuildIndividualReport extends AbstractBuildAction<AbstractBuild<?, 
       if (this.getBuild() != null) {
          getResults().setOwner(this.getBuild());
       }
-   }
-
-   /**
-    * {@inheritDoc}
-    */
-   public MavenAggregatedReport createAggregatedAction(MavenModuleSetBuild build,
-                                                       Map<MavenModule, List<MavenBuild>> moduleBuilds) {
-      return new BuildAggregatedReport(build, moduleBuilds);
    }
 
    /**

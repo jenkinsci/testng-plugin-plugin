@@ -1,7 +1,5 @@
 package hudson.plugins.helpers;
 
-import hudson.maven.MavenBuildProxy;
-import hudson.maven.MavenBuild;
 import hudson.model.BuildListener;
 import hudson.remoting.Callable;
 
@@ -12,8 +10,7 @@ import java.io.IOException;
  * actions on the slave or the master.
  *
  */
-class BuildProxyCallableHelper implements Callable<BuildProxy, Exception>,
-      MavenBuildProxy.BuildCallable<Boolean, Exception> {
+class BuildProxyCallableHelper implements Callable<BuildProxy, Exception> {
 
    private final BuildProxy buildProxy;
    private final Ghostwriter ghostwriter;
@@ -32,19 +29,6 @@ class BuildProxyCallableHelper implements Callable<BuildProxy, Exception>,
       this.buildProxy = buildProxy;
       this.ghostwriter = ghostwriter;
       this.listener = listener;
-   }
-
-   /**
-    * {@inheritDoc}
-    */
-   public Boolean call(MavenBuild mavenBuild) throws Exception {
-      buildProxy.updateBuild(mavenBuild);
-      if (ghostwriter instanceof Ghostwriter.MasterGhostwriter) {
-         final Ghostwriter.MasterGhostwriter masterBuildStep =
-               (Ghostwriter.MasterGhostwriter) ghostwriter;
-         return masterBuildStep.performFromMaster(mavenBuild, buildProxy.getExecutionRootDir(), listener);
-      }
-      return true;
    }
 
    /**
