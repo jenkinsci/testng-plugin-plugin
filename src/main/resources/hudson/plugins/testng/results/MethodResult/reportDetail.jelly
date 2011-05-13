@@ -23,30 +23,23 @@
    </div>
 
    <j:if test="${!empty(it.exception)}">
-      <h3>Exception Stack Trace</h3>
+      <h3>Exception <i>${it.exception.exceptionName}</i></h3>
       <p>
          <j:choose>
-            <j:when test="${it.exception.message!=null}">
-               <p><b>Message:</b>${it.exceptionMessageForDisplay}</p>
+            <j:when test="${it.exception.message != null}">
+               <p><b>Message: </b>${it.exceptionMessageForDisplay}</p>
             </j:when>
             <j:otherwise>
-               <b>Message:</b> (none)
+               <b>Message: </b>(none)
             </j:otherwise>
          </j:choose>
       </p>
-      <j:if test="${it.exception.shortStackTrace!=null}">
+      <j:if test="${it.exception.stackTrace != null}">
          <j:invokeStatic className="hudson.plugins.testng.util.FormatUtil"
                       method="formatStackTraceForHTML" var="sst">
-            <j:arg type="java.lang.String" value="${it.exception.shortStackTrace}"/>
+            <j:arg type="java.lang.String" value="${it.exception.stackTrace}"/>
          </j:invokeStatic>
-         <p><b>Short Stacktrace:</b>${sst}</p>
-      </j:if>
-      <j:if test="${it.exception.fullStackTrace!=null}">
-         <j:invokeStatic className="hudson.plugins.testng.util.FormatUtil"
-                      method="formatStackTraceForHTML" var="fst">
-            <j:arg type="java.lang.String" value="${it.exception.fullStackTrace}"/>
-         </j:invokeStatic>
-         <p><b>Full Stacktrace:</b>${fst}</p>
+         <p><b>Stacktrace:</b><br/>${sst}</p>
       </j:if>
    </j:if>
 </j:jelly>

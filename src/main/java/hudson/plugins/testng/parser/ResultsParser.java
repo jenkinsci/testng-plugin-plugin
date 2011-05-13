@@ -96,10 +96,8 @@ public class ResultsParser {
                            if (testNGTestMethod != null) {
                               MethodResultException exception =
                                     createExceptionObject(xmlPullParser);
-                              if (exception != null) {
-                                 testNGTestMethod.setException(exception);
-                              }
-                               testNGTestMethod.setTestUuid(testUuid);
+                              testNGTestMethod.setException(exception);
+                              testNGTestMethod.setTestUuid(testUuid);
                               //this uuid is used later to group the tests and config-methods together
                               testNGTestMethod.setTestRunId(uuid);
                               updateTestMethodLists(testNGTestResults, testNGTestMethod);
@@ -249,45 +247,48 @@ public class ResultsParser {
    }
 
    private MethodResultException createExceptionObject(XmlPullParser xmlPullParser) {
-      MethodResultException exception = new MethodResultException();
-      //what happens if the nextTag is not a "exception" should I rever the state??
-      if (xmlPullParser != null) {
-         if (ResultPullParserHelper.parseToTagIfFound(xmlPullParser, "exception", xmlPullParser.getDepth())) {
-            List<String> tags =
-                  new ArrayList<String>();
-            tags.add("message");
-            tags.add("short-stacktrace");
-            tags.add("full-stacktrace");
-            int exceptionDepth = xmlPullParser.getDepth();
-            while (tags.size() > 0) {
-               String tagFound =
-                 ResultPullParserHelper.parseToTagIfAnyFound(xmlPullParser, tags, exceptionDepth);
-               if (tagFound == null) {
-                  log.fine("did not find any of the tags. break from the loop");
-                  break;
-               } else {
-                  try {
-                     if (tagFound.equals("message")) {
-                        exception.setMessage(xmlPullParser.nextText());
-                     } else {
-                        if (tagFound.equals("short-stacktrace")) {
-                           exception.setShortStackTrace(xmlPullParser.nextText());
-                        } else {
-                           if (tagFound.equals("full-stacktrace")) {
-                              exception.setFullStackTrace(xmlPullParser.nextText());
-                           }
-                        }
-                     }
-                  } catch (XmlPullParserException e) {
-                     e.printStackTrace();
-                  } catch (IOException e) {
-                     e.printStackTrace();
-                  }
-                  tags.remove(tagFound);
-               }
+      List<String> tags = new ArrayList<String>();
+      tags.add("message");
+      tags.add("short-stacktrace");
+      tags.add("full-stacktrace");
+
+      if (xmlPullParser == null) {
+        return null;
+      }
+
+      String message = null;
+      String shortStackTrace = null;
+      String fullStackTrace = null;
+
+      // TODO: [farshidce] what happens if the nextTag is not a "exception" should I never the state??
+      if (ResultPullParserHelper.parseToTagIfFound(xmlPullParser, "exception", xmlPullParser.getDepth())) {
+         int exceptionDepth = xmlPullParser.getDepth();
+         while (tags.size() > 0) {
+            String tagFound =
+              ResultPullParserHelper.parseToTagIfAnyFound(xmlPullParser, tags, exceptionDepth);
+            if (tagFound == null) {
+               log.warning("did not find any of the tags within exception tag. break from the loop");
+               break;
             }
-            return exception;
+            try {
+               if (tagFound.equals("message")) {
+                  message = xmlPullParser.nextText();
+               }
+               if (tagFound.equals("short-stacktrace")) {
+                 shortStackTrace = xmlPullParser.nextText();
+               }
+               if (tagFound.equals("full-stacktrace")) {
+                 fullStackTrace = xmlPullParser.nextText();
+               }
+            } catch (XmlPullParserException e) {
+               e.printStackTrace();
+            } catch (IOException e) {
+               e.printStackTrace();
+            } finally {
+               tags.remove(tagFound);
+            }
          }
+         return new MethodResultException(message, shortStackTrace, fullStackTrace);
       }
       return null;
    }
