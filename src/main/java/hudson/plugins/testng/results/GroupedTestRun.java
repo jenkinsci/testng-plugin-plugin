@@ -11,8 +11,8 @@ import java.util.List;
  */
 public class GroupedTestRun {
 
-   private List<MethodResult> testMethods;
-   private List<MethodResult> configurationMethods;
+   private List<MethodResult> testMethods = new ArrayList<MethodResult>();
+   private List<MethodResult> configurationMethods = new ArrayList<MethodResult>();
    private String testRunId;
 
    public String getTestRunId() {
@@ -32,16 +32,10 @@ public class GroupedTestRun {
    }
 
    public void addTestMethod(MethodResult methodResult) {
-      if (this.testMethods == null) {
-         this.testMethods = new ArrayList<MethodResult>();
-      }
       this.testMethods.add(methodResult);
    }
 
    public void addConfigurationMethod(MethodResult methodResult) {
-      if (this.configurationMethods == null) {
-         this.configurationMethods = new ArrayList<MethodResult>();
-      }
       this.configurationMethods.add(methodResult);
    }
 
