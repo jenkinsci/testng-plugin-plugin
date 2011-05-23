@@ -10,14 +10,16 @@ public abstract class BaseResult implements Serializable {
    protected AbstractBuild<?, ?> owner;
    protected String name;
    protected BaseResult parent;
+
+   /*
+    * keeping fullName here just to avoid errors when jenkins
+    * deserializes result objects from XML
+    */
+   @Deprecated
    protected String fullName;
 
    public String getFullName() {
       return fullName;
-   }
-
-   public void setFullName(String fullName) {
-      this.fullName = fullName;
    }
 
    public void setParent(BaseResult parent) {

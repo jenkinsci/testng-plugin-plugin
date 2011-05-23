@@ -92,7 +92,7 @@
                   <j:choose>
                      <tr>
                         <td align="left">
-                           <a href="../${method.fullUrl}">${method.fullName}</a>
+                           <a href="../${method.fullUrl}">${method.parent.name}.${method.name}</a>
                         </td>
                         <td align="center" data="${method.duration}">
                            <j:invokeStatic className="hudson.plugins.testng.util.FormatUtil"
@@ -114,49 +114,4 @@
          </table>
       </j:when>
    </j:choose>
-   <!--<h2>Package History Table</h2>-->
-   <!--<j:choose>-->
-      <!--<j:when test="${size(it.sortedTestMethodsByStartTime) == 0}">-->
-         <!--<div>No Tests Found or All Tests Were Skipped</div>-->
-      <!--</j:when>-->
-   <!--</j:choose>-->
-   <!--<j:choose>-->
-      <!--<j:when test="${size(it.sortedTestMethodsByStartTime) > 0}">-->
-         <!--<a href="javascript:showorHideTable('executionOrderTable')">hide/expand the table</a>-->
-         <!--<table border="1px" class="pane sortable" id="executionOrderTable">-->
-            <!--<thead>-->
-               <!--<tr>-->
-                  <!--<th class="pane-header">Method</th>-->
-                  <!--<th class="pane-header" style="width:5em" title="Duration">Duration</th>-->
-                  <!--<th class="pane-header" style="width:5em" title="Start Time">Start Time</th>-->
-                  <!--<th class="pane-header" style="width:5em" title="Status">Fail</th>-->
-               <!--</tr>-->
-            <!--</thead>-->
-            <!--<tbody>-->
-               <!--<j:forEach var="method" items="${it.sortedTestMethodsByStartTime}">-->
-                  <!--<j:choose>-->
-                     <!--<tr>-->
-                        <!--<td align="left">-->
-                           <!--<a href="../${method.fullUrl}">${method.fullName}</a>-->
-                        <!--</td>-->
-                        <!--<td align="right" data="${method.duration}">-->
-                           <!--<j:invokeStatic className="hudson.plugins.testng.util.FormatUtil"-->
-                                           <!--method="formatTimeInMilliSeconds" var="duration">-->
-                              <!--<j:arg type="long" value="${method.duration}"/>-->
-                           <!--</j:invokeStatic>-->
-                           <!--${duration}-->
-                        <!--</td>-->
-                        <!--<td align="right">${method.startedAt}</td>-->
-                        <!--<td align="right">-->
-                           <!--<span class="${method.cssClass}">-->
-                              <!--${method.status}-->
-                           <!--</span>-->
-                        <!--</td>-->
-                     <!--</tr>-->
-                  <!--</j:choose>-->
-               <!--</j:forEach>-->
-            <!--</tbody>-->
-         <!--</table>-->
-      <!--</j:when>-->
-   <!--</j:choose>-->
 </j:jelly>

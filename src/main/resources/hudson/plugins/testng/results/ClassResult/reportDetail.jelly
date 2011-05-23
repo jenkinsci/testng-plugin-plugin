@@ -10,12 +10,9 @@
                      <thead>
                         <tr>
                            <th class="pane-header">Method</th>
-                           <th class="pane-header" style="width:5em" title="duration">Duration (ms)
-                           </th>
+                           <th class="pane-header" style="width:5em" title="duration">Duration (ms)</th>
+                           <th class="pane-header" style="width:5em" title="start time">Start Time</th>
                            <th class="pane-header" style="width:5em" title="status">Status</th>
-                           <th class="pane-header" style="width:5em" title="start time">Start Time
-                           </th>
-
                         </tr>
                      </thead>
                      <tbody>
@@ -31,19 +28,19 @@
                                  </j:invokeStatic>
                                  ${duration}
                               </td>
+                              <td align="right">${method.startedAt}</td>
                               <td align="right">
                                   <span class="${method.cssClass}">
                                     ${method.status}
                                  </span>
                               </td>
-                              <td align="right">${method.startedAt}</td>
                            </tr>
                         </j:forEach>
                      </tbody>
                   </table>
                </j:when>
                <j:otherwise>
-                  <div>No Test Method Was Found in This Class</div>
+                  <div>No Test method was found in this class</div>
                </j:otherwise>
             </j:choose>
 
@@ -55,8 +52,7 @@
                         <tr>
                            <th class="pane-header">Method</th>
                            <th class="pane-header" style="width:5em" title="duration">Duration</th>
-                           <th class="pane-header" style="width:5em" title="start time">Start Time
-                           </th>
+                           <th class="pane-header" style="width:5em" title="start time">Start Time</th>
                            <th class="pane-header" style="width:5em" title="status">Status</th>
                         </tr>
                      </thead>
@@ -85,10 +81,9 @@
                   </table>
                </j:when>
                <j:otherwise>
-                  <div>No Test Method Was Found in This Class</div>
+                  <div>No Configuration method was found in this class</div>
                </j:otherwise>
             </j:choose>
-
          </j:forEach>
       </j:when>
    </j:choose>

@@ -6,7 +6,7 @@ import hudson.model.AbstractBuild;
 import java.util.List;
 
 /**
- * Represents a single TestNG XML Suite
+ * Represents a single TestNG XML <test> tag
  *
  * @author nullin
  *

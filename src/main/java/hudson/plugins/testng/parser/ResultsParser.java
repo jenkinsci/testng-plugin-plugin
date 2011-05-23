@@ -57,104 +57,106 @@ public class ResultsParser {
       FileInputStream fileInputStream = ResultPullParserHelper.createFileInputStream(file);
 
       if (fileInputStream != null) {
-         BufferedInputStream bufferedInputStream = new BufferedInputStream(fileInputStream);
-         XmlPullParser xmlPullParser = ResultPullParserHelper.createXmlPullParser(bufferedInputStream);
-         if (xmlPullParser != null) {
-            // check that the first tag is <testng-results>
-            if (ResultPullParserHelper.parseToTagIfFound(xmlPullParser, "testng-results", 0)) {
-               // skip until we get to the <suite> tag
-               while (ResultPullParserHelper.parseToTagIfFound(xmlPullParser, "suite", 1)) {
-                  TestResults testNGTestResults = new TestResults(UUID.randomUUID().toString()
-                        + "_TestNGResults");
-                  List<TestResult> testNGTestList = new ArrayList<TestResult>();
-                  int suiteDepth = xmlPullParser.getDepth();
-                  //TODO: changes need to be made for jira # 8926
-                  // skip until we get to the <test> tag
-                  //see if there is a groups tag , then lets parse all the groups and
-                  //later on we have to create a map of groups and test methods ?
-                  //we have some sort of unique identifier for each test method which we should be able
-                  //to reuse for rendering purposes
-                  //so let's have a class called GroupResult
-                  while (ResultPullParserHelper.parseToTagIfFound(xmlPullParser, "test", suiteDepth)) {
-                     //for-each <test> tag
-                     int testDepth = xmlPullParser.getDepth();
-                     TestResult testngTest = new TestResult();
-                     String name = xmlPullParser.getAttributeValue(null, "name");
-                     testngTest.setName(name);
+        return results;
+      }
 
-                     List<ClassResult> testNGClassList = new ArrayList<ClassResult>();
-                     while (ResultPullParserHelper.parseToTagIfFound(xmlPullParser, "class", testDepth)) {
-                        int classDepth = xmlPullParser.getDepth();
-                        ClassResult testNGTestClass = new ClassResult();
-                        testNGTestClass.setName(xmlPullParser.getAttributeValue(null, "name"));
-                        testNGTestClass.setFullName(xmlPullParser.getAttributeValue(null, "name"));
+      BufferedInputStream bufferedInputStream = new BufferedInputStream(fileInputStream);
+      XmlPullParser xmlPullParser = ResultPullParserHelper.createXmlPullParser(bufferedInputStream);
+      if (xmlPullParser != null) {
+         // check that the first tag is <testng-results>
+         if (ResultPullParserHelper.parseToTagIfFound(xmlPullParser, "testng-results", 0)) {
+            // skip until we get to the <suite> tag
+            while (ResultPullParserHelper.parseToTagIfFound(xmlPullParser, "suite", 1)) {
+               TestResults testNGTestResults = new TestResults(UUID.randomUUID().toString()
+                     + "_TestNGResults");
+               List<TestResult> testNGTestList = new ArrayList<TestResult>();
+               int suiteDepth = xmlPullParser.getDepth();
+               //TODO: changes need to be made for jira # 8926
+               // skip until we get to the <test> tag
+               //see if there is a groups tag , then lets parse all the groups and
+               //later on we have to create a map of groups and test methods ?
+               //we have some sort of unique identifier for each test method which we should be able
+               //to reuse for rendering purposes
+               //so let's have a class called GroupResult
+               while (ResultPullParserHelper.parseToTagIfFound(xmlPullParser, "test", suiteDepth)) {
+                  //for-each <test> tag
+                  int testDepth = xmlPullParser.getDepth();
+                  TestResult testngTest = new TestResult();
+                  String name = xmlPullParser.getAttributeValue(null, "name");
+                  testngTest.setName(name);
 
-                        List<MethodResult> testMethodList = new ArrayList<MethodResult>();
-                        String uuid = UUID.randomUUID().toString();
-                        while (ResultPullParserHelper.parseToTagIfFound(xmlPullParser, "test-method", classDepth)) {
-                           MethodResult testNGTestMethod = createTestMethod(xmlPullParser, testNGTestClass);
-                           String testUuid = UUID.randomUUID().toString();
-                           if (testNGTestMethod != null) {
-                              MethodResultException exception =
-                                    createExceptionObject(xmlPullParser);
-                              testNGTestMethod.setException(exception);
-                              testNGTestMethod.setTestUuid(testUuid);
-                              //this uuid is used later to group the tests and config-methods together
-                              testNGTestMethod.setTestRunId(uuid);
-                              updateTestMethodLists(testNGTestResults, testNGTestMethod);
-                              // add to test methods list for each class
-                              testMethodList.add(testNGTestMethod);
-                           }
-                        }
+                  List<ClassResult> testNGClassList = new ArrayList<ClassResult>();
+                  while (ResultPullParserHelper.parseToTagIfFound(xmlPullParser, "class", testDepth)) {
+                     int classDepth = xmlPullParser.getDepth();
+                     ClassResult testNGTestClass = new ClassResult();
+                     testNGTestClass.setName(xmlPullParser.getAttributeValue(null, "name"));
 
-                        //if a class with the same name already exists we should add these new
-                        //methods to that class
-                        boolean classAlreadyAdded = false;
-                        for (ClassResult classResult : testNGClassList) {
-                           if (classResult.getName().equals(testNGTestClass.getName())) {
-                              //we should merge test classes
-                              classResult.addTestMethods(testMethodList);
-                              classAlreadyAdded = true;
-                              break;
-                           }
-                        }
-                        if (!classAlreadyAdded) {
-                           testNGTestClass.setTestMethodList(testMethodList);
-                           testNGClassList.add(testNGTestClass);
+                     List<MethodResult> testMethodList = new ArrayList<MethodResult>();
+                     String uuid = UUID.randomUUID().toString();
+                     while (ResultPullParserHelper.parseToTagIfFound(xmlPullParser, "test-method", classDepth)) {
+                        MethodResult testNGTestMethod = createTestMethod(xmlPullParser, testNGTestClass);
+                        String testUuid = UUID.randomUUID().toString();
+                        if (testNGTestMethod != null) {
+                           MethodResultException exception =
+                                 createExceptionObject(xmlPullParser);
+                           testNGTestMethod.setException(exception);
+                           testNGTestMethod.setTestUuid(testUuid);
+                           //this uuid is used later to group the tests and config-methods together
+                           testNGTestMethod.setTestRunId(uuid);
+                           updateTestMethodLists(testNGTestResults, testNGTestMethod);
+                           // add to test methods list for each class
+                           testMethodList.add(testNGTestMethod);
                         }
                      }
-                     testngTest.setClassList(testNGClassList);
-                     testNGTestList.add(testngTest);
+
+                     //if a class with the same name already exists we should add these new
+                     //methods to that class
+                     boolean classAlreadyAdded = false;
+                     for (ClassResult classResult : testNGClassList) {
+                        if (classResult.getName().equals(testNGTestClass.getName())) {
+                           //we should merge test classes
+                           classResult.addTestMethods(testMethodList);
+                           classAlreadyAdded = true;
+                           break;
+                        }
+                     }
+                     if (!classAlreadyAdded) {
+                        testNGTestClass.setTestMethodList(testMethodList);
+                        testNGClassList.add(testNGTestClass);
+                     }
                   }
-                  testNGTestResults.setTestList(testNGTestList);
-                  results.add(testNGTestResults);
+                  testngTest.setClassList(testNGClassList);
+                  testNGTestList.add(testngTest);
+               }
+               testNGTestResults.setTestList(testNGTestList);
+               results.add(testNGTestResults);
 
-                  if (printStream != null) {
-                     if (testNGTestResults.getTotalTestCount() > 0) {
-                        printStream.println("Parsed TestNG XML Report at '" + file.getAbsolutePath()
-                              + "' and collected "
-                              + testNGTestResults.getTotalTestCount() + " test results");
-                     } else {
-                        printStream.println("Parsed TestNG XML Report at '" + file.getAbsolutePath()
-                              + "' and did not find any test results");
-                     }
+               if (printStream != null) {
+                  if (testNGTestResults.getTotalTestCount() > 0) {
+                     printStream.println("Parsed TestNG XML Report at '" + file.getAbsolutePath()
+                           + "' and collected "
+                           + testNGTestResults.getTotalTestCount() + " test results");
+                  } else {
+                     printStream.println("Parsed TestNG XML Report at '" + file.getAbsolutePath()
+                           + "' and did not find any test results");
                   }
                }
             }
          }
+      }
 
+      try {
+         bufferedInputStream.close();
+      } catch (IOException e) {
+         e.printStackTrace();
+      } finally {
          try {
-            bufferedInputStream.close();
+            fileInputStream.close();
          } catch (IOException e) {
             e.printStackTrace();
-         } finally {
-            try {
-               fileInputStream.close();
-            } catch (IOException e) {
-               e.printStackTrace();
-            }
          }
       }
+
       return results;
    }
 
@@ -211,8 +213,6 @@ public class ResultsParser {
             log.warning("unable to obtain started-at");
          }
          String isConfigStr = xmlPullParser.getAttributeValue(null, "is-config");
-         testNGTestMethod.setFullName(testNGClass.getFullName() +
-               "." + testNGTestMethod.getName());
          if (isConfigStr == null) {
             testNGTestMethod.setConfig(false);
          } else {
