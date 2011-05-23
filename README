@@ -1,5 +1,16 @@
-TestNG Plugin for Hudson
+TestNG Plugin for Jenkins (and maybe Hudson)
 =============
+
+https://wiki.jenkins-ci.org/display/JENKINS/testng-plugin
+
+This plugin allows you to publish TestNG results. TestNG result xml file 
+contains more information than the JUnit report xml file. This plugin 
+exposes those extra information in graph and table reports.
+
+This plugin makes it possible to import TestNG XML reports from each 
+build into Hudson. The data is parsed using the output generated using 
+org.testng.reporters.XMLReporter. The results are displayed with a trend 
+graph and all details about which tests that failed are also presented.
 
 
 Release Notes
@@ -41,7 +52,6 @@ Release Notes
 ### v0.8
 * New: added diff and age column for all test results
 * New: list failures/skipped tests under "Latest Test Results" summary section
-
 
 ### v0.7
 * Fixed: Plugin fails to find testng-results.xml file when project is configured to checkout sources from SVN SCM.
