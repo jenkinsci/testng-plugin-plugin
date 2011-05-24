@@ -11,9 +11,7 @@
    </div>
 
    <h1>
-      <span class="${it.cssClass}">
-         ${it.status}
-      </span>
+      <span class="${it.cssClass}">${it.status}</span>
    </h1>
 
    <div id="description">
