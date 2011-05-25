@@ -9,6 +9,7 @@ import hudson.plugins.testng.results.TestResults;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.text.ParseException;
@@ -24,6 +25,14 @@ import java.util.logging.Logger;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
+/**
+ * Parses testng result XMLs generated using org.testng.reporters.XmlReporter
+ * into objects that are then used to display results in Jenkins
+ *
+ * @author farshidce
+ * @author nullin
+ *
+ */
 public class ResultsParser {
 
    private PrintStream printStream;
@@ -38,9 +47,10 @@ public class ResultsParser {
    }
 
    /**
-    * @param file
-    * @param printStream
-    * @return
+    * Parses the XML for relevant information
+    *
+    * @param file a file hopefully containing test related data in correct format
+    * @return a collection of test results
     */
    public Collection<TestResults> parse(File file) {
       if (null == file) {
@@ -53,44 +63,39 @@ public class ResultsParser {
          return Collections.EMPTY_LIST;
       }
 
-      Collection<TestResults> results = new ArrayList<TestResults>();
-      FileInputStream fileInputStream = ResultPullParserHelper.createFileInputStream(file);
+      Collection<TestResults> allResults = new ArrayList<TestResults>();
+      BufferedInputStream bufferedInputStream = null;
+      try {
+         bufferedInputStream = new BufferedInputStream(new FileInputStream(file));
+         XmlPullParser xmlPullParser = ResultPullParserHelper.createXmlPullParser(bufferedInputStream);
 
-      if (fileInputStream != null) {
-        return results;
-      }
-
-      BufferedInputStream bufferedInputStream = new BufferedInputStream(fileInputStream);
-      XmlPullParser xmlPullParser = ResultPullParserHelper.createXmlPullParser(bufferedInputStream);
-      if (xmlPullParser != null) {
          // check that the first tag is <testng-results>
-         if (ResultPullParserHelper.parseToTagIfFound(xmlPullParser, "testng-results", 0)) {
+         if (ResultPullParserHelper.parseToTagIfFound(xmlPullParser, "testng-results")) {
             // skip until we get to the <suite> tag
-            while (ResultPullParserHelper.parseToTagIfFound(xmlPullParser, "suite", 1)) {
+            while (ResultPullParserHelper.parseToTagIfFound(xmlPullParser, "suite")) {
                TestResults testNGTestResults = new TestResults(UUID.randomUUID().toString()
                      + "_TestNGResults");
                List<TestResult> testNGTestList = new ArrayList<TestResult>();
                int suiteDepth = xmlPullParser.getDepth();
-               //TODO: changes need to be made for jira # 8926
+               // TODO: changes need to be made for jira # 8926
                // skip until we get to the <test> tag
-               //see if there is a groups tag , then lets parse all the groups and
-               //later on we have to create a map of groups and test methods ?
-               //we have some sort of unique identifier for each test method which we should be able
-               //to reuse for rendering purposes
-               //so let's have a class called GroupResult
+               // see if there is a groups tag , then lets parse all the groups and
+               // later on we have to create a map of groups and test methods ?
+               // we have some sort of unique identifier for each test method which we should be able
+               // to reuse for rendering purposes
+               // so let's have a class called GroupResult
                while (ResultPullParserHelper.parseToTagIfFound(xmlPullParser, "test", suiteDepth)) {
-                  //for-each <test> tag
+                  // for-each <test> tag
                   int testDepth = xmlPullParser.getDepth();
                   TestResult testngTest = new TestResult();
-                  String name = xmlPullParser.getAttributeValue(null, "name");
-                  testngTest.setName(name);
+                  String testName = xmlPullParser.getAttributeValue(null, "name");
+                  testngTest.setName(testName);
 
                   List<ClassResult> testNGClassList = new ArrayList<ClassResult>();
                   while (ResultPullParserHelper.parseToTagIfFound(xmlPullParser, "class", testDepth)) {
                      int classDepth = xmlPullParser.getDepth();
                      ClassResult testNGTestClass = new ClassResult();
                      testNGTestClass.setName(xmlPullParser.getAttributeValue(null, "name"));
-
                      List<MethodResult> testMethodList = new ArrayList<MethodResult>();
                      String uuid = UUID.randomUUID().toString();
                      while (ResultPullParserHelper.parseToTagIfFound(xmlPullParser, "test-method", classDepth)) {
@@ -128,58 +133,52 @@ public class ResultsParser {
                   testngTest.setClassList(testNGClassList);
                   testNGTestList.add(testngTest);
                }
-               testNGTestResults.setTestList(testNGTestList);
-               results.add(testNGTestResults);
 
-               if (printStream != null) {
-                  if (testNGTestResults.getTotalTestCount() > 0) {
-                     printStream.println("Parsed TestNG XML Report at '" + file.getAbsolutePath()
-                           + "' and collected "
-                           + testNGTestResults.getTotalTestCount() + " test results");
-                  } else {
-                     printStream.println("Parsed TestNG XML Report at '" + file.getAbsolutePath()
-                           + "' and did not find any test results");
-                  }
+               testNGTestResults.setTestList(testNGTestList);
+               allResults.add(testNGTestResults);
+
+               if (testNGTestResults.getTotalTestCount() > 0) {
+                  printStream.println("Parsed TestNG XML Report at '" + file.getAbsolutePath()
+                        + "' and collected "
+                        + testNGTestResults.getTotalTestCount() + " test results");
+               } else {
+                  printStream.println("Parsed TestNG XML Report at '" + file.getAbsolutePath()
+                        + "' and did not find any test results");
                }
             }
          }
-      }
-
-      try {
-         bufferedInputStream.close();
-      } catch (IOException e) {
-         e.printStackTrace();
+      } catch (XmlPullParserException e) {
+         log.severe("Unable to create a new XmlPullParserFactory instance: "
+               + e.getMessage());
+         printStream.println("Failed to parse XML: " + e.getMessage());
+         e.printStackTrace(printStream);
+      } catch (FileNotFoundException e) {
+         e.printStackTrace(printStream);
       } finally {
          try {
-            fileInputStream.close();
+           bufferedInputStream.close();
          } catch (IOException e) {
-            e.printStackTrace();
+            e.printStackTrace(printStream);
          }
       }
 
-      return results;
+      return allResults;
    }
 
    private void updateTestMethodLists(TestResults testResults, MethodResult testNGTestMethod) {
       if (testNGTestMethod.isConfig()) {
          if ("FAIL".equals(testNGTestMethod.getStatus())) {
             testResults.getFailedConfigurationMethods().add(testNGTestMethod);
-         } else {
-            if ("SKIP".equals(testNGTestMethod.getStatus())) {
+         } else if ("SKIP".equals(testNGTestMethod.getStatus())) {
                testResults.getSkippedConfigurationMethods().add(testNGTestMethod);
-            }
          }
       } else {
          if ("FAIL".equals(testNGTestMethod.getStatus())) {
             testResults.getFailedTests().add(testNGTestMethod);
-         } else {
-            if ("SKIP".equals(testNGTestMethod.getStatus())) {
+         } else if ("SKIP".equals(testNGTestMethod.getStatus())) {
                testResults.getSkippedTests().add(testNGTestMethod);
-            } else {
-               if ("PASS".equals(testNGTestMethod.getStatus())) {
+         } else if ("PASS".equals(testNGTestMethod.getStatus())) {
                   testResults.getPassedTests().add(testNGTestMethod);
-               }
-            }
          }
       }
    }
@@ -191,35 +190,32 @@ public class ResultsParser {
     */
    private MethodResult createTestMethod(XmlPullParser
          xmlPullParser, ClassResult testNGClass) {
-      SimpleDateFormat simpleDateFormat =
-            new SimpleDateFormat(DATE_FORMAT);
-      MethodResult testNGTestMethod = null;
-      if (xmlPullParser != null) {
-         testNGTestMethod = new MethodResult();
-         testNGTestMethod.setName(xmlPullParser.getAttributeValue(null, "name"));
-         testNGTestMethod.setStatus(xmlPullParser.getAttributeValue(null, "status"));
-         testNGTestMethod.setDescription(xmlPullParser
-               .getAttributeValue(null, "description"));
-         try {
-            testNGTestMethod.setDuration(Long.parseLong(xmlPullParser.getAttributeValue(
-                  null, "duration-ms")));
-         } catch (NumberFormatException e) {
-            log.warning("unable to obtain duration-ms");
-         }
-         try {
-            testNGTestMethod.setStartedAt(simpleDateFormat.parse(xmlPullParser.getAttributeValue(
-                  null, "started-at")));
-         } catch (ParseException e) {
-            log.warning("unable to obtain started-at");
-         }
-         String isConfigStr = xmlPullParser.getAttributeValue(null, "is-config");
-         if (isConfigStr == null) {
-            testNGTestMethod.setConfig(false);
-         } else {
-            // is-config attr is present on test-method. It's
-            // always set to true
-            testNGTestMethod.setConfig(true);
-         }
+      SimpleDateFormat simpleDateFormat = new SimpleDateFormat(DATE_FORMAT);
+      MethodResult testNGTestMethod = new MethodResult();
+      testNGTestMethod.setName(xmlPullParser.getAttributeValue(null, "name"));
+      testNGTestMethod.setStatus(xmlPullParser.getAttributeValue(null, "status"));
+      testNGTestMethod.setDescription(xmlPullParser.getAttributeValue(null, "description"));
+      try {
+         testNGTestMethod.setDuration(Long.parseLong(xmlPullParser.getAttributeValue(
+               null, "duration-ms")));
+      } catch (NumberFormatException e) {
+         log.warning("unable to obtain duration-ms");
+      }
+
+      try {
+         testNGTestMethod.setStartedAt(simpleDateFormat.parse(
+               xmlPullParser.getAttributeValue(null, "started-at")));
+      } catch (ParseException e) {
+         log.warning("unable to obtain started-at");
+      }
+
+      String isConfigStr = xmlPullParser.getAttributeValue(null, "is-config");
+      if (isConfigStr == null) {
+         testNGTestMethod.setConfig(false);
+      } else {
+         // is-config attr is present on test-method. It's
+         // always set to true
+         testNGTestMethod.setConfig(true);
       }
 
       if (log.getLevel() == Level.FINE) {

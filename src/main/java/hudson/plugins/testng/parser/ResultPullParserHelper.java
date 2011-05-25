@@ -23,35 +23,42 @@ public class ResultPullParserHelper {
    private static final Logger log = Logger.getLogger(ResultPullParserHelper.class.getName());
 
    /**
-    * @param xmlPullParser
-    * @param name
+    * Attempts to find and move the parser forward to the opening tag with the
+    * specified name
+    *
+    * @param xmlPullParser XML Parser
+    * @param name name of the XML tag
     * @param initialDepth
-    * @return
+    * @return true, if such a tag is found, false otherwise
     */
    public static boolean parseToTagIfFound(XmlPullParser xmlPullParser,
-                                    String name,
-                                    int initialDepth) {
-      if (xmlPullParser != null && name != null) {
-         try {
-            while (xmlPullParser.getDepth() >= initialDepth) {
-               if (isStartTag(xmlPullParser)) {
-                  log.fine("current node name : " + xmlPullParser.getName());
-                  if (name.equals(xmlPullParser.getName())) {
-                     return true;
-                  }
-               }
-               xmlPullParser.next();
-            }
-            //at this point we should be seeing a tag with .getName as "exception"
-         } catch (XmlPullParserException e) {
-            log.warning("next() threw exception : " + e.getMessage());
-         } catch (IOException e) {
-            e.printStackTrace();
-         }
+         String name, int initialDepth) {
+      if (xmlPullParser == null || name == null) {
+        return false;
       }
+      try {
+         while (xmlPullParser.getDepth() >= initialDepth) {
+            if (isStartTag(xmlPullParser)) {
+               log.fine("current node name : " + xmlPullParser.getName());
+               if (name.equals(xmlPullParser.getName())) {
+                  return true;
+               }
+            }
+            xmlPullParser.next();
+         }
+      } catch (XmlPullParserException e) {
+         log.warning("next() threw exception : " + e.getMessage());
+      } catch (IOException e) {
+         e.printStackTrace();
+      }
+
       return false;
    }
 
+   public static boolean parseToTagIfFound(XmlPullParser xmlPullParser,
+         String name) {
+      return parseToTagIfFound(xmlPullParser, name, xmlPullParser.getDepth());
+   }
 
    /**
     * @param xmlPullParser
@@ -100,55 +107,15 @@ public class ResultPullParserHelper {
       return false;
    }
 
-   /**
-    * @param xmlPullParser
-    * @return
-    */
-   private static boolean isText(XmlPullParser
-         xmlPullParser) {
-      try {
-         if (xmlPullParser != null) {
-            return xmlPullParser.getEventType() == XmlPullParser.TEXT;
-         }
-      } catch (XmlPullParserException e) {
-         e.printStackTrace();
-      }
-      return false;
-   }
-
-   /**
-    * @param file
-    * @return
-    */
-   public static FileInputStream createFileInputStream(File file) {
-      if (file != null && file.exists()) {
-         try {
-            return new FileInputStream(file);
-         } catch (FileNotFoundException e) {
-            e.printStackTrace();
-         }
-      }
-      return null;
-   }
-
    public static XmlPullParser createXmlPullParser(BufferedInputStream
-         bufferedInputStream) {
-      if (bufferedInputStream != null) {
-         try {
-            XmlPullParserFactory xmlPullParserFactory = XmlPullParserFactory.newInstance();
-            xmlPullParserFactory.setNamespaceAware(true);
-            xmlPullParserFactory.setValidating(false);
+         bufferedInputStream) throws XmlPullParserException {
+      XmlPullParserFactory xmlPullParserFactory = XmlPullParserFactory.newInstance();
+      xmlPullParserFactory.setNamespaceAware(true);
+      xmlPullParserFactory.setValidating(false);
 
-            XmlPullParser xmlPullParser = xmlPullParserFactory.newPullParser();
-            xmlPullParser.setInput(bufferedInputStream, null);
-            return xmlPullParser;
-         } catch (XmlPullParserException e) {
-            log.severe("unable to create a new XmlPullParserFactory instance : error message : "
-                  + e.getMessage());
-         }
-      }
-      return null;
-      //define a  custom exception saying could not initialize the parser
+      XmlPullParser xmlPullParser = xmlPullParserFactory.newPullParser();
+      xmlPullParser.setInput(bufferedInputStream, null);
+      return xmlPullParser;
    }
 }
 
