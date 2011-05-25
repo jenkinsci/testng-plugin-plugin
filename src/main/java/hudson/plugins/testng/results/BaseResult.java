@@ -18,10 +18,6 @@ public abstract class BaseResult implements Serializable {
    @Deprecated
    protected String fullName;
 
-   public String getFullName() {
-      return fullName;
-   }
-
    public void setParent(BaseResult parent) {
       this.parent = parent;
    }
