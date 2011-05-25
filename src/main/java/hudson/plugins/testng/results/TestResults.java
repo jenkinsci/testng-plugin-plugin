@@ -5,7 +5,6 @@ import hudson.model.AbstractBuild;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,7 +16,8 @@ import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
 
 /**
- * Represents all the results gathered for a single build
+ * Represents all the results gathered for a single build (or a single suite,
+ * while parsing the test results)
  *
  * @author nullin
  * @author farshidce
@@ -161,10 +161,9 @@ public class TestResults extends BaseResult implements Serializable {
       this.skippedConfigurationMethods = skippedConfigurationMethods;
    }
 
-   public static TestResults total(boolean tally, Collection<TestResults>... results) {
-      Collection<TestResults> merged = merge(results);
+   public static TestResults total(boolean tally, Collection<TestResults> results) {
       TestResults totalTestResults = new TestResults("");
-      for (TestResults individual : merged) {
+      for (TestResults individual : results) {
          totalTestResults.add(individual);
       }
       if (tally) {
@@ -180,39 +179,6 @@ public class TestResults extends BaseResult implements Serializable {
       failedTests.addAll(r.getFailedTests());
       passedTests.addAll(r.getPassedTests());
       skippedTests.addAll(r.getSkippedTests());
-   }
-
-   private static Collection<TestResults> merge(Collection<TestResults>... results) {
-      Collection<TestResults> newResults = new ArrayList<TestResults>();
-      if (results.length == 0) {
-         return Collections.emptySet();
-      } else {
-         if (results.length == 1) {
-            return results[0];
-         } else {
-            List<String> indivNames = new ArrayList<String>();
-            for (Collection<TestResults> result : results) {
-               for (TestResults individual : result) {
-                  if (!indivNames.contains(individual.name)) {
-                     indivNames.add(individual.name);
-                  }
-               }
-            }
-            for (String indivName : indivNames) {
-               TestResults indivStat = new TestResults(indivName);
-               for (Collection<TestResults> result : results) {
-
-                  for (TestResults individual : result) {
-                     if (indivName.equals(individual.name)) {
-                        indivStat.add(individual);
-                     }
-                  }
-               }
-               newResults.add(indivStat);
-            }
-            return newResults;
-         }
-      }
    }
 
    public void setOwner(AbstractBuild<?, ?> owner) {
@@ -309,9 +275,10 @@ public class TestResults extends BaseResult implements Serializable {
                htmlStr.append("/").append(getOwner().getProject().getAction(AbstractProjectAction.class).getUrlName());
                htmlStr.append("/").append(methodResult.getFullUrl());
                htmlStr.append("\">");
-               htmlStr.append(methodResult.getFullName()).append("</a>");
+               htmlStr.append(((ClassResult)methodResult.getParent()).getName());
+               htmlStr.append(".").append(methodResult.getName()).append("</a>");
             } else {
-               htmlStr.append(methodResult.getFullName());
+               htmlStr.append(methodResult.getName());
             }
             htmlStr.append("</LI>");
          }
