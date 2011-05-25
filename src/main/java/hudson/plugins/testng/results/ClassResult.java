@@ -112,9 +112,7 @@ public class ClassResult extends BaseResult implements ModelObject {
       this.testMethodList.add(testMethod);
    }
 
-
-   public long
-   getFailedTestsDiffCount() {
+   public long getFailedTestsDiffCount() {
       long diff = 0;
       List<ClassResult> previousClassResults = getPreviousClassResults();
       if (previousClassResults != null && previousClassResults.size() > 0) {
@@ -123,8 +121,7 @@ public class ClassResult extends BaseResult implements ModelObject {
       return diff;
    }
 
-   public long
-   getSkippedTestsDiffCount() {
+   public long getSkippedTestsDiffCount() {
       long diff = 0;
       List<ClassResult> previousClassResults = getPreviousClassResults();
       if (previousClassResults != null && previousClassResults.size() > 0) {
@@ -133,8 +130,7 @@ public class ClassResult extends BaseResult implements ModelObject {
       return diff;
    }
 
-   public long
-   getTotalTestsDiffCount() {
+   public long getTotalTestsDiffCount() {
       long diff = 0;
       List<ClassResult> previousClassResults = getPreviousClassResults();
       if (previousClassResults != null && previousClassResults.size() > 0) {
@@ -151,7 +147,6 @@ public class ClassResult extends BaseResult implements ModelObject {
          return 1 + previousClassResults.size();
       }
    }
-
 
    public void tally() {
       this.duration = 0;
@@ -177,7 +172,6 @@ public class ClassResult extends BaseResult implements ModelObject {
    public String getDisplayName() {
       return getName();
    }
-
 
    public Object getDynamic(String token, StaplerRequest req, StaplerResponse rsp) {
       if (token.equals("/" + getName())) {
