@@ -6,6 +6,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -81,7 +82,14 @@ public class TestResults extends BaseResult implements Serializable {
       return testList;
    }
 
-   public void setTestList(List<TestResult> testList) {
+   /**
+    * Adds only the <test>s that already aren't part of the list
+    * @param classList
+    */
+   public void addTestList(List<TestResult> testList) {
+      Set<TestResult> tmpSet = new HashSet<TestResult>(this.testList);
+      tmpSet.addAll(testList);
+      this.testList = new ArrayList<TestResult>(tmpSet);
       this.testList = testList;
    }
 

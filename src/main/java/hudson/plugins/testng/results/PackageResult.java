@@ -18,11 +18,12 @@ import org.kohsuke.stapler.StaplerResponse;
 public class PackageResult extends BaseResult implements ModelObject {
 
    private List<ClassResult> classList = new ArrayList<ClassResult>();
-   private long duration;
-   private int fail;
-   private int skip;
-   private int total;
    private final List<MethodResult> sortedTestMethodsByStartTime = new ArrayList<MethodResult>();
+
+   private transient long duration;
+   private transient int fail;
+   private transient int skip;
+   private transient int total;
 
    public String getUrl() {
       return getName();
@@ -74,7 +75,6 @@ public class PackageResult extends BaseResult implements ModelObject {
    public void setTotal(int total) {
       this.total = total;
    }
-
 
    public long getAge() {
       List<PackageResult> packageResults = getPreviousPackageResults();
@@ -155,8 +155,7 @@ public class PackageResult extends BaseResult implements ModelObject {
       }
    }
 
-   public long
-   getFailedTestsCount() {
+   public long getFailedTestsCount() {
       int failedTests = 0;
       for (ClassResult aClass : classList) {
          if (aClass.getTestMethods() != null) {
@@ -170,8 +169,7 @@ public class PackageResult extends BaseResult implements ModelObject {
       return failedTests;
    }
 
-   public long
-   getSkippedTestsCount() {
+   public long getSkippedTestsCount() {
       int skippedTests = 0;
       for (ClassResult aClass : classList) {
          if (aClass.getTestMethods() != null) {
@@ -185,8 +183,7 @@ public class PackageResult extends BaseResult implements ModelObject {
       return skippedTests;
    }
 
-   public long
-   getPassedTestsCount() {
+   public long getPassedTestsCount() {
       int passTests = 0;
       for (ClassResult aClass : classList) {
          if (aClass.getTestMethods() != null) {
@@ -200,8 +197,7 @@ public class PackageResult extends BaseResult implements ModelObject {
       return passTests;
    }
 
-   public long
-   getFailedTestsDiffCount() {
+   public long getFailedTestsDiffCount() {
       //get the previous build test_results
       long diff = 0;
       List<PackageResult> previousPackageResults = getPreviousPackageResults();
@@ -220,8 +216,7 @@ public class PackageResult extends BaseResult implements ModelObject {
     *
     * @return list of previous builds results for this class
     */
-   public List<PackageResult>
-   getPreviousPackageResults() {
+   public List<PackageResult> getPreviousPackageResults() {
       List<PackageResult> packageResults = new ArrayList<PackageResult>();
       List<TestResults> previousTestResults =
             TestResultHistoryUtil.getPreviousBuildTestResults(getOwner());
@@ -239,8 +234,7 @@ public class PackageResult extends BaseResult implements ModelObject {
       return packageResults;
    }
 
-   public long
-   getTotalTestsDiffCount() {
+   public long getTotalTestsDiffCount() {
       long diff = 0;
       List<PackageResult> previousPackageResults = getPreviousPackageResults();
       if (previousPackageResults != null && previousPackageResults.size() > 0) {
@@ -250,8 +244,7 @@ public class PackageResult extends BaseResult implements ModelObject {
 
    }
 
-   public long
-   getSkippedTestsDiffCount() {
+   public long getSkippedTestsDiffCount() {
       long diff = 0;
       List<PackageResult> previousPackageResults = getPreviousPackageResults();
       if (previousPackageResults != null && previousPackageResults.size() > 0) {
@@ -260,8 +253,7 @@ public class PackageResult extends BaseResult implements ModelObject {
       return diff;
    }
 
-   public long
-   getTotalTestsCount() {
+   public long getTotalTestsCount() {
       int totalTests = 0;
       for (ClassResult aClass : classList) {
          if (aClass.getTestMethods() != null) {

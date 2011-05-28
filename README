@@ -18,6 +18,9 @@ Release Notes
 
 ### upcoming
 * add unit testing for testng results
+* start storing testng-results.xml with build artifacts
+* capture information regarding groups
+* capture parameters used to run the test
 
 ### v0.21
 * Have checkboxes for escaping test description and exception message selected by default

@@ -22,18 +22,23 @@ public class MethodResult extends BaseResult implements ModelObject {
    private long duration;
    private MethodResultException exception;
    private Date startedAt;
+   private String testName;
+   private List<String> parameters;
+   //unique id for this tests's run (helps associate the test method with
+   // related configuration methods)
    private String testRunId;
+   //unique id for this test method
    private String testUuid;
 
-    public String getTestUuid() {
-        return testUuid;
-    }
+   public String getTestUuid() {
+      return testUuid;
+   }
 
-    public void setTestUuid(String testUuid) {
-        this.testUuid = testUuid;
-    }
+   public void setTestUuid(String testUuid) {
+      this.testUuid = testUuid;
+   }
 
-    public String getTestRunId() {
+   public String getTestRunId() {
       return testRunId;
    }
 
@@ -125,7 +130,6 @@ public class MethodResult extends BaseResult implements ModelObject {
       if (token.equals("/" + getName() + "--" + this.testUuid)) {
          return this;
       }
-
       return null;
    }
 
@@ -142,8 +146,7 @@ public class MethodResult extends BaseResult implements ModelObject {
     *
     * @return list of previous builds results for this method
     */
-   public List<MethodResult>
-   getPreviousMethodResults() {
+   public List<MethodResult> getPreviousMethodResults() {
       List<MethodResult> methodResults = new ArrayList<MethodResult>();
       List<TestResults> previousTestResults =
             TestResultHistoryUtil.getPreviousBuildTestResults(getOwner());

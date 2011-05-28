@@ -1,10 +1,10 @@
 package hudson.plugins.testng.parser;
 
-import hudson.plugins.testng.results.ClassResult;
-import hudson.plugins.testng.results.MethodResult;
 import hudson.plugins.testng.results.MethodResultException;
 import hudson.plugins.testng.results.TestResult;
 import hudson.plugins.testng.results.TestResults;
+import hudson.plugins.testng.results.ClassResult;
+import hudson.plugins.testng.results.MethodResult;
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -17,7 +17,11 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -55,15 +59,15 @@ public class ResultsParser {
    public Collection<TestResults> parse(File file) {
       if (null == file) {
          printStream.println("File not specified");
-         return Collections.EMPTY_LIST;
+         return Collections.emptyList();
       }
 
       if (!file.exists() || file.isDirectory()) {
          printStream.println("'" + file.getAbsolutePath() + "' points to a non-existent file or directory");
-         return Collections.EMPTY_LIST;
+         return Collections.emptyList();
       }
 
-      Collection<TestResults> allResults = new ArrayList<TestResults>();
+      TestResults allResults = new TestResults(UUID.randomUUID().toString() + "_TestResults");
       BufferedInputStream bufferedInputStream = null;
       try {
          bufferedInputStream = new BufferedInputStream(new FileInputStream(file));
@@ -71,10 +75,17 @@ public class ResultsParser {
 
          // check that the first tag is <testng-results>
          if (ResultPullParserHelper.parseToTagIfFound(xmlPullParser, "testng-results")) {
+            /*
+             * We maintain only a single TestResult for all <test>s with the same name
+             */
+            Map<String, TestResult> testResultMap = new HashMap<String, TestResult>();
+            /*
+             * We maintain only a single ClassResult for all <class>s with the same fqdn
+             */
+            Map<String, ClassResult> classResultMap = new HashMap<String, ClassResult>();
+
             // skip until we get to the <suite> tag
             while (ResultPullParserHelper.parseToTagIfFound(xmlPullParser, "suite")) {
-               TestResults testNGTestResults = new TestResults(UUID.randomUUID().toString()
-                     + "_TestNGResults");
                List<TestResult> testNGTestList = new ArrayList<TestResult>();
                int suiteDepth = xmlPullParser.getDepth();
                // TODO: changes need to be made for jira # 8926
@@ -87,65 +98,66 @@ public class ResultsParser {
                while (ResultPullParserHelper.parseToTagIfFound(xmlPullParser, "test", suiteDepth)) {
                   // for-each <test> tag
                   int testDepth = xmlPullParser.getDepth();
-                  TestResult testngTest = new TestResult();
                   String testName = xmlPullParser.getAttributeValue(null, "name");
-                  testngTest.setName(testName);
+                  TestResult testngTest = null;
+
+                  if (testResultMap.containsKey(testName)) {
+                     testngTest = testResultMap.get(testName);
+                  } else {
+                     testngTest = new TestResult(testName);
+                     testResultMap.put(testName, testngTest);
+                  }
 
                   List<ClassResult> testNGClassList = new ArrayList<ClassResult>();
                   while (ResultPullParserHelper.parseToTagIfFound(xmlPullParser, "class", testDepth)) {
                      int classDepth = xmlPullParser.getDepth();
-                     ClassResult testNGTestClass = new ClassResult();
-                     testNGTestClass.setName(xmlPullParser.getAttributeValue(null, "name"));
+
+                     String className = xmlPullParser.getAttributeValue(null, "name");
+                     ClassResult testNGTestClass = null;
+
+                     if (classResultMap.containsKey(testName)) {
+                        testNGTestClass = classResultMap.get(testName);
+                     } else {
+                        testNGTestClass = new ClassResult(className);
+                        classResultMap.put(className, testNGTestClass);
+                     }
+
                      List<MethodResult> testMethodList = new ArrayList<MethodResult>();
                      String uuid = UUID.randomUUID().toString();
                      while (ResultPullParserHelper.parseToTagIfFound(xmlPullParser, "test-method", classDepth)) {
                         MethodResult testNGTestMethod = createTestMethod(xmlPullParser, testNGTestClass);
                         String testUuid = UUID.randomUUID().toString();
                         if (testNGTestMethod != null) {
-                           MethodResultException exception =
-                                 createExceptionObject(xmlPullParser);
-                           testNGTestMethod.setException(exception);
+                           testNGTestMethod.setException(createExceptionObject(xmlPullParser));
                            testNGTestMethod.setTestUuid(testUuid);
                            //this uuid is used later to group the tests and config-methods together
                            testNGTestMethod.setTestRunId(uuid);
-                           updateTestMethodLists(testNGTestResults, testNGTestMethod);
+                           updateTestMethodLists(allResults, testNGTestMethod);
                            // add to test methods list for each class
                            testMethodList.add(testNGTestMethod);
                         }
                      }
 
-                     //if a class with the same name already exists we should add these new
-                     //methods to that class
-                     boolean classAlreadyAdded = false;
-                     for (ClassResult classResult : testNGClassList) {
-                        if (classResult.getName().equals(testNGTestClass.getName())) {
-                           //we should merge test classes
-                           classResult.addTestMethods(testMethodList);
-                           classAlreadyAdded = true;
-                           break;
-                        }
-                     }
-                     if (!classAlreadyAdded) {
-                        testNGTestClass.setTestMethodList(testMethodList);
-                        testNGClassList.add(testNGTestClass);
-                     }
-                  }
-                  testngTest.setClassList(testNGClassList);
+                     testNGTestClass.addTestMethods(testMethodList);
+                     testNGClassList.add(testNGTestClass);
+
+                  } //while for class ends
+
+                  testngTest.addClassList(testNGClassList);
                   testNGTestList.add(testngTest);
                }
 
-               testNGTestResults.setTestList(testNGTestList);
-               allResults.add(testNGTestResults);
+               allResults.addTestList(testNGTestList);
 
-               if (testNGTestResults.getTotalTestCount() > 0) {
+               if (allResults.getTotalTestCount() > 0) {
                   printStream.println("Parsed TestNG XML Report at '" + file.getAbsolutePath()
                         + "' and collected "
-                        + testNGTestResults.getTotalTestCount() + " test results");
+                        + allResults.getTotalTestCount() + " test results");
                } else {
                   printStream.println("Parsed TestNG XML Report at '" + file.getAbsolutePath()
                         + "' and did not find any test results");
                }
-            }
+            } //while end for suites
          }
       } catch (XmlPullParserException e) {
          log.severe("Unable to create a new XmlPullParserFactory instance: "
@@ -162,7 +174,10 @@ public class ResultsParser {
          }
       }
 
-      return allResults;
+      //TODO: convert to just returning TestResults instead of Collection<TestResults>
+      Collection<TestResults> returned = new ArrayList<TestResults>();
+      returned.add(allResults);
+      return returned;
    }
 
    private void updateTestMethodLists(TestResults testResults, MethodResult testNGTestMethod) {
@@ -195,6 +210,7 @@ public class ResultsParser {
       testNGTestMethod.setName(xmlPullParser.getAttributeValue(null, "name"));
       testNGTestMethod.setStatus(xmlPullParser.getAttributeValue(null, "status"));
       testNGTestMethod.setDescription(xmlPullParser.getAttributeValue(null, "description"));
+
       try {
          testNGTestMethod.setDuration(Long.parseLong(xmlPullParser.getAttributeValue(
                null, "duration-ms")));

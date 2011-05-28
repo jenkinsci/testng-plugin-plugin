@@ -16,11 +16,16 @@ import org.kohsuke.stapler.StaplerResponse;
 public class ClassResult extends BaseResult implements ModelObject {
 
    private List<MethodResult> testMethodList = new ArrayList<MethodResult>();
-   private long duration;
-   private int fail;
-   private int skip;
-   private int total;
-   private Map<String,GroupedTestRun> testRunMap;
+   private Map<String, GroupedTestRun> testRunMap;
+
+   private transient long duration;
+   private transient int fail;
+   private transient int skip;
+   private transient int total;
+
+   public ClassResult(String name) {
+     this.name = name;
+   }
 
    public Map<String, GroupedTestRun> getTestRunMap() {
       //group all the test methods based on their run
@@ -90,25 +95,15 @@ public class ClassResult extends BaseResult implements ModelObject {
       this.total = total;
    }
 
-   public void setTestMethodList(List<MethodResult> list) {
-      this.testMethodList = list;
-   }
-
    public List<MethodResult> getTestMethodList() {
       return this.testMethodList;
    }
 
    public void addTestMethods(List<MethodResult> list) {
-      if (this.testMethodList == null) {
-         this.testMethodList = new ArrayList<MethodResult>();
-      }
       this.testMethodList.addAll(list);
    }
 
    public void addTestMethod(MethodResult testMethod) {
-      if (this.testMethodList == null) {
-         this.testMethodList = new ArrayList<MethodResult>();
-      }
       this.testMethodList.add(testMethod);
    }
 
@@ -188,8 +183,7 @@ public class ClassResult extends BaseResult implements ModelObject {
       return null;
    }
 
-   public List<MethodResult>
-   getTestMethods() {
+   public List<MethodResult> getTestMethods() {
       List<MethodResult> list = new ArrayList<MethodResult>();
       for (MethodResult methodResult : this.testMethodList) {
          if (!methodResult.isConfig()) {
@@ -199,8 +193,7 @@ public class ClassResult extends BaseResult implements ModelObject {
       return list;
    }
 
-   public List<MethodResult>
-   getConfigurationMethods() {
+   public List<MethodResult> getConfigurationMethods() {
       List<MethodResult> list = new ArrayList<MethodResult>();
       for (MethodResult methodResult : this.testMethodList) {
          if (methodResult.isConfig()) {
@@ -221,8 +214,7 @@ public class ClassResult extends BaseResult implements ModelObject {
     *
     * @return list of previous builds results for this class
     */
-   public List<ClassResult>
-   getPreviousClassResults() {
+   public List<ClassResult> getPreviousClassResults() {
       List<ClassResult> classResults = new ArrayList<ClassResult>();
       List<TestResults> previousTestResults =
             TestResultHistoryUtil.getPreviousBuildTestResults(getOwner());

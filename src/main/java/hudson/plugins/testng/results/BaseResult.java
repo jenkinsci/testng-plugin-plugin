@@ -18,20 +18,21 @@ public abstract class BaseResult implements Serializable {
    @Deprecated
    protected String fullName;
 
-   public void setParent(BaseResult parent) {
-      this.parent = parent;
-   }
-
    public String getName() {
       return name;
    }
 
+   //TODO: Remove if possible
    public void setName(String name) {
       this.name = name;
    }
 
    public BaseResult getParent() {
       return parent;
+   }
+
+   public void setParent(BaseResult parent) {
+      this.parent = parent;
    }
 
    public AbstractBuild<?, ?> getOwner() {

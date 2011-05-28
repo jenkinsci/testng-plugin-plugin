@@ -1,9 +1,11 @@
 package hudson.plugins.testng.results;
 
 import hudson.model.ModelObject;
-import hudson.model.AbstractBuild;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Represents a single TestNG XML <test> tag
@@ -12,23 +14,25 @@ import java.util.List;
  *
  */
 public class TestResult extends BaseResult implements ModelObject {
-   private AbstractBuild<?, ?> owner;
-   private List<ClassResult> classList;
 
-   public void setOwner(AbstractBuild<?, ?> owner) {
-      this.owner = owner;
-   }
+   private List<ClassResult> classList = new ArrayList<ClassResult>();
 
-   public AbstractBuild<?, ?> getOwner() {
-      return owner;
+   public TestResult(String name) {
+     this.name = name;
    }
 
    public List<ClassResult> getClassList() {
       return classList;
    }
 
-   public void setClassList(List<ClassResult> classList) {
-      this.classList = classList;
+   /**
+    * Adds only the classes that already aren't part of the list
+    * @param classList
+    */
+   public void addClassList(List<ClassResult> classList) {
+     Set<ClassResult> tmpSet = new HashSet<ClassResult>(this.classList);
+     tmpSet.addAll(classList);
+     this.classList = new ArrayList<ClassResult>(tmpSet);
    }
 
    public String getDisplayName() {
