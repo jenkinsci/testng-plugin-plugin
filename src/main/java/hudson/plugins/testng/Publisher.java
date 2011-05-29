@@ -35,6 +35,9 @@ public class Publisher extends Recorder {
    public final boolean escapeTestDescp;
    public final boolean escapeExceptionMsg;
 
+   @Extension
+   public static final DescriptorImpl DESCRIPTOR = new DescriptorImpl();
+
    @DataBoundConstructor
    public Publisher(String reportFilenamePattern, boolean isRelativePath,
          boolean escapeTestDescp, boolean escapeExceptionMsg) {
@@ -64,9 +67,6 @@ public class Publisher extends Recorder {
    public BuildStepMonitor getRequiredMonitorService() {
       return BuildStepMonitor.BUILD;
    }
-
-   @Extension
-   public static final DescriptorImpl DESCRIPTOR = new DescriptorImpl();
 
    /**
     * {@inheritDoc}

@@ -117,7 +117,7 @@
       <j:otherwise>No Configuration method was skipped</j:otherwise>
    </j:choose>
 
-   <h2>All Tests ( grouped by their packages )</h2>
+   <h2>All Tests (grouped by their packages)</h2>
    <a href="javascript:showOrHideTable('allTestsTable')">hide/expand the table</a>
    <table id="allTestsTable" border="1px" class="pane sortable">
       <thead>

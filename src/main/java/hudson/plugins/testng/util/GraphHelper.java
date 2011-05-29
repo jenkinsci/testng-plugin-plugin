@@ -126,7 +126,9 @@ public class GraphHelper {
 
    private static String getRelPath(StaplerRequest req) {
       String relPath = req.getParameter("rel");
-      if(relPath==null)   return "";
+      if (relPath == null) {
+        return "";
+      }
       return relPath;
   }
 }
