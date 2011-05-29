@@ -27,7 +27,7 @@
                <j:forEach var="r" items="${it.results.failedTests}">
                   <tr>
                      <td align="left">
-                        <a href="${r.fullUrl}">${r.fullName}</a>
+                        <a href="${r.fullUrl}">${r.parent.name}.${r.name}</a>
                      </td>
                      <td align="right" data="${r.duration}">
                         <j:invokeStatic className="hudson.plugins.testng.util.FormatUtil"
@@ -58,7 +58,7 @@
                <j:forEach var="r" items="${it.results.failedConfigurationMethods}">
                   <tr>
                      <td align="left">
-                        <a href="${r.fullUrl}">${r.fullName}</a>
+                        <a href="${r.fullUrl}">${r.parent.name}.${r.name}</a>
                      </td>
                   </tr>
                </j:forEach>
@@ -83,7 +83,7 @@
                <j:forEach var="r" items="${it.results.skippedTests}">
                   <tr>
                      <td align="left">
-                        <a href="${r.fullUrl}">${r.fullName}</a>
+                        <a href="${r.fullUrl}">${r.parent.name}.${r.name}</a>
                      </td>
                   </tr>
                </j:forEach>
@@ -107,7 +107,7 @@
                <j:forEach var="r" items="${it.results.skippedConfigurationMethods}">
                   <tr>
                      <td align="left">
-                        <a href="${r.fullUrl}">${r.fullName}</a>
+                        <a href="${r.fullUrl}">${r.parent.name}.${r.name}</a>
                      </td>
                   </tr>
                </j:forEach>
