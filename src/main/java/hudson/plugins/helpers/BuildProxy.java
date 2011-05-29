@@ -4,6 +4,7 @@ import hudson.FilePath;
 import hudson.model.BuildListener;
 import hudson.model.Result;
 import hudson.model.AbstractBuild;
+import hudson.plugins.testng.BuildIndividualReport;
 import hudson.util.IOException2;
 
 import java.io.IOException;
@@ -22,8 +23,8 @@ public final class BuildProxy implements Serializable {
    private final FilePath buildRootDir;
    private final FilePath executionRootDir;
    private final Calendar timestamp;
-   private final List<AbstractBuildAction<AbstractBuild<?, ?>>> actions =
-         new ArrayList<AbstractBuildAction<AbstractBuild<?, ?>>>();
+   private final List<BuildIndividualReport> actions =
+         new ArrayList<BuildIndividualReport>();
    private Result result = null;
    private boolean continueBuild = true;
 
@@ -134,7 +135,7 @@ public final class BuildProxy implements Serializable {
     */
    public void updateBuild(AbstractBuild<?, ?> build) {
       // update the actions
-      for (AbstractBuildAction<AbstractBuild<?, ?>> action : actions) {
+      for (BuildIndividualReport action : actions) {
          if (!build.getActions().contains(action)) {
             action.setBuild(build);
             build.getActions().add(action);
@@ -152,7 +153,7 @@ public final class BuildProxy implements Serializable {
     *
     * @return Value for property 'actions'.
     */
-   public List<AbstractBuildAction<AbstractBuild<?, ?>>> getActions() {
+   public List<BuildIndividualReport> getActions() {
       return actions;
    }
 

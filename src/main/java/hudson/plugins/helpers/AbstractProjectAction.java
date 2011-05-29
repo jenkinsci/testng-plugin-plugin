@@ -3,6 +3,7 @@ package hudson.plugins.helpers;
 import hudson.model.ProminentProjectAction;
 import hudson.model.AbstractBuild;
 import hudson.model.AbstractProject;
+import hudson.plugins.testng.BuildIndividualReport;
 import hudson.plugins.testng.PluginImpl;
 import hudson.plugins.testng.results.TestResults;
 import hudson.util.ChartUtil;
@@ -39,7 +40,7 @@ abstract public class AbstractProjectAction<PROJECT extends AbstractProject<?, ?
     */
    public String getIconFileName() {
       for (AbstractBuild<?, ?> build = getProject().getLastBuild(); build != null; build = build.getPreviousBuild()) {
-         final AbstractBuildAction action = build.getAction(getBuildActionClass());
+         final BuildIndividualReport action = build.getAction(getBuildActionClass());
          if (action != null) {
             return PluginImpl.ICON_FILE_NAME;
          }
@@ -154,7 +155,7 @@ abstract public class AbstractProjectAction<PROJECT extends AbstractProject<?, ?
     */
    public TestResults getResults() {
       for (AbstractBuild<?, ?> build = getProject().getLastBuild(); build != null; build = build.getPreviousBuild()) {
-         final AbstractBuildAction action = build.getAction(getBuildActionClass());
+         final BuildIndividualReport action = build.getAction(getBuildActionClass());
          if (action != null) {
             return action.getResults();
          }
@@ -162,9 +163,9 @@ abstract public class AbstractProjectAction<PROJECT extends AbstractProject<?, ?
       return null;
    }
 
-   public AbstractBuildAction getLastCompletedBuildAction() {
+   public BuildIndividualReport getLastCompletedBuildAction() {
       for (AbstractBuild<?, ?> build = getProject().getLastCompletedBuild(); build != null; build = build.getPreviousBuild()) {
-         final AbstractBuildAction action = build.getAction(getBuildActionClass());
+         final BuildIndividualReport action = build.getAction(getBuildActionClass());
          if (action != null) {
             return action;
          }
@@ -172,13 +173,13 @@ abstract public class AbstractProjectAction<PROJECT extends AbstractProject<?, ?
       return null;
    }
 
-   protected abstract Class<? extends AbstractBuildAction> getBuildActionClass();
+   protected abstract Class<BuildIndividualReport> getBuildActionClass();
 
    protected void populateDataSetBuilder(DataSetBuilder<String, ChartUtil.NumberOnlyBuildLabel> dataset) {
 
       for (AbstractBuild<?, ?> build = getProject().getLastBuild(); build != null; build = build.getPreviousBuild()) {
          ChartUtil.NumberOnlyBuildLabel label = new ChartUtil.NumberOnlyBuildLabel(build);
-         AbstractBuildAction action = build.getAction(getBuildActionClass());
+         BuildIndividualReport action = build.getAction(getBuildActionClass());
          if (action != null) {
             dataset.add(action.getResults().getPassedTestCount(), "Passed", label);
             dataset.add(action.getResults().getFailedTestCount(), "Failed", label);

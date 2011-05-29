@@ -1,8 +1,6 @@
 package hudson.plugins.testng;
 
-import hudson.model.AbstractBuild;
 import hudson.model.AbstractProject;
-import hudson.plugins.helpers.AbstractBuildAction;
 import hudson.plugins.helpers.AbstractProjectAction;
 
 /**
@@ -20,7 +18,7 @@ public class ProjectIndividualReport extends AbstractProjectAction<AbstractProje
       this.escapeTestDescp = escapeTestDescp;
    }
 
-   protected Class<? extends AbstractBuildAction<AbstractBuild<?,?>>> getBuildActionClass() {
+   protected Class<BuildIndividualReport> getBuildActionClass() {
       return BuildIndividualReport.class;
    }
 
