@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import hudson.plugins.helpers.AbstractProjectAction;
+import hudson.plugins.testng.ProjectIndividualReport;
 import hudson.plugins.testng.util.TestResultHistoryUtil;
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
@@ -280,7 +280,7 @@ public class TestResults extends BaseResult implements Serializable {
                // /${it.project.url}${_buildNumber}/${it.urlName}
                htmlStr.append("<a href=\"").append(getOwner().getUpUrl());
                htmlStr.append(getOwner().getNumber());
-               htmlStr.append("/").append(getOwner().getProject().getAction(AbstractProjectAction.class).getUrlName());
+               htmlStr.append("/").append(getOwner().getProject().getAction(ProjectIndividualReport.class).getUrlName());
                htmlStr.append("/").append(methodResult.getFullUrl());
                htmlStr.append("\">");
                htmlStr.append(((ClassResult)methodResult.getParent()).getName());
