@@ -1,4 +1,4 @@
-package hudson.plugins.helpers;
+package hudson.plugins.testng.util;
 
 import hudson.plugins.testng.BuildIndividualReport;
 import hudson.util.ChartUtil.NumberOnlyBuildLabel;

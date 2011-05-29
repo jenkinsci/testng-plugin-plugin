@@ -3,8 +3,8 @@ package hudson.plugins.testng;
 import hudson.model.ProminentProjectAction;
 import hudson.model.AbstractBuild;
 import hudson.model.AbstractProject;
-import hudson.plugins.helpers.GraphHelper;
 import hudson.plugins.testng.results.TestResults;
+import hudson.plugins.testng.util.GraphHelper;
 import hudson.util.ChartUtil;
 import hudson.util.DataSetBuilder;
 
