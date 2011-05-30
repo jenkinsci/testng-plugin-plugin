@@ -1,24 +1,26 @@
 package hudson.plugins.testng;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
-
 import hudson.Extension;
 import hudson.FilePath;
 import hudson.Launcher;
-import hudson.model.AbstractBuild;
 import hudson.model.Action;
-import hudson.model.AbstractProject;
 import hudson.model.BuildListener;
 import hudson.model.Result;
+import hudson.model.AbstractBuild;
+import hudson.model.AbstractProject;
 import hudson.plugins.testng.parser.ResultsParser;
 import hudson.plugins.testng.results.TestResults;
 import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.BuildStepMonitor;
 import hudson.tasks.Recorder;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
+
 import net.sf.json.JSONObject;
 
 import org.kohsuke.stapler.DataBoundConstructor;
@@ -56,14 +58,6 @@ public class Publisher extends Recorder {
        return isRelativePath;
    }
 
-   /**
-    * {@inheritDoc}
-    */
-   @Override
-   public boolean needsToRunAfterFinalized() {
-      return false;
-   }
-
    public BuildStepMonitor getRequiredMonitorService() {
       return BuildStepMonitor.BUILD;
    }
@@ -80,8 +74,10 @@ public class Publisher extends Recorder {
     * {@inheritDoc}
     */
    @Override
-   public Action getProjectAction(AbstractProject<?, ?> project) {
-      return new ProjectIndividualReport(project, escapeTestDescp, escapeExceptionMsg);
+   public Collection<? extends Action> getProjectActions(AbstractProject<?, ?> project) {
+      Collection<Action> actions = new ArrayList<Action>();
+      actions.add(new ProjectIndividualReport(project, escapeTestDescp, escapeExceptionMsg));
+      return actions;
    }
 
    /**
