@@ -3,13 +3,13 @@ TestNG Plugin for Jenkins (and maybe Hudson)
 
 https://wiki.jenkins-ci.org/display/JENKINS/testng-plugin
 
-This plugin allows you to publish TestNG results. TestNG result xml file 
-contains more information than the JUnit report xml file. This plugin 
+This plugin allows you to publish TestNG results. TestNG result xml file
+contains more information than the JUnit report xml file. This plugin
 exposes those extra information in graph and table reports.
 
-This plugin makes it possible to import TestNG XML reports from each 
-build into Hudson. The data is parsed using the output generated using 
-org.testng.reporters.XMLReporter. The results are displayed with a trend 
+This plugin makes it possible to import TestNG XML reports from each
+build into Hudson. The data is parsed using the output generated using
+org.testng.reporters.XMLReporter. The results are displayed with a trend
 graph and all details about which tests that failed are also presented.
 
 
@@ -21,6 +21,8 @@ Release Notes
 * start storing testng-results.xml with build artifacts
 * capture information regarding groups
 * capture parameters used to run the test method
+* Action --> HealthReportingAction
+* Remove isRelativePath
 
 ### v0.22
 * A whole lot of code cleanup. Removed a lot of unnecessary classes.
@@ -37,7 +39,7 @@ Release Notes
 ### v0.19
  * Fixed: JENKINS-9083 - fix urls in results trend chart
 
-### v0.18 
+### v0.18
  * Fixed: JENKINS-9083 - handle jenkins context path in URLs properly
  * Updated pom dependency to jenkins 1.399 (make it simpler to release plugins)
 

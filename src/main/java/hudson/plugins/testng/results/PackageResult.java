@@ -223,9 +223,9 @@ public class PackageResult extends BaseResult implements ModelObject {
       if (previousTestResults != null) {
          for (TestResults previousTestResult : previousTestResults) {
             Map<String, PackageResult> previousPackageMap = previousTestResult.getPackageMap();
-            for (String packageName : previousPackageMap.keySet()) {
-               if (packageName.equals(this.getName())) {
-                  packageResults.add(previousPackageMap.get(packageName));
+            for (Map.Entry<String, PackageResult> entry : previousPackageMap.entrySet()) {
+               if (entry.getKey().equals(this.getName())) {
+                  packageResults.add(entry.getValue());
                   break;
                }
             }

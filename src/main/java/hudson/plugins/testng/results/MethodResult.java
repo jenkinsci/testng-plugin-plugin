@@ -1,7 +1,7 @@
 package hudson.plugins.testng.results;
 
 import hudson.model.ModelObject;
-import hudson.plugins.testng.ProjectIndividualReport;
+import hudson.plugins.testng.TestNGProjectAction;
 import hudson.plugins.testng.util.FormatUtil;
 import hudson.plugins.testng.util.TestResultHistoryUtil;
 
@@ -93,8 +93,8 @@ public class MethodResult extends BaseResult implements ModelObject {
    }
 
    public String getDescriptionForDisplay() {
-     ProjectIndividualReport projAction
-        = super.getOwner().getProject().getAction(ProjectIndividualReport.class);
+     TestNGProjectAction projAction
+        = super.getOwner().getProject().getAction(TestNGProjectAction.class);
      if (projAction.getEscapeTestDescp()) {
          return FormatUtil.escapeString(description);
       }
@@ -102,8 +102,8 @@ public class MethodResult extends BaseResult implements ModelObject {
    }
 
    public String getExceptionMessageForDisplay() {
-     ProjectIndividualReport projAction
-        = super.getOwner().getProject().getAction(ProjectIndividualReport.class);
+     TestNGProjectAction projAction
+        = super.getOwner().getProject().getAction(TestNGProjectAction.class);
      if (projAction.getEscapeExceptionMsg()) {
         return FormatUtil.escapeString(this.exception.getMessage());
      }

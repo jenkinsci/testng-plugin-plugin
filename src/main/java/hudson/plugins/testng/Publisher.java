@@ -59,7 +59,7 @@ public class Publisher extends Recorder {
    }
 
    public BuildStepMonitor getRequiredMonitorService() {
-      return BuildStepMonitor.BUILD;
+      return BuildStepMonitor.STEP;
    }
 
    /**
@@ -76,7 +76,7 @@ public class Publisher extends Recorder {
    @Override
    public Collection<? extends Action> getProjectActions(AbstractProject<?, ?> project) {
       Collection<Action> actions = new ArrayList<Action>();
-      actions.add(new ProjectIndividualReport(project, escapeTestDescp, escapeExceptionMsg));
+      actions.add(new TestNGProjectAction(project, escapeTestDescp, escapeExceptionMsg));
       return actions;
    }
 
@@ -117,8 +117,7 @@ public class Publisher extends Recorder {
 
       if (results != null) {
          //create an individual report for all of the results and add it to the build
-         BuildIndividualReport action = new BuildIndividualReport(results);
-         action.setBuild(build);
+         TestNGBuildAction action = new TestNGBuildAction(build, results);
          build.getActions().add(action);
          TestResults r = TestResults.total(true, results);
          if (r.getFailedConfigurationMethodsCount() > 0 || r.getSkippedConfigurationMethodsCount() > 0 ||

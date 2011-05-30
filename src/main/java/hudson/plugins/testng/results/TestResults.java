@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import hudson.plugins.testng.ProjectIndividualReport;
+import hudson.plugins.testng.TestNGProjectAction;
 import hudson.plugins.testng.util.TestResultHistoryUtil;
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
@@ -90,7 +90,6 @@ public class TestResults extends BaseResult implements Serializable {
       Set<TestResult> tmpSet = new HashSet<TestResult>(this.testList);
       tmpSet.addAll(testList);
       this.testList = new ArrayList<TestResult>(tmpSet);
-      this.testList = testList;
    }
 
    public int getTotalTestCount() {
@@ -280,7 +279,7 @@ public class TestResults extends BaseResult implements Serializable {
                // /${it.project.url}${_buildNumber}/${it.urlName}
                htmlStr.append("<a href=\"").append(getOwner().getUpUrl());
                htmlStr.append(getOwner().getNumber());
-               htmlStr.append("/").append(getOwner().getProject().getAction(ProjectIndividualReport.class).getUrlName());
+               htmlStr.append("/").append(getOwner().getProject().getAction(TestNGProjectAction.class).getUrlName());
                htmlStr.append("/").append(methodResult.getFullUrl());
                htmlStr.append("\">");
                htmlStr.append(((ClassResult)methodResult.getParent()).getName());

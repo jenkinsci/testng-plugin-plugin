@@ -1,6 +1,6 @@
 package hudson.plugins.testng.util;
 
-import hudson.plugins.testng.BuildIndividualReport;
+import hudson.plugins.testng.TestNGBuildAction;
 import hudson.util.ChartUtil.NumberOnlyBuildLabel;
 import hudson.util.ColorPalette;
 import hudson.util.ShiftedCategoryAxis;
@@ -99,7 +99,7 @@ public class GraphHelper {
           @Override
           public String generateToolTip(CategoryDataset dataset, int row, int column) {
               NumberOnlyBuildLabel label = (NumberOnlyBuildLabel) dataset.getColumnKey(column);
-              BuildIndividualReport report = label.build.getAction(BuildIndividualReport.class);
+              TestNGBuildAction report = label.build.getAction(TestNGBuildAction.class);
               switch (row) {
                   case 0:
                       return String.valueOf(report.getResults().getFailedTestCount()) + " Failure(s)";

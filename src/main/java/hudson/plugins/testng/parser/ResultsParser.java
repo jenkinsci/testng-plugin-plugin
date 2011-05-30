@@ -18,10 +18,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -168,7 +166,9 @@ public class ResultsParser {
          e.printStackTrace(printStream);
       } finally {
          try {
-           bufferedInputStream.close();
+           if (bufferedInputStream != null) {
+              bufferedInputStream.close();
+           }
          } catch (IOException e) {
             e.printStackTrace(printStream);
          }

@@ -1,7 +1,7 @@
 package hudson.plugins.testng.util;
 
 import hudson.model.AbstractBuild;
-import hudson.plugins.testng.BuildIndividualReport;
+import hudson.plugins.testng.TestNGBuildAction;
 import hudson.plugins.testng.results.TestResults;
 
 import java.util.ArrayList;
@@ -23,9 +23,9 @@ public class TestResultHistoryUtil {
       List<TestResults> previousResults = new ArrayList<TestResults>();
       AbstractBuild<?, ?> previousBuild = owner.getPreviousBuild();
       while (previousBuild != null) {
-         if (previousBuild.getAction(BuildIndividualReport.class) != null) {
-            if (previousBuild.getAction(BuildIndividualReport.class).getResults() != null) {
-               previousResults.add(previousBuild.getAction(BuildIndividualReport.class).getResults());
+         if (previousBuild.getAction(TestNGBuildAction.class) != null) {
+            if (previousBuild.getAction(TestNGBuildAction.class).getResults() != null) {
+               previousResults.add(previousBuild.getAction(TestNGBuildAction.class).getResults());
             }
          }
          previousBuild = previousBuild.getPreviousBuild();
