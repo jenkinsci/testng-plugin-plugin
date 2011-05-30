@@ -20,7 +20,10 @@ Release Notes
 * add unit testing for testng results
 * start storing testng-results.xml with build artifacts
 * capture information regarding groups
-* capture parameters used to run the test
+* capture parameters used to run the test method
+
+### v0.22
+* A whole lot of code cleanup. Removed a lot of unnecessary classes.
 
 ### v0.21
 * Have checkboxes for escaping test description and exception message selected by default
