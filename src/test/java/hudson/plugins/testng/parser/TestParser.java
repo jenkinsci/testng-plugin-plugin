@@ -7,7 +7,6 @@ import java.io.File;
 import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Collection;
 import java.util.Date;
 import java.util.Map;
 
@@ -23,8 +22,8 @@ public class TestParser {
       URL resource = TestParser.class.getClassLoader().getResource(filename);
       Assert.assertNotNull(resource);
       ResultsParser parser = new ResultsParser(System.out);
-      Collection<TestResults> results = parser.parse(new File(resource.getFile()));
-      Assert.assertFalse("Collection shouldn't have been empty", results.isEmpty());
+      TestResults results = parser.parse(new File(resource.getFile()));
+      Assert.assertFalse("Collection shouldn't have been empty", results.getTestList().isEmpty());
    }
 
    @Test
@@ -33,28 +32,27 @@ public class TestParser {
       URL resource = TestParser.class.getClassLoader().getResource(filename);
       Assert.assertNotNull(resource);
       ResultsParser parser = new ResultsParser(System.out);
-      Collection<TestResults> results = parser.parse(new File(resource.getFile()));
-      Assert.assertFalse("Collection shouldn't have been empty", results.isEmpty());
+      TestResults results = parser.parse(new File(resource.getFile()));
+      Assert.assertFalse("Collection shouldn't have been empty", results.getTestList().isEmpty());
 
       // This test assumes that there is only 1 package in
       // sample-testng-dp-result that contains tests that add to 12 ms
-      for(TestResults tr : results) {
-        tr.tally();
-        Map<String, PackageResult> packageResults= tr.getPackageMap();
-        for(PackageResult result: packageResults.values()) {
-          Assert.assertEquals("org.farshid", result.getName());
-          Assert.assertEquals(12, result.getDuration());
-        }
+      results.tally();
+      Map<String, PackageResult> packageResults = results.getPackageMap();
+      for(PackageResult result: packageResults.values()) {
+        Assert.assertEquals("org.farshid", result.getName());
+        Assert.assertEquals(12, result.getDuration());
       }
+
    }
 
    @Test
    public void testTestngXmlWithNonExistingResultXml() {
       String filename = "/invalid/path/to/file/new-test-result.xml";
       ResultsParser parser = new ResultsParser(System.out);
-      Collection<TestResults> results = parser.parse(new File(filename));
+      TestResults results = parser.parse(new File(filename));
       Assert.assertTrue("Collection should have been empty. Number of results : "
-               + results.size(), results.isEmpty());
+               + results.getTestList().size(), results.getTestList().isEmpty());
    }
 
    @Test

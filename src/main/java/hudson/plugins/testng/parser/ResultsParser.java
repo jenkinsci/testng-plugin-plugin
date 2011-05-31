@@ -15,8 +15,6 @@ import java.io.PrintStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -54,18 +52,18 @@ public class ResultsParser {
     * @param file a file hopefully containing test related data in correct format
     * @return a collection of test results
     */
-   public Collection<TestResults> parse(File file) {
+   public TestResults parse(File file) {
+      TestResults allResults = new TestResults(UUID.randomUUID().toString() + "_TestResults");
       if (null == file) {
          printStream.println("File not specified");
-         return Collections.emptyList();
+         return allResults;
       }
 
       if (!file.exists() || file.isDirectory()) {
          printStream.println("'" + file.getAbsolutePath() + "' points to a non-existent file or directory");
-         return Collections.emptyList();
+         return allResults;
       }
 
-      TestResults allResults = new TestResults(UUID.randomUUID().toString() + "_TestResults");
       BufferedInputStream bufferedInputStream = null;
       try {
          bufferedInputStream = new BufferedInputStream(new FileInputStream(file));
@@ -146,15 +144,6 @@ public class ResultsParser {
                }
 
                allResults.addTestList(testNGTestList);
-
-               if (allResults.getTotalTestCount() > 0) {
-                  printStream.println("Parsed TestNG XML Report at '" + file.getAbsolutePath()
-                        + "' and collected "
-                        + allResults.getTotalTestCount() + " test results");
-               } else {
-                  printStream.println("Parsed TestNG XML Report at '" + file.getAbsolutePath()
-                        + "' and did not find any test results");
-               }
             } //while end for suites
          }
       } catch (XmlPullParserException e) {
@@ -174,10 +163,7 @@ public class ResultsParser {
          }
       }
 
-      //TODO: convert to just returning TestResults instead of Collection<TestResults>
-      Collection<TestResults> returned = new ArrayList<TestResults>();
-      returned.add(allResults);
-      return returned;
+      return allResults;
    }
 
    private void updateTestMethodLists(TestResults testResults, MethodResult testNGTestMethod) {

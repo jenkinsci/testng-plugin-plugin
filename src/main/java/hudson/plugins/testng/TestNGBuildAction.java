@@ -27,6 +27,7 @@ public class TestNGBuildAction implements Action, Serializable {
    public TestNGBuildAction(AbstractBuild<?, ?> build, Collection<TestResults> testngResults) {
       this.build = build;
       this.results = TestResults.total(true, testngResults);
+      this.results.setOwner(this.build);
    }
 
    /**

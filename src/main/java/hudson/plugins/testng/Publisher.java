@@ -16,9 +16,12 @@ import hudson.tasks.Recorder;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import net.sf.json.JSONObject;
@@ -32,8 +35,9 @@ import org.kohsuke.stapler.StaplerRequest;
  */
 public class Publisher extends Recorder {
 
-   private final String reportFilenamePattern;
-   private final boolean isRelativePath;
+   public final String reportFilenamePattern;
+   @Deprecated //not used anymore. Here to ensure installed versions of plugin are not affected
+   public final boolean isRelativePath;
    public final boolean escapeTestDescp;
    public final boolean escapeExceptionMsg;
 
@@ -48,14 +52,6 @@ public class Publisher extends Recorder {
       this.isRelativePath = isRelativePath;
       this.escapeTestDescp = escapeTestDescp;
       this.escapeExceptionMsg = escapeExceptionMsg;
-   }
-
-   public String getReportFilenamePattern() {
-      return reportFilenamePattern;
-   }
-
-   public boolean getIsRelativePath() {
-       return isRelativePath;
    }
 
    public BuildStepMonitor getRequiredMonitorService() {
@@ -86,36 +82,38 @@ public class Publisher extends Recorder {
    @Override
    public boolean perform(AbstractBuild<?, ?> build, Launcher launcher, final BuildListener listener)
          throws InterruptedException, IOException {
-      Collection<TestResults> results = null;
-      Set<String> parsedFiles = new HashSet<String>();
-      if (!isRelativePath) {
-         //TODO : fix this code to handle relative and absolute path together
-         //instead of branching here
-         FilePath[] paths = build.getWorkspace().list(reportFilenamePattern);
 
-         //loop through all the files and get the results
-         for (FilePath path : paths) {
-            final String pathStr = path.getRemote();
-            if (!parsedFiles.contains(pathStr)) {
-               parsedFiles.add(pathStr);
-               ResultsParser parser = new ResultsParser(listener.getLogger());
-               Collection<TestResults> result = parser.parse(new File(pathStr));
-               if (results == null) {
-                  results = result;
-               } else {
-                  results.addAll(result);
-               }
-            }
-         }
-      } else {
-         String executionRootDirRemotePath = build.getWorkspace().getRemote();
-         String testngResultXmlRelativePath = reportFilenamePattern;
-         String testngResultXmlRemotePath = executionRootDirRemotePath + "/" + testngResultXmlRelativePath;
-         ResultsParser parser = new ResultsParser(listener.getLogger());
-         results = parser.parse(new File(testngResultXmlRemotePath));
+      PrintStream logger = listener.getLogger();
+      logger.println("Looking for TestNG results report in workspace using pattern: " + reportFilenamePattern);
+      FilePath[] paths = locateReports(build.getWorkspace(), reportFilenamePattern);
+
+      Collection<TestResults> results = new ArrayList<TestResults>();
+      Set<String> parsedFiles = new HashSet<String>();
+
+      if (paths.length == 0) {
+         logger.println("Did not find any matching files.");
+         build.setResult(Result.FAILURE);
+         //build can still continue
+         return true;
       }
 
-      if (results != null) {
+      //loop through all the files and get the results
+      ResultsParser parser = new ResultsParser(logger);
+      for (FilePath path : paths) {
+         final String pathStr = path.getRemote();
+         if (!parsedFiles.contains(pathStr)) {
+            TestResults result = parser.parse(new File(pathStr));
+            if (result.getTestList().size() > 0) {
+              logger.println("Found results for: " + pathStr);
+              results.add(result);
+              parsedFiles.add(pathStr);
+            }
+         }
+      }
+
+      //TODO: Save the reports
+
+      if (results.size() > 0) {
          //create an individual report for all of the results and add it to the build
          TestNGBuildAction action = new TestNGBuildAction(build, results);
          build.getActions().add(action);
@@ -124,11 +122,53 @@ public class Publisher extends Recorder {
                r.getFailedTestCount() > 0 || r.getSkippedTestCount() > 0) {
             build.setResult(Result.UNSTABLE);
          }
+      } else {
+         logger.println("Found matching files but did not find any TestNG results.");
+         build.setResult(Result.FAILURE);
+         //build can still continue
+         return true;
       }
+
       return true;
    }
 
    /**
+    * look for testng reports based in the configured parameter includes.
+    * 'filenamePattern' is
+    *   - an Ant-style pattern
+    *   - a list of files and folders separated by the characters ;:,
+    *
+    * NOTE: based on how things work for emma plugin for jenkins
+    */
+   private FilePath[] locateReports(FilePath workspace,
+        String filenamePattern) throws IOException, InterruptedException
+   {
+
+      // First use ant-style pattern
+      try {
+         FilePath[] ret = workspace.list(filenamePattern);
+         if (ret.length > 0) {
+            return ret;
+         }
+      } catch (Exception e) {}
+
+      // If it fails, do a legacy search
+      List<FilePath> files = new ArrayList<FilePath>();
+      String parts[] = filenamePattern.split("\\s*[;:,]+\\s*");
+      for (String path : parts) {
+         FilePath src = workspace.child(path);
+         if (src.exists()) {
+            if (src.isDirectory()) {
+               files.addAll(Arrays.asList(src.list("**/testng-results.xml")));
+            } else {
+               files.add(src);
+            }
+         }
+      }
+      return files.toArray(new FilePath[files.size()]);
+   }
+
+  /**
     * {@inheritDoc}
     */
    @Override
