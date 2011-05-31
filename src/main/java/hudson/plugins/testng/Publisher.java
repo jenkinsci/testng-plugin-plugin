@@ -37,7 +37,7 @@ public class Publisher extends Recorder {
 
    public final String reportFilenamePattern;
    @Deprecated //not used anymore. Here to ensure installed versions of plugin are not affected
-   public final boolean isRelativePath;
+   private boolean isRelativePath;
    public final boolean escapeTestDescp;
    public final boolean escapeExceptionMsg;
 
@@ -45,11 +45,10 @@ public class Publisher extends Recorder {
    public static final DescriptorImpl DESCRIPTOR = new DescriptorImpl();
 
    @DataBoundConstructor
-   public Publisher(String reportFilenamePattern, boolean isRelativePath,
+   public Publisher(String reportFilenamePattern,
          boolean escapeTestDescp, boolean escapeExceptionMsg) {
       reportFilenamePattern.getClass();
       this.reportFilenamePattern = reportFilenamePattern;
-      this.isRelativePath = isRelativePath;
       this.escapeTestDescp = escapeTestDescp;
       this.escapeExceptionMsg = escapeExceptionMsg;
    }
