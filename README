@@ -23,6 +23,7 @@ Release Notes
 * capture parameters used to run the test method
 * Action --> HealthReportingAction
 * Remove isRelativePath
+* Fix graph refresh after a build is deleted
 
 ### v0.22
 * A whole lot of code cleanup. Removed a lot of unnecessary classes.

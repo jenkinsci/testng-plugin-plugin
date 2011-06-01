@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testng-results skipped="0" failed="0" total="3" passed="3">
+  <reporter-output>
+  </reporter-output>
+  <suite name="XMLReporter tests" duration-ms="6" started-at="2011-05-31T15:24:20Z" finished-at="2011-05-31T15:24:20Z">
+    <groups>
+    </groups>
+    <test name="XMLReporter:Tests" duration-ms="3" started-at="2011-05-31T15:24:20Z" finished-at="2011-05-31T15:24:20Z">
+      <class name="test.xmlreporter.Test1">
+        <test-method status="PASS" signature="test1()" name="test1" duration-ms="1" started-at="2011-05-31T15:24:20Z" finished-at="2011-05-31T15:24:20Z">
+        </test-method>
+      </class>
+    </test>
+    <test name="XMLReporter:Tests:Another" duration-ms="3" started-at="2011-05-31T15:24:20Z" finished-at="2011-05-31T15:24:20Z">
+      <class name="test.xmlreporter.Test2">
+        <test-method status="PASS" signature="test2()" name="test2" duration-ms="1" started-at="2011-05-31T15:24:20Z" finished-at="2011-05-31T15:24:20Z">
+        </test-method>
+      </class>
+    </test>
+    <test name="XMLReporter:Tests" duration-ms="2" started-at="2011-05-31T15:24:20Z" finished-at="2011-05-31T15:24:20Z">
+      <class name="test.xmlreporter.Test3">
+        <test-method status="PASS" signature="test3()" name="test3" duration-ms="0" started-at="2011-05-31T15:24:20Z" finished-at="2011-05-31T15:24:20Z">
+        </test-method>
+      </class>
+    </test>
+  </suite>
+  <suite name="XMLReporter tests" duration-ms="2" started-at="2011-05-31T15:24:20Z" finished-at="2011-05-31T15:24:20Z">
+    <groups>
+    </groups>
+    <test name="XMLReporter:Tests" duration-ms="2" started-at="2011-05-31T15:24:20Z" finished-at="2011-05-31T15:24:20Z">
+      <class name="test.xmlreporter.Test1">
+        <test-method status="PASS" signature="test1()" name="test1" duration-ms="1" started-at="2011-05-31T15:24:20Z" finished-at="2011-05-31T15:24:20Z">
+        </test-method>
+      </class>
+    </test>
+  </suite>
+  <suite name="XMLReporter tests" duration-ms="0" started-at="2011-05-31T15:26:20Z" finished-at="2011-05-31T15:26:20Z">
+    <groups>
+    </groups>
+  </suite>
+</testng-results>
