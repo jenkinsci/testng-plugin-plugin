@@ -11,7 +11,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.PrintStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -35,16 +34,8 @@ import org.xmlpull.v1.XmlPullParserException;
  */
 public class ResultsParser {
 
-   private PrintStream printStream;
    private static Logger log = Logger.getLogger(ResultsParser.class.getName());
    public static String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss";
-
-   public ResultsParser(PrintStream printStream) {
-     if (printStream == null) {
-       throw new IllegalArgumentException("Printstream can not be null");
-     }
-     this.printStream = printStream;
-   }
 
    /**
     * Parses the XML for relevant information
@@ -55,12 +46,12 @@ public class ResultsParser {
    public TestResults parse(File file) {
       TestResults allResults = new TestResults(UUID.randomUUID().toString() + "_TestResults");
       if (null == file) {
-         printStream.println("File not specified");
+         log.severe("File not specified");
          return allResults;
       }
 
       if (!file.exists() || file.isDirectory()) {
-         printStream.println("'" + file.getAbsolutePath() + "' points to a non-existent file or directory");
+        log.severe("'" + file.getAbsolutePath() + "' points to a non-existent file or directory");
          return allResults;
       }
 
@@ -147,19 +138,16 @@ public class ResultsParser {
             } //while end for suites
          }
       } catch (XmlPullParserException e) {
-         log.severe("Unable to create a new XmlPullParserFactory instance: "
-               + e.getMessage());
-         printStream.println("Failed to parse XML: " + e.getMessage());
-         e.printStackTrace(printStream);
+         log.warning("Failed to parse XML: " + e.getMessage());
       } catch (FileNotFoundException e) {
-         e.printStackTrace(printStream);
+        log.log(Level.SEVERE, "Failed to find XML file", e);
       } finally {
          try {
            if (bufferedInputStream != null) {
               bufferedInputStream.close();
            }
          } catch (IOException e) {
-            e.printStackTrace(printStream);
+           log.log(Level.WARNING, "Failed to close input stream", e);
          }
       }
 
@@ -266,7 +254,6 @@ public class ResultsParser {
             String tagFound =
               ResultPullParserHelper.parseToTagIfAnyFound(xmlPullParser, tags, exceptionDepth);
             if (tagFound == null) {
-               log.warning("did not find any of the tags within exception tag. break from the loop");
                break;
             }
             try {

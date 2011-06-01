@@ -46,7 +46,7 @@ public class TestResults extends BaseResult implements Serializable {
 
    public long getAge() {
       List<TestResults> previousTestResults =
-            TestResultHistoryUtil.getPreviousBuildTestResults(getOwner());
+            TestResultHistoryUtil.getAllPreviousBuildTestResults(getOwner());
       if (previousTestResults == null) {
          return 1;
       } else {
@@ -232,11 +232,10 @@ public class TestResults extends BaseResult implements Serializable {
       int prevFailedConfigurationCount = 0;
       int prevSkippedConfigurationCount = 0;
       int prevTotalTestCount = 0;
-      List<TestResults> prevTestResults =
+      TestResults previousResult =
             TestResultHistoryUtil.getPreviousBuildTestResults(getOwner());
 
-      if (prevTestResults != null && prevTestResults.size() > 0) {
-         TestResults previousResult = prevTestResults.get(0);
+      if (previousResult != null) {
          prevFailedTestCount = previousResult.getFailedTestCount();
          prevSkippedTestCount = previousResult.getSkippedTestCount();
          prevFailedConfigurationCount = previousResult.getFailedConfigurationMethodsCount();

@@ -21,7 +21,7 @@ public class TestParser {
       String filename = "sample-testng-results.xml";
       URL resource = TestParser.class.getClassLoader().getResource(filename);
       Assert.assertNotNull(resource);
-      ResultsParser parser = new ResultsParser(System.out);
+      ResultsParser parser = new ResultsParser();
       TestResults results = parser.parse(new File(resource.getFile()));
       Assert.assertFalse("Collection shouldn't have been empty", results.getTestList().isEmpty());
    }
@@ -31,7 +31,7 @@ public class TestParser {
       String filename = "sample-testng-dp-result.xml";
       URL resource = TestParser.class.getClassLoader().getResource(filename);
       Assert.assertNotNull(resource);
-      ResultsParser parser = new ResultsParser(System.out);
+      ResultsParser parser = new ResultsParser();
       TestResults results = parser.parse(new File(resource.getFile()));
       Assert.assertFalse("Collection shouldn't have been empty", results.getTestList().isEmpty());
 
@@ -49,7 +49,7 @@ public class TestParser {
    @Test
    public void testTestngXmlWithNonExistingResultXml() {
       String filename = "/invalid/path/to/file/new-test-result.xml";
-      ResultsParser parser = new ResultsParser(System.out);
+      ResultsParser parser = new ResultsParser();
       TestResults results = parser.parse(new File(filename));
       Assert.assertTrue("Collection should have been empty. Number of results : "
                + results.getTestList().size(), results.getTestList().isEmpty());

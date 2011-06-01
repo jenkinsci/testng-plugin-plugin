@@ -18,8 +18,7 @@ public class TestResultHistoryUtil {
     *
     * @return list of previous build test results
     */
-   public static List<TestResults>
-   getPreviousBuildTestResults(AbstractBuild<?, ?> owner) {
+   public static List<TestResults> getAllPreviousBuildTestResults(AbstractBuild<?, ?> owner) {
       List<TestResults> previousResults = new ArrayList<TestResults>();
       AbstractBuild<?, ?> previousBuild = owner.getPreviousBuild();
       while (previousBuild != null) {
@@ -31,6 +30,20 @@ public class TestResultHistoryUtil {
          previousBuild = previousBuild.getPreviousBuild();
       }
       return previousResults;
+   }
+
+   public static TestResults getPreviousBuildTestResults(AbstractBuild<?, ?> owner) {
+      AbstractBuild<?, ?> previousBuild = owner.getPreviousBuild();
+      while (previousBuild != null) {
+         if (previousBuild.getAction(TestNGBuildAction.class) != null) {
+            TestResults testResults = previousBuild.getAction(TestNGBuildAction.class).getResults();
+            if (testResults != null) {
+               return testResults;
+            }
+         }
+         previousBuild = previousBuild.getPreviousBuild();
+      }
+      return null;
    }
 
    //TODO: move getPreviousXXXResults from MethodResult,ClassResult and PackageResult to this class

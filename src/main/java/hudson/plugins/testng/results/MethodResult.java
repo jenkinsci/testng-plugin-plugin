@@ -149,7 +149,7 @@ public class MethodResult extends BaseResult implements ModelObject {
    public List<MethodResult> getPreviousMethodResults() {
       List<MethodResult> methodResults = new ArrayList<MethodResult>();
       List<TestResults> previousTestResults =
-            TestResultHistoryUtil.getPreviousBuildTestResults(getOwner());
+            TestResultHistoryUtil.getAllPreviousBuildTestResults(getOwner());
       if (previousTestResults != null) {
          for (TestResults previousTestResult : previousTestResults) {
             Map<String, PackageResult> previousPackageMap = previousTestResult.getPackageMap();

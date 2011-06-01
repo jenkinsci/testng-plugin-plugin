@@ -87,7 +87,7 @@ public class Publisher extends Recorder {
       FilePath[] paths = locateReports(build.getWorkspace(), reportFilenamePattern);
 
       Collection<TestResults> results = new ArrayList<TestResults>();
-      Set<String> parsedFiles = new HashSet<String>();
+      Set<FilePath> parsedFiles = new HashSet<FilePath>();
 
       if (paths.length == 0) {
          logger.println("Did not find any matching files.");
@@ -97,20 +97,26 @@ public class Publisher extends Recorder {
       }
 
       //loop through all the files and get the results
-      ResultsParser parser = new ResultsParser(logger);
+      ResultsParser parser = new ResultsParser();
       for (FilePath path : paths) {
          final String pathStr = path.getRemote();
-         if (!parsedFiles.contains(pathStr)) {
+         if (!parsedFiles.contains(path)) {
             TestResults result = parser.parse(new File(pathStr));
             if (result.getTestList().size() > 0) {
               logger.println("Found results for: " + pathStr);
               results.add(result);
-              parsedFiles.add(pathStr);
+              parsedFiles.add(path);
             }
          }
       }
 
-      //TODO: Save the reports
+
+      boolean filesSaved = saveReports(getTestNGReport(build), parsedFiles);
+      if (!filesSaved) {
+         logger.println("Failed to save TestNG XML reports");
+         build.setResult(Result.FAILURE);
+         return true;
+      }
 
       if (results.size() > 0) {
          //create an individual report for all of the results and add it to the build
@@ -124,7 +130,6 @@ public class Publisher extends Recorder {
       } else {
          logger.println("Found matching files but did not find any TestNG results.");
          build.setResult(Result.FAILURE);
-         //build can still continue
          return true;
       }
 
@@ -167,7 +172,32 @@ public class Publisher extends Recorder {
       return files.toArray(new FilePath[files.size()]);
    }
 
-  /**
+   /**
+    * Gets the directory to store report files
+    */
+   static FilePath getTestNGReport(AbstractBuild<?,?> build) {
+       return new FilePath(new File(build.getRootDir(), "testng"));
+   }
+
+   private boolean saveReports(FilePath testngDir, Set<FilePath> reports)
+   {
+      try {
+         testngDir.mkdirs();
+         int i = 0;
+         for (FilePath report : reports) {
+            String name = "testng-results" + (i > 0 ? "-" + i : "") + ".xml";
+            i++;
+            FilePath dst = testngDir.child(name);
+            report.copyTo(dst);
+         }
+      } catch (Exception e) {
+         e.printStackTrace();
+         return false;
+      }
+      return true;
+   }
+
+   /**
     * {@inheritDoc}
     */
    @Override

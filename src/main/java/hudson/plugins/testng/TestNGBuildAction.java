@@ -1,10 +1,15 @@
 package hudson.plugins.testng;
 
+import hudson.FilePath;
 import hudson.model.Action;
 import hudson.model.AbstractBuild;
+import hudson.plugins.testng.parser.ResultsParser;
 import hudson.plugins.testng.results.TestResults;
 
+import java.io.File;
 import java.io.Serializable;
+import java.lang.ref.SoftReference;
+import java.util.ArrayList;
 import java.util.Collection;
 
 import org.kohsuke.stapler.StaplerRequest;
@@ -22,12 +27,18 @@ public class TestNGBuildAction implements Action, Serializable {
     */
    private final AbstractBuild<?, ?> build;
 
-   private final TestResults results;
+   /**
+    * Only here for supporting older version of this plug-in
+    */
+   @Deprecated
+   private transient TestResults results;
+   private transient SoftReference<TestResults> testResults;
 
    public TestNGBuildAction(AbstractBuild<?, ?> build, Collection<TestResults> testngResults) {
       this.build = build;
-      this.results = TestResults.total(true, testngResults);
-      this.results.setOwner(this.build);
+      TestResults tr = TestResults.total(true, testngResults);
+      tr.setOwner(this.build);
+      this.testResults = new SoftReference<TestResults>(tr);
    }
 
    /**
@@ -58,7 +69,52 @@ public class TestNGBuildAction implements Action, Serializable {
    }
 
    public TestResults getResults() {
-      return results;
+      if (results == null) {
+        if (testResults == null) {
+           testResults = loadResults();
+           return testResults.get();
+        }
+
+        TestResults tr = testResults.get();
+        if (tr == null) {
+          testResults = loadResults();
+          return testResults.get();
+        } else {
+          return tr;
+        }
+      } else {
+        return results;
+      }
+   }
+
+   private SoftReference<TestResults> loadResults()
+   {
+      ResultsParser parser = new ResultsParser();
+      FilePath testngDir = Publisher.getTestNGReport(build);
+      FilePath[] paths = null;
+      try {
+         paths = testngDir.list("*.xml");
+      } catch (Exception e) {
+         //do nothing
+      }
+
+      TestResults tr = null;
+      if (paths == null) {
+        tr = new TestResults("");
+        tr.setOwner(getBuild());
+        return new SoftReference<TestResults>(tr);
+      }
+
+      Collection<TestResults> trList = new ArrayList<TestResults>();
+      for (FilePath path : paths) {
+         TestResults result = parser.parse(new File(path.getRemote()));
+         if (result.getTestList().size() > 0) {
+            trList.add(result);
+         }
+      }
+      tr = TestResults.total(true, trList);
+      tr.setOwner(getBuild());
+      return new SoftReference<TestResults>(tr);
    }
 
    public TestResults getPreviousResults() {
@@ -80,7 +136,7 @@ public class TestNGBuildAction implements Action, Serializable {
     * @return
     */
    public String getSummary() {
-      return results.toSummary();
+      return getResults().toSummary();
    }
 
    /**
