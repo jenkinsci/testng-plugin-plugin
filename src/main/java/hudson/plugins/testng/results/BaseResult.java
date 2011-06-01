@@ -11,11 +11,10 @@ public abstract class BaseResult implements Serializable {
    protected String name;
    protected BaseResult parent;
 
-   /*
-    * keeping fullName here just to avoid errors when jenkins
+   /**
+    * @deprecated since v0.21 keeping fullName here just to avoid errors when jenkins
     * deserializes result objects from XML
     */
-   @Deprecated
    protected String fullName;
 
    public String getName() {

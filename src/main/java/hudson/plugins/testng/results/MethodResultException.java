@@ -8,9 +8,13 @@ public class MethodResultException implements Serializable {
    private String exceptionName;
    private String message;
    private String stackTrace;
-   @Deprecated
+   /**
+    * @deprecated since v0.21
+    */
    private String shortStackTrace;
-   @Deprecated
+   /**
+    * @deprecated since v0.21
+    */
    private String fullStackTrace;
 
    public MethodResultException(String message,

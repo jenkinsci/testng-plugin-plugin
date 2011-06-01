@@ -36,7 +36,10 @@ import org.kohsuke.stapler.StaplerRequest;
 public class Publisher extends Recorder {
 
    public final String reportFilenamePattern;
-   @Deprecated //not used anymore. Here to ensure installed versions of plugin are not affected
+   /**
+    * @deprecated since v0.23. not used anymore. Here to ensure installed
+    * versions of plugin are not affected
+    */
    private boolean isRelativePath;
    public final boolean escapeTestDescp;
    public final boolean escapeExceptionMsg;
@@ -110,7 +113,6 @@ public class Publisher extends Recorder {
          }
       }
 
-
       boolean filesSaved = saveReports(getTestNGReport(build), parsedFiles);
       if (!filesSaved) {
          logger.println("Failed to save TestNG XML reports");
@@ -144,7 +146,7 @@ public class Publisher extends Recorder {
     *
     * NOTE: based on how things work for emma plugin for jenkins
     */
-   private FilePath[] locateReports(FilePath workspace,
+   static FilePath[] locateReports(FilePath workspace,
         String filenamePattern) throws IOException, InterruptedException
    {
 
@@ -163,7 +165,7 @@ public class Publisher extends Recorder {
          FilePath src = workspace.child(path);
          if (src.exists()) {
             if (src.isDirectory()) {
-               files.addAll(Arrays.asList(src.list("**/testng-results.xml")));
+               files.addAll(Arrays.asList(src.list("**/testng*.xml")));
             } else {
                files.add(src);
             }
@@ -179,7 +181,7 @@ public class Publisher extends Recorder {
        return new FilePath(new File(build.getRootDir(), "testng"));
    }
 
-   private boolean saveReports(FilePath testngDir, Set<FilePath> reports)
+   static boolean saveReports(FilePath testngDir, Set<FilePath> reports)
    {
       try {
          testngDir.mkdirs();

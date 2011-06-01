@@ -28,9 +28,8 @@ public class TestNGBuildAction implements Action, Serializable {
    private final AbstractBuild<?, ?> build;
 
    /**
-    * Only here for supporting older version of this plug-in
+    * @deprecated since v0.23. Only here for supporting older version of this plug-in
     */
-   @Deprecated
    private transient TestResults results;
    private transient SoftReference<TestResults> testResults;
 

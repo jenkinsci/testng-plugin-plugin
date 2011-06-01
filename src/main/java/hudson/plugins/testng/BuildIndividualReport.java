@@ -10,10 +10,10 @@ import java.util.Collection;
  * it here ensures that results for builds using older version of this plugin
  * continue to be displayed
  *
+ * @deprecated since v0.22
  * @author nullin
  * @see TestNGBuildAction
  */
-@Deprecated
 public final class BuildIndividualReport extends TestNGBuildAction
 {
    public BuildIndividualReport(AbstractBuild<?, ?> build,
