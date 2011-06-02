@@ -10,19 +10,29 @@ import hudson.util.DataSetBuilder;
 
 import java.io.IOException;
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.jfree.chart.JFreeChart;
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
 
 /**
- * TODO javadoc.
+ * Action to associate the TestNG reports with the project
  *
+ * @author nullin
  */
 public class TestNGProjectAction implements ProminentProjectAction {
 
    private boolean escapeTestDescp;
    private boolean escapeExceptionMsg;
+
+   /**
+    * Used to figure out if we need to regenerate the graphs or not.
+    * Only used in newGraphNotNeeded() method. Key is the request URI and value
+    * is the number of builds for the project.
+    */
+   private transient Map<String, Integer> requestMap = new HashMap<String, Integer>();
 
    public TestNGProjectAction(AbstractProject<?, ?> project,
          boolean escapeTestDescp, boolean escapeExceptionMsg) {
@@ -104,15 +114,8 @@ public class TestNGProjectAction implements ProminentProjectAction {
     */
    public void doGraph(final StaplerRequest req,
                       StaplerResponse rsp) throws IOException {
-      if (GraphHelper.isGraphUnsupported()) {
-         GraphHelper.redirectWhenGraphUnsupported(rsp, req);
-         return;
-      }
-
-      Calendar t = getProject().getLastCompletedBuild().getTimestamp();
-
-      if (req.checkIfModified(t, rsp)) {
-         return; // up to date
+      if (newGraphNotNeeded(req, rsp)) {
+        return;
       }
 
       final DataSetBuilder<String, ChartUtil.NumberOnlyBuildLabel> dataSetBuilder =
@@ -126,11 +129,46 @@ public class TestNGProjectAction implements ProminentProjectAction {
       }.doPng(req,rsp);
    }
 
-   public void doGraphMap(final StaplerRequest req,
-           StaplerResponse rsp) throws IOException {
+   /**
+    * If number of builds hasn't changed and if checkIfModified() returns true,
+    * no need to regenerate the graph. Browser should reuse it's cached image
+    *
+    * @param req
+    * @param rsp
+    * @return true, if new image does NOT need to be generated, false otherwise
+    */
+   private boolean newGraphNotNeeded(final StaplerRequest req,
+         StaplerResponse rsp) {
       Calendar t = getProject().getLastCompletedBuild().getTimestamp();
-      if (req.checkIfModified(t, rsp)) {
-         return; // up to date
+      Integer prevNumBuilds = requestMap.get(req.getRequestURI());
+      int numBuilds = getProject().getBuilds().size();
+
+      //change null to 0
+      prevNumBuilds = prevNumBuilds == null ? 0 : prevNumBuilds;
+      if (prevNumBuilds != numBuilds) {
+        requestMap.put(req.getRequestURI(), numBuilds);
+      }
+
+      if (requestMap.keySet().size() > 10) {
+        //keep map size in check
+        requestMap.clear();
+      }
+
+      if (prevNumBuilds == numBuilds && req.checkIfModified(t, rsp)) {
+         /*
+          * checkIfModified() is after '&&' because we want it evaluated only
+          * if number of builds is different
+          */
+         return true;
+      }
+
+      return false;
+   }
+
+  public void doGraphMap(final StaplerRequest req,
+           StaplerResponse rsp) throws IOException {
+      if (newGraphNotNeeded(req, rsp)) {
+         return;
       }
 
       final DataSetBuilder<String, ChartUtil.NumberOnlyBuildLabel> dataSetBuilder =

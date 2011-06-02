@@ -17,13 +17,15 @@ Release Notes
 -------
 
 ### upcoming
-* add unit testing for testng results
-* start storing testng-results.xml with build artifacts
-* capture information regarding groups
-* capture parameters used to run the test method
-* Action --> HealthReportingAction
-* Remove isRelativePath
-* Fix graph refresh after a build is deleted
+* JENKINS-8926 - capture information regarding groups
+* JENKINS-9837 - capture parameters used to run the test method
+* JENKINS-9838 - Action --> HealthReportingAction
+
+### v0.23
+* Fixed: JENKINS-9835 - Remove isRelativePath option
+* Fixed: JENKINS-9836 - Start storing testng-results.xml with build artifacts
+* Moved help information from configuration options to help.html
+* Fixed: JENKINS-9839 - Fix graph refresh after a build is deleted
 
 ### v0.22
 * A whole lot of code cleanup. Removed a lot of unnecessary classes.

@@ -35,15 +35,6 @@ public class GraphHelper {
     */
    private GraphHelper() {}
 
-   /**
-    * Getter for property 'graphUnsupported'.
-    *
-    * @return Value for property 'graphUnsupported'.
-    */
-   public static boolean isGraphUnsupported() {
-      return false;
-   }
-
    public static void redirectWhenGraphUnsupported(StaplerResponse rsp, StaplerRequest req) throws IOException {
       // not available. send out error message
       rsp.sendRedirect2(req.getContextPath() + "/images/headless.png");
