@@ -21,6 +21,7 @@ Release Notes
 * change how we disambiguate between classes/methods with same name. Need 
 to move away from uuid as that wont work between restarts
 * JENKINS-9838 - Action --> HealthReportingAction
+* ResultParser.parse() should throw IllegalState on second invocation
 
 ### v0.23
 * Fixed: JENKINS-9835 - Remove isRelativePath option
