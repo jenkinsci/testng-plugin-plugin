@@ -100,10 +100,10 @@ public class Publisher extends Recorder {
       }
 
       //loop through all the files and get the results
-      ResultsParser parser = new ResultsParser();
       for (FilePath path : paths) {
          final String pathStr = path.getRemote();
          if (!parsedFiles.contains(path)) {
+            ResultsParser parser = new ResultsParser();
             TestResults result = parser.parse(new File(pathStr));
             if (result.getTestList().size() > 0) {
               logger.println("Found results for: " + pathStr);
