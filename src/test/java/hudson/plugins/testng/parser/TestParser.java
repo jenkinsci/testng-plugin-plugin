@@ -70,6 +70,14 @@ public class TestParser {
    }
 
    @Test
+   public void parseTestNG() {
+      ClassLoader cl = TestParser.class.getClassLoader();
+      ResultsParser parser = new ResultsParser();
+      TestResults results = parser.parse(new File(cl.getResource("testng-results-testng.xml").getFile()));
+      results.tally();
+   }
+
+   @Test
    public void testDateParser() throws ParseException {
       //example of date format used in testng report
       String dateString = "2010-07-20T11:49:17Z";

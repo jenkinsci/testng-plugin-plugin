@@ -20,6 +20,25 @@
       </div>
    </div>
 
+   <j:if test="${!empty(it.parameters)}">
+      <table border="1px" class="pane sortable">
+         <thead>
+            <tr>
+               <th class="pane-header">Parameter Index</th>
+               <th class="pane-header" style="width:5em" title="parameter value">Value</th>
+            </tr>
+         </thead>
+         <tbody>
+            <j:forEach var="param" items="${it.parameters}">
+               <tr>
+                  <td align="left">Parameter #</td>
+                  <td align="left">${param}</td>
+               </tr>
+            </j:forEach>
+         </tbody>
+      </table>
+   </j:if>
+
    <j:if test="${!empty(it.exception)}">
       <h3>Exception <i>${it.exception.exceptionName}</i></h3>
       <p>

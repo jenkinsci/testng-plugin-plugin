@@ -331,7 +331,7 @@ public class TestResults extends BaseResult implements Serializable {
                      //let's merge the testMethods
                      //loop through and dont add them if the name ,  startTime , endTime and
                      //other fields are identical
-                     List<MethodResult> methods = classResult.getTestMethods();
+                     List<MethodResult> methods = classResult.getTestMethodList();
                      List<MethodResult> _methods = _class.getTestMethodList();
                      for (MethodResult _method : _methods) {
                         boolean _methodAlreadyAdded = false;

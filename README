@@ -18,7 +18,8 @@ Release Notes
 
 ### upcoming
 * JENKINS-8926 - capture information regarding groups
-* JENKINS-9837 - capture parameters used to run the test method
+* change how we disambiguate between classes/methods with same name. Need 
+to move away from uuid as that wont work between restarts
 * JENKINS-9838 - Action --> HealthReportingAction
 
 ### v0.23
@@ -26,6 +27,7 @@ Release Notes
 * Fixed: JENKINS-9836 - Start storing testng-results.xml with build artifacts
 * Moved help information from configuration options to help.html
 * Fixed: JENKINS-9839 - Fix graph refresh after a build is deleted
+* Added: JENKINS-9837 - capture parameters used to run the test method
 
 ### v0.22
 * A whole lot of code cleanup. Removed a lot of unnecessary classes.

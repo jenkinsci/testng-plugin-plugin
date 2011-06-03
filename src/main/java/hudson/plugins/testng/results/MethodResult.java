@@ -24,10 +24,14 @@ public class MethodResult extends BaseResult implements ModelObject {
    private Date startedAt;
    private String testName;
    private List<String> parameters;
-   //unique id for this tests's run (helps associate the test method with
-   // related configuration methods)
+   /**
+    * unique id for this tests's run (helps associate the test method with
+    * related configuration methods)
+    */
    private String testRunId;
-   //unique id for this test method
+   /**
+    * unique id for this test method
+    */
    private String testUuid;
 
    public String getTestUuid() {
@@ -90,6 +94,14 @@ public class MethodResult extends BaseResult implements ModelObject {
 
    public String getDescription() {
       return description;
+   }
+
+   public List<String> getParameters() {
+      return parameters;
+   }
+
+   public void setParameters(List<String> parameters) {
+      this.parameters = parameters;
    }
 
    public String getDescriptionForDisplay() {
@@ -200,7 +212,6 @@ public class MethodResult extends BaseResult implements ModelObject {
          }
       }
       return methodResults;
-
    }
 
    public Object getCssClass() {

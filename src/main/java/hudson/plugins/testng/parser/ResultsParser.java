@@ -1,10 +1,10 @@
 package hudson.plugins.testng.parser;
 
+import hudson.plugins.testng.results.ClassResult;
+import hudson.plugins.testng.results.MethodResult;
 import hudson.plugins.testng.results.MethodResultException;
 import hudson.plugins.testng.results.TestResult;
 import hudson.plugins.testng.results.TestResults;
-import hudson.plugins.testng.results.ClassResult;
-import hudson.plugins.testng.results.MethodResult;
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -23,19 +23,59 @@ import java.util.logging.Logger;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
+import org.xmlpull.v1.XmlPullParserFactory;
 
 /**
  * Parses testng result XMLs generated using org.testng.reporters.XmlReporter
  * into objects that are then used to display results in Jenkins
  *
- * @author farshidce
  * @author nullin
- *
  */
 public class ResultsParser {
 
    private static Logger log = Logger.getLogger(ResultsParser.class.getName());
    public static String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss";
+   private SimpleDateFormat simpleDateFormat = new SimpleDateFormat(DATE_FORMAT);
+
+   /*
+    * We maintain only a single TestResult for all <test>s with the same name
+    */
+   private Map<String, TestResult> testResultMap = new HashMap<String, TestResult>();
+   /*
+    * We maintain only a single ClassResult for all <class>s with the same fqdn
+    */
+   private Map<String, ClassResult> classResultMap = new HashMap<String, ClassResult>();
+   private TestResults finalResults;
+   private List<TestResult> testList;
+   private List<ClassResult> currentClassList;
+   private List<MethodResult> currentMethodList;
+   private List<String> currentMethodParamsList;
+   private TestResult currentTest;
+   private ClassResult currentClass;
+   private String currentTestRunId;
+   private MethodResult currentMethod;
+   private XmlPullParser xmlPullParser;
+   private TAGS currentCDATAParent = TAGS.UNKNOWN;
+   private String currentMessage;
+   private String currentShortStackTrace;
+   private String currentFullStackTrace;
+
+   private enum TAGS {
+     TESTNG_RESULTS, SUITE, TEST, CLASS, TEST_METHOD,
+     PARAMS, PARAM, VALUE, EXCEPTION, UNKNOWN, MESSAGE, SHORT_STACKTRACE, FULL_STACKTRACE;
+
+     public static TAGS fromString(String val) {
+        if (val == null) {
+           return UNKNOWN;
+        }
+        val = val.toUpperCase().replace('-', '_');
+        try {
+           return TAGS.valueOf(val);
+        } catch (IllegalArgumentException e) {
+           return UNKNOWN;
+        }
+     }
+   }
 
    /**
     * Parses the XML for relevant information
@@ -44,103 +84,102 @@ public class ResultsParser {
     * @return a collection of test results
     */
    public TestResults parse(File file) {
-      TestResults allResults = new TestResults(UUID.randomUUID().toString() + "_TestResults");
+      finalResults = new TestResults(UUID.randomUUID().toString() + "_TestResults");
       if (null == file) {
          log.severe("File not specified");
-         return allResults;
+         return finalResults;
       }
 
       if (!file.exists() || file.isDirectory()) {
         log.severe("'" + file.getAbsolutePath() + "' points to a non-existent file or directory");
-         return allResults;
+         return finalResults;
       }
 
       BufferedInputStream bufferedInputStream = null;
       try {
          bufferedInputStream = new BufferedInputStream(new FileInputStream(file));
-         XmlPullParser xmlPullParser = ResultPullParserHelper.createXmlPullParser(bufferedInputStream);
+         xmlPullParser = createXmlPullParser(bufferedInputStream);
 
-         // check that the first tag is <testng-results>
-         if (ResultPullParserHelper.parseToTagIfFound(xmlPullParser, "testng-results")) {
-            /*
-             * We maintain only a single TestResult for all <test>s with the same name
-             */
-            Map<String, TestResult> testResultMap = new HashMap<String, TestResult>();
-            /*
-             * We maintain only a single ClassResult for all <class>s with the same fqdn
-             */
-            Map<String, ClassResult> classResultMap = new HashMap<String, ClassResult>();
+         //some initial setup
+         testList = new ArrayList<TestResult>();
 
-            // skip until we get to the <suite> tag
-            while (ResultPullParserHelper.parseToTagIfFound(xmlPullParser, "suite")) {
-               List<TestResult> testNGTestList = new ArrayList<TestResult>();
-               int suiteDepth = xmlPullParser.getDepth();
-               // TODO: changes need to be made for jira # 8926
-               // skip until we get to the <test> tag
-               // see if there is a groups tag , then lets parse all the groups and
-               // later on we have to create a map of groups and test methods ?
-               // we have some sort of unique identifier for each test method which we should be able
-               // to reuse for rendering purposes
-               // so let's have a class called GroupResult
-               while (ResultPullParserHelper.parseToTagIfFound(xmlPullParser, "test", suiteDepth)) {
-                  // for-each <test> tag
-                  int testDepth = xmlPullParser.getDepth();
-                  String testName = xmlPullParser.getAttributeValue(null, "name");
-                  TestResult testngTest = null;
+         while (XmlPullParser.END_DOCUMENT != xmlPullParser.nextToken()) {
+            TAGS tag = TAGS.fromString(xmlPullParser.getName());
+            int eventType = xmlPullParser.getEventType();
 
-                  if (testResultMap.containsKey(testName)) {
-                     testngTest = testResultMap.get(testName);
-                  } else {
-                     testngTest = new TestResult(testName);
-                     testResultMap.put(testName, testngTest);
+            switch (eventType) {
+              //all opening tags
+               case XmlPullParser.START_TAG:
+                  switch (tag) {
+                     case TEST:
+                        startTest(get("name"));
+                        break;
+                     case CLASS:
+                        startClass(get("name"));
+                        break;
+                     case TEST_METHOD:
+                        startTestMethod(get("name"), get("status"),
+                                 get("description"), get("duration-ms"),
+                                 get("started-at"), get("is-config"));
+                        break;
+                     case PARAMS:
+                        startMethodParameters();
+                        currentCDATAParent = TAGS.PARAMS;
+                        break;
+                     case EXCEPTION:
+                        startException();
+                        break;
+                     case MESSAGE:
+                        currentCDATAParent = TAGS.MESSAGE;
+                        break;
+                     case SHORT_STACKTRACE:
+                        currentCDATAParent = TAGS.SHORT_STACKTRACE;
+                        break;
+                     case FULL_STACKTRACE:
+                        currentCDATAParent = TAGS.FULL_STACKTRACE;
+                        break;
                   }
-
-                  List<ClassResult> testNGClassList = new ArrayList<ClassResult>();
-                  while (ResultPullParserHelper.parseToTagIfFound(xmlPullParser, "class", testDepth)) {
-                     int classDepth = xmlPullParser.getDepth();
-
-                     String className = xmlPullParser.getAttributeValue(null, "name");
-                     ClassResult testNGTestClass = null;
-
-                     if (classResultMap.containsKey(testName)) {
-                        testNGTestClass = classResultMap.get(testName);
-                     } else {
-                        testNGTestClass = new ClassResult(className);
-                        classResultMap.put(className, testNGTestClass);
-                     }
-
-                     List<MethodResult> testMethodList = new ArrayList<MethodResult>();
-                     String uuid = UUID.randomUUID().toString();
-                     while (ResultPullParserHelper.parseToTagIfFound(xmlPullParser, "test-method", classDepth)) {
-                        MethodResult testNGTestMethod = createTestMethod(xmlPullParser, testNGTestClass);
-                        String testUuid = UUID.randomUUID().toString();
-                        if (testNGTestMethod != null) {
-                           testNGTestMethod.setException(createExceptionObject(xmlPullParser));
-                           testNGTestMethod.setTestUuid(testUuid);
-                           //this uuid is used later to group the tests and config-methods together
-                           testNGTestMethod.setTestRunId(uuid);
-                           updateTestMethodLists(allResults, testNGTestMethod);
-                           // add to test methods list for each class
-                           testMethodList.add(testNGTestMethod);
-                        }
-                     }
-
-                     testNGTestClass.addTestMethods(testMethodList);
-                     testNGClassList.add(testNGTestClass);
-
-                  } //while for class ends
-
-                  testngTest.addClassList(testNGClassList);
-                  testNGTestList.add(testngTest);
-               }
-
-               allResults.addTestList(testNGTestList);
-            } //while end for suites
+                  break;
+               // all closing tags
+               case XmlPullParser.END_TAG:
+                  switch (tag) {
+                     case TEST:
+                        finishTest();
+                        break;
+                     case CLASS:
+                        finishclass();
+                        break;
+                     case TEST_METHOD:
+                        finishTestMethod();
+                        break;
+                     case PARAMS:
+                        finishMethodParameters();
+                        currentCDATAParent = TAGS.UNKNOWN;
+                        break;
+                     case EXCEPTION:
+                        finishException();
+                        break;
+                     case MESSAGE:
+                     case SHORT_STACKTRACE:
+                     case FULL_STACKTRACE:
+                        currentCDATAParent = TAGS.UNKNOWN;
+                        break;
+                  }
+                  break;
+               // all cdata reading
+               case XmlPullParser.CDSECT:
+                  handleCDATA();
+                  break;
+            }
          }
+         finalResults.addTestList(testList);
       } catch (XmlPullParserException e) {
          log.warning("Failed to parse XML: " + e.getMessage());
+         e.printStackTrace();
       } catch (FileNotFoundException e) {
         log.log(Level.SEVERE, "Failed to find XML file", e);
+      } catch (IOException e) {
+        log.log(Level.SEVERE, "Failed due to IOException while parsing XML file", e);
       } finally {
          try {
            if (bufferedInputStream != null) {
@@ -151,132 +190,179 @@ public class ResultsParser {
          }
       }
 
-      return allResults;
+      return finalResults;
    }
 
-   private void updateTestMethodLists(TestResults testResults, MethodResult testNGTestMethod) {
+   private void startException()
+   {
+      // do nothing (here for symmetry)
+   }
+
+   private void finishException()
+   {
+      MethodResultException mrEx = new MethodResultException(currentMessage,
+               currentShortStackTrace, currentFullStackTrace);
+      currentMethod.setException(mrEx);
+
+      mrEx = null;
+      currentMessage = null;
+      currentShortStackTrace = null;
+      currentFullStackTrace = null;
+   }
+
+   private void startMethodParameters()
+   {
+      currentMethodParamsList = new ArrayList<String>();
+   }
+
+   private void finishMethodParameters()
+   {
+      currentMethod.setParameters(currentMethodParamsList);
+      currentMethodParamsList = null;
+   }
+
+   private void handleCDATA()
+   {
+      switch (currentCDATAParent) {
+         case PARAMS:
+            currentMethodParamsList.add(xmlPullParser.getText());
+            break;
+         case MESSAGE:
+            currentMessage = xmlPullParser.getText();
+            break;
+         case FULL_STACKTRACE:
+            currentFullStackTrace = xmlPullParser.getText();
+            break;
+         case SHORT_STACKTRACE:
+            currentShortStackTrace = xmlPullParser.getText();
+            break;
+         case UNKNOWN:
+            //do nothing
+      }
+   }
+
+   private void startTestMethod(String name,
+            String status,
+            String description,
+            String duration,
+            String startedAt,
+            String isConfig)
+   {
+      currentMethod = new MethodResult();
+      currentMethod.setName(name);
+      currentMethod.setStatus(status);
+      currentMethod.setDescription(description);
+
+      try {
+         currentMethod.setDuration(Long.parseLong(duration));
+      } catch (NumberFormatException e) {
+         log.warning("Unable to parse duration value: " + duration);
+      }
+
+      try {
+         currentMethod.setStartedAt(simpleDateFormat.parse(startedAt));
+      } catch (ParseException e) {
+         log.warning("Unable to parse started-at value: " + startedAt);
+      }
+
+      if (isConfig != null) {
+         /*
+          * If is-config attribute is present on test-method,
+          * it's always set to true
+          */
+         currentMethod.setConfig(true);
+      }
+
+      //TODO: Need better handling of test run and method UUIDs
+      String testUuid = UUID.randomUUID().toString();
+      currentMethod.setTestUuid(testUuid);
+      //this uuid is used later to group the tests and config-methods together
+      currentMethod.setTestRunId(currentTestRunId);
+   }
+
+   private void finishTestMethod()
+   {
+      updateTestMethodLists(currentMethod);
+      // add to test methods list for each class
+      currentMethodList.add(currentMethod);
+
+      currentMethod = null;
+   }
+
+   private void startClass(String name)
+   {
+      if (classResultMap.containsKey(name)) {
+         currentClass = classResultMap.get(name);
+      } else {
+         currentClass = new ClassResult(name);
+         classResultMap.put(name, currentClass);
+      }
+      currentMethodList = new ArrayList<MethodResult>();
+      //reset for each class
+      currentTestRunId = UUID.randomUUID().toString();
+   }
+
+   private void finishclass()
+   {
+      currentClass.addTestMethods(currentMethodList);
+      currentClassList.add(currentClass);
+
+      currentMethodList = null;
+      currentClass = null;
+      currentTestRunId = null;
+   }
+
+   private void startTest(String name)
+   {
+      if (testResultMap.containsKey(name)) {
+         currentTest = testResultMap.get(name);
+      } else {
+         currentTest = new TestResult(name);
+         testResultMap.put(name, currentTest);
+      }
+      currentClassList = new ArrayList<ClassResult>();
+   }
+
+   private void finishTest()
+   {
+      currentTest.addClassList(currentClassList);
+      testList.add(currentTest);
+
+      currentClassList = null;
+      currentTest = null;
+   }
+
+   private void updateTestMethodLists(MethodResult testNGTestMethod) {
       if (testNGTestMethod.isConfig()) {
          if ("FAIL".equals(testNGTestMethod.getStatus())) {
-            testResults.getFailedConfigurationMethods().add(testNGTestMethod);
+            finalResults.getFailedConfigurationMethods().add(testNGTestMethod);
          } else if ("SKIP".equals(testNGTestMethod.getStatus())) {
-               testResults.getSkippedConfigurationMethods().add(testNGTestMethod);
+            finalResults.getSkippedConfigurationMethods().add(testNGTestMethod);
          }
       } else {
          if ("FAIL".equals(testNGTestMethod.getStatus())) {
-            testResults.getFailedTests().add(testNGTestMethod);
+            finalResults.getFailedTests().add(testNGTestMethod);
          } else if ("SKIP".equals(testNGTestMethod.getStatus())) {
-               testResults.getSkippedTests().add(testNGTestMethod);
+            finalResults.getSkippedTests().add(testNGTestMethod);
          } else if ("PASS".equals(testNGTestMethod.getStatus())) {
-                  testResults.getPassedTests().add(testNGTestMethod);
+            finalResults.getPassedTests().add(testNGTestMethod);
          }
       }
    }
 
-   /**
-    * @param xmlPullParser
-    * @param testNGClass
-    * @return
-    */
-   private MethodResult createTestMethod(XmlPullParser
-         xmlPullParser, ClassResult testNGClass) {
-      SimpleDateFormat simpleDateFormat = new SimpleDateFormat(DATE_FORMAT);
-      MethodResult testNGTestMethod = new MethodResult();
-      testNGTestMethod.setName(xmlPullParser.getAttributeValue(null, "name"));
-      testNGTestMethod.setStatus(xmlPullParser.getAttributeValue(null, "status"));
-      testNGTestMethod.setDescription(xmlPullParser.getAttributeValue(null, "description"));
-
-      try {
-         testNGTestMethod.setDuration(Long.parseLong(xmlPullParser.getAttributeValue(
-               null, "duration-ms")));
-      } catch (NumberFormatException e) {
-         log.warning("unable to obtain duration-ms");
-      }
-
-      try {
-         testNGTestMethod.setStartedAt(simpleDateFormat.parse(
-               xmlPullParser.getAttributeValue(null, "started-at")));
-      } catch (ParseException e) {
-         log.warning("unable to obtain started-at");
-      }
-
-      String isConfigStr = xmlPullParser.getAttributeValue(null, "is-config");
-      if (isConfigStr == null) {
-         testNGTestMethod.setConfig(false);
-      } else {
-         // is-config attr is present on test-method. It's
-         // always set to true
-         testNGTestMethod.setConfig(true);
-      }
-
-      if (log.getLevel() == Level.FINE) {
-         printTestMethod(testNGTestMethod);
-      }
-      return testNGTestMethod;
+   private String get(String attr)
+   {
+      return xmlPullParser.getAttributeValue(null, attr);
    }
 
-   /**
-    * @param testMethod
-    */
-   private void printTestMethod(MethodResult testMethod) {
-      if (testMethod != null) {
-         log.info("name : " + testMethod.getName());
-         log.info("duration : " + testMethod.getDuration());
-         log.info("name : " + testMethod.getException());
-         log.info("status : " + testMethod.getStatus());
-         log.info("description : " + testMethod.getDescription());
-         log.info("startedAt : " + testMethod.getStartedAt());
-         if (testMethod.getException() != null) {
-            log.info("exceptionMessage : " + testMethod.getException().getMessage());
-         }
-      } else {
-         log.info("testMethod is null");
-      }
+   private XmlPullParser createXmlPullParser(BufferedInputStream
+            bufferedInputStream) throws XmlPullParserException {
+      XmlPullParserFactory xmlPullParserFactory = XmlPullParserFactory.newInstance();
+      xmlPullParserFactory.setNamespaceAware(true);
+      xmlPullParserFactory.setValidating(false);
+
+      XmlPullParser xmlPullParser = xmlPullParserFactory.newPullParser();
+      xmlPullParser.setInput(bufferedInputStream, null);
+      return xmlPullParser;
    }
-
-   private MethodResultException createExceptionObject(XmlPullParser xmlPullParser) {
-      List<String> tags = new ArrayList<String>();
-      tags.add("message");
-      tags.add("short-stacktrace");
-      tags.add("full-stacktrace");
-
-      if (xmlPullParser == null) {
-        return null;
-      }
-
-      String message = null;
-      String shortStackTrace = null;
-      String fullStackTrace = null;
-
-      // TODO: [farshidce] what happens if the nextTag is not a "exception" should I never the state??
-      if (ResultPullParserHelper.parseToTagIfFound(xmlPullParser, "exception", xmlPullParser.getDepth())) {
-         int exceptionDepth = xmlPullParser.getDepth();
-         while (tags.size() > 0) {
-            String tagFound =
-              ResultPullParserHelper.parseToTagIfAnyFound(xmlPullParser, tags, exceptionDepth);
-            if (tagFound == null) {
-               break;
-            }
-            try {
-               if (tagFound.equals("message")) {
-                  message = xmlPullParser.nextText();
-               }
-               if (tagFound.equals("short-stacktrace")) {
-                 shortStackTrace = xmlPullParser.nextText();
-               }
-               if (tagFound.equals("full-stacktrace")) {
-                 fullStackTrace = xmlPullParser.nextText();
-               }
-            } catch (XmlPullParserException e) {
-               e.printStackTrace();
-            } catch (IOException e) {
-               e.printStackTrace();
-            } finally {
-               tags.remove(tagFound);
-            }
-         }
-         return new MethodResultException(message, shortStackTrace, fullStackTrace);
-      }
-      return null;
-   }
-
 }
