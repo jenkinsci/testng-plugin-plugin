@@ -11,8 +11,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -35,7 +33,6 @@ public class ResultsParser {
 
    private static Logger log = Logger.getLogger(ResultsParser.class.getName());
    public static String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss";
-   private SimpleDateFormat simpleDateFormat = new SimpleDateFormat(DATE_FORMAT);
 
    /*
     * We maintain only a single TestResult for all <test>s with the same name
@@ -84,16 +81,17 @@ public class ResultsParser {
     * @return a collection of test results
     */
    public TestResults parse(File file) {
-      finalResults = new TestResults(UUID.randomUUID().toString() + "_TestResults");
       if (null == file) {
          log.severe("File not specified");
-         return finalResults;
+         return new TestResults("");
       }
 
       if (!file.exists() || file.isDirectory()) {
-        log.severe("'" + file.getAbsolutePath() + "' points to a non-existent file or directory");
-         return finalResults;
+         log.severe("'" + file.getAbsolutePath() + "' points to a non-existent file or directory");
+         return new TestResults("");
       }
+
+      finalResults = new TestResults(file.getName());
 
       BufferedInputStream bufferedInputStream = null;
       try {
@@ -172,7 +170,7 @@ public class ResultsParser {
                   break;
             }
          }
-         finalResults.addTestList(testList);
+         finalResults.addUniqueTests(testList);
       } catch (XmlPullParserException e) {
          log.warning("Failed to parse XML: " + e.getMessage());
          e.printStackTrace();
@@ -248,36 +246,9 @@ public class ResultsParser {
             String startedAt,
             String isConfig)
    {
-      currentMethod = new MethodResult();
-      currentMethod.setName(name);
-      currentMethod.setStatus(status);
-      currentMethod.setDescription(description);
-
-      try {
-         currentMethod.setDuration(Long.parseLong(duration));
-      } catch (NumberFormatException e) {
-         log.warning("Unable to parse duration value: " + duration);
-      }
-
-      try {
-         currentMethod.setStartedAt(simpleDateFormat.parse(startedAt));
-      } catch (ParseException e) {
-         log.warning("Unable to parse started-at value: " + startedAt);
-      }
-
-      if (isConfig != null) {
-         /*
-          * If is-config attribute is present on test-method,
-          * it's always set to true
-          */
-         currentMethod.setConfig(true);
-      }
-
-      //TODO: Need better handling of test run and method UUIDs
       String testUuid = UUID.randomUUID().toString();
-      currentMethod.setTestUuid(testUuid);
-      //this uuid is used later to group the tests and config-methods together
-      currentMethod.setTestRunId(currentTestRunId);
+      currentMethod = new MethodResult(name, status, description, duration,
+               startedAt, isConfig, testUuid, currentTestRunId);
    }
 
    private void finishTestMethod()
@@ -332,20 +303,20 @@ public class ResultsParser {
       currentTest = null;
    }
 
-   private void updateTestMethodLists(MethodResult testNGTestMethod) {
-      if (testNGTestMethod.isConfig()) {
-         if ("FAIL".equals(testNGTestMethod.getStatus())) {
-            finalResults.getFailedConfigurationMethods().add(testNGTestMethod);
-         } else if ("SKIP".equals(testNGTestMethod.getStatus())) {
-            finalResults.getSkippedConfigurationMethods().add(testNGTestMethod);
+   private void updateTestMethodLists(MethodResult testMethod) {
+      if (testMethod.isConfig()) {
+         if ("FAIL".equals(testMethod.getStatus())) {
+            finalResults.getFailedConfigs().add(testMethod);
+         } else if ("SKIP".equals(testMethod.getStatus())) {
+            finalResults.getSkippedConfigs().add(testMethod);
          }
       } else {
-         if ("FAIL".equals(testNGTestMethod.getStatus())) {
-            finalResults.getFailedTests().add(testNGTestMethod);
-         } else if ("SKIP".equals(testNGTestMethod.getStatus())) {
-            finalResults.getSkippedTests().add(testNGTestMethod);
-         } else if ("PASS".equals(testNGTestMethod.getStatus())) {
-            finalResults.getPassedTests().add(testNGTestMethod);
+         if ("FAIL".equals(testMethod.getStatus())) {
+            finalResults.getFailedTests().add(testMethod);
+         } else if ("SKIP".equals(testMethod.getStatus())) {
+            finalResults.getSkippedTests().add(testMethod);
+         } else if ("PASS".equals(testMethod.getStatus())) {
+            finalResults.getPassedTests().add(testMethod);
          }
       }
    }

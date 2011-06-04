@@ -1,6 +1,5 @@
 package hudson.plugins.testng.results;
 
-import hudson.model.ModelObject;
 import hudson.model.AbstractBuild;
 import hudson.plugins.testng.util.TestResultHistoryUtil;
 
@@ -13,15 +12,15 @@ import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
 
 @SuppressWarnings("serial")
-public class ClassResult extends BaseResult implements ModelObject {
+public class ClassResult extends BaseResult {
 
    private List<MethodResult> testMethodList = new ArrayList<MethodResult>();
    private Map<String, GroupedTestRun> testRunMap;
 
-   private transient long duration;
-   private transient int fail;
-   private transient int skip;
-   private transient int total;
+   private long duration;
+   private int fail;
+   private int skip;
+   private int total;
 
    public ClassResult(String name) {
      this.name = name;
@@ -67,32 +66,16 @@ public class ClassResult extends BaseResult implements ModelObject {
       return this.duration;
    }
 
-   public void setDuration(long duration) {
-      this.duration = duration;
-   }
-
    public int getFail() {
       return this.fail;
-   }
-
-   public void setFail(int fail) {
-      this.fail = fail;
    }
 
    public int getSkip() {
       return skip;
    }
 
-   public void setSkip(int skip) {
-      this.skip = skip;
-   }
-
    public int getTotal() {
       return total;
-   }
-
-   public void setTotal(int total) {
-      this.total = total;
    }
 
    public List<MethodResult> getTestMethodList() {
@@ -108,39 +91,27 @@ public class ClassResult extends BaseResult implements ModelObject {
    }
 
    public long getFailedTestsDiffCount() {
-      long diff = 0;
-      List<ClassResult> previousClassResults = getPreviousClassResults();
-      if (previousClassResults != null && previousClassResults.size() > 0) {
-         diff = getFail() - previousClassResults.get(0).getFail();
+      ClassResult prevClassResult = getPreviousClassResult();
+      if (prevClassResult != null) {
+         return getFail() - prevClassResult.getFail();
       }
-      return diff;
+      return 0;
    }
 
    public long getSkippedTestsDiffCount() {
-      long diff = 0;
-      List<ClassResult> previousClassResults = getPreviousClassResults();
-      if (previousClassResults != null && previousClassResults.size() > 0) {
-         diff = getSkip() - previousClassResults.get(0).getSkip();
+      ClassResult prevClassResult = getPreviousClassResult();
+      if (prevClassResult != null) {
+         return getSkip() - prevClassResult.getSkip();
       }
-      return diff;
+      return 0;
    }
 
    public long getTotalTestsDiffCount() {
-      long diff = 0;
-      List<ClassResult> previousClassResults = getPreviousClassResults();
-      if (previousClassResults != null && previousClassResults.size() > 0) {
-         diff = getTotal() - previousClassResults.get(0).getTotal();
+      ClassResult prevClassResult = getPreviousClassResult();
+      if (prevClassResult != null) {
+         return getTotal() - prevClassResult.getTotal();
       }
-      return diff;
-   }
-
-   public long getAge() {
-      List<ClassResult> previousClassResults = getPreviousClassResults();
-      if (previousClassResults == null) {
-         return 1;
-      } else {
-         return 1 + previousClassResults.size();
-      }
+      return 0;
    }
 
    public void tally() {
@@ -162,10 +133,6 @@ public class ClassResult extends BaseResult implements ModelObject {
          }
          methodResult.setParent(this);
       }
-   }
-
-   public String getDisplayName() {
-      return getName();
    }
 
    public Object getDynamic(String token, StaplerRequest req, StaplerResponse rsp) {
@@ -203,39 +170,32 @@ public class ClassResult extends BaseResult implements ModelObject {
       return list;
    }
 
-   /**
-    * Create a list that contains previous builds results for this class
-    *
-    * (foreach package in previousbuilds tests results packages)
-    *  if package.name matches this method's package name then :
-    *    (foreach class in package.classlist)
-    *       if class.name matches this method's class name then add this class
-    *         to the return list
-    *
-    * @return list of previous builds results for this class
-    */
-   public List<ClassResult> getPreviousClassResults() {
-      List<ClassResult> classResults = new ArrayList<ClassResult>();
-      List<TestResults> previousTestResults =
-            TestResultHistoryUtil.getAllPreviousBuildTestResults(getOwner());
+   public long getAge() {
+      ClassResult prevClassResult = getPreviousClassResult();
+      if (prevClassResult == null) {
+         return 1;
+      } else {
+         return 1 + prevClassResult.getAge();
+      }
+   }
+
+   private ClassResult getPreviousClassResult() {
+      TestResults previousTestResults =
+            TestResultHistoryUtil.getPreviousBuildTestResults(getOwner());
       if (previousTestResults != null) {
-         for (TestResults previousTestResult : previousTestResults) {
-            Map<String, PackageResult> previousPackageMap = previousTestResult.getPackageMap();
-            //get package name!
-            String classPackageName = getParent().getName();
-            if (previousPackageMap.containsKey(classPackageName) &&
-                  previousPackageMap.get(classPackageName).getClassList() != null) {
-               List<ClassResult> previousClassResults =
-                     previousPackageMap.get(getParent().getName()).getClassList();
-               for (ClassResult previousClassResult : previousClassResults) {
-                  if (previousClassResult.getName().equals(this.getName())) {
-                     classResults.add(previousClassResult);
-                     break;
-                  }
+         Map<String, PackageResult> previousPackageMap = previousTestResults.getPackageMap();
+         //get package name!
+         String classPackageName = getParent().getName();
+         PackageResult packageResult = previousPackageMap.get(classPackageName);
+         if (packageResult != null) {
+            List<ClassResult> prevClassList = packageResult.getClassList();
+            for (ClassResult prevClassResult : prevClassList) {
+               if (prevClassResult.getName().equals(this.getName())) {
+                  return prevClassResult;
                }
             }
          }
       }
-      return classResults;
+      return null;
    }
 }

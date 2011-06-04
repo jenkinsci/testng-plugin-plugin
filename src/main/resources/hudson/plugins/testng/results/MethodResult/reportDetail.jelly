@@ -16,22 +16,24 @@
 
    <div id="description">
       <div>
-         ${it.descriptionForDisplay}
+         ${it.displayDescription}
       </div>
    </div>
 
    <j:if test="${!empty(it.parameters)}">
-      <table border="1px" class="pane sortable">
+      <table border="1px" class="pane">
          <thead>
             <tr>
-               <th class="pane-header">Parameter Index</th>
-               <th class="pane-header" style="width:5em" title="parameter value">Value</th>
+               <th class="pane-header" style="width:5em;"></th>
+               <th class="pane-header" title="parameter value"> Value</th>
             </tr>
          </thead>
          <tbody>
+            <j:set var="count" value="1"/>
             <j:forEach var="param" items="${it.parameters}">
                <tr>
-                  <td align="left">Parameter #</td>
+                  <td align="left">Parameter #${count}</td>
+                  <j:set var="count" value="${count + 1}"/>
                   <td align="left">${param}</td>
                </tr>
             </j:forEach>
@@ -44,7 +46,7 @@
       <p>
          <j:choose>
             <j:when test="${it.exception.message != null}">
-               <p><b>Message: </b>${it.exceptionMessageForDisplay}</p>
+               <p><b>Message: </b>${it.displayExceptionMessage}</p>
             </j:when>
             <j:otherwise>
                <b>Message: </b>(none)

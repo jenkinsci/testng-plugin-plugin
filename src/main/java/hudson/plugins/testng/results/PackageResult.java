@@ -1,6 +1,5 @@
 package hudson.plugins.testng.results;
 
-import hudson.model.ModelObject;
 import hudson.model.AbstractBuild;
 import hudson.plugins.testng.util.TestResultHistoryUtil;
 
@@ -15,7 +14,7 @@ import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
 
 @SuppressWarnings("serial")
-public class PackageResult extends BaseResult implements ModelObject {
+public class PackageResult extends BaseResult {
 
    private List<ClassResult> classList = new ArrayList<ClassResult>();
    private final List<MethodResult> sortedTestMethodsByStartTime = new ArrayList<MethodResult>();
@@ -40,48 +39,28 @@ public class PackageResult extends BaseResult implements ModelObject {
       return classList;
    }
 
-   public void setClassList(List<ClassResult> classList) {
-      this.classList = classList;
-   }
-
    public long getDuration() {
       return duration;
-   }
-
-   public void setDuration(long duration) {
-      this.duration = duration;
    }
 
    public int getFail() {
       return fail;
    }
 
-   public void setFail(int fail) {
-      this.fail = fail;
-   }
-
    public int getSkip() {
       return skip;
-   }
-
-   public void setSkip(int skip) {
-      this.skip = skip;
    }
 
    public int getTotal() {
       return total;
    }
 
-   public void setTotal(int total) {
-      this.total = total;
-   }
-
    public long getAge() {
-      List<PackageResult> packageResults = getPreviousPackageResults();
-      if (packageResults == null) {
+      PackageResult packageResult = getPreviousPackageResult();
+      if (packageResult == null) {
          return 1;
       } else {
-         return 1 + packageResults.size();
+         return 1 + packageResult.getAge();
       }
    }
 
@@ -118,10 +97,6 @@ public class PackageResult extends BaseResult implements ModelObject {
          }
       }
       return result;
-   }
-
-   public String getDisplayName() {
-      return getName();
    }
 
    public void sortTestMethods() {
@@ -197,60 +172,42 @@ public class PackageResult extends BaseResult implements ModelObject {
       return passTests;
    }
 
-   public long getFailedTestsDiffCount() {
-      //get the previous build test_results
-      long diff = 0;
-      List<PackageResult> previousPackageResults = getPreviousPackageResults();
-      if (previousPackageResults != null && previousPackageResults.size() > 0) {
-         diff = getFailedTestsCount() - previousPackageResults.get(0).getFailedTestsCount();
-      }
-      return diff;
-   }
-
-   /**
-    * Create a list that contains previous builds results for this package
-    * <p/>
-    * (foreach package in previousbuilds tests results packages)
-    *  if package.name matches this method's package name then
-    *  add this package to the return list
-    *
-    * @return list of previous builds results for this class
-    */
-   public List<PackageResult> getPreviousPackageResults() {
-      List<PackageResult> packageResults = new ArrayList<PackageResult>();
-      List<TestResults> previousTestResults =
-            TestResultHistoryUtil.getAllPreviousBuildTestResults(getOwner());
-      if (previousTestResults != null) {
-         for (TestResults previousTestResult : previousTestResults) {
-            Map<String, PackageResult> previousPackageMap = previousTestResult.getPackageMap();
-            for (Map.Entry<String, PackageResult> entry : previousPackageMap.entrySet()) {
-               if (entry.getKey().equals(this.getName())) {
-                  packageResults.add(entry.getValue());
-                  break;
-               }
+   private PackageResult getPreviousPackageResult() {
+      TestResults previousTestResult =
+            TestResultHistoryUtil.getPreviousBuildTestResults(getOwner());
+      if (previousTestResult != null) {
+         Map<String, PackageResult> previousPackageMap = previousTestResult.getPackageMap();
+         for (Map.Entry<String, PackageResult> entry : previousPackageMap.entrySet()) {
+            if (entry.getKey().equals(this.getName())) {
+               return entry.getValue();
             }
          }
       }
-      return packageResults;
+      return null;
+   }
+
+   public long getFailedTestsDiffCount() {
+      PackageResult prevPackageResult = getPreviousPackageResult();
+      if (prevPackageResult != null) {
+         return getFailedTestsCount() - prevPackageResult.getFailedTestsCount();
+      }
+      return 0;
    }
 
    public long getTotalTestsDiffCount() {
-      long diff = 0;
-      List<PackageResult> previousPackageResults = getPreviousPackageResults();
-      if (previousPackageResults != null && previousPackageResults.size() > 0) {
-         diff = getTotalTestsCount() - previousPackageResults.get(0).getTotalTestsCount();
+      PackageResult prevPackageResult = getPreviousPackageResult();
+      if (prevPackageResult != null) {
+         return getTotalTestsCount() - prevPackageResult.getTotalTestsCount();
       }
-      return diff;
-
+      return 0;
    }
 
    public long getSkippedTestsDiffCount() {
-      long diff = 0;
-      List<PackageResult> previousPackageResults = getPreviousPackageResults();
-      if (previousPackageResults != null && previousPackageResults.size() > 0) {
-         diff = getSkippedTestsCount() - previousPackageResults.get(0).getSkippedTestsCount();
+      PackageResult prevPackageResult = getPreviousPackageResult();
+      if (prevPackageResult != null) {
+         return getSkippedTestsCount() - prevPackageResult.getSkippedTestsCount();
       }
-      return diff;
+      return 0;
    }
 
    public long getTotalTestsCount() {

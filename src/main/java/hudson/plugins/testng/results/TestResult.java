@@ -1,7 +1,5 @@
 package hudson.plugins.testng.results;
 
-import hudson.model.ModelObject;
-
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -13,7 +11,7 @@ import java.util.Set;
  * @author nullin
  *
  */
-public class TestResult extends BaseResult implements ModelObject {
+public class TestResult extends BaseResult {
 
    private List<ClassResult> classList = new ArrayList<ClassResult>();
 
@@ -33,10 +31,6 @@ public class TestResult extends BaseResult implements ModelObject {
      Set<ClassResult> tmpSet = new HashSet<ClassResult>(this.classList);
      tmpSet.addAll(classList);
      this.classList = new ArrayList<ClassResult>(tmpSet);
-   }
-
-   public String getDisplayName() {
-      return getName();
    }
 
 }

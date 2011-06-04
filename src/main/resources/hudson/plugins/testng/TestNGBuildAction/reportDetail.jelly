@@ -46,7 +46,7 @@
 
    <h2>Failed Configuration Methods</h2>
    <j:choose>
-      <j:when test="${it.results.failedConfigurationMethodsCount != 0}">
+      <j:when test="${it.results.failedConfigCount != 0}">
          <a href="javascript:showOrHideTable('failedConfigurationsTable')">hide/expand the table</a>
          <table id="failedConfigurationsTable" border="1px" class="pane sortable">
             <thead>
@@ -55,7 +55,7 @@
                </tr>
             </thead>
             <tbody>
-               <j:forEach var="r" items="${it.results.failedConfigurationMethods}">
+               <j:forEach var="r" items="${it.results.failedConfigs}">
                   <tr>
                      <td align="left">
                         <a href="${r.fullUrl}">${r.parent.name}.${r.name}</a>
@@ -95,7 +95,7 @@
 
    <h2>Skipped Configuration Methods</h2>
    <j:choose>
-      <j:when test="${it.results.skippedConfigurationMethodsCount != 0}">
+      <j:when test="${it.results.skippedConfigCount != 0}">
          <a href="javascript:showOrHideTable('skippedConfigurationsTable')">hide/expand the table</a>
          <table id="skippedConfigurationsTable" border="1px" class="pane sortable">
             <thead>
@@ -104,7 +104,7 @@
                </tr>
             </thead>
             <tbody>
-               <j:forEach var="r" items="${it.results.skippedConfigurationMethods}">
+               <j:forEach var="r" items="${it.results.skippedConfigs}">
                   <tr>
                      <td align="left">
                         <a href="${r.fullUrl}">${r.parent.name}.${r.name}</a>

@@ -125,7 +125,7 @@ public class Publisher extends Recorder {
          TestNGBuildAction action = new TestNGBuildAction(build, results);
          build.getActions().add(action);
          TestResults r = TestResults.total(true, results);
-         if (r.getFailedConfigurationMethodsCount() > 0 || r.getSkippedConfigurationMethodsCount() > 0 ||
+         if (r.getFailedConfigCount() > 0 || r.getSkippedConfigCount() > 0 ||
                r.getFailedTestCount() > 0 || r.getSkippedTestCount() > 0) {
             build.setResult(Result.UNSTABLE);
          }

@@ -5,6 +5,7 @@ import hudson.model.Action;
 import hudson.model.AbstractBuild;
 import hudson.plugins.testng.parser.ResultsParser;
 import hudson.plugins.testng.results.TestResults;
+import hudson.plugins.testng.util.TestResultHistoryUtil;
 
 import java.io.File;
 import java.io.Serializable;
@@ -70,13 +71,13 @@ public class TestNGBuildAction implements Action, Serializable {
    public TestResults getResults() {
       if (results == null) {
         if (testResults == null) {
-           testResults = loadResults();
+           testResults = loadResults(getBuild());
            return testResults.get();
         }
 
         TestResults tr = testResults.get();
         if (tr == null) {
-          testResults = loadResults();
+          testResults = loadResults(getBuild());
           return testResults.get();
         } else {
           return tr;
@@ -86,10 +87,10 @@ public class TestNGBuildAction implements Action, Serializable {
       }
    }
 
-   private SoftReference<TestResults> loadResults()
+   static SoftReference<TestResults> loadResults(AbstractBuild<?, ?> owner)
    {
       ResultsParser parser = new ResultsParser();
-      FilePath testngDir = Publisher.getTestNGReport(build);
+      FilePath testngDir = Publisher.getTestNGReport(owner);
       FilePath[] paths = null;
       try {
          paths = testngDir.list("*.xml");
@@ -100,7 +101,7 @@ public class TestNGBuildAction implements Action, Serializable {
       TestResults tr = null;
       if (paths == null) {
         tr = new TestResults("");
-        tr.setOwner(getBuild());
+        tr.setOwner(owner);
         return new SoftReference<TestResults>(tr);
       }
 
@@ -112,7 +113,7 @@ public class TestNGBuildAction implements Action, Serializable {
          }
       }
       tr = TestResults.total(true, trList);
-      tr.setOwner(getBuild());
+      tr.setOwner(owner);
       return new SoftReference<TestResults>(tr);
    }
 
@@ -135,7 +136,7 @@ public class TestNGBuildAction implements Action, Serializable {
     * @return
     */
    public String getSummary() {
-      return getResults().toSummary();
+      return TestResultHistoryUtil.toSummary(this);
    }
 
    /**

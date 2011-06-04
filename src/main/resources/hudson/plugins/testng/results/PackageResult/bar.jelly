@@ -25,8 +25,8 @@
             </div>
             <div align="right">
                ${it.totalTestsCount} tests
-               <j:if test="${it.previousResults!=null}">
-                  (${h.getDiffString(it.totalTestsCount-it.previousResults.totalTestsCount)})
+               <j:if test="${it.previousResults != null}">
+                  (${h.getDiffString(it.totalTestsCount - it.previousResults.totalTestsCount)})
                </j:if>
             </div>
          </j:otherwise>

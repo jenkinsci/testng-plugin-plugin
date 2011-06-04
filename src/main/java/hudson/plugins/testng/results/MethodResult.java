@@ -1,10 +1,12 @@
 package hudson.plugins.testng.results;
 
-import hudson.model.ModelObject;
 import hudson.plugins.testng.TestNGProjectAction;
+import hudson.plugins.testng.parser.ResultsParser;
 import hudson.plugins.testng.util.FormatUtil;
 import hudson.plugins.testng.util.TestResultHistoryUtil;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -14,7 +16,7 @@ import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
 
 @SuppressWarnings("serial")
-public class MethodResult extends BaseResult implements ModelObject {
+public class MethodResult extends BaseResult {
 
    private String status;
    private String description;
@@ -34,28 +36,54 @@ public class MethodResult extends BaseResult implements ModelObject {
     */
    private String testUuid;
 
-   public String getTestUuid() {
-      return testUuid;
+   public MethodResult(String name,
+            String status,
+            String description,
+            String duration,
+            String startedAt,
+            String isConfig,
+            String testUuid,
+            String testRunId)
+   {
+      this.name = name;
+      this.status = status;
+      this.description = description;
+      // TODO: Need better handling of test run and method UUIDs
+      this.testUuid = testUuid;
+      // this uuid is used later to group the tests and config-methods together
+      this.testRunId = testRunId;
+
+      try {
+         this.duration = Long.parseLong(duration);
+      } catch (NumberFormatException e) {
+         System.err.println("Unable to parse duration value: " + duration);
+      }
+
+      try {
+         this.startedAt = new SimpleDateFormat(ResultsParser.DATE_FORMAT).parse(startedAt);
+      } catch (ParseException e) {
+         System.err.println("Unable to parse started-at value: " + startedAt);
+      }
+
+      if (isConfig != null) {
+         /*
+          * If is-config attribute is present on test-method,
+          * it's always set to true
+          */
+         this.isConfig = true;
+      }
    }
 
-   public void setTestUuid(String testUuid) {
-      this.testUuid = testUuid;
+   public String getTestUuid() {
+      return testUuid;
    }
 
    public String getTestRunId() {
       return testRunId;
    }
 
-   public void setTestRunId(String testRunId) {
-      this.testRunId = testRunId;
-   }
-
    public Date getStartedAt() {
       return startedAt;
-   }
-
-   public void setStartedAt(Date startedAt) {
-      this.startedAt = startedAt;
    }
 
    public String getFullUrl() {
@@ -80,16 +108,8 @@ public class MethodResult extends BaseResult implements ModelObject {
       return duration;
    }
 
-   public void setDuration(long duration) {
-      this.duration = duration;
-   }
-
    public String getStatus() {
       return status;
-   }
-
-   public void setStatus(String status) {
-      this.status = status;
    }
 
    public String getDescription() {
@@ -104,7 +124,7 @@ public class MethodResult extends BaseResult implements ModelObject {
       this.parameters = parameters;
    }
 
-   public String getDescriptionForDisplay() {
+   public String getDisplayDescription() {
      TestNGProjectAction projAction
         = super.getOwner().getProject().getAction(TestNGProjectAction.class);
      if (projAction.getEscapeTestDescp()) {
@@ -113,7 +133,7 @@ public class MethodResult extends BaseResult implements ModelObject {
       return description;
    }
 
-   public String getExceptionMessageForDisplay() {
+   public String getDisplayExceptionMessage() {
      TestNGProjectAction projAction
         = super.getOwner().getProject().getAction(TestNGProjectAction.class);
      if (projAction.getEscapeExceptionMsg()) {
@@ -122,20 +142,8 @@ public class MethodResult extends BaseResult implements ModelObject {
      return exception.getMessage();
   }
 
-   public void setDescription(String description) {
-      this.description = description;
-   }
-
    public boolean isConfig() {
       return isConfig;
-   }
-
-   public void setConfig(boolean isConfig) {
-      this.isConfig = isConfig;
-   }
-
-   public String getDisplayName() {
-      return getName();
    }
 
    public Object getDynamic(String token, StaplerRequest req, StaplerResponse rsp) {
@@ -158,61 +166,61 @@ public class MethodResult extends BaseResult implements ModelObject {
     *
     * @return list of previous builds results for this method
     */
-   public List<MethodResult> getPreviousMethodResults() {
-      List<MethodResult> methodResults = new ArrayList<MethodResult>();
-      List<TestResults> previousTestResults =
-            TestResultHistoryUtil.getAllPreviousBuildTestResults(getOwner());
-      if (previousTestResults != null) {
-         for (TestResults previousTestResult : previousTestResults) {
-            Map<String, PackageResult> previousPackageMap = previousTestResult.getPackageMap();
-            //get package name!
-            String methodPackageName = getParent().getParent().getName();
-            String methodClassName = getParent().getName();
-
-            if (previousPackageMap.containsKey(methodPackageName) &&
-                  previousPackageMap.get(methodPackageName).getClassList() != null) {
-               List<ClassResult> previousClassResults =
-                     previousPackageMap.get(getParent().getName()).getClassList();
-               boolean foundMatch = false;
-               for (ClassResult previousClassResult : previousClassResults) {
-                  if (previousClassResult.getName().equals(methodClassName)) {
-                     if (this.isConfig) {
-                        if (previousClassResult.getConfigurationMethods() != null) {
-                           List<MethodResult> previousMethodResults =
-                                 previousClassResult.getConfigurationMethods();
-                           for (MethodResult previousMethodResult : previousMethodResults) {
-                              if (previousMethodResult.getName().equals(this.getName())) {
-                                 //found a match
-                                 methodResults.add(previousMethodResult);
-                                 foundMatch = true;
-                                 break;
-                              }
-                           }
-                        }
-                     } else {
-                        if (previousClassResult.getTestMethods() != null) {
-                           List<MethodResult> previousMethodResults =
-                                 previousClassResult.getTestMethods();
-                           for (MethodResult previousMethodResult : previousMethodResults) {
-                              if (previousMethodResult.getName().equals(this.getName())) {
-                                 //found a match
-                                 methodResults.add(previousMethodResult);
-                                 foundMatch = true;
-                                 break;
-                              }
-                           }
-                        }
-                     }
-                  }
-                  if (foundMatch) {
-                     break;
-                  }
-               }
-            }
-         }
-      }
-      return methodResults;
-   }
+//   public List<MethodResult> getPreviousMethodResults() {
+//      List<MethodResult> methodResults = new ArrayList<MethodResult>();
+//      List<TestResults> previousTestResults =
+//            TestResultHistoryUtil.getAllPreviousBuildTestResults(getOwner());
+//      if (previousTestResults != null) {
+//         for (TestResults previousTestResult : previousTestResults) {
+//            Map<String, PackageResult> previousPackageMap = previousTestResult.getPackageMap();
+//            //get package name!
+//            String methodPackageName = getParent().getParent().getName();
+//            String methodClassName = getParent().getName();
+//
+//            if (previousPackageMap.containsKey(methodPackageName) &&
+//                  previousPackageMap.get(methodPackageName).getClassList() != null) {
+//               List<ClassResult> previousClassResults =
+//                     previousPackageMap.get(getParent().getName()).getClassList();
+//               boolean foundMatch = false;
+//               for (ClassResult previousClassResult : previousClassResults) {
+//                  if (previousClassResult.getName().equals(methodClassName)) {
+//                     if (this.isConfig) {
+//                        if (previousClassResult.getConfigurationMethods() != null) {
+//                           List<MethodResult> previousMethodResults =
+//                                 previousClassResult.getConfigurationMethods();
+//                           for (MethodResult previousMethodResult : previousMethodResults) {
+//                              if (previousMethodResult.getName().equals(this.getName())) {
+//                                 //found a match
+//                                 methodResults.add(previousMethodResult);
+//                                 foundMatch = true;
+//                                 break;
+//                              }
+//                           }
+//                        }
+//                     } else {
+//                        if (previousClassResult.getTestMethods() != null) {
+//                           List<MethodResult> previousMethodResults =
+//                                 previousClassResult.getTestMethods();
+//                           for (MethodResult previousMethodResult : previousMethodResults) {
+//                              if (previousMethodResult.getName().equals(this.getName())) {
+//                                 //found a match
+//                                 methodResults.add(previousMethodResult);
+//                                 foundMatch = true;
+//                                 break;
+//                              }
+//                           }
+//                        }
+//                     }
+//                  }
+//                  if (foundMatch) {
+//                     break;
+//                  }
+//               }
+//            }
+//         }
+//      }
+//      return methodResults;
+//   }
 
    public Object getCssClass() {
       if (this.status != null) {
@@ -227,7 +235,6 @@ public class MethodResult extends BaseResult implements ModelObject {
                }
             }
          }
-
       }
       return "result-passed";
    }
