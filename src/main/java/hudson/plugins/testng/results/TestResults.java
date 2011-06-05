@@ -219,8 +219,7 @@ public class TestResults extends BaseResult implements Serializable {
                   packageMap.get(pkg).getClassList().add(_class);
                }
             } else {
-               PackageResult tpkg = new PackageResult();
-               tpkg.setName(pkg);
+               PackageResult tpkg = new PackageResult(pkg);
                tpkg.getClassList().add(_class);
                tpkg.setParent(this);
                packageMap.put(pkg, tpkg);

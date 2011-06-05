@@ -24,6 +24,11 @@ public class PackageResult extends BaseResult {
    private transient int skip;
    private transient int total;
 
+   public PackageResult(String name)
+   {
+      this.name = name;
+   }
+
    public String getUrl() {
       return getName();
    }

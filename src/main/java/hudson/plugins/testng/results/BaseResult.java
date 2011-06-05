@@ -22,11 +22,6 @@ public abstract class BaseResult implements ModelObject, Serializable {
       return name;
    }
 
-   //TODO: Remove if possible
-   public void setName(String name) {
-      this.name = name;
-   }
-
    public BaseResult getParent() {
       return parent;
    }
