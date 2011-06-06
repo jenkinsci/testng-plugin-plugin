@@ -7,11 +7,8 @@ import hudson.plugins.testng.parser.ResultsParser;
 import hudson.plugins.testng.results.TestResults;
 import hudson.plugins.testng.util.TestResultHistoryUtil;
 
-import java.io.File;
 import java.io.Serializable;
 import java.lang.ref.SoftReference;
-import java.util.ArrayList;
-import java.util.Collection;
 
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
@@ -34,11 +31,10 @@ public class TestNGBuildAction implements Action, Serializable {
    private transient TestResults results;
    private transient SoftReference<TestResults> testResults;
 
-   public TestNGBuildAction(AbstractBuild<?, ?> build, Collection<TestResults> testngResults) {
+   public TestNGBuildAction(AbstractBuild<?, ?> build, TestResults testngResults) {
       this.build = build;
-      TestResults tr = TestResults.total(true, testngResults);
-      tr.setOwner(this.build);
-      this.testResults = new SoftReference<TestResults>(tr);
+      testngResults.setOwner(this.build);
+      this.testResults = new SoftReference<TestResults>(testngResults);
    }
 
    /**
@@ -71,13 +67,13 @@ public class TestNGBuildAction implements Action, Serializable {
    public TestResults getResults() {
       if (results == null) {
         if (testResults == null) {
-           testResults = loadResults(getBuild());
+           testResults = new SoftReference<TestResults>(loadResults(getBuild()));
            return testResults.get();
         }
 
         TestResults tr = testResults.get();
         if (tr == null) {
-          testResults = loadResults(getBuild());
+           testResults = new SoftReference<TestResults>(loadResults(getBuild()));
           return testResults.get();
         } else {
           return tr;
@@ -87,13 +83,12 @@ public class TestNGBuildAction implements Action, Serializable {
       }
    }
 
-   static SoftReference<TestResults> loadResults(AbstractBuild<?, ?> owner)
+   static TestResults loadResults(AbstractBuild<?, ?> owner)
    {
-      ResultsParser parser = new ResultsParser();
       FilePath testngDir = Publisher.getTestNGReport(owner);
       FilePath[] paths = null;
       try {
-         paths = testngDir.list("*.xml");
+         paths = testngDir.list("testng-results*.xml");
       } catch (Exception e) {
          //do nothing
       }
@@ -102,19 +97,13 @@ public class TestNGBuildAction implements Action, Serializable {
       if (paths == null) {
         tr = new TestResults("");
         tr.setOwner(owner);
-        return new SoftReference<TestResults>(tr);
+        return tr;
       }
 
-      Collection<TestResults> trList = new ArrayList<TestResults>();
-      for (FilePath path : paths) {
-         TestResults result = parser.parse(new File(path.getRemote()));
-         if (result.getTestList().size() > 0) {
-            trList.add(result);
-         }
-      }
-      tr = TestResults.total(true, trList);
-      tr.setOwner(owner);
-      return new SoftReference<TestResults>(tr);
+      ResultsParser parser = new ResultsParser();
+      TestResults result = parser.parse(paths);
+      result.setOwner(owner);
+      return result;
    }
 
    public TestResults getPreviousResults() {

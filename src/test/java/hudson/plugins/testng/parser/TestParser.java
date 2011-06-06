@@ -1,5 +1,6 @@
 package hudson.plugins.testng.parser;
 
+import hudson.FilePath;
 import hudson.plugins.testng.results.TestResults;
 import hudson.plugins.testng.results.PackageResult;
 
@@ -20,8 +21,7 @@ public class TestParser {
       String filename = "sample-testng-results.xml";
       URL resource = TestParser.class.getClassLoader().getResource(filename);
       Assert.assertNotNull(resource);
-      ResultsParser parser = new ResultsParser();
-      TestResults results = parser.parse(new File(resource.getFile()));
+      TestResults results = getResults(resource.getFile());
       Assert.assertFalse("Collection shouldn't have been empty", results.getTestList().isEmpty());
    }
 
@@ -30,8 +30,7 @@ public class TestParser {
       String filename = "testng-results-same-test.xml";
       URL resource = TestParser.class.getClassLoader().getResource(filename);
       Assert.assertNotNull(resource);
-      ResultsParser parser = new ResultsParser();
-      TestResults results = parser.parse(new File(resource.getFile()));
+      TestResults results = getResults(resource.getFile());
       Assert.assertFalse("Collection shouldn't have been empty", results.getTestList().isEmpty());
       Assert.assertEquals(2, results.getTestList().size());
       results.tally();
@@ -46,8 +45,7 @@ public class TestParser {
       String filename = "sample-testng-dp-result.xml";
       URL resource = TestParser.class.getClassLoader().getResource(filename);
       Assert.assertNotNull(resource);
-      ResultsParser parser = new ResultsParser();
-      TestResults results = parser.parse(new File(resource.getFile()));
+      TestResults results = getResults(resource.getFile());
       Assert.assertFalse("Collection shouldn't have been empty", results.getTestList().isEmpty());
 
       // This test assumes that there is only 1 package in
@@ -63,8 +61,7 @@ public class TestParser {
    @Test
    public void testTestngXmlWithNonExistingResultXml() {
       String filename = "/invalid/path/to/file/new-test-result.xml";
-      ResultsParser parser = new ResultsParser();
-      TestResults results = parser.parse(new File(filename));
+      TestResults results = getResults(filename);
       Assert.assertTrue("Collection should have been empty. Number of results : "
                + results.getTestList().size(), results.getTestList().isEmpty());
    }
@@ -72,9 +69,15 @@ public class TestParser {
    @Test
    public void parseTestNG() {
       ClassLoader cl = TestParser.class.getClassLoader();
-      ResultsParser parser = new ResultsParser();
-      TestResults results = parser.parse(new File(cl.getResource("testng-results-testng.xml").getFile()));
+      TestResults results = getResults(cl.getResource("testng-results-testng.xml").getFile());
       results.tally();
+   }
+
+   private TestResults getResults(String filename) {
+      ResultsParser parser = new ResultsParser();
+      FilePath[] filePaths = new FilePath[1];
+      filePaths[0] = new FilePath(new File(filename));
+      return parser.parse(filePaths);
    }
 
    @Test

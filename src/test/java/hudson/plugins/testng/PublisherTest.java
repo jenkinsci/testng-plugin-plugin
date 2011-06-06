@@ -2,12 +2,10 @@ package hudson.plugins.testng;
 
 import hudson.FilePath;
 
+import java.io.File;
+
 import junit.framework.Assert;
 import junit.framework.TestCase;
-
-import java.io.File;
-import java.util.Arrays;
-import java.util.HashSet;
 
 /**
  * @autor nullin
@@ -51,7 +49,7 @@ public class PublisherTest extends TestCase
     Assert.assertEquals(3, reports.length);
     // Save files in local workspace
     FilePath local = workspace.child("coverage_localfolder");
-    boolean saved = Publisher.saveReports(local, new HashSet<FilePath>(Arrays.asList(reports)));
+    boolean saved = Publisher.saveReports(local, reports);
     Assert.assertTrue(saved);
     Assert.assertEquals(3, local.list().size());
     local.deleteRecursive();

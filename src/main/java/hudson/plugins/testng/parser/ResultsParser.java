@@ -1,5 +1,6 @@
 package hudson.plugins.testng.parser;
 
+import hudson.FilePath;
 import hudson.plugins.testng.results.ClassResult;
 import hudson.plugins.testng.results.MethodResult;
 import hudson.plugins.testng.results.MethodResultException;
@@ -77,117 +78,123 @@ public class ResultsParser {
    /**
     * Parses the XML for relevant information
     *
-    * @param file a file hopefully containing test related data in correct format
+    * @param paths a file hopefully containing test related data in correct format
     * @return a collection of test results
     */
-   public TestResults parse(File file) {
-      if (null == file) {
-         log.severe("File not specified");
+   public TestResults parse(FilePath[] paths) {
+      if (null == paths) {
+         log.severe("Files not specified");
          return new TestResults("");
       }
 
-      if (!file.exists() || file.isDirectory()) {
-         log.severe("'" + file.getAbsolutePath() + "' points to a non-existent file or directory");
-         return new TestResults("");
-      }
+      finalResults = new TestResults(UUID.randomUUID().toString());
 
-      finalResults = new TestResults(file.getName());
+      for (FilePath path : paths) {
+         File file = new File(path.getRemote());
 
-      BufferedInputStream bufferedInputStream = null;
-      try {
-         bufferedInputStream = new BufferedInputStream(new FileInputStream(file));
-         xmlPullParser = createXmlPullParser(bufferedInputStream);
+         if (!file.exists() || file.isDirectory()) {
+            log.severe("'" + file.getAbsolutePath() + "' points to an invalid test report");
+            continue; //move to next file
+         }
 
-         //some initial setup
-         testList = new ArrayList<TestResult>();
+         BufferedInputStream bufferedInputStream = null;
+         try {
+            bufferedInputStream = new BufferedInputStream(new FileInputStream(file));
+            xmlPullParser = createXmlPullParser(bufferedInputStream);
 
-         while (XmlPullParser.END_DOCUMENT != xmlPullParser.nextToken()) {
-            TAGS tag = TAGS.fromString(xmlPullParser.getName());
-            int eventType = xmlPullParser.getEventType();
+            //some initial setup
+            testList = new ArrayList<TestResult>();
 
-            switch (eventType) {
-              //all opening tags
-               case XmlPullParser.START_TAG:
-                  switch (tag) {
-                     case TEST:
-                        startTest(get("name"));
-                        break;
-                     case CLASS:
-                        startClass(get("name"));
-                        break;
-                     case TEST_METHOD:
-                        startTestMethod(get("name"), get("status"),
-                                 get("description"), get("duration-ms"),
-                                 get("started-at"), get("is-config"));
-                        break;
-                     case PARAMS:
-                        startMethodParameters();
-                        currentCDATAParent = TAGS.PARAMS;
-                        break;
-                     case EXCEPTION:
-                        startException();
-                        break;
-                     case MESSAGE:
-                        currentCDATAParent = TAGS.MESSAGE;
-                        break;
-                     case SHORT_STACKTRACE:
-                        currentCDATAParent = TAGS.SHORT_STACKTRACE;
-                        break;
-                     case FULL_STACKTRACE:
-                        currentCDATAParent = TAGS.FULL_STACKTRACE;
-                        break;
-                  }
-                  break;
-               // all closing tags
-               case XmlPullParser.END_TAG:
-                  switch (tag) {
-                     case TEST:
-                        finishTest();
-                        break;
-                     case CLASS:
-                        finishclass();
-                        break;
-                     case TEST_METHOD:
-                        finishTestMethod();
-                        break;
-                     case PARAMS:
-                        finishMethodParameters();
-                        currentCDATAParent = TAGS.UNKNOWN;
-                        break;
-                     case EXCEPTION:
-                        finishException();
-                        break;
-                     case MESSAGE:
-                     case SHORT_STACKTRACE:
-                     case FULL_STACKTRACE:
-                        currentCDATAParent = TAGS.UNKNOWN;
-                        break;
-                  }
-                  break;
-               // all cdata reading
-               case XmlPullParser.CDSECT:
-                  handleCDATA();
-                  break;
+            while (XmlPullParser.END_DOCUMENT != xmlPullParser.nextToken()) {
+               TAGS tag = TAGS.fromString(xmlPullParser.getName());
+               int eventType = xmlPullParser.getEventType();
+
+               switch (eventType) {
+                  //all opening tags
+                  case XmlPullParser.START_TAG:
+                     switch (tag) {
+                        case TEST:
+                           startTest(get("name"));
+                           break;
+                        case CLASS:
+                           startClass(get("name"));
+                           break;
+                        case TEST_METHOD:
+                           startTestMethod(get("name"), get("status"),
+                                    get("description"), get("duration-ms"),
+                                    get("started-at"), get("is-config"));
+                           break;
+                        case PARAMS:
+                           startMethodParameters();
+                           currentCDATAParent = TAGS.PARAMS;
+                           break;
+                        case EXCEPTION:
+                           startException();
+                           break;
+                        case MESSAGE:
+                           currentCDATAParent = TAGS.MESSAGE;
+                           break;
+                        case SHORT_STACKTRACE:
+                           currentCDATAParent = TAGS.SHORT_STACKTRACE;
+                           break;
+                        case FULL_STACKTRACE:
+                           currentCDATAParent = TAGS.FULL_STACKTRACE;
+                           break;
+                     }
+                     break;
+                  // all closing tags
+                  case XmlPullParser.END_TAG:
+                     switch (tag) {
+                        case TEST:
+                           finishTest();
+                           break;
+                        case CLASS:
+                           finishclass();
+                           break;
+                        case TEST_METHOD:
+                           finishTestMethod();
+                           break;
+                        case PARAMS:
+                           finishMethodParameters();
+                           currentCDATAParent = TAGS.UNKNOWN;
+                           break;
+                        case EXCEPTION:
+                           finishException();
+                           break;
+                        case MESSAGE:
+                        case SHORT_STACKTRACE:
+                        case FULL_STACKTRACE:
+                           currentCDATAParent = TAGS.UNKNOWN;
+                           break;
+                     }
+                     break;
+                  // all cdata reading
+                  case XmlPullParser.CDSECT:
+                     handleCDATA();
+                     break;
+               }
+            }
+            finalResults.addUniqueTests(testList);
+         } catch (XmlPullParserException e) {
+            log.warning("Failed to parse XML: " + e.getMessage());
+            e.printStackTrace();
+         } catch (FileNotFoundException e) {
+           log.log(Level.SEVERE, "Failed to find XML file", e);
+         } catch (IOException e) {
+           log.log(Level.SEVERE, "Failed due to IOException while parsing XML file", e);
+         } finally {
+            try {
+               if (bufferedInputStream != null) {
+                  bufferedInputStream.close();
+               }
+            } catch (IOException e) {
+               log.log(Level.WARNING, "Failed to close input stream", e);
             }
          }
-         finalResults.addUniqueTests(testList);
-      } catch (XmlPullParserException e) {
-         log.warning("Failed to parse XML: " + e.getMessage());
-         e.printStackTrace();
-      } catch (FileNotFoundException e) {
-        log.log(Level.SEVERE, "Failed to find XML file", e);
-      } catch (IOException e) {
-        log.log(Level.SEVERE, "Failed due to IOException while parsing XML file", e);
-      } finally {
-         try {
-           if (bufferedInputStream != null) {
-              bufferedInputStream.close();
-           }
-         } catch (IOException e) {
-           log.log(Level.WARNING, "Failed to close input stream", e);
-         }
       }
 
+      //tally up the results properly before returning
+      finalResults.tally();
       return finalResults;
    }
 

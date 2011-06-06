@@ -3,8 +3,6 @@ package hudson.plugins.testng;
 import hudson.model.AbstractBuild;
 import hudson.plugins.testng.results.TestResults;
 
-import java.util.Collection;
-
 /**
  * This class serves the purpose of backward compatibility only. Having
  * it here ensures that results for builds using older version of this plugin
@@ -17,7 +15,7 @@ import java.util.Collection;
 public final class BuildIndividualReport extends TestNGBuildAction
 {
    public BuildIndividualReport(AbstractBuild<?, ?> build,
-         Collection<TestResults> testngResults)
+         TestResults testngResults)
    {
       super(build, testngResults);
    }

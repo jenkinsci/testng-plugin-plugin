@@ -8,7 +8,6 @@ import hudson.model.BuildListener;
 import hudson.model.Result;
 import hudson.model.AbstractBuild;
 import hudson.model.AbstractProject;
-import hudson.plugins.testng.parser.ResultsParser;
 import hudson.plugins.testng.results.TestResults;
 import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.BuildStepMonitor;
@@ -20,9 +19,7 @@ import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import net.sf.json.JSONObject;
 
@@ -89,9 +86,6 @@ public class Publisher extends Recorder {
       logger.println("Looking for TestNG results report in workspace using pattern: " + reportFilenamePattern);
       FilePath[] paths = locateReports(build.getWorkspace(), reportFilenamePattern);
 
-      Collection<TestResults> results = new ArrayList<TestResults>();
-      Set<FilePath> parsedFiles = new HashSet<FilePath>();
-
       if (paths.length == 0) {
          logger.println("Did not find any matching files.");
          build.setResult(Result.FAILURE);
@@ -99,34 +93,21 @@ public class Publisher extends Recorder {
          return true;
       }
 
-      //loop through all the files and get the results
-      for (FilePath path : paths) {
-         final String pathStr = path.getRemote();
-         if (!parsedFiles.contains(path)) {
-            ResultsParser parser = new ResultsParser();
-            TestResults result = parser.parse(new File(pathStr));
-            if (result.getTestList().size() > 0) {
-              logger.println("Found results for: " + pathStr);
-              results.add(result);
-              parsedFiles.add(path);
-            }
-         }
-      }
-
-      boolean filesSaved = saveReports(getTestNGReport(build), parsedFiles);
+      boolean filesSaved = saveReports(getTestNGReport(build), paths);
       if (!filesSaved) {
          logger.println("Failed to save TestNG XML reports");
          build.setResult(Result.FAILURE);
          return true;
       }
 
-      if (results.size() > 0) {
+      TestResults results = TestNGBuildAction.loadResults(build);
+
+      if (results.getTestList().size() > 0) {
          //create an individual report for all of the results and add it to the build
          TestNGBuildAction action = new TestNGBuildAction(build, results);
          build.getActions().add(action);
-         TestResults r = TestResults.total(true, results);
-         if (r.getFailedConfigCount() > 0 || r.getSkippedConfigCount() > 0 ||
-               r.getFailedTestCount() > 0 || r.getSkippedTestCount() > 0) {
+         if (results.getFailedConfigCount() > 0 || results.getSkippedConfigCount() > 0 ||
+                  results.getFailedTestCount() > 0 || results.getSkippedTestCount() > 0) {
             build.setResult(Result.UNSTABLE);
          }
       } else {
@@ -181,12 +162,12 @@ public class Publisher extends Recorder {
        return new FilePath(new File(build.getRootDir(), "testng"));
    }
 
-   static boolean saveReports(FilePath testngDir, Set<FilePath> reports)
+   static boolean saveReports(FilePath testngDir, FilePath[] paths)
    {
       try {
          testngDir.mkdirs();
          int i = 0;
-         for (FilePath report : reports) {
+         for (FilePath report : paths) {
             String name = "testng-results" + (i > 0 ? "-" + i : "") + ".xml";
             i++;
             FilePath dst = testngDir.child(name);
