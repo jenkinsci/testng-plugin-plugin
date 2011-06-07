@@ -3,14 +3,11 @@ package hudson.plugins.testng.results;
 import hudson.plugins.testng.TestNGProjectAction;
 import hudson.plugins.testng.parser.ResultsParser;
 import hudson.plugins.testng.util.FormatUtil;
-import hudson.plugins.testng.util.TestResultHistoryUtil;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
