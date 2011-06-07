@@ -108,17 +108,6 @@ public class TestResults extends BaseResult implements Serializable {
       this.testList = new ArrayList<TestResult>(tmpSet);
    }
 
-   public static TestResults total(boolean tally, Collection<TestResults> results) {
-      TestResults totalTestResults = new TestResults("");
-      for (TestResults individual : results) {
-         totalTestResults.add(individual);
-      }
-      if (tally) {
-         totalTestResults.tally();
-      }
-      return totalTestResults;
-   }
-
    private void add(TestResults r) {
       testList.addAll(r.getTestList());
       failedConfigurationMethods.addAll(r.getFailedConfigs());
@@ -193,7 +182,7 @@ public class TestResults extends BaseResult implements Serializable {
                for (ClassResult classResult : classResults) {
                   if (classResult.getName().equals(_class.getName())) {
                      //let's merge the testMethods
-                     //loop through and dont add them if the name ,  startTime , endTime and
+                     //loop through and don't add them if the name, startTime, endTime and
                      //other fields are identical
                      List<MethodResult> methods = classResult.getTestMethodList();
                      List<MethodResult> _methods = _class.getTestMethodList();
