@@ -21,7 +21,6 @@ Release Notes
 * change how we disambiguate between classes/methods with same name. Need 
 to move away from uuid as that wont work between restarts
 * JENKINS-9838 - Action --> HealthReportingAction
-* ResultParser.parse() should throw IllegalState on second invocation
 
 ### v0.23
 * Fixed: JENKINS-9835 - Remove isRelativePath option
@@ -29,6 +28,14 @@ to move away from uuid as that wont work between restarts
 * Moved help information from configuration options to help.html
 * Fixed: JENKINS-9839 - Fix graph refresh after a build is deleted
 * Added: JENKINS-9837 - capture parameters used to run the test method
+* Changed to start appending '_x' where 1<=x<=n to test method names in urls
+to disambiguate multiple tests with same name from same class. This stops
+using the UUID that was being associated with all the test methods.
+
+(NOTE: There is a slight break in backward compatibility in this release.
+Significant code changes and features have been introduced in this version.
+Older builds might face some issues, though the chances are very low. Also, the 
+urls for older data for test methods will change)
 
 ### v0.22
 * A whole lot of code cleanup. Removed a lot of unnecessary classes.
