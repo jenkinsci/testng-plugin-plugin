@@ -4,7 +4,6 @@ import hudson.model.AbstractBuild;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -106,15 +105,6 @@ public class TestResults extends BaseResult implements Serializable {
       Set<TestResult> tmpSet = new HashSet<TestResult>(this.testList);
       tmpSet.addAll(testList);
       this.testList = new ArrayList<TestResult>(tmpSet);
-   }
-
-   private void add(TestResults r) {
-      testList.addAll(r.getTestList());
-      failedConfigurationMethods.addAll(r.getFailedConfigs());
-      skippedConfigurationMethods.addAll(r.getSkippedConfigs());
-      failedTests.addAll(r.getFailedTests());
-      passedTests.addAll(r.getPassedTests());
-      skippedTests.addAll(r.getSkippedTests());
    }
 
    public void setOwner(AbstractBuild<?, ?> owner) {
