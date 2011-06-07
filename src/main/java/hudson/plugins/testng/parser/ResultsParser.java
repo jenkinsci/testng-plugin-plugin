@@ -253,9 +253,8 @@ public class ResultsParser {
             String startedAt,
             String isConfig)
    {
-      String testUuid = UUID.randomUUID().toString();
       currentMethod = new MethodResult(name, status, description, duration,
-               startedAt, isConfig, testUuid, currentTestRunId);
+               startedAt, isConfig, currentTestRunId);
    }
 
    private void finishTestMethod()

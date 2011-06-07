@@ -129,9 +129,18 @@ public class ClassResult extends BaseResult {
             }
          }
          methodResult.setParent(this);
-//         if (methodInstanceMap.containsKey(methodResult.getName()) {
-//
-//         }
+         /*
+          * Setup testUuids to ensure that methods with same names can be
+          * reached using unique urls
+          */
+         String methodName = methodResult.getName();
+         if (methodInstanceMap.containsKey(methodName)) {
+            int currIdx = methodInstanceMap.get(methodName);
+            methodResult.setTestUuid(String.valueOf(++currIdx));
+            methodInstanceMap.put(methodName, currIdx);
+         } else {
+            methodInstanceMap.put(methodName, 0);
+         }
       }
    }
 
@@ -142,7 +151,7 @@ public class ClassResult extends BaseResult {
       if (this.testMethodList != null) {
          for (MethodResult methodResult : this.testMethodList) {
             //append the uuid as well
-            if (token.equals(methodResult.getName() + "--" + methodResult.getTestUuid())) {
+            if (token.equals(methodResult.getUrl())) {
                return methodResult;
             }
          }

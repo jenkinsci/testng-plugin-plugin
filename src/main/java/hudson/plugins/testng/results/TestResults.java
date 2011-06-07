@@ -168,34 +168,8 @@ public class TestResults extends BaseResult implements Serializable {
             }
             if (packageMap.containsKey(pkg)) {
                List<ClassResult> classResults = packageMap.get(pkg).getClassList();
-               boolean classAlreadyAddedToPackage = false;
-               for (ClassResult classResult : classResults) {
-                  if (classResult.getName().equals(_class.getName())) {
-                     //let's merge the testMethods
-                     //loop through and don't add them if the name, startTime, endTime and
-                     //other fields are identical
-                     List<MethodResult> methods = classResult.getTestMethodList();
-                     List<MethodResult> _methods = _class.getTestMethodList();
-                     for (MethodResult _method : _methods) {
-                        boolean _methodAlreadyAdded = false;
-                        for (MethodResult method : methods) {
-                           if(_method.getName().equals(method.getName()) &&
-                                _method.getDuration() == method.getDuration() &&
-                                   _method.getStartedAt().equals(method.getStartedAt())) {
-                              _methodAlreadyAdded = true;
-                              break;
-                           }
-                        }
-                        if(!_methodAlreadyAdded) {
-                           classResult.addTestMethod(_method);
-                        }
-                     }
-                     classAlreadyAddedToPackage = true;
-                     break;
-                  }
-               }
-               if (!classAlreadyAddedToPackage) {
-                  packageMap.get(pkg).getClassList().add(_class);
+               if (!classResults.contains(_class)) {
+                  classResults.add(_class);
                }
             } else {
                PackageResult tpkg = new PackageResult(pkg);

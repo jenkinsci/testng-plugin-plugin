@@ -9,9 +9,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
-import org.kohsuke.stapler.StaplerRequest;
-import org.kohsuke.stapler.StaplerResponse;
-
 @SuppressWarnings("serial")
 public class MethodResult extends BaseResult {
 
@@ -39,14 +36,11 @@ public class MethodResult extends BaseResult {
             String duration,
             String startedAt,
             String isConfig,
-            String testUuid,
             String testRunId)
    {
       this.name = name;
       this.status = status;
       this.description = description;
-      // TODO: Need better handling of test run and method UUIDs
-      this.testUuid = testUuid;
       // this uuid is used later to group the tests and config-methods together
       this.testRunId = testRunId;
 
@@ -75,6 +69,10 @@ public class MethodResult extends BaseResult {
       return testUuid;
    }
 
+   public void setTestUuid(String testUuid) {
+      this.testUuid = testUuid;
+   }
+
    public String getTestRunId() {
       return testRunId;
    }
@@ -98,7 +96,11 @@ public class MethodResult extends BaseResult {
    }
 
    public String getUrl() {
-      return getName() + "--" + this.testUuid;
+      String url = getName();
+      if (this.testUuid != null) {
+         url += "_" + this.testUuid;
+      }
+      return url;
    }
 
    public long getDuration() {
@@ -141,13 +143,6 @@ public class MethodResult extends BaseResult {
 
    public boolean isConfig() {
       return isConfig;
-   }
-
-   public Object getDynamic(String token, StaplerRequest req, StaplerResponse rsp) {
-      if (token.equals("/" + getName() + "--" + this.testUuid)) {
-         return this;
-      }
-      return null;
    }
 
    /**
