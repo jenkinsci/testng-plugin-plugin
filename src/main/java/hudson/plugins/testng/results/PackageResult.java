@@ -29,10 +29,6 @@ public class PackageResult extends BaseResult {
       this.name = name;
    }
 
-   public String getUrl() {
-      return getName();
-   }
-
    public void setOwner(AbstractBuild<?, ?> owner) {
       super.setOwner(owner);
       for (ClassResult _class : classList) {

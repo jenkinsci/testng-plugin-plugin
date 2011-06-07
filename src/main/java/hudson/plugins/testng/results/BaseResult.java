@@ -42,4 +42,8 @@ public abstract class BaseResult implements ModelObject, Serializable {
       return getName();
    }
 
+   public String getUrl() {
+      return getName();
+   }
+
 }

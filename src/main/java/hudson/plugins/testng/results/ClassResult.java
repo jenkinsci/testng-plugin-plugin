@@ -51,10 +51,6 @@ public class ClassResult extends BaseResult {
       return testRunMap;
    }
 
-   public String getUrl() {
-      return getName();
-   }
-
    public void setOwner(AbstractBuild<?, ?> owner) {
       super.setOwner(owner);
       for (MethodResult _m : this.testMethodList) {
@@ -119,6 +115,7 @@ public class ClassResult extends BaseResult {
       this.fail = 0;
       this.skip = 0;
       this.total = 0;
+      Map<String, Integer> methodInstanceMap = new HashMap<String, Integer>();
       for (MethodResult methodResult : this.testMethodList) {
          if (!methodResult.isConfig()) {
             this.duration += methodResult.getDuration();
@@ -132,6 +129,9 @@ public class ClassResult extends BaseResult {
             }
          }
          methodResult.setParent(this);
+//         if (methodInstanceMap.containsKey(methodResult.getName()) {
+//
+//         }
       }
    }
 
