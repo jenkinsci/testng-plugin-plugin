@@ -1,11 +1,16 @@
 package hudson.plugins.testng.results;
 
+import hudson.model.Api;
 import hudson.model.ModelObject;
 import hudson.model.AbstractBuild;
 
 import java.io.Serializable;
 
+import org.kohsuke.stapler.export.Exported;
+import org.kohsuke.stapler.export.ExportedBean;
+
 @SuppressWarnings("serial")
+@ExportedBean
 public abstract class BaseResult implements ModelObject, Serializable {
 
    protected AbstractBuild<?, ?> owner;
@@ -18,6 +23,7 @@ public abstract class BaseResult implements ModelObject, Serializable {
     */
    protected String fullName;
 
+   @Exported(visibility = 999)
    public String getName() {
       return name;
    }
@@ -44,6 +50,10 @@ public abstract class BaseResult implements ModelObject, Serializable {
 
    public String getUrl() {
       return getName();
+   }
+
+   public Api getApi() {
+      return new Api(this);
    }
 
 }

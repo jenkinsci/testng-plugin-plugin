@@ -85,4 +85,15 @@ public class MethodResultException implements Serializable {
       }
       return stackTrace;
    }
+
+   public String toString() {
+      StringBuffer str = new StringBuffer();
+      str.append(exceptionName).append(": ");
+      if (message != null) {
+         str.append(message);
+      }
+      str.append("\n");
+      str.append(stackTrace);
+      return str.toString();
+   }
 }

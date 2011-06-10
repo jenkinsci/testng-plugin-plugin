@@ -3,6 +3,7 @@ package hudson.plugins.testng;
 import hudson.FilePath;
 import hudson.model.Action;
 import hudson.model.AbstractBuild;
+import hudson.model.Api;
 import hudson.plugins.testng.parser.ResultsParser;
 import hudson.plugins.testng.results.TestResults;
 import hudson.plugins.testng.util.TestResultHistoryUtil;
@@ -151,5 +152,9 @@ public class TestNGBuildAction implements Action, Serializable {
 
    public Object getDynamic(String token, StaplerRequest req, StaplerResponse rsp) {
       return getResults().getDynamic(token, req, rsp);
+   }
+
+   public Api getApi() {
+      return new Api(getResults());
    }
 }

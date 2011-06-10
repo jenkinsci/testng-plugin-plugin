@@ -4,6 +4,7 @@ import hudson.model.AbstractBuild;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -12,6 +13,7 @@ import java.util.Set;
 
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
+import org.kohsuke.stapler.export.Exported;
 
 /**
  * Represents all the results gathered for a single build (or a single suite,
@@ -65,6 +67,7 @@ public class TestResults extends BaseResult implements Serializable {
       return testList;
    }
 
+   @Exported(name = "total")
    public int getTotalTestCount() {
       return totalTestCount;
    }
@@ -73,20 +76,29 @@ public class TestResults extends BaseResult implements Serializable {
       return passedTestCount;
    }
 
+   @Exported(name = "fail")
    public int getFailedTestCount() {
       return failedTestCount;
    }
 
+   @Exported(name = "skip")
    public int getSkippedTestCount() {
       return skippedTestCount;
    }
 
+   @Exported(name = "fail-config")
    public int getFailedConfigCount() {
       return failedConfigurationMethodsCount;
    }
 
+   @Exported(name = "skip-config")
    public int getSkippedConfigCount() {
       return skippedConfigurationMethodsCount;
+   }
+
+   @Exported(name = "package")
+   public Collection<PackageResult> getPackageList() {
+      return packageMap.values();
    }
 
    public Map<String, PackageResult> getPackageMap() {

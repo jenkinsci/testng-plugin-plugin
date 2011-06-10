@@ -10,6 +10,7 @@ import java.util.Map;
 
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
+import org.kohsuke.stapler.export.Exported;
 
 @SuppressWarnings("serial")
 public class ClassResult extends BaseResult {
@@ -62,14 +63,17 @@ public class ClassResult extends BaseResult {
       return this.duration;
    }
 
+   @Exported(visibility = 9)
    public int getFail() {
       return this.fail;
    }
 
+   @Exported(visibility = 9)
    public int getSkip() {
       return skip;
    }
 
+   @Exported(visibility = 9)
    public int getTotal() {
       return total;
    }
@@ -159,6 +163,7 @@ public class ClassResult extends BaseResult {
       return null;
    }
 
+   @Exported(name = "test-method")
    public List<MethodResult> getTestMethods() {
       List<MethodResult> list = new ArrayList<MethodResult>();
       for (MethodResult methodResult : this.testMethodList) {

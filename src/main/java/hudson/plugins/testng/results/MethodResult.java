@@ -9,6 +9,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
+import org.kohsuke.stapler.export.Exported;
+
 @SuppressWarnings("serial")
 public class MethodResult extends BaseResult {
 
@@ -77,6 +79,7 @@ public class MethodResult extends BaseResult {
       return testRunId;
    }
 
+   @Exported
    public Date getStartedAt() {
       return startedAt;
    }
@@ -103,20 +106,47 @@ public class MethodResult extends BaseResult {
       return url;
    }
 
+   @Exported
    public long getDuration() {
       return duration;
    }
 
+   @Exported(visibility = 9)
    public String getStatus() {
       return status;
    }
 
+   @Exported
    public String getDescription() {
       return description;
    }
 
+   @Exported
    public List<String> getParameters() {
       return parameters;
+   }
+
+   /**
+    * Added only to expose possible exception via  .../api/xxx
+    *
+    * @return String representation of the exception
+    */
+   @Exported(name = "exception")
+   public String getExceptionString() {
+      if (exception != null) {
+         return exception.toString();
+      }
+      return null;
+   }
+
+   /**
+    * Added only to expose class name as part of method result via  .../api/xxx
+    *
+    * @return String representation of the exception
+    */
+   @Exported(name = "className")
+   public String getClassName() {
+      return getParent().getName();
    }
 
    public void setParameters(List<String> parameters) {
@@ -139,7 +169,7 @@ public class MethodResult extends BaseResult {
         return FormatUtil.escapeString(this.exception.getMessage());
      }
      return exception.getMessage();
-  }
+   }
 
    public boolean isConfig() {
       return isConfig;

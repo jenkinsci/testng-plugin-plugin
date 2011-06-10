@@ -12,6 +12,7 @@ import java.util.Map;
 
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
+import org.kohsuke.stapler.export.Exported;
 
 @SuppressWarnings("serial")
 public class PackageResult extends BaseResult {
@@ -36,6 +37,7 @@ public class PackageResult extends BaseResult {
       }
    }
 
+   @Exported(name = "classs") // because stapler notices suffix 's' and remove it
    public List<ClassResult> getClassList() {
       return classList;
    }
@@ -44,14 +46,17 @@ public class PackageResult extends BaseResult {
       return duration;
    }
 
+   @Exported(visibility = 9)
    public int getFail() {
       return fail;
    }
 
+   @Exported(visibility = 9)
    public int getSkip() {
       return skip;
    }
 
+   @Exported(visibility = 9)
    public int getTotal() {
       return total;
    }
