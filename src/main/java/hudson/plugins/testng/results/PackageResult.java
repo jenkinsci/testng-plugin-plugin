@@ -136,48 +136,6 @@ public class PackageResult extends BaseResult {
       }
    }
 
-   public long getFailedTestsCount() {
-      int failedTests = 0;
-      for (ClassResult aClass : classList) {
-         if (aClass.getTestMethods() != null) {
-            for (MethodResult aMethod : aClass.getTestMethods()) {
-               if (!aMethod.isConfig() && aMethod.getStatus().equalsIgnoreCase("fail")) {
-                  failedTests++;
-               }
-            }
-         }
-      }
-      return failedTests;
-   }
-
-   public long getSkippedTestsCount() {
-      int skippedTests = 0;
-      for (ClassResult aClass : classList) {
-         if (aClass.getTestMethods() != null) {
-            for (MethodResult aMethod : aClass.getTestMethods()) {
-               if (!aMethod.isConfig() && aMethod.getStatus().equalsIgnoreCase("skip")) {
-                  skippedTests++;
-               }
-            }
-         }
-      }
-      return skippedTests;
-   }
-
-   public long getPassedTestsCount() {
-      int passTests = 0;
-      for (ClassResult aClass : classList) {
-         if (aClass.getTestMethods() != null) {
-            for (MethodResult aMethod : aClass.getTestMethods()) {
-               if (!aMethod.isConfig() && aMethod.getStatus().equalsIgnoreCase("pass")) {
-                  passTests++;
-               }
-            }
-         }
-      }
-      return passTests;
-   }
-
    private PackageResult getPreviousPackageResult() {
       TestResults previousTestResult =
             TestResultHistoryUtil.getPreviousBuildTestResults(getOwner());
@@ -195,7 +153,7 @@ public class PackageResult extends BaseResult {
    public long getFailedTestsDiffCount() {
       PackageResult prevPackageResult = getPreviousPackageResult();
       if (prevPackageResult != null) {
-         return getFailedTestsCount() - prevPackageResult.getFailedTestsCount();
+         return fail - prevPackageResult.getFail();
       }
       return 0;
    }
@@ -203,7 +161,7 @@ public class PackageResult extends BaseResult {
    public long getTotalTestsDiffCount() {
       PackageResult prevPackageResult = getPreviousPackageResult();
       if (prevPackageResult != null) {
-         return getTotalTestsCount() - prevPackageResult.getTotalTestsCount();
+         return total - prevPackageResult.getTotal();
       }
       return 0;
    }
@@ -211,22 +169,9 @@ public class PackageResult extends BaseResult {
    public long getSkippedTestsDiffCount() {
       PackageResult prevPackageResult = getPreviousPackageResult();
       if (prevPackageResult != null) {
-         return getSkippedTestsCount() - prevPackageResult.getSkippedTestsCount();
+         return skip - prevPackageResult.getSkip();
       }
       return 0;
    }
 
-   public long getTotalTestsCount() {
-      int totalTests = 0;
-      for (ClassResult aClass : classList) {
-         if (aClass.getTestMethods() != null) {
-            for (MethodResult aMethod : aClass.getTestMethods()) {
-               if (!aMethod.isConfig()) {
-                  totalTests++;
-               }
-            }
-         }
-      }
-      return totalTests;
-   }
 }

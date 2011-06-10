@@ -146,7 +146,7 @@
                   </j:invokeStatic>
                   ${duration}
                </td>
-               <td align="center">${pkg.failedTestsCount}</td>
+               <td align="center">${pkg.fail}</td>
                <td align="center">
                   <j:invokeStatic className="hudson.plugins.testng.util.FormatUtil"
                                   method="formatLong" var="diff">
@@ -154,7 +154,7 @@
                   </j:invokeStatic>
                   ${diff}
                </td>
-               <td align="center">${pkg.skippedTestsCount}</td>
+               <td align="center">${pkg.skip}</td>
                <td align="center">
                   <j:invokeStatic className="hudson.plugins.testng.util.FormatUtil"
                                   method="formatLong" var="diff">
@@ -162,7 +162,7 @@
                   </j:invokeStatic>
                   ${diff}
                </td>
-               <td align="center">${pkg.totalTestsCount}</td>
+               <td align="center">${pkg.total}</td>
                <td align="center">
                   <j:invokeStatic className="hudson.plugins.testng.util.FormatUtil"
                                   method="formatLong" var="diff">

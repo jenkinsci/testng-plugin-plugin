@@ -191,8 +191,8 @@ public class TestResults extends BaseResult implements Serializable {
             }
          }
       }
-      for (String pkg : packageMap.keySet()) {
-         packageMap.get(pkg).tally();
+      for (PackageResult pkgResult : packageMap.values()) {
+         pkgResult.tally();
       }
    }
 
