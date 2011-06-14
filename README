@@ -18,9 +18,9 @@ Release Notes
 
 ### upcoming
 * JENKINS-8926 - capture information regarding groups
-* change how we disambiguate between classes/methods with same name. Need 
-to move away from uuid as that wont work between restarts
 * JENKINS-9838 - Action --> HealthReportingAction
+
+### v0.24
 * Fixed: JENKINS-9742 - Test Report exposes data via the Remote APIs now
 
 ### v0.23
