@@ -20,6 +20,15 @@
       </div>
    </div>
 
+   <j:if test="${!empty(it.groups)}">
+      Group(s):
+      <j:forEach var="group" items="${it.groups}">
+         <ul>
+            <li>${group}</li>
+         </ul>
+      </j:forEach>
+   </j:if>
+
    <j:if test="${!empty(it.parameters)}">
       <table border="1px" class="pane">
          <thead>

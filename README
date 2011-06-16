@@ -20,6 +20,7 @@ Release Notes
 * JENKINS-8926 - capture information regarding groups
 * JENKINS-9838 - Action --> HealthReportingAction
 * Fixed: JENKINS-10000 - Config methods for classes with no test methods are not displayed
+* Added: JENKINS-10001 - Store/Display group names (if any) for test methods
 
 ### v0.24
 * Fixed: JENKINS-9742 - Test Report exposes data via the Remote APIs now

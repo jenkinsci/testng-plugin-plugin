@@ -43,6 +43,7 @@ public class ResultsParser {
     * We maintain only a single ClassResult for all <class>s with the same fqdn
     */
    private Map<String, ClassResult> classResultMap = new HashMap<String, ClassResult>();
+   private Map<String, List<String>> classGroupMap;
    private TestResults finalResults;
    private List<TestResult> testList;
    private List<ClassResult> currentClassList;
@@ -57,10 +58,12 @@ public class ResultsParser {
    private String currentMessage;
    private String currentShortStackTrace;
    private String currentFullStackTrace;
+   private String currentGroupName;
 
    private enum TAGS {
      TESTNG_RESULTS, SUITE, TEST, CLASS, TEST_METHOD,
-     PARAMS, PARAM, VALUE, EXCEPTION, UNKNOWN, MESSAGE, SHORT_STACKTRACE, FULL_STACKTRACE;
+     PARAMS, PARAM, VALUE, EXCEPTION, UNKNOWN, MESSAGE,
+     SHORT_STACKTRACE, FULL_STACKTRACE, GROUPS, GROUP, METHOD;
 
      public static TAGS fromString(String val) {
         if (val == null) {
@@ -113,6 +116,15 @@ public class ResultsParser {
                   //all opening tags
                   case XmlPullParser.START_TAG:
                      switch (tag) {
+                        case GROUPS:
+                           startGroups();
+                           break;
+                        case GROUP:
+                           startGroup(get("name"));
+                           break;
+                        case METHOD:
+                           startGroupMethod(get("class"), get("name"));
+                           break;
                         case TEST:
                            startTest(get("name"));
                            break;
@@ -145,6 +157,15 @@ public class ResultsParser {
                   // all closing tags
                   case XmlPullParser.END_TAG:
                      switch (tag) {
+                        case SUITE:
+                           finishSuite();
+                           break;
+                        case GROUP:
+                           finishGroup();
+                           break;
+                        case METHOD:
+                           finishGroupMethod();
+                           break;
                         case TEST:
                            finishTest();
                            break;
@@ -196,6 +217,44 @@ public class ResultsParser {
       //tally up the results properly before returning
       finalResults.tally();
       return finalResults;
+   }
+
+   private void startGroupMethod(String className, String methodName)
+   {
+      String key = className + "|" + methodName;
+      List<String> groups = classGroupMap.get(key);
+      if (groups == null) {
+         groups = new ArrayList<String>(3);
+         groups.add(currentGroupName);
+         classGroupMap.put(key, groups);
+      } else {
+         groups.add(currentGroupName);
+      }
+   }
+
+   private void finishGroupMethod()
+   {
+      // nothing to do
+   }
+
+   private void startGroup(String groupName)
+   {
+      currentGroupName = groupName;
+   }
+
+   private void finishGroup()
+   {
+      currentGroupName = null;
+   }
+
+   private void startGroups()
+   {
+      classGroupMap = new HashMap<String, List<String>>();
+   }
+
+   private void finishSuite()
+   {
+      classGroupMap.clear();
    }
 
    private void startException()
@@ -255,6 +314,10 @@ public class ResultsParser {
    {
       currentMethod = new MethodResult(name, status, description, duration,
                startedAt, isConfig, currentTestRunId);
+      List<String> groups = classGroupMap.get(currentClass.getName() + "|" + name);
+      if (groups != null) {
+         currentMethod.setGroups(groups);
+      }
    }
 
    private void finishTestMethod()

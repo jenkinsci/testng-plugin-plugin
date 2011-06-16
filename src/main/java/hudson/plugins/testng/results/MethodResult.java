@@ -20,7 +20,7 @@ public class MethodResult extends BaseResult {
    private long duration;
    private MethodResultException exception;
    private Date startedAt;
-   private String testName;
+   private List<String> groups;
    private List<String> parameters;
    /**
     * unique id for this tests's run (helps associate the test method with
@@ -122,6 +122,11 @@ public class MethodResult extends BaseResult {
    }
 
    @Exported
+   public List<String> getGroups() {
+      return groups;
+   }
+
+   @Exported
    public List<String> getParameters() {
       return parameters;
    }
@@ -147,6 +152,10 @@ public class MethodResult extends BaseResult {
    @Exported(name = "className")
    public String getClassName() {
       return getParent().getName();
+   }
+
+   public void setGroups(List<String> groups) {
+      this.groups = groups;
    }
 
    public void setParameters(List<String> parameters) {
