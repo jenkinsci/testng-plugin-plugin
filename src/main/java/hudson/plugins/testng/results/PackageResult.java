@@ -24,6 +24,7 @@ public class PackageResult extends BaseResult {
    private transient int fail;
    private transient int skip;
    private transient int total;
+   private boolean sortedOnce = false;
 
    public PackageResult(String name)
    {
@@ -71,7 +72,10 @@ public class PackageResult extends BaseResult {
    }
 
    public List<MethodResult> getSortedTestMethodsByStartTime() {
-      sortTestMethods();
+      if (!sortedOnce) {
+         sortTestMethods();
+         sortedOnce = true;
+      }
       return sortedTestMethodsByStartTime;
    }
 
