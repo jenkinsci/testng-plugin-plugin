@@ -38,22 +38,20 @@ public class ClassResult extends BaseResult {
       //group all the test methods based on their run
       testRunMap = new HashMap<String, GroupedTestRun>();
       for (MethodResult methodResult : this.testMethodList) {
-         if (this.testRunMap.containsKey(methodResult.getTestRunId())) {
-            GroupedTestRun group = this.testRunMap.get(methodResult.getTestRunId());
-            if (methodResult.isConfig()) {
-               group.addConfigurationMethod(methodResult);
-            } else {
-               group.addTestMethod(methodResult);
-            }
+         String methodTestRunId = methodResult.getTestRunId();
+         GroupedTestRun group = null;
+         if (this.testRunMap.containsKey(methodTestRunId)) {
+            group = this.testRunMap.get(methodTestRunId);
          } else {
-            GroupedTestRun group = new GroupedTestRun();
-            group.setTestRunId(methodResult.getTestRunId());
-            if (methodResult.isConfig()) {
-               group.addConfigurationMethod(methodResult);
-            } else {
-               group.addTestMethod(methodResult);
-            }
-            this.testRunMap.put(methodResult.getTestRunId(), group);
+            group = new GroupedTestRun();
+            group.setTestRunId(methodTestRunId);
+            this.testRunMap.put(methodTestRunId, group);
+         }
+
+         if (methodResult.isConfig()) {
+            group.addConfigurationMethod(methodResult);
+         } else {
+            group.addTestMethod(methodResult);
          }
       }
       return testRunMap;
