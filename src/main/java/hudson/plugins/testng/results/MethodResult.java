@@ -20,6 +20,7 @@ public class MethodResult extends BaseResult {
    private long duration;
    private MethodResultException exception;
    private Date startedAt;
+   private String parentTestName;
    private List<String> groups;
    private List<String> parameters;
    /**
@@ -38,13 +39,15 @@ public class MethodResult extends BaseResult {
             String duration,
             String startedAt,
             String isConfig,
-            String testRunId)
+            String testRunId,
+            String parentTestName)
    {
       this.name = name;
       this.status = status;
       this.description = description;
       // this uuid is used later to group the tests and config-methods together
       this.testRunId = testRunId;
+      this.parentTestName = parentTestName;
 
       try {
          this.duration = Long.parseLong(duration);
@@ -73,6 +76,10 @@ public class MethodResult extends BaseResult {
 
    public void setTestUuid(String testUuid) {
       this.testUuid = testUuid;
+   }
+
+   public String getParentTestName() {
+      return parentTestName;
    }
 
    public String getTestRunId() {

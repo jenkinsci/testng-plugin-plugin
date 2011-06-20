@@ -313,7 +313,7 @@ public class ResultsParser {
             String isConfig)
    {
       currentMethod = new MethodResult(name, status, description, duration,
-               startedAt, isConfig, currentTestRunId);
+               startedAt, isConfig, currentTestRunId, currentTest.getName());
       List<String> groups = classGroupMap.get(currentClass.getName() + "|" + name);
       if (groups != null) {
          currentMethod.setGroups(groups);
