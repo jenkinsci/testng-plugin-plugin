@@ -16,7 +16,7 @@ import org.kohsuke.stapler.export.Exported;
 public class ClassResult extends BaseResult {
 
    private List<MethodResult> testMethodList = new ArrayList<MethodResult>();
-   private Map<String, GroupedTestRun> testRunMap;
+   private Map<String, GroupedTestRun> testRunMap = null;
 
    private long duration;
    private int fail;
@@ -27,9 +27,16 @@ public class ClassResult extends BaseResult {
      this.name = name;
    }
 
+   /**
+    * Called only from jelly file
+    * @return
+    */
    public Map<String, GroupedTestRun> getTestRunMap() {
+      if (testRunMap != null) {
+         return testRunMap;
+      }
       //group all the test methods based on their run
-      this.testRunMap = new HashMap<String, GroupedTestRun>();
+      testRunMap = new HashMap<String, GroupedTestRun>();
       for (MethodResult methodResult : this.testMethodList) {
          if (this.testRunMap.containsKey(methodResult.getTestRunId())) {
             GroupedTestRun group = this.testRunMap.get(methodResult.getTestRunId());

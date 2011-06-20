@@ -18,13 +18,12 @@ import org.kohsuke.stapler.export.Exported;
 public class PackageResult extends BaseResult {
 
    private List<ClassResult> classList = new ArrayList<ClassResult>();
-   private final List<MethodResult> sortedTestMethodsByStartTime = new ArrayList<MethodResult>();
+   private List<MethodResult> sortedTestMethodsByStartTime = null;
 
    private transient long duration;
    private transient int fail;
    private transient int skip;
    private transient int total;
-   private boolean sortedOnce = false;
 
    public PackageResult(String name)
    {
@@ -72,9 +71,8 @@ public class PackageResult extends BaseResult {
    }
 
    public List<MethodResult> getSortedTestMethodsByStartTime() {
-      if (!sortedOnce) {
+      if (sortedTestMethodsByStartTime == null) {
          sortTestMethods();
-         sortedOnce = true;
       }
       return sortedTestMethodsByStartTime;
    }
@@ -110,6 +108,7 @@ public class PackageResult extends BaseResult {
    }
 
    public void sortTestMethods() {
+      this.sortedTestMethodsByStartTime = new ArrayList<MethodResult>();
       //for each class
       Map<Date, List<MethodResult>> map = new HashMap<Date, List<MethodResult>>();
       for (ClassResult aClass : classList) {
@@ -132,7 +131,6 @@ public class PackageResult extends BaseResult {
       List<Date> keys = new ArrayList<Date>(map.keySet());
       Collections.sort(keys);
       //now create the list with the order
-      this.sortedTestMethodsByStartTime.clear();
       for (Date key : keys) {
          if (map.containsKey(key)) {
             this.sortedTestMethodsByStartTime.addAll(map.get(key));
