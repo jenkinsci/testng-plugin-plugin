@@ -72,11 +72,9 @@
    <h2>Order of Execution by Test Method</h2>
    <j:choose>
       <j:when test="${size(it.sortedTestMethodsByStartTime) == 0}">
-         <div>No Tests Found or All Tests Were Skipped</div>
+         <div>No Tests found or all Tests were skipped</div>
       </j:when>
-   </j:choose>
-   <j:choose>
-      <j:when test="${size(it.sortedTestMethodsByStartTime) > 0}">
+      <j:otherwise>
          <a href="javascript:showorHideTable('executionOrderTable')">hide/expand the table</a>
          <table border="1px" class="pane sortable" id="executionOrderTable">
             <thead>
@@ -112,6 +110,6 @@
                </j:forEach>
             </tbody>
          </table>
-      </j:when>
+      </j:otherwise>
    </j:choose>
 </j:jelly>
