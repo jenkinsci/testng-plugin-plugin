@@ -43,7 +43,7 @@ public class ResultsParser {
     * We maintain only a single ClassResult for all <class>s with the same fqdn
     */
    private Map<String, ClassResult> classResultMap = new HashMap<String, ClassResult>();
-   private Map<String, List<String>> classGroupMap;
+   private Map<String, List<String>> methodGroupMap;
    private TestResults finalResults;
    private List<TestResult> testList;
    private List<ClassResult> currentClassList;
@@ -222,11 +222,11 @@ public class ResultsParser {
    private void startGroupMethod(String className, String methodName)
    {
       String key = className + "|" + methodName;
-      List<String> groups = classGroupMap.get(key);
+      List<String> groups = methodGroupMap.get(key);
       if (groups == null) {
          groups = new ArrayList<String>(3);
          groups.add(currentGroupName);
-         classGroupMap.put(key, groups);
+         methodGroupMap.put(key, groups);
       } else {
          groups.add(currentGroupName);
       }
@@ -249,12 +249,12 @@ public class ResultsParser {
 
    private void startGroups()
    {
-      classGroupMap = new HashMap<String, List<String>>();
+      methodGroupMap = new HashMap<String, List<String>>();
    }
 
    private void finishSuite()
    {
-      classGroupMap.clear();
+      methodGroupMap.clear();
    }
 
    private void startException()
@@ -314,7 +314,7 @@ public class ResultsParser {
    {
       currentMethod = new MethodResult(name, status, description, duration,
                startedAt, isConfig, currentTestRunId, currentTest.getName());
-      List<String> groups = classGroupMap.get(currentClass.getName() + "|" + name);
+      List<String> groups = methodGroupMap.get(currentClass.getName() + "|" + name);
       if (groups != null) {
          currentMethod.setGroups(groups);
       }
