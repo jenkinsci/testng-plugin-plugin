@@ -19,6 +19,8 @@ Release Notes
 ### upcoming
 * JENKINS-8926 - capture information regarding groups
 * JENKINS-9838 - Action --> HealthReportingAction
+
+### v0.25
 * Fixed: JENKINS-10000 - Config methods for classes with no test methods are not displayed
 * Added: JENKINS-10001 - Store/Display group names (if any) for test methods
 * Added: JENKINS-10098 - Add test/suite names to class results page
