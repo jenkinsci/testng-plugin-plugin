@@ -59,6 +59,7 @@ public class ResultsParser {
    private String currentShortStackTrace;
    private String currentFullStackTrace;
    private String currentGroupName;
+   private String currentSuite;
 
    private enum TAGS {
      TESTNG_RESULTS, SUITE, TEST, CLASS, TEST_METHOD,
@@ -116,6 +117,9 @@ public class ResultsParser {
                   //all opening tags
                   case XmlPullParser.START_TAG:
                      switch (tag) {
+                        case SUITE:
+                           startSuite(get("name"));
+                           break;
                         case GROUPS:
                            startGroups();
                            break;
@@ -252,9 +256,15 @@ public class ResultsParser {
       methodGroupMap = new HashMap<String, List<String>>();
    }
 
+   private void startSuite(String name)
+   {
+      currentSuite = name;
+   }
+
    private void finishSuite()
    {
       methodGroupMap.clear();
+      currentSuite = null;
    }
 
    private void startException()
@@ -313,7 +323,7 @@ public class ResultsParser {
             String isConfig)
    {
       currentMethod = new MethodResult(name, status, description, duration,
-               startedAt, isConfig, currentTestRunId, currentTest.getName());
+         startedAt, isConfig, currentTestRunId, currentTest.getName(), currentSuite);
       List<String> groups = methodGroupMap.get(currentClass.getName() + "|" + name);
       if (groups != null) {
          currentMethod.setGroups(groups);

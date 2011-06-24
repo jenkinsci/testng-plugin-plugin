@@ -2,6 +2,9 @@
          xmlns:t="/lib/hudson" xmlns:f="/lib/form">
    <j:forEach var="group" items="${it.testRunMap.values()}">
       <h2>Test Methods</h2>
+      <j:if test="${group.testName != null}">
+         (from test '<b>${group.testName}</b>' in suite '<b>${group.suiteName}</b>')
+      </j:if>
       <j:choose>
          <j:when test="${size(group.testMethods) > 0}">
             <table border="1px" class="pane sortable">

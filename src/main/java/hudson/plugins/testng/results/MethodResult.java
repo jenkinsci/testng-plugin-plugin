@@ -21,6 +21,7 @@ public class MethodResult extends BaseResult {
    private MethodResultException exception;
    private Date startedAt;
    private String parentTestName;
+   private String parentSuiteName;
    private List<String> groups;
    private List<String> parameters;
    /**
@@ -40,7 +41,8 @@ public class MethodResult extends BaseResult {
             String startedAt,
             String isConfig,
             String testRunId,
-            String parentTestName)
+            String parentTestName,
+            String parentSuiteName)
    {
       this.name = name;
       this.status = status;
@@ -48,6 +50,7 @@ public class MethodResult extends BaseResult {
       // this uuid is used later to group the tests and config-methods together
       this.testRunId = testRunId;
       this.parentTestName = parentTestName;
+      this.parentSuiteName = parentSuiteName;
 
       try {
          this.duration = Long.parseLong(duration);
@@ -80,6 +83,10 @@ public class MethodResult extends BaseResult {
 
    public String getParentTestName() {
       return parentTestName;
+   }
+
+   public String getParentSuiteName() {
+      return parentSuiteName;
    }
 
    public String getTestRunId() {
@@ -189,6 +196,23 @@ public class MethodResult extends BaseResult {
 
    public String getDisplayDuration() {
       return FormatUtil.formatTimeInMilliSeconds(duration);
+   }
+
+   public String getDisplayGroups() {
+      StringBuffer sb = new StringBuffer();
+
+      if (groups != null) {
+         int len = groups.size();
+         int count = 1;
+         for (String grp : groups) {
+            sb.append(grp);
+            if (count++ < len) {
+               sb.append(", ");
+            }
+         }
+      }
+
+      return sb.toString();
    }
 
    public boolean isConfig() {
