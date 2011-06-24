@@ -1,13 +1,9 @@
 <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout"
          xmlns:t="/lib/hudson" xmlns:f="/lib/form">
-   <j:invokeStatic className="hudson.plugins.testng.util.FormatUtil"
-                   method="formatTimeInMilliSeconds" var="duration">
-      <j:arg type="long" value="${it.duration}"/>
-   </j:invokeStatic>
 
    <div>
       <h1><st:out value="${it.name}"/></h1>
-      (from <a href="../">${it.parent.name}</a> took ${duration})
+      (from <a href="../">${it.parent.name}</a> took ${it.displayDuration})
    </div>
 
    <h1>

@@ -20,11 +20,7 @@
                            <a href="${method.url}">${method.name}</a>
                         </td>
                         <td align="right" data="${method.duration}">
-                           <j:invokeStatic className="hudson.plugins.testng.util.FormatUtil"
-                                           method="formatTimeInMilliSeconds" var="duration">
-                              <j:arg type="long" value="${method.duration}"/>
-                           </j:invokeStatic>
-                           ${duration}
+                           ${method.displayDuration}
                         </td>
                         <td align="right">${method.startedAt}</td>
                         <td align="right">
@@ -61,11 +57,7 @@
                            <a href="${method.url}">${method.name}</a>
                         </td>
                         <td align="right" data="${method.duration}">
-                           <j:invokeStatic className="hudson.plugins.testng.util.FormatUtil"
-                                           method="formatTimeInMilliSeconds" var="duration">
-                              <j:arg type="long" value="${method.duration}"/>
-                           </j:invokeStatic>
-                           ${method.duration} msec
+                           ${method.displayDuration}
                         </td>
                         <td align="right">${method.startedAt}</td>
                         <td align="right">

@@ -187,6 +187,10 @@ public class MethodResult extends BaseResult {
      return exception.getMessage();
    }
 
+   public String getDisplayDuration() {
+      return FormatUtil.formatTimeInMilliSeconds(duration);
+   }
+
    public boolean isConfig() {
       return isConfig;
    }

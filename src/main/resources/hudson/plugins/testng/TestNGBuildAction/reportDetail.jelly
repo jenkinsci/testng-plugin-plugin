@@ -29,13 +29,7 @@
                      <td align="left">
                         <a href="${r.fullUrl}">${r.parent.name}.${r.name}</a>
                      </td>
-                     <td align="right" data="${r.duration}">
-                        <j:invokeStatic className="hudson.plugins.testng.util.FormatUtil"
-                                        method="formatTimeInMilliSeconds" var="duration">
-                           <j:arg type="long" value="${r.duration}"/>
-                        </j:invokeStatic>
-                        ${duration}
-                     </td>
+                     <td align="right">${r.displayDuration}</td>
                   </tr>
                </j:forEach>
             </tbody>
