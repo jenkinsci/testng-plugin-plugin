@@ -1,5 +1,11 @@
 <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout"
          xmlns:t="/lib/hudson" xmlns:f="/lib/form">
+   <script type="text/javascript">
+      function showMore(id) {
+         document.getElementById(id + "_1").style.display = "none";
+         document.getElementById(id + "_2").style.display = "";
+      }
+   </script>
    <j:forEach var="group" items="${it.testRunMap.values()}">
       <h2>Test Methods</h2>
       <j:if test="${group.testName != null}">
@@ -21,6 +27,10 @@
                      <tr>
                         <td align="left">
                            <a href="${method.url}">${method.name}</a>
+                           <j:if test="${method.groups != null}">
+                              <div id="${method.url}_1" style="display:inline"> (<a href="javascript:showMore('${method.url}')">...</a>)</div>
+                              <div id="${method.url}_2" style="display:none">Group(s): ${method.displayGroups}</div>
+                           </j:if>
                         </td>
                         <td align="right" data="${method.duration}">
                            ${method.displayDuration}
