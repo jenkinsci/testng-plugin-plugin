@@ -19,6 +19,7 @@ Release Notes
 ### upcoming
 * JENKINS-9838 - Action --> HealthReportingAction
 * Added: JENKINS-8926 - Add group name to class test methods page
+* Added: JENKINS-9969 - Store/Display user provided custom test name
 
 ### v0.25
 * Fixed: JENKINS-10000 - Config methods for classes with no test methods are not displayed

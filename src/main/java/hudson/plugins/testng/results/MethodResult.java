@@ -20,10 +20,12 @@ public class MethodResult extends BaseResult {
    private long duration;
    private MethodResultException exception;
    private Date startedAt;
+   private String testInstanceName;
    private String parentTestName;
    private String parentSuiteName;
    private List<String> groups;
    private List<String> parameters;
+
    /**
     * unique id for this tests's run (helps associate the test method with
     * related configuration methods)
@@ -42,13 +44,15 @@ public class MethodResult extends BaseResult {
             String isConfig,
             String testRunId,
             String parentTestName,
-            String parentSuiteName)
+            String parentSuiteName,
+            String testInstanceName)
    {
       this.name = name;
       this.status = status;
       this.description = description;
       // this uuid is used later to group the tests and config-methods together
       this.testRunId = testRunId;
+      this.testInstanceName = testInstanceName;
       this.parentTestName = parentTestName;
       this.parentSuiteName = parentSuiteName;
 
@@ -79,6 +83,10 @@ public class MethodResult extends BaseResult {
 
    public void setTestUuid(String testUuid) {
       this.testUuid = testUuid;
+   }
+
+   public String getTestInstanceName() {
+      return testInstanceName;
    }
 
    public String getParentTestName() {

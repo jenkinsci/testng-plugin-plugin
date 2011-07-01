@@ -27,9 +27,16 @@
                      <tr>
                         <td align="left">
                            <a href="${method.url}">${method.name}</a>
-                           <j:if test="${method.groups != null}">
+                           <j:if test="${method.groups != null || method.testInstanceName != null}">
                               <div id="${method.url}_1" style="display:inline"> (<a href="javascript:showMore('${method.url}')">...</a>)</div>
-                              <div id="${method.url}_2" style="display:none">Group(s): ${method.displayGroups}</div>
+                              <div id="${method.url}_2" style="display:none">
+                                 <j:if test="${method.testInstanceName != null}">
+                                    <div>Instance Name: ${method.testInstanceName}</div>
+                                 </j:if>
+                                 <j:if test="${method.groups != null}">
+                                    <div>Group(s): ${method.displayGroups}</div>
+                                 </j:if>
+                              </div>
                            </j:if>
                         </td>
                         <td align="right" data="${method.duration}">

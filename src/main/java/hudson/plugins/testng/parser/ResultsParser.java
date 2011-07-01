@@ -136,9 +136,10 @@ public class ResultsParser {
                            startClass(get("name"));
                            break;
                         case TEST_METHOD:
-                           startTestMethod(get("name"), get("status"),
-                                    get("description"), get("duration-ms"),
-                                    get("started-at"), get("is-config"));
+                           startTestMethod(get("name"), get("test-instance-name"),
+                                    get("status"), get("description"),
+                                    get("duration-ms"), get("started-at"),
+                                    get("is-config"));
                            break;
                         case PARAMS:
                            startMethodParameters();
@@ -316,6 +317,7 @@ public class ResultsParser {
    }
 
    private void startTestMethod(String name,
+            String testInstanceName,
             String status,
             String description,
             String duration,
@@ -323,7 +325,8 @@ public class ResultsParser {
             String isConfig)
    {
       currentMethod = new MethodResult(name, status, description, duration,
-         startedAt, isConfig, currentTestRunId, currentTest.getName(), currentSuite);
+         startedAt, isConfig, currentTestRunId, currentTest.getName(),
+         currentSuite, testInstanceName);
       List<String> groups = methodGroupMap.get(currentClass.getName() + "|" + name);
       if (groups != null) {
          currentMethod.setGroups(groups);
