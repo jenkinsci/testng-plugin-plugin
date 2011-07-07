@@ -44,14 +44,14 @@
 
     <developers>
         <developer>
-            <id>farshidce</id>
-            <name>Farshid Ghods</name>
-            <email>farshid.ghods@gmail.com</email>
-        </developer>
-        <developer>
             <id>nalin_makar</id>
             <name>Nalin Makar</name>
             <email>nalin.makar@gmail.com</email>
+        </developer>
+        <developer>
+            <id>farshidce</id>
+            <name>Farshid Ghods</name>
+            <email>farshid.ghods@gmail.com</email>
         </developer>
     </developers>
 
