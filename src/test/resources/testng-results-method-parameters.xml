@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testng-results skipped="0" failed="0" total="13" passed="13">
+    <reporter-output>
+    </reporter-output>
+    <suite name="Tests::Suite" duration-ms="5151" started-at="2011-06-30T21:38:16Z" finished-at="2011-06-30T21:38:21Z">
+        <groups>
+        </groups>
+        <test name="INST_NAME:Tests" duration-ms="5151" started-at="2011-06-30T21:38:16Z"
+              finished-at="2011-06-30T21:38:21Z">
+            <class name="testng.instancename.MyTestDP">
+                <test-method status="PASS" signature="dpTest(java.lang.String)" name="dpTest" duration-ms="105" started-at="2011-06-30T21:38:20Z" finished-at="2011-06-30T21:38:20Z">
+                    <params>
+                        <param index="0">
+                            <value>
+                                <![CDATA[VMFS]]>
+                            </value>
+                        </param>
+                    </params>
+                </test-method>
+                <test-method status="PASS" signature="dpTest2(java.lang.String,java.lang.String)" name="dpTest2" duration-ms="104" started-at="2011-06-30T21:38:20Z" finished-at="2011-06-30T21:38:20Z">
+                    <params>
+                        <param index="0">
+                            <value>
+                                <![CDATA[NFS]]>
+                            </value>
+                        </param>
+                        <param index="1">
+                            <value>
+                                <![CDATA[FFS]]>
+                            </value>
+                        </param>
+                    </params>
+                </test-method>
+            </class>
+        </test>
+    </suite>
+</testng-results>

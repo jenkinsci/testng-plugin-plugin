@@ -18,6 +18,7 @@ Release Notes
 
 ### upcoming
 * JENKINS-9838 - Action --> HealthReportingAction
+* JENKINS-1675 - Added test method parameters to method names in report
 
 ### v0.26
 * Added: JENKINS-8926 - Add group name to class test methods page
