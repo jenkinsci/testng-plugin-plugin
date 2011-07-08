@@ -9,6 +9,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.kohsuke.stapler.export.Exported;
 
 @SuppressWarnings("serial")
@@ -182,6 +183,9 @@ public class MethodResult extends BaseResult {
 
    public void setParameters(List<String> parameters) {
       this.parameters = parameters;
+      if (!parameters.isEmpty()) {
+         this.name = this.name + "(" + StringUtils.join(parameters, ", ") + ")";
+      }
    }
 
    public String getDisplayDescription() {

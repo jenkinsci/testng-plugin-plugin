@@ -1,13 +1,15 @@
 package hudson.plugins.testng.parser;
 
 import hudson.FilePath;
-import hudson.plugins.testng.results.TestResults;
+import hudson.plugins.testng.results.MethodResult;
 import hudson.plugins.testng.results.PackageResult;
+import hudson.plugins.testng.results.TestResults;
 
 import java.io.File;
 import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.List;
 import java.util.Map;
 
 import junit.framework.Assert;
@@ -86,5 +88,37 @@ public class TestParser {
       String dateString = "2010-07-20T11:49:17Z";
       SimpleDateFormat sdf = new SimpleDateFormat(ResultsParser.DATE_FORMAT);
       sdf.parse(dateString);
+   }
+
+   @Test
+   public void testMethodParametersShouldBeAvailableInTestResults() {
+      TestResults results = createResultsFrom("testng-results-method-parameters.xml");
+      List<MethodResult> methodResults = results.getPassedTests();
+      Assert.assertEquals(2, methodResults.size());
+
+      MethodResult firstResult = methodResults.get(0);
+      List<String> firstResultParameters = firstResult.getParameters();
+      Assert.assertEquals(1, firstResultParameters.size());
+      Assert.assertEquals("VMFS", firstResultParameters.get(0));
+
+      MethodResult secondMethodResult = methodResults.get(1);
+      List<String> secondResultParameters = secondMethodResult.getParameters();
+      Assert.assertEquals(2, secondResultParameters.size());
+      Assert.assertEquals("NFS", secondResultParameters.get(0));
+      Assert.assertEquals("FFS", secondResultParameters.get(1));
+   }
+
+   @Test
+   public void testMethodParametersShouldBeAppendedToTheTestMethodName() {
+      TestResults results = createResultsFrom("testng-results-method-parameters.xml");
+      MethodResult firstResult = results.getPassedTests().get(0);
+      Assert.assertEquals("dpTest(VMFS)", firstResult.getName());
+
+      MethodResult secondResult = results.getPassedTests().get(1);
+      Assert.assertEquals("dpTest2(NFS, FFS)", secondResult.getName());
+   }
+
+   private TestResults createResultsFrom(String filename) {
+      return getResults(getClass().getClassLoader().getResource(filename).getFile());
    }
 }
