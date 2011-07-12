@@ -1,14 +1,28 @@
 package hudson.plugins.testng.results;
 
+import hudson.model.AbstractBuild;
+import hudson.plugins.testng.TestNGBuildAction;
 import hudson.plugins.testng.TestNGProjectAction;
 import hudson.plugins.testng.parser.ResultsParser;
 import hudson.plugins.testng.util.FormatUtil;
+import hudson.plugins.testng.util.GraphHelper;
+import hudson.util.ChartUtil;
+import hudson.util.DataSetBuilder;
+import hudson.util.Graph;
 
+import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
+import org.jfree.chart.JFreeChart;
+import org.kohsuke.stapler.StaplerRequest;
+import org.kohsuke.stapler.StaplerResponse;
 import org.kohsuke.stapler.export.Exported;
 
 @SuppressWarnings("serial")
@@ -107,7 +121,7 @@ public class MethodResult extends BaseResult {
    }
 
    public String getFullUrl() {
-       //let's add the test uuid to this url
+      // package + classname + method url
       return super.getParent().getParent().getName()
             + "/" + super.getParent().getName() + "/" + getUrl();
    }
@@ -184,6 +198,10 @@ public class MethodResult extends BaseResult {
       this.parameters = parameters;
    }
 
+   /**
+    * Used on jelly page to display the proper (un)escaped version of description
+    * @return
+    */
    public String getDisplayDescription() {
      TestNGProjectAction projAction
         = super.getOwner().getProject().getAction(TestNGProjectAction.class);
@@ -193,6 +211,10 @@ public class MethodResult extends BaseResult {
       return description;
    }
 
+   /**
+    * Used on jelly page to display the proper (un)escaped version of excp msg
+    * @return
+    */
    public String getDisplayExceptionMessage() {
      TestNGProjectAction projAction
         = super.getOwner().getProject().getAction(TestNGProjectAction.class);
@@ -202,25 +224,23 @@ public class MethodResult extends BaseResult {
      return exception.getMessage();
    }
 
+   /**
+    * Used on jelly page to display duration in human readable form
+    * @return
+    */
    public String getDisplayDuration() {
       return FormatUtil.formatTimeInMilliSeconds(duration);
    }
 
+   /**
+    * Used on jelly page to display comma separate list of groups
+    * @return
+    */
    public String getDisplayGroups() {
-      StringBuffer sb = new StringBuffer();
-
-      if (groups != null) {
-         int len = groups.size();
-         int count = 1;
-         for (String grp : groups) {
-            sb.append(grp);
-            if (count++ < len) {
-               sb.append(", ");
-            }
-         }
+      if (groups != null && !groups.isEmpty()) {
+         return StringUtils.join(groups, ", ");
       }
-
-      return sb.toString();
+      return "";
    }
 
    public boolean isConfig() {
@@ -228,73 +248,143 @@ public class MethodResult extends BaseResult {
    }
 
    /**
-    * Create a list that contains previous builds results for this method
-    * <p/>
-    * (foreach package in previousbuilds tests results packages)
-    *    if package.name matches this method's package name then :
-    *       (foreach class in package.classlist)
-    *          if class.name matches this method's class name then :
-    *             (foreach method in class.methodlist)
-    *                if method.name matches this method's name then
-    *                   add this method to the return list.
-    *
-    * @return list of previous builds results for this method
+    * Creates test method execution history graph
+    * @param req
+    * @param rsp
+    * @throws IOException
     */
-//   public List<MethodResult> getPreviousMethodResults() {
-//      List<MethodResult> methodResults = new ArrayList<MethodResult>();
-//      List<TestResults> previousTestResults =
-//            TestResultHistoryUtil.getAllPreviousBuildTestResults(getOwner());
-//      if (previousTestResults != null) {
-//         for (TestResults previousTestResult : previousTestResults) {
-//            Map<String, PackageResult> previousPackageMap = previousTestResult.getPackageMap();
-//            //get package name!
-//            String methodPackageName = getParent().getParent().getName();
-//            String methodClassName = getParent().getName();
-//
-//            if (previousPackageMap.containsKey(methodPackageName) &&
-//                  previousPackageMap.get(methodPackageName).getClassList() != null) {
-//               List<ClassResult> previousClassResults =
-//                     previousPackageMap.get(getParent().getName()).getClassList();
-//               boolean foundMatch = false;
-//               for (ClassResult previousClassResult : previousClassResults) {
-//                  if (previousClassResult.getName().equals(methodClassName)) {
-//                     if (this.isConfig) {
-//                        if (previousClassResult.getConfigurationMethods() != null) {
-//                           List<MethodResult> previousMethodResults =
-//                                 previousClassResult.getConfigurationMethods();
-//                           for (MethodResult previousMethodResult : previousMethodResults) {
-//                              if (previousMethodResult.getName().equals(this.getName())) {
-//                                 //found a match
-//                                 methodResults.add(previousMethodResult);
-//                                 foundMatch = true;
-//                                 break;
-//                              }
-//                           }
-//                        }
-//                     } else {
-//                        if (previousClassResult.getTestMethods() != null) {
-//                           List<MethodResult> previousMethodResults =
-//                                 previousClassResult.getTestMethods();
-//                           for (MethodResult previousMethodResult : previousMethodResults) {
-//                              if (previousMethodResult.getName().equals(this.getName())) {
-//                                 //found a match
-//                                 methodResults.add(previousMethodResult);
-//                                 foundMatch = true;
-//                                 break;
-//                              }
-//                           }
-//                        }
-//                     }
-//                  }
-//                  if (foundMatch) {
-//                     break;
-//                  }
-//               }
-//            }
-//         }
-//      }
-//      return methodResults;
-//   }
+   public void doGraph(final StaplerRequest req, StaplerResponse rsp) throws IOException {
+      Graph g = getGraph(req, rsp);
+      if(g != null) {
+         g.doPng(req, rsp);
+      }
+   }
+
+   /**
+    * Creates map to make the graph clickable
+    * @param req
+    * @param rsp
+    * @throws IOException
+    */
+   public void doGraphMap(final StaplerRequest req, StaplerResponse rsp) throws IOException {
+      Graph g = getGraph(req, rsp);
+      if(g != null) {
+         g.doMap(req,rsp);
+      }
+   }
+
+   /**
+    * Returns graph instance if needed
+    * @param req
+    * @param rsp
+    * @return
+    */
+   private hudson.util.Graph getGraph(final StaplerRequest req, StaplerResponse rsp) {
+      Calendar t = getOwner().getProject().getLastCompletedBuild().getTimestamp();
+      if (req.checkIfModified(t, rsp)) {
+         /*
+          * checkIfModified() is after '&&' because we want it evaluated only
+          * if number of builds is different
+          */
+         return null;
+      }
+
+      final DataSetBuilder<String, ChartUtil.NumberOnlyBuildLabel> dataSetBuilder =
+         new DataSetBuilder<String, ChartUtil.NumberOnlyBuildLabel>();
+      final Map<ChartUtil.NumberOnlyBuildLabel, String> statusMap =
+         new HashMap<ChartUtil.NumberOnlyBuildLabel, String>();
+
+      populateDataSetBuilder(dataSetBuilder, statusMap);
+      return new Graph(-1, 800, 150) {
+         protected JFreeChart createGraph() {
+            return GraphHelper.createMethodChart(req, dataSetBuilder.build(), statusMap,
+                     getFullUrl());
+         }
+      };
+   }
+
+   /**
+    * Populates the data set build with results from any successive and at max 9
+    * previous builds.
+    *
+    * @param dataSetBuilder the data set
+    * @param statusMap key as build and value as the execution status (result) of
+    *                   test method execution
+    */
+   private void populateDataSetBuilder(
+            DataSetBuilder<String, ChartUtil.NumberOnlyBuildLabel> dataSetBuilder,
+            Map<ChartUtil.NumberOnlyBuildLabel, String> statusMap)
+   {
+      int count = 0;
+      for (AbstractBuild<?, ?> build = getOwner(); build != null; build = build.getNextBuild()) {
+         addData(dataSetBuilder, statusMap, build);
+      }
+      for (AbstractBuild<?, ?> build = getOwner();
+            build != null && count++ < 10; build = build.getPreviousBuild()) {
+         addData(dataSetBuilder, statusMap, build);
+      }
+   }
+
+   private void addData(DataSetBuilder<String, ChartUtil.NumberOnlyBuildLabel> dataSetBuilder,
+            Map<ChartUtil.NumberOnlyBuildLabel, String> statusMap,
+            AbstractBuild<?, ?> build)
+   {
+      ChartUtil.NumberOnlyBuildLabel label = new ChartUtil.NumberOnlyBuildLabel(build);
+      TestNGBuildAction action = build.getAction(TestNGBuildAction.class);
+      TestResults results = null;
+      MethodResult methodResult = null;
+      if (action != null && (results = action.getResults()) != null) {
+         methodResult = getMethodResult(results);
+      }
+
+      if (methodResult == null) {
+         dataSetBuilder.add(0, "resultRow", label);
+         statusMap.put(label, "UNKNOWN");
+      } else {
+         //status is PASS, FAIL or SKIP
+         //duration in seconds
+         dataSetBuilder.add(methodResult.getDuration() / 1000, "resultRow", label);
+         statusMap.put(label, methodResult.getStatus());
+      }
+   }
+
+   /**
+    * Gets the method result, if any, from the given set of test results. Searches
+    * for method result that matches the url of this method
+    * @param results
+    * @return
+    */
+   private MethodResult getMethodResult(TestResults results) {
+      Map<String, PackageResult> packageMap = results.getPackageMap();
+      //get package name!
+      String methodPackageName = getParent().getParent().getName();
+      String methodClassName = getParent().getName();
+
+      if (packageMap.containsKey(methodPackageName) &&
+            packageMap.get(methodPackageName).getClassList() != null) {
+         List<ClassResult> classResults =
+               packageMap.get(methodPackageName).getClassList();
+         for (ClassResult classResult : classResults) {
+            if (classResult.getName().equals(methodClassName)) {
+               List<MethodResult> methodResults = null;
+               if (this.isConfig) {
+                  methodResults = classResult.getConfigurationMethods();
+               } else {
+                  methodResults = classResult.getTestMethods();
+               }
+
+               if (methodResults != null) {
+                  for (MethodResult methodResult : methodResults) {
+                     if (methodResult.getUrl().equals(this.getUrl())) {
+                        return methodResult;
+                     }
+                  }
+               }
+            }
+         }
+      }
+      return null;
+   }
 
    public Object getCssClass() {
       if (this.status != null) {

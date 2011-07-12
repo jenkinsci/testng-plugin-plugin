@@ -41,6 +41,10 @@
       </table>
    </j:if>
 
+   <br/>
+   <br/>
+   <img src="graph" lazymap="graphMap" alt="[Method Execution Trend Chart]"/>
+
    <j:if test="${!empty(it.exception)}">
       <h3>Exception <i>${it.exception.exceptionName}</i></h3>
       <p>
