@@ -16,7 +16,7 @@ public class TestResult extends BaseResult {
    private List<ClassResult> classList = new ArrayList<ClassResult>();
 
    public TestResult(String name) {
-     this.name = name;
+      super(name);
    }
 
    public List<ClassResult> getClassList() {

@@ -40,7 +40,7 @@ public class TestResults extends BaseResult implements Serializable {
    private Map<String, PackageResult> packageMap = new HashMap<String, PackageResult>();
 
    public TestResults(String name) {
-      this.name = name;
+      super(name);
    }
 
    public List<MethodResult> getFailedTests() {

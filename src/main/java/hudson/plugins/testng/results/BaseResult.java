@@ -14,8 +14,12 @@ import org.kohsuke.stapler.export.ExportedBean;
 public abstract class BaseResult implements ModelObject, Serializable {
 
    protected AbstractBuild<?, ?> owner;
-   protected String name;
+   protected final String name;
    protected BaseResult parent;
+
+   public BaseResult(String name) {
+      this.name = name;
+   }
 
    /**
     * @deprecated since v0.21 keeping fullName here just to avoid errors when jenkins

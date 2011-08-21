@@ -61,7 +61,7 @@ public class MethodResult extends BaseResult {
             String parentSuiteName,
             String testInstanceName)
    {
-      this.name = name;
+      super(name);
       this.status = status;
       this.description = description;
       // this uuid is used later to group the tests and config-methods together

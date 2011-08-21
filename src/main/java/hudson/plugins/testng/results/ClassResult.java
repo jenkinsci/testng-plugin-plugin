@@ -24,7 +24,7 @@ public class ClassResult extends BaseResult {
    private int total;
 
    public ClassResult(String name) {
-     this.name = name;
+      super(name);
    }
 
    /**
