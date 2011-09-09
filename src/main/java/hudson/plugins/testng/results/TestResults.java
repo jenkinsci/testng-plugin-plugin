@@ -31,6 +31,7 @@ public class TestResults extends BaseResult implements Serializable {
    private List<MethodResult> skippedTests = new ArrayList<MethodResult>();
    private List<MethodResult> failedConfigurationMethods = new ArrayList<MethodResult>();
    private List<MethodResult> skippedConfigurationMethods = new ArrayList<MethodResult>();
+   private long duration;
    private int totalTestCount;
    private int passedTestCount;
    private int failedTestCount;
@@ -71,6 +72,11 @@ public class TestResults extends BaseResult implements Serializable {
    public int getTotalTestCount() {
       return totalTestCount;
    }
+
+   @Exported
+   public long getDuration() {
+       return duration;
+    }
 
    public int getPassedTestCount() {
       return passedTestCount;
@@ -191,8 +197,10 @@ public class TestResults extends BaseResult implements Serializable {
             }
          }
       }
+      duration = 0;
       for (PackageResult pkgResult : packageMap.values()) {
          pkgResult.tally();
+         duration += pkgResult.getDuration();
       }
    }
 

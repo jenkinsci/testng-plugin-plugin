@@ -65,6 +65,7 @@ public class ClassResult extends BaseResult {
       }
    }
 
+   @Exported
    public long getDuration() {
       return this.duration;
    }
