@@ -41,6 +41,7 @@ public class PackageResult extends BaseResult {
       return classList;
    }
 
+   @Exported(visibility = 9)
    public long getDuration() {
       return duration;
    }
