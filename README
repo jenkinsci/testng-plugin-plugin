@@ -16,12 +16,16 @@ graph and all details about which tests that failed are also presented.
 Release Notes
 -------
 
-### upcoming
+### Future Releases
 * JENKINS-9838 - Action --> HealthReportingAction
-* JENKINS-10018 - New graph for test method details page
+
+### v0.28
+* Bumped up supported Jenkins version to v1.403 or later
+* Fixed: JENKINS-9918 - Limit the number of rows in method execution order table
 
 ### v0.27
-* JENKINS-10882 - Add duration in the XML API for test-result, package and classes [Nicolas De Loof]
+* Added: JENKINS-10882 - Add duration in the XML API for test-result, package and classes [Nicolas De Loof]
+* Added: JENKINS-10018 - New graph for test method details page
 
 ### v0.26
 * Added: JENKINS-8926 - Add group name to class test methods page

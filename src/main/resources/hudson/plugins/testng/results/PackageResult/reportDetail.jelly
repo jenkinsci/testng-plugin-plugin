@@ -9,6 +9,16 @@
             document.getElementById(id).style.display = "none";
          }
       }
+      //Loads data for all the methods
+      function showAllExecutedMethods() {
+         var foo = <st:bind value="${it}"/>
+
+         foo.getAllSortedTestMethodsByStartTime(function(t) {
+            document.getElementById('sortedMethods').innerHTML = t.responseObject();
+         })
+
+         document.getElementById("showAllLink").style.display = "none";
+     }
    </script>
    <h2>All Classes</h2>
    <a href="javascript:showorHideTable('allClasses')">hide/expand the table</a>
@@ -75,6 +85,12 @@
          <div>No Tests found or all Tests were skipped</div>
       </j:when>
       <j:otherwise>
+         <j:if test="${size(it.sortedTestMethodsByStartTime) > it.MAX_EXEC_MTHD_LIST_SIZE}">
+            <div id="showAllLink">
+               <p>Showing only first ${it.MAX_EXEC_MTHD_LIST_SIZE} test methods.
+               <a href="javascript:showAllExecutedMethods()">Click to see all</a></p>
+            </div>
+         </j:if>
          <a href="javascript:showorHideTable('executionOrderTable')">hide/expand the table</a>
          <table border="1px" class="pane sortable" id="executionOrderTable">
             <thead>
@@ -85,31 +101,18 @@
                   <th class="pane-header" style="width:5em" title="Status">Fail</th>
                </tr>
             </thead>
-            <tbody>
-               <j:forEach var="method" items="${it.sortedTestMethodsByStartTime}">
-                  <j:choose>
-                     <tr>
-                        <td align="left">
-                           <a href="../${method.fullUrl}">${method.parent.name}.${method.name}</a>
-                        </td>
-                        <td align="center" data="${method.duration}">
-                           <j:invokeStatic className="hudson.plugins.testng.util.FormatUtil"
-                                           method="formatTimeInMilliSeconds" var="duration">
-                              <j:arg type="long" value="${method.duration}"/>
-                           </j:invokeStatic>
-                           ${duration}
-                        </td>
-                        <td align="center">${method.startedAt}</td>
-                        <td align="center">
-                           <span class="${method.cssClass}">
-                              ${method.status}
-                           </span>
-                        </td>
-                     </tr>
-                  </j:choose>
-               </j:forEach>
+            <tbody id="sortedMethods">
+               <!-- updated using ajax -->
             </tbody>
          </table>
+         <!-- following script loads the initial table data -->
+         <script>
+            var foo = <st:bind value="${it}"/>
+
+            foo.getFirstXSortedTestMethodsByStartTime(function(t) {
+               document.getElementById('sortedMethods').innerHTML = t.responseObject();
+            })
+         </script>
       </j:otherwise>
    </j:choose>
 </j:jelly>
