@@ -1,5 +1,5 @@
 <div>
    This plugin integrates
-   <a href="http://testng.org/documentation-main.html#logging-xml-reports">TestNG test reports</a>
+   <a href="http://testng.org/doc/documentation-main.html#logging-xml-reports">TestNG test reports</a>
    to Jenkins.
 </div>
