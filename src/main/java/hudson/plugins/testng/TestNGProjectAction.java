@@ -149,7 +149,7 @@ public class TestNGProjectAction implements ProminentProjectAction {
         requestMap.put(req.getRequestURI(), numBuilds);
       }
 
-      if (requestMap.keySet().size() > 10) {
+      if (requestMap.size() > 10) {
         //keep map size in check
         requestMap.clear();
       }
