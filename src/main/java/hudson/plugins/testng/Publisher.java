@@ -40,17 +40,19 @@ public class Publisher extends Recorder {
    private boolean isRelativePath;
    public final boolean escapeTestDescp;
    public final boolean escapeExceptionMsg;
+   public final boolean commentColumn;
 
    @Extension
    public static final DescriptorImpl DESCRIPTOR = new DescriptorImpl();
 
    @DataBoundConstructor
    public Publisher(String reportFilenamePattern,
-         boolean escapeTestDescp, boolean escapeExceptionMsg) {
+         boolean escapeTestDescp, boolean escapeExceptionMsg, boolean commentColumn) {
       reportFilenamePattern.getClass();
       this.reportFilenamePattern = reportFilenamePattern;
       this.escapeTestDescp = escapeTestDescp;
       this.escapeExceptionMsg = escapeExceptionMsg;
+      this.commentColumn = commentColumn;
    }
 
    public BuildStepMonitor getRequiredMonitorService() {
@@ -71,7 +73,7 @@ public class Publisher extends Recorder {
    @Override
    public Collection<? extends Action> getProjectActions(AbstractProject<?, ?> project) {
       Collection<Action> actions = new ArrayList<Action>();
-      actions.add(new TestNGProjectAction(project, escapeTestDescp, escapeExceptionMsg));
+      actions.add(new TestNGProjectAction(project, escapeTestDescp, escapeExceptionMsg, commentColumn));
       return actions;
    }
 
@@ -171,7 +173,7 @@ public class Publisher extends Recorder {
             String name = "testng-results" + (i > 0 ? "-" + i : "") + ".xml";
             i++;
             FilePath dst = testngDir.child(name);
-            report.copyTo(dst);
+            report.copyTo(dst);            
          }
       } catch (Exception e) {
          e.printStackTrace();

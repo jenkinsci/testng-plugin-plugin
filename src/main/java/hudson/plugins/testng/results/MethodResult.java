@@ -6,6 +6,7 @@ import hudson.plugins.testng.TestNGProjectAction;
 import hudson.plugins.testng.parser.ResultsParser;
 import hudson.plugins.testng.util.FormatUtil;
 import hudson.plugins.testng.util.GraphHelper;
+import hudson.plugins.testng.util.TestResultHistoryUtil;
 import hudson.util.ChartUtil;
 import hudson.util.DataSetBuilder;
 import hudson.util.Graph;
@@ -39,6 +40,7 @@ public class MethodResult extends BaseResult {
    private String parentSuiteName;
    private List<String> groups;
    private List<String> parameters;
+   
 
    /**
     * unique id for this tests's run (helps associate the test method with
@@ -401,5 +403,33 @@ public class MethodResult extends BaseResult {
          }
       }
       return "result-passed";
+   }
+   
+   /**
+    * Returns failure age
+    */
+   public long getAge()
+   {
+	   MethodResult packageResult = getPreviousPackageResult();
+	      if (packageResult == null) {
+	         return 1;
+	      } else {
+	         return 1 + packageResult.getAge();
+	      }
+   }
+   
+
+   private MethodResult getPreviousPackageResult() {
+      TestResults previousTestResult =
+            TestResultHistoryUtil.getPreviousBuildTestResults(getOwner());
+      if (previousTestResult != null) {
+         List<MethodResult> failedTests = previousTestResult.getFailedTests();
+         for (MethodResult mr : failedTests) {
+            if (mr.getName().equalsIgnoreCase(this.getName())) {
+               return mr;
+            }
+         }
+      }
+      return null;
    }
 }

@@ -2,7 +2,7 @@
          xmlns:t="/lib/hudson" xmlns:f="/lib/form">
 
    <script type="text/javascript">
-      function showorHideTable(id) {
+      function showOrHideTable(id) {
          var element = document.getElementById(id);
          if (document.getElementById(id).style.display == "none") {
             document.getElementById(id).style.display = "";
@@ -13,14 +13,20 @@
    </script>
 
    <h2>Failed Tests</h2>
+   <f:form action="saveComments" method="POST" name="failedTests">
    <j:choose>
       <j:when test="${it.results.failedTestCount != 0}">
+        
          <a href="javascript:showOrHideTable('failedTestsTable')">hide/expand the table</a>
          <table id="failedTestsTable" border="1px" class="pane sortable">
             <thead>
                <tr>
                   <th class="pane-header">Test Method</th>
                   <th class="pane-header">Duration</th>
+                  <th class="pane-header">Age</th>
+                  <j:if test="${it.commentColumn}">
+                  	<th class="pane-header">Test Failure Comment</th>
+                  </j:if>
                </tr>
             </thead>
             <tbody>
@@ -30,10 +36,19 @@
                         <a href="${r.fullUrl}">${r.parent.name}.${r.name}</a>
                      </td>
                      <td align="right">${r.displayDuration}</td>
+                     <td align="right">${r.age}</td>
+                     <j:if test="${it.commentColumn}">
+                     <td align="right">
+  						<f:textbox name="${r.parentSuiteName}--${r.parentTestName}--${r.parent.name}--${r.name}--comment" value="${r.exception.comment}"/>
+					</td>
+					</j:if>
                   </tr>
                </j:forEach>
             </tbody>
          </table>
+         <j:if test="${it.commentColumn}">
+         	<f:submit value="saveComments"/>
+         </j:if>
       </j:when>
       <j:otherwise>No Test method failed</j:otherwise>
    </j:choose>
@@ -169,4 +184,5 @@
          </j:forEach>
       </tbody>
    </table>
+  </f:form>
 </j:jelly>

@@ -8,6 +8,7 @@ public class MethodResultException implements Serializable {
    private String exceptionName;
    private String message;
    private String stackTrace;
+   private String comment;
    /**
     * @deprecated since v0.21
     */
@@ -19,9 +20,11 @@ public class MethodResultException implements Serializable {
 
    public MethodResultException(String message,
         String shortStackTrace,
-        String fullStackTrace)
+        String fullStackTrace,
+        String comment)
    {
       this.message = message == null ? null : message.trim();
+      this.comment = comment == null ? null : comment.trim();
       trySettingData(shortStackTrace, fullStackTrace);
    }
 
@@ -77,6 +80,11 @@ public class MethodResultException implements Serializable {
 
    public String getMessage() {
       return message;
+   }
+   
+   public String getComment()
+   {
+	   return comment;
    }
 
    public String getStackTrace() {

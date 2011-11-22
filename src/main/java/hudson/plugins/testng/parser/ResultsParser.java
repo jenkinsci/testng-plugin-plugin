@@ -56,6 +56,7 @@ public class ResultsParser {
    private XmlPullParser xmlPullParser;
    private TAGS currentCDATAParent = TAGS.UNKNOWN;
    private String currentMessage;
+   private String currentComment;
    private String currentShortStackTrace;
    private String currentFullStackTrace;
    private String currentGroupName;
@@ -64,7 +65,7 @@ public class ResultsParser {
    private enum TAGS {
      TESTNG_RESULTS, SUITE, TEST, CLASS, TEST_METHOD,
      PARAMS, PARAM, VALUE, EXCEPTION, UNKNOWN, MESSAGE,
-     SHORT_STACKTRACE, FULL_STACKTRACE, GROUPS, GROUP, METHOD;
+     SHORT_STACKTRACE, FULL_STACKTRACE, GROUPS, GROUP, METHOD, COMMENT;
 
      public static TAGS fromString(String val) {
         if (val == null) {
@@ -151,6 +152,9 @@ public class ResultsParser {
                         case MESSAGE:
                            currentCDATAParent = TAGS.MESSAGE;
                            break;
+                        case COMMENT:
+                            currentCDATAParent = TAGS.COMMENT;
+                            break;
                         case SHORT_STACKTRACE:
                            currentCDATAParent = TAGS.SHORT_STACKTRACE;
                            break;
@@ -188,6 +192,7 @@ public class ResultsParser {
                            finishException();
                            break;
                         case MESSAGE:
+                        case COMMENT:
                         case SHORT_STACKTRACE:
                         case FULL_STACKTRACE:
                            currentCDATAParent = TAGS.UNKNOWN;
@@ -276,11 +281,12 @@ public class ResultsParser {
    private void finishException()
    {
       MethodResultException mrEx = new MethodResultException(currentMessage,
-               currentShortStackTrace, currentFullStackTrace);
+               currentShortStackTrace, currentFullStackTrace, currentComment);
       currentMethod.setException(mrEx);
 
       mrEx = null;
       currentMessage = null;
+      currentComment = null;
       currentShortStackTrace = null;
       currentFullStackTrace = null;
    }
@@ -305,6 +311,9 @@ public class ResultsParser {
          case MESSAGE:
             currentMessage = xmlPullParser.getText();
             break;
+         case COMMENT:
+             currentComment = xmlPullParser.getText();
+             break;
          case FULL_STACKTRACE:
             currentFullStackTrace = xmlPullParser.getText();
             break;
