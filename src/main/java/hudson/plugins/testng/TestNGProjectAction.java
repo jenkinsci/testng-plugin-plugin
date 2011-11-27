@@ -26,6 +26,7 @@ public class TestNGProjectAction implements ProminentProjectAction {
 
    private boolean escapeTestDescp;
    private boolean escapeExceptionMsg;
+   private boolean commentColumn;
 
    /**
     * Used to figure out if we need to regenerate the graphs or not.
@@ -35,10 +36,11 @@ public class TestNGProjectAction implements ProminentProjectAction {
    private transient Map<String, Integer> requestMap = new HashMap<String, Integer>();
 
    public TestNGProjectAction(AbstractProject<?, ?> project,
-         boolean escapeTestDescp, boolean escapeExceptionMsg) {
+         boolean escapeTestDescp, boolean escapeExceptionMsg, boolean commentColumn) {
       this.project = project;
       this.escapeExceptionMsg = escapeExceptionMsg;
       this.escapeTestDescp = escapeTestDescp;
+      this.commentColumn = commentColumn;
    }
 
    protected Class<TestNGBuildAction> getBuildActionClass() {
@@ -53,6 +55,11 @@ public class TestNGProjectAction implements ProminentProjectAction {
    public boolean getEscapeExceptionMsg()
    {
       return escapeExceptionMsg;
+   }
+   
+   public boolean getCommentColumn()
+   {
+	   return commentColumn;
    }
 
    /**

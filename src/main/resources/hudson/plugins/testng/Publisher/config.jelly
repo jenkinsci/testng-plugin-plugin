@@ -9,4 +9,7 @@
    <f:entry title="Escape exception messages?" field="escapeExceptionMsg">
        <f:checkbox name="testng.escapeExceptionMsg" default="true" />
    </f:entry>
+   <f:entry title="Add comment column to results?" field="commentColumn">
+       <f:checkbox name="testng.commentColumn" default="false" />
+   </f:entry>
 </j:jelly>
