@@ -130,8 +130,8 @@ public class TestResults extends BaseResult implements Serializable {
       for (TestResult _test : testList) {
          _test.setOwner(owner);
       }
-      for (String pkg : packageMap.keySet()) {
-         packageMap.get(pkg).setOwner(owner);
+      for (PackageResult pkg : packageMap.values()) {
+         pkg.setOwner(owner);
       }
    }
 
