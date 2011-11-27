@@ -9,7 +9,8 @@ import hudson.plugins.testng.results.TestResults;
 import hudson.plugins.testng.util.TestResultHistoryUtil;
 
 import java.io.Serializable;
-import java.lang.ref.SoftReference;
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
 
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
@@ -30,12 +31,19 @@ public class TestNGBuildAction implements Action, Serializable {
     * @deprecated since v0.23. Only here for supporting older version of this plug-in
     */
    private transient TestResults results;
-   private transient SoftReference<TestResults> testResults;
+   private transient Reference<TestResults> testResults;
+   
+   // use Integer instead of int to differentiate between old actions which didn't have this field, yet, and new ones:
+   private Integer passCount;
+   private int failCount = 1, skipCount = -1;
 
    public TestNGBuildAction(AbstractBuild<?, ?> build, TestResults testngResults) {
       this.build = build;
       testngResults.setOwner(this.build);
-      this.testResults = new SoftReference<TestResults>(testngResults);
+      this.testResults = new WeakReference<TestResults>(testngResults);
+      this.passCount = testngResults.getPassedTestCount();
+      this.failCount = testngResults.getFailedConfigCount();
+      this.skipCount = testngResults.getSkippedTestCount();
    }
 
    /**
@@ -66,22 +74,13 @@ public class TestNGBuildAction implements Action, Serializable {
    }
 
    public TestResults getResults() {
-      if (results == null) {
-        if (testResults == null) {
-           testResults = new SoftReference<TestResults>(loadResults(getBuild()));
-           return testResults.get();
-        }
-
         TestResults tr = testResults.get();
         if (tr == null) {
-           testResults = new SoftReference<TestResults>(loadResults(getBuild()));
-          return testResults.get();
-        } else {
-          return tr;
+            tr = loadResults(getBuild());
+            testResults = new WeakReference<TestResults>(tr);
         }
-      } else {
-        return results;
-      }
+        
+        return tr;
    }
 
    static TestResults loadResults(AbstractBuild<?, ?> owner)
@@ -157,4 +156,37 @@ public class TestNGBuildAction implements Action, Serializable {
    public Api getApi() {
       return new Api(getResults());
    }
+    
+    public Number getPassedTestCount() {
+        return this.passCount;
+    }
+
+    public Number getFailedTestCount() {
+        return this.failCount;
+    }
+
+    public Number getSkippedTestCount() {
+        return this.skipCount;
+    }
+    
+    // executed when build action is read from disk - e.g. on Jenkins startup
+    protected Object readResolve() {
+        if (this.results != null) {
+            this.testResults = new WeakReference<TestResults>(this.results);
+            this.results = null;
+        }
+        
+        if (this.passCount == null) {
+            TestResults results = getResults();
+            this.passCount = results.getPassedTestCount();
+            this.failCount = results.getFailedTestCount();
+            this.skipCount = results.getSkippedTestCount();
+        }
+        
+        if (this.testResults == null) {
+            this.testResults = new WeakReference<TestResults>(null);
+        }
+        
+        return this;
+    }
 }

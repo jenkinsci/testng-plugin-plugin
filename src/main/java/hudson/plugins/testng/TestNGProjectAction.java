@@ -235,9 +235,9 @@ public class TestNGProjectAction implements ProminentProjectAction {
          ChartUtil.NumberOnlyBuildLabel label = new ChartUtil.NumberOnlyBuildLabel(build);
          TestNGBuildAction action = build.getAction(getBuildActionClass());
          if (action != null) {
-            dataset.add(action.getResults().getPassedTestCount(), "Passed", label);
-            dataset.add(action.getResults().getFailedTestCount(), "Failed", label);
-            dataset.add(action.getResults().getSkippedTestCount(), "Skipped", label);
+            dataset.add(action.getPassedTestCount(), "Passed", label);
+            dataset.add(action.getFailedTestCount(), "Failed", label);
+            dataset.add(action.getSkippedTestCount(), "Skipped", label);
          }
       }
    }
