@@ -19,6 +19,7 @@ Release Notes
 ### Future Releases
 * JENKINS-9838 - Action --> HealthReportingAction
 * Fixed: JENKINS-11236 - TestNG plugin links to wrong document (kohsuke)
+* Performace improvements (kutzi)
 
 ### v0.28
 * Bumped up supported Jenkins version to v1.403 or later

@@ -12,7 +12,11 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,14 +30,18 @@ import org.xmlpull.v1.XmlPullParserFactory;
 
 /**
  * Parses testng result XMLs generated using org.testng.reporters.XmlReporter
- * into objects that are then used to display results in Jenkins
+ * into objects that are then used to display results in Jenkins.
+ *
+ * Note that instances of this class are not thread-safe to use!
  *
  * @author nullin
  */
 public class ResultsParser {
 
-   private static Logger log = Logger.getLogger(ResultsParser.class.getName());
-   public static String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss";
+   private static final Logger log = Logger.getLogger(ResultsParser.class.getName());
+   public static final String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss";
+   public static XmlPullParserFactory PARSER_FACTORY;
+   private final DateFormat dateFormat;
 
    /*
     * We maintain only a single TestResult for all <test>s with the same name
@@ -62,21 +70,35 @@ public class ResultsParser {
    private String currentSuite;
 
    private enum TAGS {
-     TESTNG_RESULTS, SUITE, TEST, CLASS, TEST_METHOD,
-     PARAMS, PARAM, VALUE, EXCEPTION, UNKNOWN, MESSAGE,
-     SHORT_STACKTRACE, FULL_STACKTRACE, GROUPS, GROUP, METHOD;
+      TESTNG_RESULTS, SUITE, TEST, CLASS, TEST_METHOD,
+      PARAMS, PARAM, VALUE, EXCEPTION, UNKNOWN, MESSAGE,
+      SHORT_STACKTRACE, FULL_STACKTRACE, GROUPS, GROUP, METHOD;
 
-     public static TAGS fromString(String val) {
-        if (val == null) {
-           return UNKNOWN;
-        }
-        val = val.toUpperCase().replace('-', '_');
-        try {
-           return TAGS.valueOf(val);
-        } catch (IllegalArgumentException e) {
-           return UNKNOWN;
-        }
-     }
+      public static TAGS fromString(String val) {
+         if (val == null) {
+            return UNKNOWN;
+         }
+         val = val.toUpperCase().replace('-', '_');
+         try {
+            return TAGS.valueOf(val);
+         } catch (IllegalArgumentException e) {
+            return UNKNOWN;
+         }
+      }
+   }
+
+   static {
+      try {
+         PARSER_FACTORY = XmlPullParserFactory.newInstance();
+         PARSER_FACTORY.setNamespaceAware(true);
+         PARSER_FACTORY.setValidating(false);
+      } catch (XmlPullParserException e) {
+         log.severe(e.toString());
+      }
+   }
+
+   public ResultsParser() {
+      this.dateFormat = new SimpleDateFormat(DATE_FORMAT);
    }
 
    /**
@@ -96,7 +118,7 @@ public class ResultsParser {
       for (FilePath path : paths) {
          File file = new File(path.getRemote());
 
-         if (!file.exists() || file.isDirectory()) {
+         if (!file.isFile()) {
             log.severe("'" + file.getAbsolutePath() + "' points to an invalid test report");
             continue; //move to next file
          }
@@ -324,8 +346,15 @@ public class ResultsParser {
             String startedAt,
             String isConfig)
    {
+      Date startedAtDate;
+      try {
+         startedAtDate = this.dateFormat.parse(startedAt);
+      } catch (ParseException e) {
+         log.severe("Unable to parse started-at value: " + startedAt);
+         startedAtDate = null;
+      }
       currentMethod = new MethodResult(name, status, description, duration,
-         startedAt, isConfig, currentTestRunId, currentTest.getName(),
+         startedAtDate, isConfig, currentTestRunId, currentTest.getName(),
          currentSuite, testInstanceName);
       List<String> groups = methodGroupMap.get(currentClass.getName() + "|" + name);
       if (groups != null) {
@@ -410,11 +439,10 @@ public class ResultsParser {
 
    private XmlPullParser createXmlPullParser(BufferedInputStream
             bufferedInputStream) throws XmlPullParserException {
-      XmlPullParserFactory xmlPullParserFactory = XmlPullParserFactory.newInstance();
-      xmlPullParserFactory.setNamespaceAware(true);
-      xmlPullParserFactory.setValidating(false);
-
-      XmlPullParser xmlPullParser = xmlPullParserFactory.newPullParser();
+      if (PARSER_FACTORY == null) {
+         throw new XmlPullParserException("XML Parser Factory has not been initiallized properly");
+      }
+      XmlPullParser xmlPullParser = PARSER_FACTORY.newPullParser();
       xmlPullParser.setInput(bufferedInputStream, null);
       return xmlPullParser;
    }

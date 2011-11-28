@@ -3,7 +3,6 @@ package hudson.plugins.testng.results;
 import hudson.model.AbstractBuild;
 import hudson.plugins.testng.TestNGBuildAction;
 import hudson.plugins.testng.TestNGProjectAction;
-import hudson.plugins.testng.parser.ResultsParser;
 import hudson.plugins.testng.util.FormatUtil;
 import hudson.plugins.testng.util.GraphHelper;
 import hudson.util.ChartUtil;
@@ -11,8 +10,6 @@ import hudson.util.DataSetBuilder;
 import hudson.util.Graph;
 
 import java.io.IOException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -54,7 +51,7 @@ public class MethodResult extends BaseResult {
             String status,
             String description,
             String duration,
-            String startedAt,
+            Date startedAt,
             String isConfig,
             String testRunId,
             String parentTestName,
@@ -69,17 +66,12 @@ public class MethodResult extends BaseResult {
       this.testInstanceName = testInstanceName;
       this.parentTestName = parentTestName;
       this.parentSuiteName = parentSuiteName;
+      this.startedAt = startedAt;
 
       try {
          this.duration = Long.parseLong(duration);
       } catch (NumberFormatException e) {
          System.err.println("Unable to parse duration value: " + duration);
-      }
-
-      try {
-         this.startedAt = new SimpleDateFormat(ResultsParser.DATE_FORMAT).parse(startedAt);
-      } catch (ParseException e) {
-         System.err.println("Unable to parse started-at value: " + startedAt);
       }
 
       if (isConfig != null) {
