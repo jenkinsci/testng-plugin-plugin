@@ -10,7 +10,7 @@ import hudson.plugins.testng.util.TestResultHistoryUtil;
 
 import java.io.Serializable;
 import java.lang.ref.Reference;
-import java.lang.ref.SoftReference;
+import java.lang.ref.WeakReference;
 
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
@@ -43,7 +43,7 @@ public class TestNGBuildAction implements Action, Serializable {
    public TestNGBuildAction(AbstractBuild<?, ?> build, TestResults testngResults) {
       this.build = build;
       testngResults.setOwner(this.build);
-      this.testResults = new SoftReference<TestResults>(testngResults);
+      this.testResults = new WeakReference<TestResults>(testngResults);
 
       //initialize the cached values when TestNGBuildAction is instantiated
       this.passedTestCount = testngResults.getPassedTestCount();
@@ -81,13 +81,13 @@ public class TestNGBuildAction implements Action, Serializable {
    public TestResults getResults() {
       if (results == null) {
         if (testResults == null) {
-           testResults = new SoftReference<TestResults>(loadResults(getBuild()));
+           testResults = new WeakReference<TestResults>(loadResults(getBuild()));
            return testResults.get();
         }
 
         TestResults tr = testResults.get();
         if (tr == null) {
-           testResults = new SoftReference<TestResults>(loadResults(getBuild()));
+           testResults = new WeakReference<TestResults>(loadResults(getBuild()));
           return testResults.get();
         } else {
           return tr;

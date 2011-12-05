@@ -18,7 +18,11 @@ Release Notes
 
 ### Future Releases
 * JENKINS-9838 - Action --> HealthReportingAction
+
+### v0.29
+
 * Fixed: JENKINS-11236 - TestNG plugin links to wrong document (kohsuke)
+* Fixed: JENKINS-11045 - Hold TestNG Results in memory using weak references
 * Performace improvements (kutzi)
 * Improve Load time for graphs (Kutzi) + trivial cleanup
 
