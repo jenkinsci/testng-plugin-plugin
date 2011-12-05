@@ -9,6 +9,7 @@ import hudson.plugins.testng.results.TestResults;
 import hudson.plugins.testng.util.TestResultHistoryUtil;
 
 import java.io.Serializable;
+import java.lang.ref.Reference;
 import java.lang.ref.SoftReference;
 
 import org.kohsuke.stapler.StaplerRequest;
@@ -30,12 +31,24 @@ public class TestNGBuildAction implements Action, Serializable {
     * @deprecated since v0.23. Only here for supporting older version of this plug-in
     */
    private transient TestResults results;
-   private transient SoftReference<TestResults> testResults;
+   private transient Reference<TestResults> testResults;
+
+   /*
+    * Cache test counts to speed up loading of graphs
+    */
+   private transient int passedTestCount;
+   private transient int failedTestCount;
+   private transient int skippedTestCount;
 
    public TestNGBuildAction(AbstractBuild<?, ?> build, TestResults testngResults) {
       this.build = build;
       testngResults.setOwner(this.build);
       this.testResults = new SoftReference<TestResults>(testngResults);
+
+      //initialize the cached values when TestNGBuildAction is instantiated
+      this.passedTestCount = testngResults.getPassedTestCount();
+      this.failedTestCount = testngResults.getFailedTestCount();
+      this.skippedTestCount = testngResults.getSkippedTestCount();
    }
 
    /**
@@ -107,19 +120,6 @@ public class TestNGBuildAction implements Action, Serializable {
       return result;
    }
 
-   public TestResults getPreviousResults() {
-      AbstractBuild<?, ?> previousBuild = getBuild().getPreviousBuild();
-      while (previousBuild != null && previousBuild.getAction(getClass()) == null) {
-         previousBuild = previousBuild.getPreviousBuild();
-      }
-      if (previousBuild == null) {
-         return new TestResults("");
-      } else {
-         TestNGBuildAction action = previousBuild.getAction(getClass());
-         return action.getResults();
-      }
-   }
-
    /**
     * The summary of this build report for display on the build index page.
     *
@@ -156,5 +156,33 @@ public class TestNGBuildAction implements Action, Serializable {
 
    public Api getApi() {
       return new Api(getResults());
+   }
+
+   public int getPassedTestCount() {
+      return this.passedTestCount;
+   }
+
+   public int getFailedTestCount() {
+      return this.failedTestCount;
+   }
+
+   public int getSkippedTestCount() {
+      return this.skippedTestCount;
+   }
+
+   /**
+    * {@inheritDoc}
+    *
+    * NOTE: Executed when build action is read from disk - e.g. on Jenkins startup
+    */
+   protected Object readResolve() {
+      TestResults testResults = getResults();
+
+      //initialize the cached values
+      passedTestCount = testResults.getPassedTestCount();
+      failedTestCount = testResults.getFailedTestCount();
+      skippedTestCount = testResults.getSkippedTestCount();
+
+      return this;
    }
 }

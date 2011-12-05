@@ -14,32 +14,24 @@ import java.util.List;
 public class TestResultHistoryUtil {
 
    /**
-    * Loops through all the previous builds and add their test results to the
-    * previousResults array.
+    * Gets the latest build before this one and return's it's test result.
+    *
     * We'd rather make this list when needed otherwise if we cache these values in the memory
     * we will run out of memory
     *
-    * @return list of previous build test results
+    * @return previous build test results
     */
-   public static List<TestResults> getAllPreviousBuildTestResults(AbstractBuild<?, ?> owner) {
-      List<TestResults> previousResults = new ArrayList<TestResults>();
-      AbstractBuild<?, ?> previousBuild = owner.getPreviousBuild();
-      while (previousBuild != null) {
-         if (previousBuild.getAction(TestNGBuildAction.class) != null) {
-            if (previousBuild.getAction(TestNGBuildAction.class).getResults() != null) {
-               previousResults.add(previousBuild.getAction(TestNGBuildAction.class).getResults());
-            }
-         }
-         previousBuild = previousBuild.getPreviousBuild();
-      }
-      return previousResults;
-   }
-
    public static TestResults getPreviousBuildTestResults(AbstractBuild<?, ?> owner) {
       AbstractBuild<?, ?> previousBuild = owner.getPreviousBuild();
       while (previousBuild != null) {
          if (previousBuild.getAction(TestNGBuildAction.class) != null) {
-            TestResults testResults = previousBuild.getAction(TestNGBuildAction.class).getResults();
+            /*
+             * TODO: Do we care if the previous build had a testng action or not?
+             * Maybe we should return an empty test result for a build w/o testng
+             * action
+             */
+            TestResults testResults
+               = previousBuild.getAction(TestNGBuildAction.class).getResults();
             if (testResults != null) {
                return testResults;
             }
@@ -49,6 +41,15 @@ public class TestResultHistoryUtil {
       return null;
    }
 
+   /**
+    * Summarizes the delta in tests and also displays a list of failed/skipped
+    * tests and configuration methods.
+    *
+    * The list is returned as an HTML unordered list.
+    *
+    * @param action
+    * @return
+    */
    public static String toSummary(TestNGBuildAction action) {
       int prevFailedTestCount = 0;
       int prevSkippedTestCount = 0;

@@ -98,11 +98,11 @@ public class GraphHelper {
               TestNGBuildAction report = label.build.getAction(TestNGBuildAction.class);
               switch (row) {
                   case 0:
-                      return String.valueOf(report.getResults().getFailedTestCount()) + " Failure(s)";
+                      return String.valueOf(report.getFailedTestCount()) + " Failure(s)";
                   case 1:
-                     return String.valueOf(report.getResults().getPassedTestCount()) + " Pass";
+                     return String.valueOf(report.getPassedTestCount()) + " Pass";
                   case 2:
-                     return String.valueOf(report.getResults().getSkippedTestCount()) + " Skip(s)";
+                     return String.valueOf(report.getSkippedTestCount()) + " Skip(s)";
                   default:
                      return "";
               }

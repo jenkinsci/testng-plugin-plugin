@@ -204,21 +204,6 @@ public class TestNGProjectAction implements ProminentProjectAction {
       return true;
    }
 
-   /**
-    * Returns the latest test results.
-    *
-    * @return Value for property 'graphAvailable'.
-    */
-   public TestResults getResults() {
-      for (AbstractBuild<?, ?> build = getProject().getLastBuild(); build != null; build = build.getPreviousBuild()) {
-         final TestNGBuildAction action = build.getAction(getBuildActionClass());
-         if (action != null) {
-            return action.getResults();
-         }
-      }
-      return null;
-   }
-
    public TestNGBuildAction getLastCompletedBuildAction() {
       for (AbstractBuild<?, ?> build = getProject().getLastCompletedBuild(); build != null; build = build.getPreviousBuild()) {
          final TestNGBuildAction action = build.getAction(getBuildActionClass());
@@ -235,9 +220,9 @@ public class TestNGProjectAction implements ProminentProjectAction {
          ChartUtil.NumberOnlyBuildLabel label = new ChartUtil.NumberOnlyBuildLabel(build);
          TestNGBuildAction action = build.getAction(getBuildActionClass());
          if (action != null) {
-            dataset.add(action.getResults().getPassedTestCount(), "Passed", label);
-            dataset.add(action.getResults().getFailedTestCount(), "Failed", label);
-            dataset.add(action.getResults().getSkippedTestCount(), "Skipped", label);
+            dataset.add(action.getPassedTestCount(), "Passed", label);
+            dataset.add(action.getFailedTestCount(), "Failed", label);
+            dataset.add(action.getSkippedTestCount(), "Skipped", label);
          }
       }
    }
