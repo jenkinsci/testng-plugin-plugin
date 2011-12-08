@@ -7,38 +7,28 @@ import hudson.plugins.testng.results.ClassResult;
 import hudson.plugins.testng.results.MethodResult;
 import hudson.plugins.testng.results.TestResults;
 
-import java.util.ArrayList;
 import java.util.List;
-
 
 public class TestResultHistoryUtil {
 
    /**
     * Gets the latest build before this one and return's it's test result.
     *
-    * We'd rather make this list when needed otherwise if we cache these values in the memory
-    * we will run out of memory
+    * We'd rather make this list when needed otherwise if we cache these values
+    * in the memory we will run out of memory
     *
-    * @return previous build test results
+    * @return previous build test results if the build exists and has a
+    *       {@link TestNGBuildAction}, otherwise returns an empty {@link TestResults}
+    *       object. <b>Never returns {@code null}.</b>
     */
    public static TestResults getPreviousBuildTestResults(AbstractBuild<?, ?> owner) {
       AbstractBuild<?, ?> previousBuild = owner.getPreviousBuild();
-      while (previousBuild != null) {
-         if (previousBuild.getAction(TestNGBuildAction.class) != null) {
-            /*
-             * TODO: Do we care if the previous build had a testng action or not?
-             * Maybe we should return an empty test result for a build w/o testng
-             * action
-             */
-            TestResults testResults
-               = previousBuild.getAction(TestNGBuildAction.class).getResults();
-            if (testResults != null) {
-               return testResults;
-            }
-         }
-         previousBuild = previousBuild.getPreviousBuild();
+      if (previousBuild != null
+               && previousBuild.getAction(TestNGBuildAction.class) != null) {
+         return previousBuild.getAction(TestNGBuildAction.class).getResults();
+      } else {
+         return new TestResults("");
       }
-      return null;
    }
 
    /**
@@ -61,13 +51,11 @@ public class TestResultHistoryUtil {
       TestResults previousResult =
             TestResultHistoryUtil.getPreviousBuildTestResults(owner);
 
-      if (previousResult != null) {
-         prevFailedTestCount = previousResult.getFailedTestCount();
-         prevSkippedTestCount = previousResult.getSkippedTestCount();
-         prevFailedConfigurationCount = previousResult.getFailedConfigCount();
-         prevSkippedConfigurationCount = previousResult.getSkippedConfigCount();
-         prevTotalTestCount = previousResult.getTotalTestCount();
-      }
+      prevFailedTestCount = previousResult.getFailedTestCount();
+      prevSkippedTestCount = previousResult.getSkippedTestCount();
+      prevFailedConfigurationCount = previousResult.getFailedConfigCount();
+      prevSkippedConfigurationCount = previousResult.getSkippedConfigCount();
+      prevTotalTestCount = previousResult.getTotalTestCount();
 
       TestResults tr = action.getResults();
 

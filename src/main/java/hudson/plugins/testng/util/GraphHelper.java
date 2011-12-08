@@ -96,6 +96,10 @@ public class GraphHelper {
           public String generateToolTip(CategoryDataset dataset, int row, int column) {
               NumberOnlyBuildLabel label = (NumberOnlyBuildLabel) dataset.getColumnKey(column);
               TestNGBuildAction report = label.build.getAction(TestNGBuildAction.class);
+              if (report == null) {
+                 //there are no testng results associated with this build
+                 return "";
+              }
               switch (row) {
                   case 0:
                       return String.valueOf(report.getFailedTestCount()) + " Failure(s)";

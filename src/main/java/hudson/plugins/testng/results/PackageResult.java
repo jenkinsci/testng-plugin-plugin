@@ -211,12 +211,11 @@ public class PackageResult extends BaseResult {
    private PackageResult getPreviousPackageResult() {
       TestResults previousTestResult =
             TestResultHistoryUtil.getPreviousBuildTestResults(getOwner());
-      if (previousTestResult != null) {
-         Map<String, PackageResult> previousPackageMap = previousTestResult.getPackageMap();
-         for (Map.Entry<String, PackageResult> entry : previousPackageMap.entrySet()) {
-            if (entry.getKey().equals(this.getName())) {
-               return entry.getValue();
-            }
+
+      Map<String, PackageResult> previousPackageMap = previousTestResult.getPackageMap();
+      for (Map.Entry<String, PackageResult> entry : previousPackageMap.entrySet()) {
+         if (entry.getKey().equals(this.getName())) {
+            return entry.getValue();
          }
       }
       return null;

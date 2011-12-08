@@ -205,7 +205,8 @@ public class TestNGProjectAction implements ProminentProjectAction {
    }
 
    public TestNGBuildAction getLastCompletedBuildAction() {
-      for (AbstractBuild<?, ?> build = getProject().getLastCompletedBuild(); build != null; build = build.getPreviousBuild()) {
+      for (AbstractBuild<?, ?> build = getProject().getLastCompletedBuild();
+               build != null; build = build.getPreviousBuild()) {
          final TestNGBuildAction action = build.getAction(getBuildActionClass());
          if (action != null) {
             return action;
@@ -216,13 +217,20 @@ public class TestNGProjectAction implements ProminentProjectAction {
 
    protected void populateDataSetBuilder(DataSetBuilder<String, ChartUtil.NumberOnlyBuildLabel> dataset) {
 
-      for (AbstractBuild<?, ?> build = getProject().getLastBuild(); build != null; build = build.getPreviousBuild()) {
+      for (AbstractBuild<?, ?> build = getProject().getLastBuild();
+               build != null; build = build.getPreviousBuild()) {
          ChartUtil.NumberOnlyBuildLabel label = new ChartUtil.NumberOnlyBuildLabel(build);
          TestNGBuildAction action = build.getAction(getBuildActionClass());
          if (action != null) {
             dataset.add(action.getPassedTestCount(), "Passed", label);
             dataset.add(action.getFailedTestCount(), "Failed", label);
             dataset.add(action.getSkippedTestCount(), "Skipped", label);
+         } else {
+            //even if testng plugin wasn't run with this build,
+            //we should add this build to the graph
+            dataset.add(0, "Passed", label);
+            dataset.add(0, "Failed", label);
+            dataset.add(0, "Skipped", label);
          }
       }
    }

@@ -18,6 +18,7 @@ Release Notes
 
 ### Future Releases
 * JENKINS-9838 - Action --> HealthReportingAction
+* Improved TestNG trend graph accuracy. It now shows all builds, even ones for which there were no TestNG results
 
 ### v0.29
 

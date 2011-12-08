@@ -203,17 +203,15 @@ public class ClassResult extends BaseResult {
    private ClassResult getPreviousClassResult() {
       TestResults previousTestResults =
             TestResultHistoryUtil.getPreviousBuildTestResults(getOwner());
-      if (previousTestResults != null) {
-         Map<String, PackageResult> previousPackageMap = previousTestResults.getPackageMap();
-         //get package name!
-         String classPackageName = getParent().getName();
-         PackageResult packageResult = previousPackageMap.get(classPackageName);
-         if (packageResult != null) {
-            List<ClassResult> prevClassList = packageResult.getClassList();
-            for (ClassResult prevClassResult : prevClassList) {
-               if (prevClassResult.getName().equals(this.getName())) {
-                  return prevClassResult;
-               }
+      Map<String, PackageResult> previousPackageMap = previousTestResults.getPackageMap();
+      //get package name!
+      String classPackageName = getParent().getName();
+      PackageResult packageResult = previousPackageMap.get(classPackageName);
+      if (packageResult != null) {
+         List<ClassResult> prevClassList = packageResult.getClassList();
+         for (ClassResult prevClassResult : prevClassList) {
+            if (prevClassResult.getName().equals(this.getName())) {
+               return prevClassResult;
             }
          }
       }
