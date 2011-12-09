@@ -83,6 +83,12 @@ public class Publisher extends Recorder {
          throws InterruptedException, IOException {
 
       PrintStream logger = listener.getLogger();
+      if (build.getResult().isWorseThan(Result.UNSTABLE)) {
+         logger.println("Not looking for any TestNG results.");
+         return true;
+      }
+
+
       logger.println("Looking for TestNG results report in workspace using pattern: " + reportFilenamePattern);
       FilePath[] paths = locateReports(build.getWorkspace(), reportFilenamePattern);
 
