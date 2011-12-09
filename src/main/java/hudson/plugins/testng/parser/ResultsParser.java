@@ -297,6 +297,11 @@ public class ResultsParser {
 
    private void finishException()
    {
+      if (currentShortStackTrace == null && currentFullStackTrace == null) {
+         log.severe("Something is wrong with TestNG result XML. "
+                    + "Didn't find stacktraces for the exception.");
+         return;
+      }
       MethodResultException mrEx = new MethodResultException(currentMessage,
                currentShortStackTrace, currentFullStackTrace);
       currentMethod.setException(mrEx);
