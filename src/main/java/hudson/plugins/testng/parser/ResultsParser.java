@@ -51,7 +51,7 @@ public class ResultsParser {
     * We maintain only a single ClassResult for all <class>s with the same fqdn
     */
    private Map<String, ClassResult> classResultMap = new HashMap<String, ClassResult>();
-   private Map<String, List<String>> methodGroupMap;
+   private Map<String, List<String>> methodGroupMap = new HashMap<String, List<String>>();
    private TestResults finalResults;
    private List<TestResult> testList;
    private List<ClassResult> currentClassList;
