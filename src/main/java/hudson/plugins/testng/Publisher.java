@@ -105,7 +105,16 @@ public class Publisher extends Recorder {
          return true;
       }
 
-      TestResults results = TestNGBuildAction.loadResults(build);
+      TestResults results = new TestResults("");
+      try {
+         results = TestNGBuildAction.loadResults(build);
+      } catch (Throwable t) {
+         /*
+          * don't fail build if TestNG parser barfs.
+          * only print out the exception to console.
+          */
+         t.printStackTrace(logger);
+      }
 
       if (results.getTestList().size() > 0) {
          //create an individual report for all of the results and add it to the build
