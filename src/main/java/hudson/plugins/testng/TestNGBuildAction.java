@@ -8,6 +8,7 @@ import hudson.plugins.testng.parser.ResultsParser;
 import hudson.plugins.testng.results.TestResults;
 import hudson.plugins.testng.util.TestResultHistoryUtil;
 
+import java.io.PrintStream;
 import java.io.Serializable;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
@@ -81,13 +82,13 @@ public class TestNGBuildAction implements Action, Serializable {
    public TestResults getResults() {
       if (results == null) {
         if (testResults == null) {
-           testResults = new WeakReference<TestResults>(loadResults(getBuild()));
+           testResults = new WeakReference<TestResults>(loadResults(getBuild(), null));
            return testResults.get();
         }
 
         TestResults tr = testResults.get();
         if (tr == null) {
-           testResults = new WeakReference<TestResults>(loadResults(getBuild()));
+           testResults = new WeakReference<TestResults>(loadResults(getBuild(), null));
           return testResults.get();
         } else {
           return tr;
@@ -97,7 +98,7 @@ public class TestNGBuildAction implements Action, Serializable {
       }
    }
 
-   static TestResults loadResults(AbstractBuild<?, ?> owner)
+   static TestResults loadResults(AbstractBuild<?, ?> owner, PrintStream logger)
    {
       FilePath testngDir = Publisher.getTestNGReport(owner);
       FilePath[] paths = null;
@@ -114,7 +115,7 @@ public class TestNGBuildAction implements Action, Serializable {
         return tr;
       }
 
-      ResultsParser parser = new ResultsParser();
+      ResultsParser parser = new ResultsParser(logger);
       TestResults result = parser.parse(paths);
       result.setOwner(owner);
       return result;

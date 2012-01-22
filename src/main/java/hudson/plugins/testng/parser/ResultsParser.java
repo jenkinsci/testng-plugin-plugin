@@ -12,6 +12,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -21,7 +22,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.xmlpull.v1.XmlPullParser;
@@ -32,16 +32,25 @@ import org.xmlpull.v1.XmlPullParserFactory;
  * Parses testng result XMLs generated using org.testng.reporters.XmlReporter
  * into objects that are then used to display results in Jenkins.
  *
+ * (For those trying to modify this class, pay attention to logging. We are using
+ * two different loggers. If Build's {@link PrintStream} is not available, we log
+ * using {@link Logger}. Also, logging is done only using the {@link #log(String)}
+ * and {@link #log(Exception)} methods.)
+ *
  * Note that instances of this class are not thread-safe to use!
  *
  * @author nullin
  */
 public class ResultsParser {
 
+   /** Prints the logs to the web server's console / log files */
    private static final Logger log = Logger.getLogger(ResultsParser.class.getName());
    public static final String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss";
    public static XmlPullParserFactory PARSER_FACTORY;
    private final DateFormat dateFormat;
+
+   /** Build's logger to print logs as part of build's console output */
+   private PrintStream logger;
 
    /*
     * We maintain only a single TestResult for all <test>s with the same name
@@ -101,6 +110,11 @@ public class ResultsParser {
       this.dateFormat = new SimpleDateFormat(DATE_FORMAT);
    }
 
+   public ResultsParser(PrintStream logger) {
+      this();
+      this.logger = logger;
+   }
+
    /**
     * Parses the XML for relevant information
     *
@@ -109,7 +123,7 @@ public class ResultsParser {
     */
    public TestResults parse(FilePath[] paths) {
       if (null == paths) {
-         log.severe("Files not specified");
+         log("File paths not specified. paths var is null. Returning empty test results.");
          return new TestResults("");
       }
 
@@ -119,10 +133,10 @@ public class ResultsParser {
          File file = new File(path.getRemote());
 
          if (!file.isFile()) {
-            log.severe("'" + file.getAbsolutePath() + "' points to an invalid test report");
+            log("'" + file.getAbsolutePath() + "' points to an invalid test report");
             continue; //move to next file
          } else {
-            log.fine("Processing '" + file.getAbsolutePath() + "'");
+            log("Processing '" + file.getAbsolutePath() + "'");
          }
 
          BufferedInputStream bufferedInputStream = null;
@@ -226,19 +240,20 @@ public class ResultsParser {
             }
             finalResults.addUniqueTests(testList);
          } catch (XmlPullParserException e) {
-            log.warning("Failed to parse XML: " + e.getMessage());
-            e.printStackTrace();
+            log("Failed to parse XML: " + e.getMessage());
+            log(e);
          } catch (FileNotFoundException e) {
-           log.log(Level.SEVERE, "Failed to find XML file", e);
+           log("Failed to find XML file");
+           log(e);
          } catch (IOException e) {
-           log.log(Level.SEVERE, "Failed due to IOException while parsing XML file", e);
+           log(e);
          } finally {
             try {
                if (bufferedInputStream != null) {
                   bufferedInputStream.close();
                }
             } catch (IOException e) {
-               log.log(Level.WARNING, "Failed to close input stream", e);
+               log(e);
             }
          }
       }
@@ -300,7 +315,7 @@ public class ResultsParser {
    private void finishException()
    {
       if (currentShortStackTrace == null && currentFullStackTrace == null) {
-         log.severe("Something is wrong with TestNG result XML. "
+         log("Something is wrong with TestNG result XML. "
                     + "Didn't find stacktraces for the exception.");
          return;
       }
@@ -357,7 +372,7 @@ public class ResultsParser {
       try {
          startedAtDate = this.dateFormat.parse(startedAt);
       } catch (ParseException e) {
-         log.severe("Unable to parse started-at value: " + startedAt);
+         log("Unable to parse started-at value: " + startedAt);
          startedAtDate = null;
       }
       currentMethod = new MethodResult(name, status, description, duration,
@@ -452,5 +467,21 @@ public class ResultsParser {
       XmlPullParser xmlPullParser = PARSER_FACTORY.newPullParser();
       xmlPullParser.setInput(bufferedInputStream, null);
       return xmlPullParser;
+   }
+
+   private void log(String str) {
+      if (logger != null) {
+         logger.println(str);
+      } else {
+         log.fine(str);
+      }
+   }
+
+   private void log(Exception ex) {
+      if (logger != null) {
+         ex.printStackTrace(logger);
+      } else {
+         log.severe(ex.toString());
+      }
    }
 }

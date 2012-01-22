@@ -19,6 +19,7 @@ Release Notes
 ### Future Releases
 * JENKINS-9838 - Action --> HealthReportingAction
 * Improved TestNG trend graph accuracy. It now shows all builds, even ones for which there were no TestNG results
+* Fixed: JENKINS-12187 - Ignore testng XMLs (if any) from previous builds
 
 ### v0.30
 * Fixed: JENKINS-12046 - TestNG shouldn't look for result files if build was aborted

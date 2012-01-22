@@ -79,7 +79,8 @@ public class Publisher extends Recorder {
     * {@inheritDoc}
     */
    @Override
-   public boolean perform(AbstractBuild<?, ?> build, Launcher launcher, final BuildListener listener)
+   public boolean perform(AbstractBuild<?, ?> build, Launcher launcher,
+            final BuildListener listener)
          throws InterruptedException, IOException {
 
       PrintStream logger = listener.getLogger();
@@ -90,7 +91,8 @@ public class Publisher extends Recorder {
       }
 
 
-      logger.println("Looking for TestNG results report in workspace using pattern: " + reportFilenamePattern);
+      logger.println("Looking for TestNG results report in workspace using pattern: "
+                     + reportFilenamePattern);
       FilePath[] paths = locateReports(build.getWorkspace(), reportFilenamePattern);
 
       if (paths.length == 0) {
@@ -99,7 +101,12 @@ public class Publisher extends Recorder {
          return true;
       }
 
-      boolean filesSaved = saveReports(getTestNGReport(build), paths);
+      /*
+       * filter out the reports based on timestamps. See JENKINS-12187
+       */
+      paths = checkReports(build, paths, logger);
+
+      boolean filesSaved = saveReports(getTestNGReport(build), paths, logger);
       if (!filesSaved) {
          logger.println("Failed to save TestNG XML reports");
          return true;
@@ -107,7 +114,7 @@ public class Publisher extends Recorder {
 
       TestResults results = new TestResults("");
       try {
-         results = TestNGBuildAction.loadResults(build);
+         results = TestNGBuildAction.loadResults(build, logger);
       } catch (Throwable t) {
          /*
           * don't fail build if TestNG parser barfs.
@@ -175,8 +182,45 @@ public class Publisher extends Recorder {
        return new FilePath(new File(build.getRootDir(), "testng"));
    }
 
-   static boolean saveReports(FilePath testngDir, FilePath[] paths)
+   static FilePath[] checkReports(AbstractBuild<?,?> build, FilePath[] paths,
+            PrintStream logger)
    {
+      List<FilePath> filePathList = new ArrayList<FilePath>(paths.length);
+
+      for (FilePath report : paths) {
+         /*
+          * Check that the file was created as part of this build and is not
+          * something left over from before.
+          *
+          * Checks that the last modified time of file is greater than the
+          * start time of the build
+          *
+          */
+         try {
+            /*
+             * dividing by 1000 and comparing because we want to compare secs
+             * and not milliseconds
+             */
+            if (build.getTimestamp().getTimeInMillis() / 1000 <= report.lastModified() / 1000) {
+               filePathList.add(report);
+            } else {
+               logger.println(report.getName() + " was last modified before "
+                        + "this build started. Ignoring it.");
+            }
+         } catch (IOException e) {
+            // just log the exception
+            e.printStackTrace(logger);
+         } catch (InterruptedException e) {
+            // just log the exception
+            e.printStackTrace(logger);
+         }
+      }
+      return filePathList.toArray(new FilePath[]{});
+   }
+
+   static boolean saveReports(FilePath testngDir, FilePath[] paths, PrintStream logger)
+   {
+      logger.println("Saving reports...");
       try {
          testngDir.mkdirs();
          int i = 0;
@@ -187,7 +231,7 @@ public class Publisher extends Recorder {
             report.copyTo(dst);
          }
       } catch (Exception e) {
-         e.printStackTrace();
+         e.printStackTrace(logger);
          return false;
       }
       return true;

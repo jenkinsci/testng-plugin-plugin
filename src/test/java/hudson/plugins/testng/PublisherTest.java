@@ -49,7 +49,7 @@ public class PublisherTest extends TestCase
     Assert.assertEquals(3, reports.length);
     // Save files in local workspace
     FilePath local = workspace.child("coverage_localfolder");
-    boolean saved = Publisher.saveReports(local, reports);
+    boolean saved = Publisher.saveReports(local, reports, System.out);
     Assert.assertTrue(saved);
     Assert.assertEquals(3, local.list().size());
     local.deleteRecursive();
