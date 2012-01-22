@@ -19,9 +19,9 @@ Release Notes
 ### Future Releases
 * JENKINS-9838 - Action --> HealthReportingAction
 * Improved TestNG trend graph accuracy. It now shows all builds, even ones for which there were no TestNG results
-* Fixed: JENKINS-12046 - TestNG shouldn't look for result files if build was aborted
 
 ### v0.30
+* Fixed: JENKINS-12046 - TestNG shouldn't look for result files if build was aborted
 * Fixed: JENKINS-11158 - Don't fail build if result files cannot be found
 * Added: More logging around what the plugin is doing
 
@@ -64,7 +64,7 @@ using the UUID that was being associated with all the test methods.
 
 (NOTE: There is a slight break in backward compatibility in this release.
 Significant code changes and features have been introduced in this version.
-Older builds might face some issues, though the chances are very low. Also, the 
+Older builds might face some issues, though the chances are very low. Also, the
 urls for older data for test methods will change)
 
 ### v0.22
