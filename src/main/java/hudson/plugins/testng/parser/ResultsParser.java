@@ -122,7 +122,7 @@ public class ResultsParser {
             log.severe("'" + file.getAbsolutePath() + "' points to an invalid test report");
             continue; //move to next file
          } else {
-            log.info("Processing '" + file.getAbsolutePath() + "'");
+            log.fine("Processing '" + file.getAbsolutePath() + "'");
          }
 
          BufferedInputStream bufferedInputStream = null;
