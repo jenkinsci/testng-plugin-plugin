@@ -21,6 +21,10 @@ Release Notes
 * Improved TestNG trend graph accuracy. It now shows all builds, even ones for which there were no TestNG results
 * Fixed: JENKINS-12046 - TestNG shouldn't look for result files if build was aborted
 
+### v0.30
+* Fixed: JENKINS-11158 - Don't fail build if result files cannot be found
+* Added: More logging around what the plugin is doing
+
 ### v0.29
 
 * Fixed: JENKINS-11236 - TestNG plugin links to wrong document (kohsuke)

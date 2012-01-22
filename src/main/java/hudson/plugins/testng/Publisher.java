@@ -83,6 +83,7 @@ public class Publisher extends Recorder {
          throws InterruptedException, IOException {
 
       PrintStream logger = listener.getLogger();
+      logger.println("TestNG Reports Processing: START");
       if (build.getResult().isWorseThan(Result.UNSTABLE)) {
          logger.println("Not looking for any TestNG results.");
          return true;
@@ -94,7 +95,6 @@ public class Publisher extends Recorder {
 
       if (paths.length == 0) {
          logger.println("Did not find any matching files.");
-         build.setResult(Result.FAILURE);
          //build can still continue
          return true;
       }
@@ -102,7 +102,6 @@ public class Publisher extends Recorder {
       boolean filesSaved = saveReports(getTestNGReport(build), paths);
       if (!filesSaved) {
          logger.println("Failed to save TestNG XML reports");
-         build.setResult(Result.FAILURE);
          return true;
       }
 
@@ -118,10 +117,9 @@ public class Publisher extends Recorder {
          }
       } else {
          logger.println("Found matching files but did not find any TestNG results.");
-         build.setResult(Result.FAILURE);
          return true;
       }
-
+      logger.println("TestNG Reports Processing: FINISH");
       return true;
    }
 
