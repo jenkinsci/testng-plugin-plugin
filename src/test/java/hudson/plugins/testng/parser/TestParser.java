@@ -73,6 +73,14 @@ public class TestParser {
       results.tally();
    }
 
+   @Test
+   public void testParseEmptyException() {
+      ClassLoader cl = TestParser.class.getClassLoader();
+      TestResults results = getResults(cl.getResource("sample-testng-empty-exp.xml").getFile());
+      results.tally();
+      Assert.assertEquals(1, results.getPassedTestCount());
+   }
+
    private TestResults getResults(String filename) {
       ResultsParser parser = new ResultsParser();
       FilePath[] filePaths = new FilePath[1];

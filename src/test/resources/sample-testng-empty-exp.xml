@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testng-results skipped="0" failed="0" total="121" passed="121">
+  <reporter-output>
+  </reporter-output>
+  <suite name="Command line suite" duration-ms="23913" started-at="2012-01-23T10:51:27Z" finished-at="2012-01-23T10:51:51Z">
+    <groups>
+    </groups>
+    <test name="Command line test" duration-ms="23913" started-at="2012-01-23T10:51:27Z" finished-at="2012-01-23T10:51:51Z">
+      <class name="my.package.MyFakeTest">
+        <test-method status="PASS" signature="methodSignature()[pri:0, instance:my.package.MyFakeTest@1d6747b]" name="testFake" duration-ms="11" started-at="2012-01-23T10:51:51Z" finished-at="2012-01-23T10:51:51Z">
+          <exception class="$java.lang.IllegalStateException$$EnhancerByMockitoWithCGLIB$$c0ded2d3">
+            <full-stacktrace>
+              <![CDATA[]]>
+            </full-stacktrace>
+          </exception>
+        </test-method>
+      </class>
+    </test>
+  </suite>
+</testng-results>
