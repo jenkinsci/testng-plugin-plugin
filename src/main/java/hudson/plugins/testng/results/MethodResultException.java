@@ -48,7 +48,8 @@ public class MethodResultException implements Serializable {
    private void trySettingData(String shortStackTrace, String fullStackTrace)
    {
      String tmpStackTrace = shortStackTrace;
-     if (fullStackTrace != null && !fullStackTrace.equals("")) {
+     if (fullStackTrace != null && !"".equals(fullStackTrace)) {
+     //if (((shortStackTrace == null) || "".equals(shortStackTrace)) && (fullStackTrace != null)) {
         // overwrite short st with full st, if available
         tmpStackTrace = fullStackTrace;
      }
