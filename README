@@ -18,14 +18,17 @@ Release Notes
 
 ### Future Releases
 * JENKINS-9838 - Action --> HealthReportingAction
-* Improved TestNG trend graph accuracy. It now shows all builds, even ones for which there were no TestNG results
+
+### v0.31
 * Fixed: JENKINS-12187 - Ignore testng XMLs (if any) from previous builds
 * Fixed: JENKINS-12494 - NPE while parsing testng xml with empty full stacktrace and no short stacktrace (Benoit Guerin)
+* Fixed: JENKINS-12567 - failed tests and configurations shouldn't mark the build as unstable (Christoph Kutzinski)
 
 ### v0.30
 * Fixed: JENKINS-12046 - TestNG shouldn't look for result files if build was aborted
 * Fixed: JENKINS-11158 - Don't fail build if result files cannot be found
 * Added: More logging around what the plugin is doing
+* Improved TestNG trend graph accuracy. It now shows all builds, even ones for which there were no TestNG results
 
 ### v0.29
 
