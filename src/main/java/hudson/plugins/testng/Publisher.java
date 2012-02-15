@@ -85,12 +85,6 @@ public class Publisher extends Recorder {
 
       PrintStream logger = listener.getLogger();
       logger.println("TestNG Reports Processing: START");
-      if (build.getResult().isWorseThan(Result.UNSTABLE)) {
-         logger.println("Not looking for any TestNG results.");
-         return true;
-      }
-
-
       logger.println("Looking for TestNG results report in workspace using pattern: "
                      + reportFilenamePattern);
       FilePath[] paths = locateReports(build.getWorkspace(), reportFilenamePattern);
