@@ -3,6 +3,7 @@ package hudson.plugins.testng;
 import hudson.Extension;
 import hudson.FilePath;
 import hudson.Launcher;
+import hudson.maven.AbstractMavenProject;
 import hudson.model.Action;
 import hudson.model.BuildListener;
 import hudson.model.Result;
@@ -18,6 +19,7 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.List;
 
@@ -98,7 +100,7 @@ public class Publisher extends Recorder {
       /*
        * filter out the reports based on timestamps. See JENKINS-12187
        */
-      paths = checkReports(build, paths, logger);
+      paths = checkReports(build.getTimestamp(), paths, logger);
 
       boolean filesSaved = saveReports(getTestNGReport(build), paths, logger);
       if (!filesSaved) {
@@ -175,7 +177,7 @@ public class Publisher extends Recorder {
        return new FilePath(new File(build.getRootDir(), "testng"));
    }
 
-   static FilePath[] checkReports(AbstractBuild<?,?> build, FilePath[] paths,
+   static FilePath[] checkReports(Calendar timestamp, FilePath[] paths,
             PrintStream logger)
    {
       List<FilePath> filePathList = new ArrayList<FilePath>(paths.length);
@@ -194,7 +196,7 @@ public class Publisher extends Recorder {
              * dividing by 1000 and comparing because we want to compare secs
              * and not milliseconds
              */
-            if (build.getTimestamp().getTimeInMillis() / 1000 <= report.lastModified() / 1000) {
+            if (timestamp.getTimeInMillis() / 1000 <= report.lastModified() / 1000) {
                filePathList.add(report);
             } else {
                logger.println(report.getName() + " was last modified before "
@@ -259,8 +261,9 @@ public class Publisher extends Recorder {
          return req.bindJSON(Publisher.class, formData);
       }
 
-      public boolean isApplicable(Class<? extends AbstractProject> aClass) {
-         return true;
+      public boolean isApplicable(Class<? extends AbstractProject> projectClass) {
+          
+         return !(AbstractMavenProject.class.isAssignableFrom(projectClass));
       }
    }
 
