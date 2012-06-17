@@ -1,22 +1,27 @@
 package hudson.plugins.testng;
 
 import hudson.FilePath;
+import hudson.maven.AggregatableAction;
+import hudson.maven.MavenAggregatedReport;
+import hudson.maven.MavenBuild;
+import hudson.maven.MavenModule;
+import hudson.maven.MavenModuleSetBuild;
 import hudson.model.Action;
 import hudson.model.AbstractBuild;
 import hudson.model.Api;
 import hudson.plugins.testng.parser.ResultsParser;
 import hudson.plugins.testng.results.TestResults;
 import hudson.plugins.testng.util.TestResultHistoryUtil;
-
 import java.io.PrintStream;
 import java.io.Serializable;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
-
+import java.util.List;
+import java.util.Map;
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
 
-public class TestNGBuildAction implements Action, Serializable {
+public class TestNGBuildAction implements Action, Serializable, AggregatableAction {
 
    /**
     * Unique identifier for this class.
@@ -26,30 +31,34 @@ public class TestNGBuildAction implements Action, Serializable {
    /**
     * The owner of this Action.
     */
-   private final AbstractBuild<?, ?> build;
+   protected final AbstractBuild<?, ?> build;
 
    /**
     * @deprecated since v0.23. Only here for supporting older version of this plug-in
     */
    private transient TestResults results;
-   private transient Reference<TestResults> testResults;
+   protected transient Reference<TestResults> testResults;
 
    /*
     * Cache test counts to speed up loading of graphs
     */
-   private transient int passedTestCount;
-   private transient int failedTestCount;
-   private transient int skippedTestCount;
+   protected transient int passedTestCount;
+   protected transient int failedTestCount;
+   protected transient int skippedTestCount;
 
    public TestNGBuildAction(AbstractBuild<?, ?> build, TestResults testngResults) {
       this.build = build;
-      testngResults.setOwner(this.build);
-      this.testResults = new WeakReference<TestResults>(testngResults);
+      initResults(testngResults);
+   }
+   
+   protected void initResults(TestResults testngResults) {
+       testngResults.setOwner(this.build);
+       this.testResults = new WeakReference<TestResults>(testngResults);
 
-      //initialize the cached values when TestNGBuildAction is instantiated
-      this.passedTestCount = testngResults.getPassedTestCount();
-      this.failedTestCount = testngResults.getFailedTestCount();
-      this.skippedTestCount = testngResults.getSkippedTestCount();
+       //initialize the cached values when TestNGBuildAction is instantiated
+       this.passedTestCount = testngResults.getPassedTestCount();
+       this.failedTestCount = testngResults.getFailedTestCount();
+       this.skippedTestCount = testngResults.getSkippedTestCount();
    }
 
    /**
@@ -186,4 +195,9 @@ public class TestNGBuildAction implements Action, Serializable {
 
       return this;
    }
+
+    public MavenAggregatedReport createAggregatedAction(MavenModuleSetBuild build,
+            Map<MavenModule, List<MavenBuild>> moduleBuilds) {
+        return new TestNGAggregatedBuildAction(build);
+    }
 }

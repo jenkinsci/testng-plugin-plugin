@@ -43,6 +43,18 @@ public class TestResults extends BaseResult implements Serializable {
    public TestResults(String name) {
       super(name);
    }
+   
+   /**
+    * Needed to aggregate several {@link TestResults}.
+    */
+   public void add(TestResults other) {
+       this.testList.addAll(other.getTestList());
+       this.failedTests.addAll(other.getFailedTests());
+       this.passedTests.addAll(other.getPassedTests());
+       this.skippedTests.addAll(other.getSkippedTests());
+       this.skippedConfigurationMethods.addAll(other.getSkippedConfigs());
+       this.failedConfigurationMethods.addAll(other.getFailedConfigs());
+   }
 
    public List<MethodResult> getFailedTests() {
       return failedTests;
