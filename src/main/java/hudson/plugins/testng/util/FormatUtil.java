@@ -1,7 +1,5 @@
 package hudson.plugins.testng.util;
 
-import java.util.concurrent.TimeUnit;
-
 /**
  * These methods are used to format strings in jelly files
  *
@@ -11,34 +9,28 @@ import java.util.concurrent.TimeUnit;
  */
 public class FormatUtil {
 
+
+    public static final String MORE_THAN_24HRS = "> 24hrs";
+    private static final long HOUR_IN_MS = 60 * 60 * 1000;
+    private static final long MIN_IN_MS = 60 * 1000;
+
    /**
-    * Formats the time into mill
-    * @param duration
-    * @return
+    * Formats the time into a human readable format
+    * @param duration time duration in milliseconds
+    * @return time represented in a human readable format
     */
    public static String formatTimeInMilliSeconds(long duration) {
-      if (duration == 0) {
-         return "0 msec";
+      if (duration / (24 * HOUR_IN_MS) > 0) {
+         return MORE_THAN_24HRS;
       }
       try {
-         StringBuffer durationInString = new StringBuffer("");
-         long hours = TimeUnit.MILLISECONDS.toSeconds(duration) / 3600;
-         long minutes = TimeUnit.MILLISECONDS.toSeconds(duration - hours * 60 *60 * 1000) / 60;
-         long seconds = TimeUnit.MILLISECONDS.toSeconds(duration - minutes * 60 * 1000);
-         long milliseconds = duration - (hours * 60 * 60 * 1000) - (minutes * 60 * 1000) - seconds * 1000;
-         if (hours > 0) {
-           durationInString.append(hours).append(" hrs ");
-         }
-         if (minutes > 0) {
-            durationInString.append(minutes).append(" min ");
-         }
-         if (seconds > 0) {
-            durationInString.append(seconds).append(" sec ");
-         }
-         if (milliseconds > 0) {
-            durationInString.append(milliseconds).append(" msec");
-         }
-         return durationInString.toString();
+         long hours = duration / HOUR_IN_MS;
+         duration -= hours * HOUR_IN_MS;
+         long minutes = duration / MIN_IN_MS;
+         duration -= minutes * MIN_IN_MS;
+         long seconds = duration / 1000;
+         long milliseconds = duration - seconds * 1000;
+         return String.format("%02d:%02d:%02d.%03d", hours, minutes, seconds, milliseconds);
       } catch (Exception e) {
          e.printStackTrace();
          return "-1";
@@ -48,8 +40,8 @@ public class FormatUtil {
    /**
     * Formats a long value and prepends it with a - or +
     * This functions is used for showing the diff values for test runs
-    * @param value - long value
-    * @return
+    * @param value long value
+    * @return a long value prepended with a - or +
     */
    public static String formatLong(long value) {
       if (value == 0) {
@@ -67,8 +59,8 @@ public class FormatUtil {
     * It also replaces < , > , & and " characters with their corresponding html code
     * ref : http://www.theukwebdesigncompany.com/articles/entity-escape-characters.php
     *
-    * @param str
-    * @return
+    * @param str a string
+    * @return escaped string
     */
    public static String escapeString(String str) {
       if (str == null) {
@@ -85,8 +77,8 @@ public class FormatUtil {
 
    /**
     * Formats the stack trace for easier readability
-    * @param stackTrace
-    * @return
+    * @param stackTrace a stack trace
+    * @return the stack trace formatted for easier readability
     */
    public static String formatStackTraceForHTML(String stackTrace) {
       return escapeString(stackTrace);
