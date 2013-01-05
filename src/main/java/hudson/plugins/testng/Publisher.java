@@ -3,15 +3,14 @@ package hudson.plugins.testng;
 import hudson.Extension;
 import hudson.FilePath;
 import hudson.Launcher;
-import hudson.model.Action;
-import hudson.model.BuildListener;
-import hudson.model.Result;
-import hudson.model.AbstractBuild;
-import hudson.model.AbstractProject;
+import hudson.model.*;
 import hudson.plugins.testng.results.TestResults;
 import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.BuildStepMonitor;
 import hudson.tasks.Recorder;
+import net.sf.json.JSONObject;
+import org.kohsuke.stapler.DataBoundConstructor;
+import org.kohsuke.stapler.StaplerRequest;
 
 import java.io.File;
 import java.io.IOException;
@@ -20,11 +19,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-
-import net.sf.json.JSONObject;
-
-import org.kohsuke.stapler.DataBoundConstructor;
-import org.kohsuke.stapler.StaplerRequest;
 
 /**
  * This class defines a @Publisher and @Extension
@@ -84,6 +78,12 @@ public class Publisher extends Recorder {
          throws InterruptedException, IOException {
 
       PrintStream logger = listener.getLogger();
+
+      if (build.getResult().equals(Result.ABORTED)) {
+         logger.println("Build Aborted. Not looking for any TestNG results.");
+         return true;
+      }
+
       logger.println("TestNG Reports Processing: START");
       logger.println("Looking for TestNG results report in workspace using pattern: "
                      + reportFilenamePattern);
@@ -227,14 +227,6 @@ public class Publisher extends Recorder {
          e.printStackTrace(logger);
          return false;
       }
-      return true;
-   }
-
-   /**
-    * {@inheritDoc}
-    */
-   @Override
-   public boolean prebuild(AbstractBuild<?, ?> build, BuildListener listener) {
       return true;
    }
 
