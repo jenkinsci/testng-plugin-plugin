@@ -16,8 +16,7 @@ graph and all details about which tests that failed are also presented.
 Release Notes
 -------
 
-### Future Releases
-* JENKINS-9838 - Action --> HealthReportingAction
+### v0.33
 * Upped compatible Jenkins version to v1.447
 * Fixed: JENKINS-15119 - Duration sorting is incorrect in TestNG report
 * Fixed: JENKINS-12046 - TestNG shouldn't look for result files if build was aborted (again!)
