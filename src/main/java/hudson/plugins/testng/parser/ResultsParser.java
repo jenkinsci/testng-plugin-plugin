@@ -77,11 +77,13 @@ public class ResultsParser {
    private String currentFullStackTrace;
    private String currentGroupName;
    private String currentSuite;
+   private String currentLine;
 
    private enum TAGS {
       TESTNG_RESULTS, SUITE, TEST, CLASS, TEST_METHOD,
       PARAMS, PARAM, VALUE, EXCEPTION, UNKNOWN, MESSAGE,
-      SHORT_STACKTRACE, FULL_STACKTRACE, GROUPS, GROUP, METHOD;
+      SHORT_STACKTRACE, FULL_STACKTRACE, GROUPS, GROUP, METHOD,
+      REPORTER_OUTPUT, LINE;
 
       public static TAGS fromString(String val) {
          if (val == null) {
@@ -179,6 +181,13 @@ public class ResultsParser {
                                     get("duration-ms"), get("started-at"),
                                     get("is-config"));
                            break;
+                        case REPORTER_OUTPUT:
+                           startReporterOutput();
+                           break;
+                        case LINE:
+                           startLine();
+                           currentCDATAParent = TAGS.LINE;
+                           break;
                         case PARAMS:
                            startMethodParameters();
                            currentCDATAParent = TAGS.PARAMS;
@@ -218,6 +227,13 @@ public class ResultsParser {
                         case TEST_METHOD:
                            finishTestMethod();
                            break;
+                        case REPORTER_OUTPUT:
+                            endReporterOutput();
+                            break;
+                         case LINE:
+                            endLine();
+                            currentCDATAParent = TAGS.UNKNOWN;
+                            break;
                         case PARAMS:
                            finishMethodParameters();
                            currentCDATAParent = TAGS.UNKNOWN;
@@ -261,6 +277,37 @@ public class ResultsParser {
       //tally up the results properly before returning
       finalResults.tally();
       return finalResults;
+   }
+
+   private void startLine()
+   {
+      // do nothing (here for symmetry)
+   }
+   
+   private void endLine()
+   {
+       if (currentMethod != null)
+       {
+           currentMethod.getReporterOuputLines().add(currentLine);
+       }
+   }
+
+   private void startReporterOutput()
+   {
+      if (currentMethod != null)
+      {
+          currentMethod.setReporterOutputLines(new ArrayList<String>());
+      }
+   }
+   
+   private void endReporterOutput()
+   {
+       // do nothing ?
+       if (currentSuite == null)
+       {
+           // ignore first reporter-output lines
+           return;
+       }
    }
 
    private void startGroupMethod(String className, String methodName)
@@ -354,6 +401,9 @@ public class ResultsParser {
             break;
          case SHORT_STACKTRACE:
             currentShortStackTrace = xmlPullParser.getText();
+            break;
+         case LINE:
+            currentLine = xmlPullParser.getText();
             break;
          case UNKNOWN:
             //do nothing
