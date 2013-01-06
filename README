@@ -21,6 +21,7 @@ Release Notes
 * Upped compatible Jenkins version to v1.447
 * Fixed: JENKINS-15119 - Duration sorting is incorrect in TestNG report
 * Fixed: JENKINS-12046 - TestNG shouldn't look for result files if build was aborted (again!)
+* Added: JENKINS-10832 - make testng reporter-output field viewable from testng-plugin generated reports (Dan Alvizu)
 
 ### v0.32
 * Fixed: JENKINS-12648 - Results should be reported for failed/aborted builds as well (Reverted fix for JENKINS-12046 in v0.30)

@@ -20,14 +20,6 @@
       Group(s): ${it.displayGroups}
    </j:if>
 
-
-   <div style="margin: 20px">
-     <p><b>Reporter Output:</b></p>
-     <div>
-         ${it.displayReporterOutputLines}
-     </div>
-   </div>
-
    <j:if test="${!empty(it.parameters)}">
       <table border="1px" class="pane">
          <thead>
@@ -53,12 +45,22 @@
    <br/>
    <img src="graph" lazymap="graphMap" alt="[Method Execution Trend Chart]"/>
 
+   <!-- TODO: Move style out to a CSS -->
+   <j:if test="${it.reporterOutput != null}">
+      <div>
+         <h3>Reporter Output</h3>
+         <code style="margin-left:15px; display:block; border:1px black; background-color:#F0F0F0; width:800px ">
+            ${it.reporterOutput}
+         </code>
+      </div>
+   </j:if>
+
    <j:if test="${!empty(it.exception)}">
       <h3>Exception <i>${it.exception.exceptionName}</i></h3>
       <p>
          <j:choose>
             <j:when test="${it.exception.message != null}">
-               <p><b>Message: </b>${it.displayExceptionMessage}</p>
+               <b>Message: </b>${it.displayExceptionMessage}
             </j:when>
             <j:otherwise>
                <b>Message: </b>(none)
@@ -70,7 +72,7 @@
                       method="formatStackTraceForHTML" var="sst">
             <j:arg type="java.lang.String" value="${it.exception.stackTrace}"/>
          </j:invokeStatic>
-         <p><b>Stacktrace:</b><br/>${sst}</p>
+         <b>Stacktrace:</b><p style="margin-left:15px">${sst}</p>
       </j:if>
    </j:if>
 </j:jelly>

@@ -91,9 +91,9 @@ public class TestParser {
       SimpleDateFormat sdf = new SimpleDateFormat(ResultsParser.DATE_FORMAT);
       sdf.parse(dateString);
    }
-   
+
    @Test
-   public void testReporterLogParser() throws ParseException {
+   public void testReporterOutputForMethods() throws ParseException {
        String filename = "sample-testng-reporter-log-result.xml";
        URL resource = TestParser.class.getClassLoader().getResource(filename);
        Assert.assertNotNull(resource);
@@ -107,10 +107,9 @@ public class TestParser {
        Assert.assertEquals(1, results.getPassedTests().size());
        Assert.assertEquals(1, results.getFailedTests().size());
        Assert.assertNotNull(results.getFailedTests().get(0).getException());
-       Assert.assertNotNull(results.getFailedTests().get(0).getReporterOuputLines());
-       Assert.assertEquals(2, results.getFailedTests().get(0).getReporterOuputLines().size());
-       Assert.assertEquals("Some Reporter.log() statement", results.getFailedTests().get(0).getReporterOuputLines().get(0));
-       Assert.assertEquals("Another Reporter.log() statement", results.getFailedTests().get(0).getReporterOuputLines().get(1));
-       Assert.assertEquals(0, results.getPassedTests().get(0).getReporterOuputLines().size());
+       Assert.assertNotNull(results.getFailedTests().get(0).getReporterOutput());
+       Assert.assertEquals("Some Reporter.log() statement<br/>Another Reporter.log() statement<br/>",
+               results.getFailedTests().get(0).getReporterOutput());
+       Assert.assertNull(results.getPassedTests().get(0).getReporterOutput());
    }
 }

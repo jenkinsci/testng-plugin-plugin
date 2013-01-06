@@ -8,19 +8,14 @@ import hudson.plugins.testng.util.GraphHelper;
 import hudson.util.ChartUtil;
 import hudson.util.DataSetBuilder;
 import hudson.util.Graph;
-
-import java.io.IOException;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.apache.commons.lang.StringUtils;
 import org.jfree.chart.JFreeChart;
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
 import org.kohsuke.stapler.export.Exported;
+
+import java.io.IOException;
+import java.util.*;
 
 @SuppressWarnings("serial")
 public class MethodResult extends BaseResult {
@@ -36,7 +31,8 @@ public class MethodResult extends BaseResult {
    private String parentSuiteName;
    private List<String> groups;
    private List<String> parameters;
-   private List<String> reporterOutputLines;
+   // already stored with lines separated using <br/>
+   private String reporterOutput;
 
    /**
     * unique id for this tests's run (helps associate the test method with
@@ -242,8 +238,8 @@ public class MethodResult extends BaseResult {
 
    /**
     * Creates test method execution history graph
-    * @param req
-    * @param rsp
+    * @param req request
+    * @param rsp response
     * @throws IOException
     */
    public void doGraph(final StaplerRequest req, StaplerResponse rsp) throws IOException {
@@ -254,9 +250,9 @@ public class MethodResult extends BaseResult {
    }
 
    /**
-    * Creates map to make the graph clickable
-    * @param req
-    * @param rsp
+    * Creates map to make the graph click-able
+    * @param req request
+    * @param rsp response
     * @throws IOException
     */
    public void doGraphMap(final StaplerRequest req, StaplerResponse rsp) throws IOException {
@@ -268,9 +264,9 @@ public class MethodResult extends BaseResult {
 
    /**
     * Returns graph instance if needed
-    * @param req
-    * @param rsp
-    * @return
+    * @param req request
+    * @param rsp response
+    * @return a graph
     */
    private hudson.util.Graph getGraph(final StaplerRequest req, StaplerResponse rsp) {
       Calendar t = getOwner().getProject().getLastCompletedBuild().getTimestamp();
@@ -324,7 +320,7 @@ public class MethodResult extends BaseResult {
    {
       ChartUtil.NumberOnlyBuildLabel label = new ChartUtil.NumberOnlyBuildLabel(build);
       TestNGBuildAction action = build.getAction(TestNGBuildAction.class);
-      TestResults results = null;
+      TestResults results;
       MethodResult methodResult = null;
       if (action != null && (results = action.getResults()) != null) {
          methodResult = getMethodResult(results);
@@ -344,8 +340,8 @@ public class MethodResult extends BaseResult {
    /**
     * Gets the method result, if any, from the given set of test results. Searches
     * for method result that matches the url of this method
-    * @param results
-    * @return
+    * @param results test results
+    * @return method result
     */
    private MethodResult getMethodResult(TestResults results) {
       Map<String, PackageResult> packageMap = results.getPackageMap();
@@ -397,28 +393,19 @@ public class MethodResult extends BaseResult {
    }
 
    /**
-    * 
+    *
     */
-   public void setReporterOutputLines(final List<String> reporterOutputLines)
+   public void setReporterOutput(String reporterOutput)
    {
-       this.reporterOutputLines = reporterOutputLines;
+       this.reporterOutput = reporterOutput;
    }
-   
+
    /**
-    * @return
+    * @return reporter output
     */
-   public List<String> getReporterOuputLines()
+   public String getReporterOutput()
    {
-       return reporterOutputLines;
+       return reporterOutput;
    }
-   
-   public String getDisplayReporterOutputLines()
-   {
-       StringBuffer sb = new StringBuffer();
-       for (String line : reporterOutputLines)
-       {
-           sb.append("<p>").append(line).append("</p>");
-       }
-       return sb.toString();
-   }
+
 }

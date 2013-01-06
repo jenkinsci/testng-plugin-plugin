@@ -1,32 +1,17 @@
 package hudson.plugins.testng.parser;
 
 import hudson.FilePath;
-import hudson.plugins.testng.results.ClassResult;
-import hudson.plugins.testng.results.MethodResult;
-import hudson.plugins.testng.results.MethodResultException;
-import hudson.plugins.testng.results.TestResult;
-import hudson.plugins.testng.results.TestResults;
-
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.PrintStream;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-import java.util.logging.Logger;
-
+import hudson.plugins.testng.results.*;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
+
+import java.io.*;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
+import java.util.logging.Logger;
 
 /**
  * Parses testng result XMLs generated using org.testng.reporters.XmlReporter
@@ -60,6 +45,7 @@ public class ResultsParser {
     * We maintain only a single ClassResult for all <class>s with the same fqdn
     */
    private Map<String, ClassResult> classResultMap = new HashMap<String, ClassResult>();
+   private StringBuilder reporterOutputBuilder;
    private Map<String, List<String>> methodGroupMap = new HashMap<String, List<String>>();
    private TestResults finalResults;
    private List<TestResult> testList;
@@ -222,7 +208,7 @@ public class ResultsParser {
                            finishTest();
                            break;
                         case CLASS:
-                           finishclass();
+                           finishClass();
                            break;
                         case TEST_METHOD:
                            finishTestMethod();
@@ -281,33 +267,33 @@ public class ResultsParser {
 
    private void startLine()
    {
-      // do nothing (here for symmetry)
+      if (currentMethod != null && reporterOutputBuilder == null)
+      {
+         reporterOutputBuilder = new StringBuilder("");
+      }
    }
-   
+
    private void endLine()
    {
        if (currentMethod != null)
        {
-           currentMethod.getReporterOuputLines().add(currentLine);
+           reporterOutputBuilder.append(currentLine).append("<br/>");
        }
    }
 
    private void startReporterOutput()
    {
-      if (currentMethod != null)
-      {
-          currentMethod.setReporterOutputLines(new ArrayList<String>());
-      }
+      // do nothing (here for symmetry)
+      // might be used in future if we start capturing suite level reporter logs as well
    }
-   
+
    private void endReporterOutput()
    {
-       // do nothing ?
-       if (currentSuite == null)
-       {
-           // ignore first reporter-output lines
-           return;
+       // some test method might have reporter output lines
+       if (currentMethod != null && reporterOutputBuilder != null) {
+          currentMethod.setReporterOutput(reporterOutputBuilder.toString());
        }
+       reporterOutputBuilder = null;
    }
 
    private void startGroupMethod(String className, String methodName)
@@ -456,7 +442,7 @@ public class ResultsParser {
       currentTestRunId = UUID.randomUUID().toString();
    }
 
-   private void finishclass()
+   private void finishClass()
    {
       currentClass.addTestMethods(currentMethodList);
       currentClassList.add(currentClass);
