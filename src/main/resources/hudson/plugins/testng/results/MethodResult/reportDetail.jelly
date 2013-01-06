@@ -20,6 +20,14 @@
       Group(s): ${it.displayGroups}
    </j:if>
 
+
+   <div style="margin: 20px">
+     <p><b>Reporter Output:</b></p>
+     <div>
+         ${it.displayReporterOutputLines}
+     </div>
+   </div>
+
    <j:if test="${!empty(it.parameters)}">
       <table border="1px" class="pane">
          <thead>

@@ -36,6 +36,7 @@ public class MethodResult extends BaseResult {
    private String parentSuiteName;
    private List<String> groups;
    private List<String> parameters;
+   private List<String> reporterOutputLines;
 
    /**
     * unique id for this tests's run (helps associate the test method with
@@ -393,5 +394,31 @@ public class MethodResult extends BaseResult {
          }
       }
       return "result-passed";
+   }
+
+   /**
+    * 
+    */
+   public void setReporterOutputLines(final List<String> reporterOutputLines)
+   {
+       this.reporterOutputLines = reporterOutputLines;
+   }
+   
+   /**
+    * @return
+    */
+   public List<String> getReporterOuputLines()
+   {
+       return reporterOutputLines;
+   }
+   
+   public String getDisplayReporterOutputLines()
+   {
+       StringBuffer sb = new StringBuffer();
+       for (String line : reporterOutputLines)
+       {
+           sb.append("<p>").append(line).append("</p>");
+       }
+       return sb.toString();
    }
 }
