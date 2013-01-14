@@ -2,7 +2,7 @@
          xmlns:t="/lib/hudson" xmlns:f="/lib/form">
    <l:layout title="Test method - ${it.name}">
       <l:main-panel>
-         <st:include page="reportDetail.jelly"/>
+         <st:include page="reportDetail.groovy"/>
       </l:main-panel>
    </l:layout>
 </j:jelly>

@@ -2,7 +2,7 @@ package hudson.plugins.testng.parser;
 
 import hudson.FilePath;
 import hudson.plugins.testng.results.PackageResult;
-import hudson.plugins.testng.results.TestResults;
+import hudson.plugins.testng.results.TestNGResult;
 import junit.framework.Assert;
 import org.junit.Test;
 
@@ -14,7 +14,7 @@ import java.util.Map;
 
 public class TestParser {
 
-   private TestResults getResults(String filename) {
+   private TestNGResult getResults(String filename) {
       ResultsParser parser = new ResultsParser();
       FilePath[] filePaths = new FilePath[1];
       filePaths[0] = new FilePath(new File(filename));
@@ -29,7 +29,7 @@ public class TestParser {
    public void testTestngXmlWithExistingResultXml() {
       URL resource = getResource("sample-testng-results.xml");
       Assert.assertNotNull(resource);
-      TestResults results = getResults(resource.getFile());
+      TestNGResult results = getResults(resource.getFile());
       Assert.assertFalse("Collection shouldn't have been empty", results.getTestList().isEmpty());
    }
 
@@ -37,13 +37,13 @@ public class TestParser {
    public void testTestngXmlWithSameTestNameDiffSuites() {
       URL resource = getResource("testng-results-same-test.xml");
       Assert.assertNotNull(resource);
-      TestResults results = getResults(resource.getFile());
+      TestNGResult results = getResults(resource.getFile());
       Assert.assertFalse("Collection shouldn't have been empty", results.getTestList().isEmpty());
       Assert.assertEquals(2, results.getTestList().size());
       results.tally();
       Assert.assertEquals(1, results.getPackageNames().size());
-      Assert.assertEquals(3, results.getPackageMap().values().iterator().next().getClassList().size());
-      Assert.assertEquals(4, results.getPassedTestCount());
+      Assert.assertEquals(3, results.getPackageMap().values().iterator().next().getChildren().size());
+      Assert.assertEquals(4, results.getPassCount());
       Assert.assertEquals(4, results.getPassedTests().size());
    }
 
@@ -51,7 +51,7 @@ public class TestParser {
    public void testTestngXmlWithExistingResultXmlGetsTheRightDurations() {
       URL resource = getResource("sample-testng-dp-result.xml");
       Assert.assertNotNull(resource);
-      TestResults results = getResults(resource.getFile());
+      TestNGResult results = getResults(resource.getFile());
       Assert.assertFalse("Collection shouldn't have been empty", results.getTestList().isEmpty());
 
       // This test assumes that there is only 1 package in
@@ -60,28 +60,28 @@ public class TestParser {
       Map<String, PackageResult> packageResults = results.getPackageMap();
       for(PackageResult result: packageResults.values()) {
         Assert.assertEquals("org.farshid", result.getName());
-        Assert.assertEquals(12, result.getDuration());
+        Assert.assertEquals(12f, result.getDuration());
       }
    }
 
    @Test
    public void testTestngXmlWithNonExistingResultXml() {
-      TestResults results = getResults("/invalid/path/to/file/new-test-result.xml");
+      TestNGResult results = getResults("/invalid/path/to/file/new-test-result.xml");
       Assert.assertTrue("Collection should have been empty. Number of results : "
                + results.getTestList().size(), results.getTestList().isEmpty());
    }
 
    @Test
    public void parseTestNG() {
-      TestResults results = getResults(getResource("testng-results-testng.xml").getFile());
+      TestNGResult results = getResults(getResource("testng-results-testng.xml").getFile());
       results.tally();
    }
 
    @Test
    public void testParseEmptyException() {
-      TestResults results = getResults(getResource("sample-testng-empty-exp.xml").getFile());
+      TestNGResult results = getResults(getResource("sample-testng-empty-exp.xml").getFile());
       results.tally();
-      Assert.assertEquals(1, results.getPassedTestCount());
+      Assert.assertEquals(1, results.getPassCount());
    }
 
    @Test
@@ -97,13 +97,13 @@ public class TestParser {
        String filename = "sample-testng-reporter-log-result.xml";
        URL resource = TestParser.class.getClassLoader().getResource(filename);
        Assert.assertNotNull(resource);
-       TestResults results = getResults(resource.getFile());
+       TestNGResult results = getResults(resource.getFile());
        Assert.assertFalse("Collection shouldn't have been empty", results.getTestList().isEmpty());
        Assert.assertEquals(1, results.getTestList().size());
        results.tally();
        Assert.assertEquals(1, results.getPackageNames().size());
-       Assert.assertEquals(1, results.getPackageMap().values().iterator().next().getClassList().size());
-       Assert.assertEquals(1, results.getPassedTestCount());
+       Assert.assertEquals(1, results.getPackageMap().values().iterator().next().getChildren().size());
+       Assert.assertEquals(1, results.getPassCount());
        Assert.assertEquals(1, results.getPassedTests().size());
        Assert.assertEquals(1, results.getFailedTests().size());
        Assert.assertNotNull(results.getFailedTests().get(0).getException());

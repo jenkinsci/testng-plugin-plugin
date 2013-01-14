@@ -16,6 +16,12 @@ graph and all details about which tests that failed are also presented.
 Release Notes
 -------
 
+### Future
+* Implement AbstractTestResultAction
+* Removed deprecated class BuildIndividualReport (deprecated since v0.23)
+* Removed deprecated fields isRelativePath, results, fullName (were deprecated since v0.23 or earlier)
+* Changed duration in results to be seconds instead of milliseconds (as we now implement AbstractTestResultAction)
+
 ### v0.33
 * Upped compatible Jenkins version to v1.447
 * Fixed: JENKINS-15119 - Duration sorting is incorrect in TestNG report

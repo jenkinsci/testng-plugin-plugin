@@ -2,247 +2,252 @@ package hudson.plugins.testng.results;
 
 import hudson.model.AbstractBuild;
 import hudson.plugins.testng.util.FormatUtil;
-import hudson.plugins.testng.util.TestResultHistoryUtil;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.kohsuke.stapler.StaplerRequest;
-import org.kohsuke.stapler.StaplerResponse;
-import org.kohsuke.stapler.export.Exported;
+import hudson.tasks.test.TestResult;
 import org.kohsuke.stapler.bind.JavaScriptMethod;
+import org.kohsuke.stapler.export.Exported;
 
+import java.util.*;
+
+/**
+ * Handles package level results
+ */
 @SuppressWarnings("serial")
 public class PackageResult extends BaseResult {
 
-   private List<ClassResult> classList = new ArrayList<ClassResult>();
-   private List<MethodResult> sortedTestMethodsByStartTime = null;
+    //TODO: switch to using a Map instead of List
+    //list of all classes run from this package
+    private List<ClassResult> classList = new ArrayList<ClassResult>();
 
-   private transient long duration;
-   private transient int fail;
-   private transient int skip;
-   private transient int total;
+    //cached
+    private List<MethodResult> sortedTestMethodsByStartTime = null;
 
-   public final int MAX_EXEC_MTHD_LIST_SIZE = 25;
+    //cached vars updated using tally method
+    private transient float duration;
+    private transient int fail;
+    private transient int skip;
+    private transient int pass;
 
-   public PackageResult(String name) {
-      super(name);
-   }
+    // Maximum size of methods in the method execution list
+    public final int MAX_EXEC_MTHD_LIST_SIZE = 25;
 
-   public void setOwner(AbstractBuild<?, ?> owner) {
-      super.setOwner(owner);
-      for (ClassResult _class : classList) {
-         _class.setOwner(owner);
-      }
-   }
+    public PackageResult(String name) {
+        super(name);
+    }
 
-   @Exported(name = "classs") // because stapler notices suffix 's' and remove it
-   public List<ClassResult> getClassList() {
-      return classList;
-   }
+    @Override
+    public void setOwner(AbstractBuild<?, ?> owner) {
+        super.setOwner(owner);
+        for (ClassResult _class : classList) {
+            _class.setOwner(owner);
+        }
+    }
 
-   @Exported
-   public long getDuration() {
-      return duration;
-   }
+    /**
+     * Can't change this to return seconds as expected by {@link hudson.tasks.test.TestObject} because
+     * it has already been exported
+     *
+     * @return duration in milliseconds
+     */
+    @Exported
+    @Override
+    public float getDuration() {
+        return duration;
+    }
 
-   @Exported(visibility = 9)
-   public int getFail() {
-      return fail;
-   }
+    @Override
+    @Exported(visibility = 9, name = "fail")
+    public int getFailCount() {
+        return fail;
+    }
 
-   @Exported(visibility = 9)
-   public int getSkip() {
-      return skip;
-   }
+    @Override
+    @Exported(visibility = 9, name = "skip")
+    public int getSkipCount() {
+        return skip;
+    }
 
-   @Exported(visibility = 9)
-   public int getTotal() {
-      return total;
-   }
+    @Override
+    @Exported(visibility = 9)
+    public int getTotalCount() {
+        return super.getTotalCount();
+    }
 
-   /**
-    * Gets the age of a result
-    *
-    * @return the number of consecutive builds for which we have a result for
-    *  this package
-    */
-   public long getAge() {
-      PackageResult packageResult = getPreviousPackageResult();
-      if (packageResult == null) {
-         return 1;
-      } else {
-         return 1 + packageResult.getAge();
-      }
-   }
+    @Override
+    public int getPassCount() {
+        return pass;
+    }
 
-   /**
-    * Gets all the method results related to this package sorted by the time
-    * the methods were executed
-    *
-    * @return
-    */
-   public List<MethodResult> getSortedTestMethodsByStartTime() {
-      if (sortedTestMethodsByStartTime == null) {
-         sortTestMethods();
-      }
-      return sortedTestMethodsByStartTime;
-   }
 
-   /**
-    * Gets table row representation for all the method results associated with
-    * this package (sorted based on start time)
-    * @return
-    */
-   @JavaScriptMethod
-   public String getAllSortedTestMethodsByStartTime() {
-      return getMethodExecutionTableContent(getSortedTestMethodsByStartTime());
-   }
+    /**
+     * Gets the age of a result
+     *
+     * @return the number of consecutive builds for which we have a result for
+     *         this package
+     */
+    //TODO: move to Groovy
+    public long getAge() {
+        TestResult packageResult = getPreviousResult();
+        if (packageResult == null) {
+            return 1;
+        } else {
+            return 1 + ((PackageResult) packageResult).getAge();
+        }
+    }
 
-   /**
-    * Gets table row representation for the first {@link #MAX_EXEC_MTHD_LIST_SIZE}
-    * method results associated with this package (sorted based on start time)
-    *
-    * @return
-    */
-   @JavaScriptMethod
-   public String getFirstXSortedTestMethodsByStartTime() {
-      //returning the first MAX results only
-      List<MethodResult> list = getSortedTestMethodsByStartTime();
-      list = list.subList(0, list.size() > MAX_EXEC_MTHD_LIST_SIZE
-               ? MAX_EXEC_MTHD_LIST_SIZE : list.size());
-      return getMethodExecutionTableContent(list);
-   }
+    /**
+     * Gets all the method results related to this package sorted by the time
+     * the methods were executed
+     *
+     * @return
+     */
+    public List<MethodResult> getSortedTestMethodsByStartTime() {
+        if (sortedTestMethodsByStartTime == null) {
+            sortTestMethods();
+        }
+        return sortedTestMethodsByStartTime;
+    }
 
-   /**
-    * Gets the table row representation for the specified method results
-    *
-    * @param mrList list of method result objects
-    * @return table row representation
-    */
-   private String getMethodExecutionTableContent(List<MethodResult> mrList) {
-      StringBuffer sb = new StringBuffer(mrList.size() * 100);
+    /**
+     * Gets table row representation for all the method results associated with
+     * this package (sorted based on start time)
+     *
+     * @return
+     */
+    @JavaScriptMethod
+    public String getAllSortedTestMethodsByStartTime() {
+        return getMethodExecutionTableContent(getSortedTestMethodsByStartTime());
+    }
 
-      for (MethodResult mr : mrList) {
-         sb.append("<tr><td align=\"left\">");
-         sb.append("<a href=\"../").append(mr.getFullUrl()).append("\">");
-         sb.append(mr.getParent().getName()).append(".").append(mr.getName());
-         sb.append("</a>");
-         sb.append("</td><td align=\"center\">");
-         sb.append(FormatUtil.formatTimeInMilliSeconds(mr.getDuration()));
-         sb.append("</td><td align=\"center\">");
-         sb.append(mr.getStartedAt());
-         sb.append("</td><td align=\"center\"><span class=\"").append(mr.getCssClass()).append("\">");
-         sb.append(mr.getStatus());
-         sb.append("</span></td></tr>");
-      }
-      return sb.toString();
-   }
+    /**
+     * Gets table row representation for the first {@link #MAX_EXEC_MTHD_LIST_SIZE}
+     * method results associated with this package (sorted based on start time)
+     *
+     * @return
+     */
+    @JavaScriptMethod
+    public String getFirstXSortedTestMethodsByStartTime() {
+        //returning the first MAX results only
+        List<MethodResult> list = getSortedTestMethodsByStartTime();
+        list = list.subList(0, list.size() > MAX_EXEC_MTHD_LIST_SIZE
+                ? MAX_EXEC_MTHD_LIST_SIZE : list.size());
+        return getMethodExecutionTableContent(list);
+    }
 
-   public void tally() {
-      duration = 0;
-      fail = 0;
-      skip = 0;
-      total = 0;
-      for (ClassResult _c : classList) {
-          _c.setParent(this);
-          _c.tally();
-         duration += _c.getDuration();
-         fail += _c.getFail();
-         skip += _c.getSkip();
-         total += _c.getTotal();
-      }
-   }
+    /**
+     * Gets the table row representation for the specified method results
+     *
+     * @param mrList list of method result objects
+     * @return table row representation
+     */
+    private String getMethodExecutionTableContent(List<MethodResult> mrList) {
+        StringBuffer sb = new StringBuffer(mrList.size() * 100);
 
-   public Object getDynamic(String token, StaplerRequest req, StaplerResponse rsp) {
-      if (token.equals("/" + getName())) {
-         return this;
-      }
+        for (MethodResult mr : mrList) {
+            sb.append("<tr><td align=\"left\">");
+            sb.append("<a href=\"").append(mr.getUpUrl()).append("\">");
+            sb.append(mr.getParent().getName()).append(".").append(mr.getName());
+            sb.append("</a>");
+            sb.append("</td><td align=\"center\">");
+            sb.append(FormatUtil.formatTimeInMilliSeconds((long) mr.getDuration()));
+            sb.append("</td><td align=\"center\">");
+            sb.append(mr.getStartedAt());
+            sb.append("</td><td align=\"center\"><span class=\"").append(mr.getCssClass()).append("\">");
+            sb.append(mr.getStatus());
+            sb.append("</span></td></tr>");
+        }
+        return sb.toString();
+    }
 
-      ClassResult result = null;
-      for (ClassResult _c : classList) {
-         if (_c.getName().equals(token)) {
-            result = _c;
-            break;
-         }
-      }
-      return result;
-   }
+    @Override
+    public void tally() {
+        duration = 0;
+        fail = 0;
+        skip = 0;
+        pass = 0;
+        for (ClassResult _c : classList) {
+            _c.setParent(this);
+            _c.tally();
+            duration += _c.getDuration();
+            fail += _c.getFailCount();
+            skip += _c.getSkipCount();
+            pass += _c.getPassCount();
+        }
+    }
 
-   /**
-    * Sorts the test method results associated with this package based on the
-    * start time for method execution
-    */
-   public void sortTestMethods() {
-      this.sortedTestMethodsByStartTime = new ArrayList<MethodResult>();
-      //for each class
-      Map<Date, List<MethodResult>> map = new HashMap<Date, List<MethodResult>>();
-      for (ClassResult aClass : classList) {
-         if (aClass.getTestMethods() != null) {
-            for (MethodResult aMethod : aClass.getTestMethods()) {
-               Date startDate = aMethod.getStartedAt();
-               if (!aMethod.getStatus().equalsIgnoreCase("skip")
-                        && startDate != null) {
-                  if (map.containsKey(startDate)) {
-                     map.get(startDate).add(aMethod);
-                  } else {
-                     List<MethodResult> list = new ArrayList<MethodResult>();
-                     list.add(aMethod);
-                     map.put(startDate, list);
-                  }
-               }
+    /**
+     * Sorts the test method results associated with this package based on the
+     * start time for method execution
+     */
+    public void sortTestMethods() {
+        this.sortedTestMethodsByStartTime = new ArrayList<MethodResult>();
+        //for each class
+        Map<Date, List<MethodResult>> map = new HashMap<Date, List<MethodResult>>();
+        for (ClassResult aClass : classList) {
+            if (aClass.getTestMethods() != null) {
+                for (MethodResult aMethod : aClass.getTestMethods()) {
+                    Date startDate = aMethod.getStartedAt();
+                    if (!aMethod.getStatus().equalsIgnoreCase("skip")
+                            && startDate != null) {
+                        if (map.containsKey(startDate)) {
+                            map.get(startDate).add(aMethod);
+                        } else {
+                            List<MethodResult> list = new ArrayList<MethodResult>();
+                            list.add(aMethod);
+                            map.put(startDate, list);
+                        }
+                    }
+                }
             }
-         }
-      }
-      List<Date> keys = new ArrayList<Date>(map.keySet());
-      Collections.sort(keys);
-      //now create the list with the order
-      for (Date key : keys) {
-         if (map.containsKey(key)) {
-            this.sortedTestMethodsByStartTime.addAll(map.get(key));
-         }
-      }
-   }
+        }
+        List<Date> keys = new ArrayList<Date>(map.keySet());
+        Collections.sort(keys);
+        //now create the list with the order
+        for (Date key : keys) {
+            if (map.containsKey(key)) {
+                this.sortedTestMethodsByStartTime.addAll(map.get(key));
+            }
+        }
+    }
 
-   private PackageResult getPreviousPackageResult() {
-      TestResults previousTestResult =
-            TestResultHistoryUtil.getPreviousBuildTestResults(getOwner());
+    //used by jelly
+    //TODO: move to Groovy
+    public long getFailedTestsDiffCount() {
+        TestResult prevPackageResult = getPreviousResult();
+        if (prevPackageResult != null) {
+            return fail - prevPackageResult.getFailCount();
+        }
+        return 0;
+    }
 
-      Map<String, PackageResult> previousPackageMap = previousTestResult.getPackageMap();
-      for (Map.Entry<String, PackageResult> entry : previousPackageMap.entrySet()) {
-         if (entry.getKey().equals(this.getName())) {
-            return entry.getValue();
-         }
-      }
-      return null;
-   }
+    //used by jelly
+    //TODO: move to Groovy
+    public long getTotalTestsDiffCount() {
+        TestResult prevPackageResult = getPreviousResult();
+        if (prevPackageResult != null) {
+            return getTotalCount() - prevPackageResult.getTotalCount();
+        }
+        return 0;
+    }
 
-   public long getFailedTestsDiffCount() {
-      PackageResult prevPackageResult = getPreviousPackageResult();
-      if (prevPackageResult != null) {
-         return fail - prevPackageResult.getFail();
-      }
-      return 0;
-   }
+    //used by jelly
+    //TODO: move to Groovy
+    public long getSkippedTestsDiffCount() {
+        TestResult prevPackageResult = getPreviousResult();
+        if (prevPackageResult != null) {
+            return skip - prevPackageResult.getSkipCount();
+        }
+        return 0;
+    }
 
-   public long getTotalTestsDiffCount() {
-      PackageResult prevPackageResult = getPreviousPackageResult();
-      if (prevPackageResult != null) {
-         return total - prevPackageResult.getTotal();
-      }
-      return 0;
-   }
+    @Override
+    @Exported(name = "classs") // because stapler notices suffix 's' and remove it
+    public List<ClassResult> getChildren() {
+        return classList;
+    }
 
-   public long getSkippedTestsDiffCount() {
-      PackageResult prevPackageResult = getPreviousPackageResult();
-      if (prevPackageResult != null) {
-         return skip - prevPackageResult.getSkip();
-      }
-      return 0;
-   }
+    @Override
+    public boolean hasChildren() {
+        return classList != null && !classList.isEmpty();
+    }
 
 }

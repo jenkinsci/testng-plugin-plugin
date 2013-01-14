@@ -12,14 +12,14 @@ public class FormatUtilTest {
 
     @Test
     public void testformatTimeInMilliSeconds() {
-        Assert.assertEquals("01:59:23.234", FormatUtil.formatTimeInMilliSeconds(7163234));
-        Assert.assertEquals("00:52:43.234", FormatUtil.formatTimeInMilliSeconds(3163234));
-        Assert.assertEquals("00:00:23.234", FormatUtil.formatTimeInMilliSeconds(23234));
-        Assert.assertEquals("00:00:00.234", FormatUtil.formatTimeInMilliSeconds(234));
-        Assert.assertEquals("00:00:00.000", FormatUtil.formatTimeInMilliSeconds(0));
-        Assert.assertEquals("00:01:00.000", FormatUtil.formatTimeInMilliSeconds(60000));
-        Assert.assertEquals("01:00:00.000", FormatUtil.formatTimeInMilliSeconds(3600000));
-        Assert.assertEquals("00:00:10.111", FormatUtil.formatTimeInMilliSeconds(10111));
-        Assert.assertEquals(FormatUtil.MORE_THAN_24HRS, FormatUtil.formatTimeInMilliSeconds(1000000000));
+        Assert.assertEquals("01:59:23.234", FormatUtil.formatTimeInMilliSeconds(7163.234f));
+        Assert.assertEquals("00:52:43.234", FormatUtil.formatTimeInMilliSeconds(3163.234f));
+        Assert.assertEquals("00:00:23.234", FormatUtil.formatTimeInMilliSeconds(23.234f));
+        Assert.assertEquals("00:00:00.234", FormatUtil.formatTimeInMilliSeconds(0.234f));
+        Assert.assertEquals("00:00:00.000", FormatUtil.formatTimeInMilliSeconds(0f));
+        Assert.assertEquals("00:01:00.000", FormatUtil.formatTimeInMilliSeconds(60.000f));
+        Assert.assertEquals("01:00:00.000", FormatUtil.formatTimeInMilliSeconds(3600.000f));
+        Assert.assertEquals("00:00:10.111", FormatUtil.formatTimeInMilliSeconds(10.111f));
+        Assert.assertEquals(FormatUtil.MORE_THAN_24HRS, FormatUtil.formatTimeInMilliSeconds(1000000.000f));
     }
 }

@@ -11,25 +11,27 @@ public class FormatUtil {
 
 
     public static final String MORE_THAN_24HRS = "> 24hrs";
-    private static final long HOUR_IN_MS = 60 * 60 * 1000;
-    private static final long MIN_IN_MS = 60 * 1000;
+    private static final long HOUR_IN_SEC = 60 * 60;
+    private static final long MIN_IN_SEC = 60;
 
    /**
     * Formats the time into a human readable format
     * @param duration time duration in milliseconds
     * @return time represented in a human readable format
     */
-   public static String formatTimeInMilliSeconds(long duration) {
-      if (duration / (24 * HOUR_IN_MS) > 0) {
+   //TODO: rename method (ms --> sec)
+   public static String formatTimeInMilliSeconds(float duration) {
+      if (duration / (24 * HOUR_IN_SEC) > 1) {
          return MORE_THAN_24HRS;
       }
       try {
-         long hours = duration / HOUR_IN_MS;
-         duration -= hours * HOUR_IN_MS;
-         long minutes = duration / MIN_IN_MS;
-         duration -= minutes * MIN_IN_MS;
-         long seconds = duration / 1000;
-         long milliseconds = duration - seconds * 1000;
+         byte hours = (byte) (duration / HOUR_IN_SEC);
+         duration -= hours * HOUR_IN_SEC;
+         byte minutes = (byte) (duration / MIN_IN_SEC);
+         duration -= minutes * MIN_IN_SEC;
+         byte seconds = (byte) duration;
+         duration -= seconds;
+         int milliseconds = Math.round(duration * 1000f);
          return String.format("%02d:%02d:%02d.%03d", hours, minutes, seconds, milliseconds);
       } catch (Exception e) {
          e.printStackTrace();

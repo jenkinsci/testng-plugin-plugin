@@ -1,20 +1,19 @@
 package hudson.plugins.testng;
 
-import hudson.model.ProminentProjectAction;
 import hudson.model.AbstractBuild;
 import hudson.model.AbstractProject;
+import hudson.model.ProminentProjectAction;
 import hudson.plugins.testng.util.GraphHelper;
 import hudson.util.ChartUtil;
 import hudson.util.DataSetBuilder;
+import org.jfree.chart.JFreeChart;
+import org.kohsuke.stapler.StaplerRequest;
+import org.kohsuke.stapler.StaplerResponse;
 
 import java.io.IOException;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
-
-import org.jfree.chart.JFreeChart;
-import org.kohsuke.stapler.StaplerRequest;
-import org.kohsuke.stapler.StaplerResponse;
 
 /**
  * Action to associate the TestNG reports with the project
@@ -40,8 +39,8 @@ public class TestNGProjectAction implements ProminentProjectAction {
       this.escapeTestDescp = escapeTestDescp;
    }
 
-   protected Class<TestNGBuildAction> getBuildActionClass() {
-      return TestNGBuildAction.class;
+   protected Class<TestNGTestResultBuildAction> getBuildActionClass() {
+      return TestNGTestResultBuildAction.class;
    }
 
    public boolean getEscapeTestDescp()
@@ -153,15 +152,11 @@ public class TestNGProjectAction implements ProminentProjectAction {
         requestMap.clear();
       }
 
-      if (prevNumBuilds == numBuilds && req.checkIfModified(t, rsp)) {
-         /*
-          * checkIfModified() is after '&&' because we want it evaluated only
-          * if number of builds is different
-          */
-         return true;
-      }
-
-      return false;
+      /*
+       * checkIfModified() is after '&&' because we want it evaluated only
+       * if number of builds is different
+       */
+      return prevNumBuilds == numBuilds && req.checkIfModified(t, rsp);
    }
 
   public void doGraphMap(final StaplerRequest req,
@@ -203,10 +198,10 @@ public class TestNGProjectAction implements ProminentProjectAction {
       return true;
    }
 
-   public TestNGBuildAction getLastCompletedBuildAction() {
+   public TestNGTestResultBuildAction getLastCompletedBuildAction() {
       for (AbstractBuild<?, ?> build = getProject().getLastCompletedBuild();
                build != null; build = build.getPreviousBuild()) {
-         final TestNGBuildAction action = build.getAction(getBuildActionClass());
+         final TestNGTestResultBuildAction action = build.getAction(getBuildActionClass());
          if (action != null) {
             return action;
          }
@@ -219,11 +214,11 @@ public class TestNGProjectAction implements ProminentProjectAction {
       for (AbstractBuild<?, ?> build = getProject().getLastBuild();
                build != null; build = build.getPreviousBuild()) {
          ChartUtil.NumberOnlyBuildLabel label = new ChartUtil.NumberOnlyBuildLabel(build);
-         TestNGBuildAction action = build.getAction(getBuildActionClass());
+         TestNGTestResultBuildAction action = build.getAction(getBuildActionClass());
          if (action != null) {
-            dataset.add(action.getPassedTestCount(), "Passed", label);
-            dataset.add(action.getFailedTestCount(), "Failed", label);
-            dataset.add(action.getSkippedTestCount(), "Skipped", label);
+            dataset.add(action.getTotalCount() - action.getFailCount() - action.getSkipCount(), "Passed", label);
+            dataset.add(action.getFailCount(), "Failed", label);
+            dataset.add(action.getSkipCount(), "Skipped", label);
          } else {
             //even if testng plugin wasn't run with this build,
             //we should add this build to the graph

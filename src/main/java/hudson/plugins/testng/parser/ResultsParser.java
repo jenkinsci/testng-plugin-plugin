@@ -14,11 +14,11 @@ import java.util.*;
 import java.util.logging.Logger;
 
 /**
- * Parses testng result XMLs generated using org.testng.reporters.XmlReporter
+ * Parses TestNG result XMLs generated using org.testng.reporters.XmlReporter
  * into objects that are then used to display results in Jenkins.
  *
  * (For those trying to modify this class, pay attention to logging. We are using
- * two different loggers. If Build's {@link PrintStream} is not available, we log
+ * two different loggers. If build's {@link PrintStream} is not available, we log
  * using {@link Logger}. Also, logging is done only using the {@link #log(String)}
  * and {@link #log(Exception)} methods.)
  *
@@ -40,19 +40,19 @@ public class ResultsParser {
    /*
     * We maintain only a single TestResult for all <test>s with the same name
     */
-   private Map<String, TestResult> testResultMap = new HashMap<String, TestResult>();
+   private Map<String, TestNGTestResult> testResultMap = new HashMap<String, TestNGTestResult>();
    /*
     * We maintain only a single ClassResult for all <class>s with the same fqdn
     */
    private Map<String, ClassResult> classResultMap = new HashMap<String, ClassResult>();
    private StringBuilder reporterOutputBuilder;
    private Map<String, List<String>> methodGroupMap = new HashMap<String, List<String>>();
-   private TestResults finalResults;
-   private List<TestResult> testList;
+   private TestNGResult finalResults;
+   private List<TestNGTestResult> testList;
    private List<ClassResult> currentClassList;
    private List<MethodResult> currentMethodList;
    private List<String> currentMethodParamsList;
-   private TestResult currentTest;
+   private TestNGTestResult currentTest;
    private ClassResult currentClass;
    private String currentTestRunId;
    private MethodResult currentMethod;
@@ -109,13 +109,13 @@ public class ResultsParser {
     * @param paths a file hopefully containing test related data in correct format
     * @return a collection of test results
     */
-   public TestResults parse(FilePath[] paths) {
+   public TestNGResult parse(FilePath[] paths) {
       if (null == paths) {
          log("File paths not specified. paths var is null. Returning empty test results.");
-         return new TestResults("");
+         return new TestNGResult();
       }
 
-      finalResults = new TestResults(UUID.randomUUID().toString());
+      finalResults = new TestNGResult();
 
       for (FilePath path : paths) {
          File file = new File(path.getRemote());
@@ -133,7 +133,7 @@ public class ResultsParser {
             xmlPullParser = createXmlPullParser(bufferedInputStream);
 
             //some initial setup
-            testList = new ArrayList<TestResult>();
+            testList = new ArrayList<TestNGTestResult>();
 
             while (XmlPullParser.END_DOCUMENT != xmlPullParser.nextToken()) {
                TAGS tag = TAGS.fromString(xmlPullParser.getName());
@@ -457,7 +457,7 @@ public class ResultsParser {
       if (testResultMap.containsKey(name)) {
          currentTest = testResultMap.get(name);
       } else {
-         currentTest = new TestResult(name);
+         currentTest = new TestNGTestResult(name);
          testResultMap.put(name, currentTest);
       }
       currentClassList = new ArrayList<ClassResult>();
@@ -498,7 +498,7 @@ public class ResultsParser {
    private XmlPullParser createXmlPullParser(BufferedInputStream
             bufferedInputStream) throws XmlPullParserException {
       if (PARSER_FACTORY == null) {
-         throw new XmlPullParserException("XML Parser Factory has not been initiallized properly");
+         throw new XmlPullParserException("XML Parser Factory has not been initialized properly");
       }
       XmlPullParser xmlPullParser = PARSER_FACTORY.newPullParser();
       xmlPullParser.setInput(bufferedInputStream, null);

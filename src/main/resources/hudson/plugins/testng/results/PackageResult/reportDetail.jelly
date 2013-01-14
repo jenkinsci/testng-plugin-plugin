@@ -1,7 +1,7 @@
 <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout"
          xmlns:t="/lib/hudson" xmlns:f="/lib/form">
    <script type="text/javascript">
-      function showorHideTable(id) {
+      function toggleTable(id) {
          var element = document.getElementById(id);
          if (document.getElementById(id).style.display == "none") {
             document.getElementById(id).style.display = "";
@@ -21,7 +21,7 @@
      }
    </script>
    <h2>All Classes</h2>
-   <a href="javascript:showorHideTable('allClasses')">hide/expand the table</a>
+   <a href="javascript:toggleTable('allClasses')">hide/expand the table</a>
    <table id="allClasses" border="1px" class="pane sortable">
       <thead>
          <tr>
@@ -37,15 +37,15 @@
          </tr>
       </thead>
       <tbody>
-         <j:forEach var="clazz" items="${it.classList}">
+         <j:forEach var="clazz" items="${it.children}">
             <tr>
                <td align="left">
-                  <a href="${clazz.url}">${clazz.name}</a>
+                  <a href="${clazz.upUrl}">${clazz.name}</a>
                </td>
                <td align="center">
                   <j:invokeStatic className="hudson.plugins.testng.util.FormatUtil"
                                   method="formatTimeInMilliSeconds" var="duration">
-                     <j:arg type="long" value="${clazz.duration}"/>
+                     <j:arg type="float" value="${clazz.duration}"/>
                   </j:invokeStatic>
                   ${duration}
                </td>
@@ -91,7 +91,7 @@
                <a href="javascript:showAllExecutedMethods()">Click to see all</a></p>
             </div>
          </j:if>
-         <a href="javascript:showorHideTable('executionOrderTable')">hide/expand the table</a>
+         <a href="javascript:toggleTable('executionOrderTable')">hide/expand the table</a>
          <table border="1px" class="pane sortable" id="executionOrderTable">
             <thead>
                <tr>

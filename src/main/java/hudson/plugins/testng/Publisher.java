@@ -4,7 +4,7 @@ import hudson.Extension;
 import hudson.FilePath;
 import hudson.Launcher;
 import hudson.model.*;
-import hudson.plugins.testng.results.TestResults;
+import hudson.plugins.testng.results.TestNGResult;
 import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.BuildStepMonitor;
 import hudson.tasks.Recorder;
@@ -26,13 +26,11 @@ import java.util.List;
  */
 public class Publisher extends Recorder {
 
+   //ant style regex pattern to find report files
    public final String reportFilenamePattern;
-   /**
-    * @deprecated since v0.23. not used anymore. Here to ensure installed
-    * versions of plugin are not affected
-    */
-   private boolean isRelativePath;
+   //should test description be HTML escaped or not
    public final boolean escapeTestDescp;
+   //should exception messages be HTML escaped or not
    public final boolean escapeExceptionMsg;
 
    @Extension
@@ -106,9 +104,9 @@ public class Publisher extends Recorder {
          return true;
       }
 
-      TestResults results = new TestResults("");
+      TestNGResult results = new TestNGResult();
       try {
-         results = TestNGBuildAction.loadResults(build, logger);
+         results = TestNGTestResultBuildAction.loadResults(build, logger);
       } catch (Throwable t) {
          /*
           * don't fail build if TestNG parser barfs.
@@ -119,9 +117,9 @@ public class Publisher extends Recorder {
 
       if (results.getTestList().size() > 0) {
          //create an individual report for all of the results and add it to the build
-         TestNGBuildAction action = new TestNGBuildAction(build, results);
+         TestNGTestResultBuildAction action = new TestNGTestResultBuildAction(build, results);
          build.getActions().add(action);
-         if (results.getFailedConfigCount() > 0 || results.getFailedTestCount() > 0) {
+         if (results.getFailedConfigCount() > 0 || results.getFailCount() > 0) {
             build.setResult(Result.UNSTABLE);
          }
       } else {

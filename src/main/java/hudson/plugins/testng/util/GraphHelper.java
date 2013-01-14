@@ -1,18 +1,11 @@
 package hudson.plugins.testng.util;
 
 import hudson.plugins.testng.PluginImpl;
-import hudson.plugins.testng.TestNGBuildAction;
+import hudson.plugins.testng.TestNGTestResultBuildAction;
 import hudson.util.ChartUtil.NumberOnlyBuildLabel;
 import hudson.util.ColorPalette;
 import hudson.util.ShiftedCategoryAxis;
 import hudson.util.StackedAreaRenderer2;
-
-import java.awt.Color;
-import java.awt.Paint;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.CategoryAxis;
@@ -30,6 +23,12 @@ import org.jfree.ui.RectangleEdge;
 import org.jfree.ui.RectangleInsets;
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
+
+import java.awt.*;
+import java.io.IOException;
+import java.text.DecimalFormat;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Helper class for trend graph generation
@@ -95,18 +94,18 @@ public class GraphHelper {
           @Override
           public String generateToolTip(CategoryDataset dataset, int row, int column) {
               NumberOnlyBuildLabel label = (NumberOnlyBuildLabel) dataset.getColumnKey(column);
-              TestNGBuildAction report = label.build.getAction(TestNGBuildAction.class);
+              TestNGTestResultBuildAction report = label.build.getAction(TestNGTestResultBuildAction.class);
               if (report == null) {
                  //there are no testng results associated with this build
                  return "";
               }
               switch (row) {
                   case 0:
-                      return String.valueOf(report.getFailedTestCount()) + " Failure(s)";
+                      return String.valueOf(report.getFailCount()) + " Failure(s)";
                   case 1:
-                     return String.valueOf(report.getPassedTestCount()) + " Pass";
+                     return String.valueOf(report.getTotalCount() - report.getFailCount() - report.getSkipCount()) + " Pass";
                   case 2:
-                     return String.valueOf(report.getSkippedTestCount()) + " Skip(s)";
+                     return String.valueOf(report.getSkipCount()) + " Skip(s)";
                   default:
                      return "";
               }
@@ -143,7 +142,7 @@ public class GraphHelper {
       final JFreeChart chart = ChartFactory.createBarChart(
           null,                     // chart title
           null,                     // unused
-          "Å Duration (secs)",// range axis label
+          "Duration (secs)",// range axis label
           dataset,                  // data
           PlotOrientation.VERTICAL, // orientation
           true,                     // include legend
@@ -210,7 +209,9 @@ public class GraphHelper {
                return "unknown";
             }
             //values are in seconds
-            return dataset.getValue(row, column) + " secs";
+            float value = dataset.getValue(row, column).floatValue();
+            DecimalFormat df = new DecimalFormat("0.000");
+            return  df.format(value) + " secs";
          }
       });
 

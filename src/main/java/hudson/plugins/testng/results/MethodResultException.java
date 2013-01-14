@@ -8,14 +8,14 @@ public class MethodResultException implements Serializable {
    private String exceptionName;
    private String message;
    private String stackTrace;
-   /**
-    * @deprecated since v0.21
-    */
-   private String shortStackTrace;
-   /**
-    * @deprecated since v0.21
-    */
-   private String fullStackTrace;
+//   /**
+//    * @deprecated since v0.21
+//    */
+//   private String shortStackTrace;
+//   /**
+//    * @deprecated since v0.21
+//    */
+//   private String fullStackTrace;
 
    public MethodResultException(String message,
         String shortStackTrace,
@@ -26,9 +26,9 @@ public class MethodResultException implements Serializable {
    }
 
    public String getExceptionName() {
-      if (exceptionName == null) {
-        trySettingData(shortStackTrace, fullStackTrace);
-      }
+//      if (exceptionName == null) {
+//        trySettingData(shortStackTrace, fullStackTrace);
+//      }
       return exceptionName;
    }
 
@@ -80,9 +80,9 @@ public class MethodResultException implements Serializable {
    }
 
    public String getStackTrace() {
-      if (stackTrace == null) {
-        trySettingData(shortStackTrace, fullStackTrace);
-      }
+//      if (stackTrace == null) {
+//        trySettingData(shortStackTrace, fullStackTrace);
+//      }
       return stackTrace;
    }
 
