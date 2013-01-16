@@ -35,7 +35,7 @@ if (my.result.failCount != 0) {
                         }
                     }
                     td(align: "right") {
-                        text("${FormatUtil.formatTimeInMilliSeconds(failedTest.duration)}")
+                        text("${FormatUtil.formatTime(failedTest.duration)}")
                     }
                 }
             }
@@ -115,7 +115,7 @@ table(id:"allTestsTable", border:"1px", class:"pane sortable") {
                     a(href:"${pkg.name}") { text("${pkg.name}") }
                 }
                 td(align: "center") {
-                    text("${FormatUtil.formatTimeInMilliSeconds(pkg.duration)}")
+                    text("${FormatUtil.formatTime(pkg.duration)}")
                 }
                 td(align: "center") {
                     text("${pkg.failCount}")

@@ -28,7 +28,7 @@
                </td>
                <td align="center">
                   <j:invokeStatic className="hudson.plugins.testng.util.FormatUtil"
-                                  method="formatTimeInMilliSeconds" var="duration">
+                                  method="formatTime" var="duration">
                      <j:arg type="float" value="${clazz.duration}"/>
                   </j:invokeStatic>
                   ${duration}

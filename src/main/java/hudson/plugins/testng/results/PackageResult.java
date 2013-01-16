@@ -130,7 +130,7 @@ public class PackageResult extends BaseResult {
             sb.append(mr.getParent().getName()).append(".").append(mr.getName());
             sb.append("</a>");
             sb.append("</td><td align=\"center\">");
-            sb.append(FormatUtil.formatTimeInMilliSeconds((long) mr.getDuration()));
+            sb.append(FormatUtil.formatTime(mr.getDuration()));
             sb.append("</td><td align=\"center\">");
             sb.append(mr.getStartedAt());
             sb.append("</td><td align=\"center\"><span class=\"").append(mr.getCssClass()).append("\">");

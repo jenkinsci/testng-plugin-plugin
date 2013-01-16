@@ -16,11 +16,10 @@ public class FormatUtil {
 
    /**
     * Formats the time into a human readable format
-    * @param duration time duration in milliseconds
+    * @param duration time duration in seconds
     * @return time represented in a human readable format
     */
-   //TODO: rename method (ms --> sec)
-   public static String formatTimeInMilliSeconds(float duration) {
+   public static String formatTime(float duration) {
       if (duration / (24 * HOUR_IN_SEC) > 1) {
          return MORE_THAN_24HRS;
       }
