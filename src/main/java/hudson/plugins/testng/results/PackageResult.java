@@ -2,7 +2,6 @@ package hudson.plugins.testng.results;
 
 import hudson.model.AbstractBuild;
 import hudson.plugins.testng.util.FormatUtil;
-import hudson.tasks.test.TestResult;
 import org.kohsuke.stapler.bind.JavaScriptMethod;
 import org.kohsuke.stapler.export.Exported;
 
@@ -75,23 +74,6 @@ public class PackageResult extends BaseResult {
     @Override
     public int getPassCount() {
         return pass;
-    }
-
-
-    /**
-     * Gets the age of a result
-     *
-     * @return the number of consecutive builds for which we have a result for
-     *         this package
-     */
-    //TODO: move to Groovy
-    public long getAge() {
-        TestResult packageResult = getPreviousResult();
-        if (packageResult == null) {
-            return 1;
-        } else {
-            return 1 + ((PackageResult) packageResult).getAge();
-        }
     }
 
     /**
@@ -207,36 +189,6 @@ public class PackageResult extends BaseResult {
                 this.sortedTestMethodsByStartTime.addAll(map.get(key));
             }
         }
-    }
-
-    //used by jelly
-    //TODO: move to Groovy
-    public long getFailedTestsDiffCount() {
-        TestResult prevPackageResult = getPreviousResult();
-        if (prevPackageResult != null) {
-            return fail - prevPackageResult.getFailCount();
-        }
-        return 0;
-    }
-
-    //used by jelly
-    //TODO: move to Groovy
-    public long getTotalTestsDiffCount() {
-        TestResult prevPackageResult = getPreviousResult();
-        if (prevPackageResult != null) {
-            return getTotalCount() - prevPackageResult.getTotalCount();
-        }
-        return 0;
-    }
-
-    //used by jelly
-    //TODO: move to Groovy
-    public long getSkippedTestsDiffCount() {
-        TestResult prevPackageResult = getPreviousResult();
-        if (prevPackageResult != null) {
-            return skip - prevPackageResult.getSkipCount();
-        }
-        return 0;
     }
 
     @Override

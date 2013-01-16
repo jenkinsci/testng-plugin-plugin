@@ -203,16 +203,6 @@ public class ClassResult extends BaseResult {
         return list;
     }
 
-    //TODO: FIXME: age is not working correctly
-    public long getAge() {
-        TestResult prevClassResult = getPreviousResult();
-        if (prevClassResult == null) {
-            return 1;
-        } else {
-            return 1 + ((ClassResult) prevClassResult).getAge();
-        }
-    }
-
     @Override
     public List<MethodResult> getChildren() {
         return testMethodList;

@@ -101,4 +101,20 @@ public abstract class BaseResult extends TabulatedResult implements ModelObject,
         return null;
     }
 
+
+    /**
+     * Gets the age of a result
+     *
+     * @return the number of consecutive builds for which we have a result for
+     *         this package
+     */
+    public long getAge() {
+        BaseResult result = (BaseResult) getPreviousResult();
+        if (result == null) {
+            return 1;
+        } else {
+            return 1 + result.getAge();
+        }
+    }
+
 }

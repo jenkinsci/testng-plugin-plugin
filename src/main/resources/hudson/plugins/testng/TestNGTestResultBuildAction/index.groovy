@@ -11,6 +11,6 @@ l.layout(title: "TestNG Report for Build #${my.owner.number}") {
 
         h1("${my.displayName}")
         st.include(page: "bar.groovy")
-        st.include(page: "reportDetail.jelly")
+        st.include(page: "reportDetail.groovy")
     }
 }

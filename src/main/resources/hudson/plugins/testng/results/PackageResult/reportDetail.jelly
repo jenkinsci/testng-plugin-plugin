@@ -1,25 +1,9 @@
 <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout"
          xmlns:t="/lib/hudson" xmlns:f="/lib/form">
-   <script type="text/javascript">
-      function toggleTable(id) {
-         var element = document.getElementById(id);
-         if (document.getElementById(id).style.display == "none") {
-            document.getElementById(id).style.display = "";
-         } else if (document.getElementById(id).style.display == "") {
-            document.getElementById(id).style.display = "none";
-         }
-      }
-      //Loads data for all the methods
-      function showAllExecutedMethods() {
-         var foo = <st:bind value="${it}"/>
 
-         foo.getAllSortedTestMethodsByStartTime(function(t) {
-            document.getElementById('sortedMethods').innerHTML = t.responseObject();
-         })
+   <script src="${app.rootUrl}/plugin/testng-plugin/js/show_all_exec_methods.js" />
+   <script src="${app.rootUrl}/plugin/testng-plugin/js/toggle_table.js" />
 
-         document.getElementById("showAllLink").style.display = "none";
-     }
-   </script>
    <h2>All Classes</h2>
    <a href="javascript:toggleTable('allClasses')">hide/expand the table</a>
    <table id="allClasses" border="1px" class="pane sortable">
