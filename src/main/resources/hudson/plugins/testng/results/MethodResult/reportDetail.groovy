@@ -1,11 +1,14 @@
 package hudson.plugins.testng.results.MethodResult
 
+import hudson.plugins.testng.TestNGProjectAction
 import hudson.plugins.testng.util.FormatUtil
 
 f = namespace(lib.FormTagLib)
 l = namespace(lib.LayoutTagLib)
 t = namespace("/lib/hudson")
 st = namespace("jelly:stapler")
+
+def testngProjAction = my.owner.project.getAction(TestNGProjectAction.class)
 
 div() {
     h1("${my.name}")
@@ -20,7 +23,9 @@ div() {
     }
 
     div(id: "description") {
-        text("${my.displayDescription}")
+        if (testngProjAction.escapeTestDescp) {
+            text("${FormatUtil.escapeString(my.description)}")
+        }
     }
 
     if (my.groups) {
@@ -74,7 +79,9 @@ div() {
         p() {
             b("Message: ")
             if (my.exception.message) {
-                text("${my.displayExceptionMessage}")
+                if (testngProjAction.escapeExceptionMsg) {
+                    text("${FormatUtil.escapeString(my.exception.message)}")
+                }
             } else {
                 text("(none)")
             }

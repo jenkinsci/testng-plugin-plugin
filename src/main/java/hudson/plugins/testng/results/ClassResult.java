@@ -1,7 +1,6 @@
 package hudson.plugins.testng.results;
 
 import hudson.model.AbstractBuild;
-import hudson.tasks.test.TestResult;
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
 import org.kohsuke.stapler.export.Exported;
@@ -103,31 +102,6 @@ public class ClassResult extends BaseResult {
 
     public void addTestMethods(List<MethodResult> list) {
         this.testMethodList.addAll(list);
-    }
-
-    //TODO: move the following out into Groovy
-    public long getFailedTestsDiffCount() {
-        TestResult prevClassResult = getPreviousResult();
-        if (prevClassResult != null) {
-            return getFailCount() - prevClassResult.getFailCount();
-        }
-        return 0;
-    }
-
-    public long getSkippedTestsDiffCount() {
-        TestResult prevClassResult = getPreviousResult();
-        if (prevClassResult != null) {
-            return getSkipCount() - prevClassResult.getSkipCount();
-        }
-        return 0;
-    }
-
-    public long getTotalTestsDiffCount() {
-        TestResult prevClassResult = getPreviousResult();
-        if (prevClassResult != null) {
-            return getTotalCount() - prevClassResult.getTotalCount();
-        }
-        return 0;
     }
 
     public void tally() {

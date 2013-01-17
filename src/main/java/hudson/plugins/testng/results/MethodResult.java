@@ -2,14 +2,11 @@ package hudson.plugins.testng.results;
 
 import hudson.model.AbstractBuild;
 import hudson.plugins.testng.TestNGTestResultBuildAction;
-import hudson.plugins.testng.TestNGProjectAction;
-import hudson.plugins.testng.util.FormatUtil;
 import hudson.plugins.testng.util.GraphHelper;
 import hudson.tasks.test.TestResult;
 import hudson.util.ChartUtil;
 import hudson.util.DataSetBuilder;
 import hudson.util.Graph;
-import org.apache.commons.lang.StringUtils;
 import org.jfree.chart.JFreeChart;
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
@@ -232,49 +229,6 @@ public class MethodResult extends BaseResult {
 
     public void setParameters(List<String> parameters) {
         this.parameters = parameters;
-    }
-
-    /**
-     * Used on jelly page to display the proper (un)escaped version of description
-     *
-     * @return
-     */
-    //TODO: move out to Groovy code
-    public String getDisplayDescription() {
-        TestNGProjectAction projAction
-                = super.getOwner().getProject().getAction(TestNGProjectAction.class);
-        if (projAction.getEscapeTestDescp()) {
-            return FormatUtil.escapeString(description);
-        }
-        return description;
-    }
-
-    /**
-     * Used on jelly page to display the proper (un)escaped version of excp msg
-     *
-     * @return
-     */
-    //TODO: Move out to Groovy
-    public String getDisplayExceptionMessage() {
-        TestNGProjectAction projAction
-                = super.getOwner().getProject().getAction(TestNGProjectAction.class);
-        if (projAction.getEscapeExceptionMsg()) {
-            return FormatUtil.escapeString(this.exception.getMessage());
-        }
-        return exception.getMessage();
-    }
-
-    /**
-     * Used on jelly page to display comma separate list of groups
-     *
-     * @return
-     */
-    //TODO: move out to Groovy
-    public String getDisplayGroups() {
-        if (groups != null && !groups.isEmpty()) {
-            return StringUtils.join(groups, ", ");
-        }
-        return "";
     }
 
     public boolean isConfig() {
