@@ -12,7 +12,11 @@ script(src:"${app.rootUrl}/plugin/testng-plugin/js/toggle_table.js")
 script() {
     text("//Loads data for all the methods")
     text("\nfunction showAllExecutedMethods() {")
-    text("\nvar foo = ${st.bind(value:my)}")
+    text("\nvar foo = ")
+    // apparently, calling st.bind spits out the required information
+    // directly to output stream. So, no need to wrap it in text().
+    // in fact, that approach doesn't work
+    st.bind(value:my)
     text("\nfoo.getAllSortedTestMethodsByStartTime(function(t) {")
     text("\ndocument.getElementById('sortedMethods').innerHTML = t.responseObject();")
     text("\n})")
@@ -136,8 +140,9 @@ if (my.sortedTestMethodsByStartTime) {
 
 //following script loads the initial table data
 script() {
-    text("\nvar foo = ${st.bind(value:my)}\n")
-    text("foo.getFirstXSortedTestMethodsByStartTime(function(t) {\n")
-    text("document.getElementById('sortedMethods').innerHTML = t.responseObject();\n")
-    text("})")
+    text("\nvar foo = ")
+    st.bind(value:my)
+    text("\nfoo.getFirstXSortedTestMethodsByStartTime(function(t) {")
+    text("\ndocument.getElementById('sortedMethods').innerHTML = t.responseObject();")
+    text("\n})")
 }
