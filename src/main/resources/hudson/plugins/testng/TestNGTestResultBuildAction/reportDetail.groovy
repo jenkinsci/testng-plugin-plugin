@@ -102,9 +102,9 @@ table(id:"allTestsTable", border:"1px", class:"pane sortable") {
             th(class:"pane-header", style:"width:5em", title:"Total tests count diff") {
                 text("(diff)")
             }
-            th(class:"pane-header", style:"width:5em", title:"Package Age") {
-                text("Age")
-            }
+//            th(class:"pane-header", style:"width:5em", title:"Package Age") {
+//                text("Age")
+//            }
         }
     }
     tbody () {
@@ -135,9 +135,9 @@ table(id:"allTestsTable", border:"1px", class:"pane sortable") {
                 td(align: "center") {
                     text("${FormatUtil.formatLong(prevPkg == null ? 0 : pkg.totalCount - prevPkg.totalCount)}")
                 }
-                td(align: "center") {
-                    text("${pkg.age}")
-                }
+//                td(align: "center") {
+//                    text("${pkg.age}")
+//                }
             }
         }
     }

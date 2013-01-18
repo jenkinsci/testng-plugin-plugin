@@ -90,11 +90,19 @@ public abstract class BaseResult extends TabulatedResult implements ModelObject,
                 return this;
             }
         } else {
-            String firstSubId = id.substring(0, sepIdx);
-            String lastSubId = id.substring(sepIdx + 1);
+            String currId = id.substring(0, sepIdx);
+            if (!getSafeName().equals(currId)) {
+                return null;
+            }
+
+            String childId = id.substring(sepIdx + 1);
+            sepIdx = childId.indexOf('/');
+
             for (TestResult result : this.getChildren()) {
-                if (result.getSafeName().equals(firstSubId)) {
-                    return result.findCorrespondingResult(lastSubId);
+                if (sepIdx < 0 && childId.equals(result.getSafeName())) {
+                    return result;
+                } else if (sepIdx > 0 && result.getSafeName().equals(childId.substring(0, sepIdx))) {
+                    return result.findCorrespondingResult(childId);
                 }
             }
         }

@@ -55,9 +55,9 @@ table(id:"allClasses", border:"1px", class:"pane sortable") {
             th(class:"pane-header", style:"width:5em", title:"Total Test Count Diff") {
                 text("(diff)")
             }
-            th(class:"pane-header", style:"width:5em", title:"Age") {
-                text("Age")
-            }
+//            th(class:"pane-header", style:"width:5em", title:"Age") {
+//                text("Age")
+//            }
         }
     }
     tbody() {
@@ -90,9 +90,9 @@ table(id:"allClasses", border:"1px", class:"pane sortable") {
                 td(align: "center") {
                     text("${FormatUtil.formatLong(prevClazz == null ? 0 : clazz.totalCount - prevClazz.totalCount)}")
                 }
-                td(align: "center") {
-                    text("${clazz.age}")
-                }
+//                td(align: "center") {
+//                    text("${clazz.age}")
+//                }
             }
         }
     }
