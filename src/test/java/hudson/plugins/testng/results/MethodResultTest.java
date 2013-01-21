@@ -17,7 +17,7 @@ import org.jvnet.hudson.test.TestBuilder;
 import java.io.IOException;
 
 /**
- * Tests for MethodResult's view page
+ * Tests for {@link MethodResult}'s view page
  *
  * TODO: speed up the tests by running build once in the setup
  *
