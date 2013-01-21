@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testng-results skipped="0" failed="0" total="1" passed="1">
+  <reporter-output>
+  </reporter-output>
+  <suite name="Smoke Test Suite" duration-ms="780" started-at="2013-01-20T11:36:26Z" finished-at="2013-01-20T11:36:27Z">
+    <groups>
+    </groups>
+    <test name="Upload Smoke Tests" duration-ms="780" started-at="2013-01-20T11:36:26Z" finished-at="2013-01-20T11:36:27Z">
+      <class name="com.test.UploadTest">
+        <test-method status="PASS" signature="uploadFile()[pri:0, instance:com.test.UploadTest@680e2291]" name="uploadFile" duration-ms="780" started-at="2013-01-20T11:36:26Z" description="&lt;a href=&quot;http://testng.org&quot;&gt;TestNG&lt;/a&gt; based test" finished-at="2013-01-20T11:36:27Z">
+        </test-method>
+      </class>
+    </test>
+  </suite>
+</testng-results>

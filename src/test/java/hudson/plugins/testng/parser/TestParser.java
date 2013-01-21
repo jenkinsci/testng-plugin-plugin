@@ -1,12 +1,12 @@
 package hudson.plugins.testng.parser;
 
-import hudson.FilePath;
+import hudson.plugins.testng.CommonUtil;
+import hudson.plugins.testng.Constants;
 import hudson.plugins.testng.results.PackageResult;
 import hudson.plugins.testng.results.TestNGResult;
 import junit.framework.Assert;
 import org.junit.Test;
 
-import java.io.File;
 import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -14,30 +14,19 @@ import java.util.Map;
 
 public class TestParser {
 
-   private TestNGResult getResults(String filename) {
-      ResultsParser parser = new ResultsParser();
-      FilePath[] filePaths = new FilePath[1];
-      filePaths[0] = new FilePath(new File(filename));
-      return parser.parse(filePaths);
-   }
-
-   private URL getResource(String filename) {
-      return TestParser.class.getClassLoader().getResource(filename);
-   }
-
    @Test
    public void testTestngXmlWithExistingResultXml() {
-      URL resource = getResource("sample-testng-results.xml");
+      URL resource = CommonUtil.getResource(Constants.TESTNG_XML_PRECHECKINS);
       Assert.assertNotNull(resource);
-      TestNGResult results = getResults(resource.getFile());
+      TestNGResult results = CommonUtil.getResults(resource.getFile());
       Assert.assertFalse("Collection shouldn't have been empty", results.getTestList().isEmpty());
    }
 
    @Test
    public void testTestngXmlWithSameTestNameDiffSuites() {
-      URL resource = getResource("testng-results-same-test.xml");
+      URL resource = CommonUtil.getResource(Constants.TESTNG_XML_SAME_TEST_NAME);
       Assert.assertNotNull(resource);
-      TestNGResult results = getResults(resource.getFile());
+      TestNGResult results = CommonUtil.getResults(resource.getFile());
       Assert.assertFalse("Collection shouldn't have been empty", results.getTestList().isEmpty());
       Assert.assertEquals(2, results.getTestList().size());
       results.tally();
@@ -49,37 +38,38 @@ public class TestParser {
 
    @Test
    public void testTestngXmlWithExistingResultXmlGetsTheRightDurations() {
-      URL resource = getResource("sample-testng-dp-result.xml");
+      URL resource = CommonUtil.getResource(Constants.TESTNG_XML_DATAPROVIDER);
       Assert.assertNotNull(resource);
-      TestNGResult results = getResults(resource.getFile());
+      TestNGResult results = CommonUtil.getResults(resource.getFile());
       Assert.assertFalse("Collection shouldn't have been empty", results.getTestList().isEmpty());
 
       // This test assumes that there is only 1 package in
       // sample-testng-dp-result that contains tests that add to 12 ms
       results.tally();
       Map<String, PackageResult> packageResults = results.getPackageMap();
-      for(PackageResult result: packageResults.values()) {
-        Assert.assertEquals("org.farshid", result.getName());
-        Assert.assertEquals(12f, result.getDuration());
-      }
+      Assert.assertEquals(1, packageResults.values().size());
+      PackageResult result = packageResults.values().iterator().next();
+      Assert.assertEquals("org.jenkins", result.getName());
+      //durations are all in seconds
+      Assert.assertEquals(0.012f, result.getDuration());
    }
 
    @Test
    public void testTestngXmlWithNonExistingResultXml() {
-      TestNGResult results = getResults("/invalid/path/to/file/new-test-result.xml");
+      TestNGResult results = CommonUtil.getResults("/invalid/path/to/file/new-test-result.xml");
       Assert.assertTrue("Collection should have been empty. Number of results : "
                + results.getTestList().size(), results.getTestList().isEmpty());
    }
 
    @Test
    public void parseTestNG() {
-      TestNGResult results = getResults(getResource("testng-results-testng.xml").getFile());
+      TestNGResult results = CommonUtil.getResults(CommonUtil.getResource(Constants.TESTNG_XML_TESTNG).getFile());
       results.tally();
    }
 
    @Test
    public void testParseEmptyException() {
-      TestNGResult results = getResults(getResource("sample-testng-empty-exp.xml").getFile());
+      TestNGResult results = CommonUtil.getResults(CommonUtil.getResource(Constants.TESTNG_XML_EMPTY_EXCEPTION).getFile());
       results.tally();
       Assert.assertEquals(1, results.getPassCount());
    }
@@ -94,10 +84,10 @@ public class TestParser {
 
    @Test
    public void testReporterOutputForMethods() throws ParseException {
-       String filename = "sample-testng-reporter-log-result.xml";
+       String filename = Constants.TESTNG_XML_REPORTER_LOG_OUTPUT;
        URL resource = TestParser.class.getClassLoader().getResource(filename);
        Assert.assertNotNull(resource);
-       TestNGResult results = getResults(resource.getFile());
+       TestNGResult results = CommonUtil.getResults(resource.getFile());
        Assert.assertFalse("Collection shouldn't have been empty", results.getTestList().isEmpty());
        Assert.assertEquals(1, results.getTestList().size());
        results.tally();

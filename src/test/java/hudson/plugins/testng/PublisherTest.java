@@ -4,6 +4,7 @@ import hudson.FilePath;
 import hudson.Launcher;
 import hudson.model.AbstractBuild;
 import hudson.model.BuildListener;
+import hudson.model.FreeStyleProject;
 import hudson.model.Result;
 import junit.framework.Assert;
 import org.junit.Test;
@@ -17,7 +18,9 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 /**
- * @autor nullin
+ * Tests the {@link Publisher}
+ *
+ * @author nullin
  */
 public class PublisherTest extends HudsonTestCase {
 
@@ -81,6 +84,19 @@ public class PublisherTest extends HudsonTestCase {
 
         String str = os.toString();
         Assert.assertTrue(str.contains("Build Aborted"));
+    }
+
+    @Test
+    public void testRoundTrip() throws Exception {
+        FreeStyleProject p = createFreeStyleProject();
+        Publisher before = new Publisher("", false, false);
+        p.getPublishersList().add(before);
+
+        submit(createWebClient().getPage(p,"configure").getFormByName("config"));
+
+        Publisher after = p.getPublishersList().get(Publisher.class);
+
+        assertEqualBeans(before, after, "reportFilenamePattern,escapeTestDescp,escapeExceptionMsg");
     }
 
 }

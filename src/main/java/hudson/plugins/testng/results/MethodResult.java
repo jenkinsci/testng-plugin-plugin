@@ -92,17 +92,9 @@ public class MethodResult extends BaseResult {
         }
     }
 
-//   public String getTestUuid() {
-//      return testUuid;
-//   }
-
     public void setTestUuid(String testUuid) {
         this.testUuid = testUuid;
     }
-
-//   public String getTestInstanceName() {
-//      return testInstanceName;
-//   }
 
     /**
      * @return name of the <test> tag that this method is part of

@@ -5,7 +5,7 @@
     <groups>
     </groups>
     <test name="Ant test" duration-ms="29" started-at="2011-03-09T21:13:15Z" finished-at="2011-03-09T21:13:15Z">
-      <class name="org.farshid.TestDataProvider">
+      <class name="org.jenkins.TestDataProvider">
         <test-method status="FAIL" signature="test(int)" name="test" duration-ms="9" started-at="2011-03-09T21:13:15Z" finished-at="2011-03-09T21:13:15Z">
           <params>
             <param index="0">
@@ -17,7 +17,7 @@
           <exception class="java.lang.AssertionError">
             <full-stacktrace>
               <![CDATA[java.lang.AssertionError
-	at org.farshid.TestDataProvider.test(TestDataProvider.java:15)
+	at org.jenkins.TestDataProvider.test(TestDataProvider.java:15)
 	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
 	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
 	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
@@ -57,7 +57,7 @@
           <exception class="java.lang.AssertionError">
             <full-stacktrace>
               <![CDATA[java.lang.AssertionError
-	at org.farshid.TestDataProvider.test(TestDataProvider.java:15)
+	at org.jenkins.TestDataProvider.test(TestDataProvider.java:15)
 	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
 	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
 	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
@@ -106,7 +106,7 @@
           <exception class="java.lang.AssertionError">
             <full-stacktrace>
               <![CDATA[java.lang.AssertionError
-	at org.farshid.TestDataProvider.test(TestDataProvider.java:15)
+	at org.jenkins.TestDataProvider.test(TestDataProvider.java:15)
 	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
 	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
 	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
@@ -164,7 +164,7 @@
           <exception class="java.lang.AssertionError">
             <full-stacktrace>
               <![CDATA[java.lang.AssertionError
-	at org.farshid.TestDataProvider.test(TestDataProvider.java:15)
+	at org.jenkins.TestDataProvider.test(TestDataProvider.java:15)
 	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
 	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
 	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)

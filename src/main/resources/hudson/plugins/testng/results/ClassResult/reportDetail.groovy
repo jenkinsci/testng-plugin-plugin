@@ -47,7 +47,7 @@ for (group in my.testRunMap.values()) {
                             if (method.groups || method.testInstanceName) {
                                 div(id:"${method.safeName}_1", style:"display:inline") {
                                     text("(")
-                                    a(href:"javascript:showMore(\"${method.url}\")") {
+                                    a(href:"javascript:showMore(\"${method.safeName}\")") {
                                         text("...")
                                     }
                                     text(")")
