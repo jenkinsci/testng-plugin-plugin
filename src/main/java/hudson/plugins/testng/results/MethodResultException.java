@@ -8,27 +8,18 @@ public class MethodResultException implements Serializable {
    private String exceptionName;
    private String message;
    private String stackTrace;
-//   /**
-//    * @deprecated since v0.21
-//    */
-//   private String shortStackTrace;
-//   /**
-//    * @deprecated since v0.21
-//    */
-//   private String fullStackTrace;
 
-   public MethodResultException(String message,
+   public MethodResultException(String exceptionName,
+        String message,
         String shortStackTrace,
         String fullStackTrace)
    {
       this.message = message == null ? null : message.trim();
+      this.exceptionName = exceptionName;
       trySettingData(shortStackTrace, fullStackTrace);
    }
 
    public String getExceptionName() {
-//      if (exceptionName == null) {
-//        trySettingData(shortStackTrace, fullStackTrace);
-//      }
       return exceptionName;
    }
 
@@ -60,7 +51,9 @@ public class MethodResultException implements Serializable {
        //no message means first line will only show exception class name
        index = stackTrace.indexOf("\n");
        if (index != -1) {
-         exceptionName = stackTrace.substring(0, index);
+         if (exceptionName == null || exceptionName.isEmpty()) {
+            exceptionName = stackTrace.substring(0, index);
+         }
          stackTrace = stackTrace.substring(index + 1, stackTrace.length());
        }
      } else {
@@ -69,7 +62,9 @@ public class MethodResultException implements Serializable {
        //<exception class name>: <message>
        index = stackTrace.indexOf(": ");
        if (index != -1) {
-         exceptionName = stackTrace.substring(0, index);
+         if (exceptionName == null || exceptionName.isEmpty()) {
+            exceptionName = stackTrace.substring(0, index);
+         }
          stackTrace = stackTrace.substring(index + 2, stackTrace.length()).replace(message, "");
        }
      }
@@ -80,9 +75,6 @@ public class MethodResultException implements Serializable {
    }
 
    public String getStackTrace() {
-//      if (stackTrace == null) {
-//        trySettingData(shortStackTrace, fullStackTrace);
-//      }
       return stackTrace;
    }
 

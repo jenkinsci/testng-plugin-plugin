@@ -64,6 +64,7 @@ public class ResultsParser {
    private String currentGroupName;
    private String currentSuite;
    private String currentLine;
+   private String exceptionName;
 
    private enum TAGS {
       TESTNG_RESULTS, SUITE, TEST, CLASS, TEST_METHOD,
@@ -179,7 +180,7 @@ public class ResultsParser {
                            currentCDATAParent = TAGS.PARAMS;
                            break;
                         case EXCEPTION:
-                           startException();
+                           startException(get("class"));
                            break;
                         case MESSAGE:
                            currentCDATAParent = TAGS.MESSAGE;
@@ -340,19 +341,14 @@ public class ResultsParser {
       currentSuite = null;
    }
 
-   private void startException()
+   private void startException(String exceptionName)
    {
-      // do nothing (here for symmetry)
+      this.exceptionName = exceptionName;
    }
 
    private void finishException()
    {
-      if (currentShortStackTrace == null && currentFullStackTrace == null) {
-         log("Something is wrong with TestNG result XML. "
-                    + "Didn't find stacktraces for the exception.");
-         return;
-      }
-      MethodResultException mrEx = new MethodResultException(currentMessage,
+      MethodResultException mrEx = new MethodResultException(exceptionName, currentMessage,
                currentShortStackTrace, currentFullStackTrace);
       currentMethod.setException(mrEx);
 
@@ -360,6 +356,7 @@ public class ResultsParser {
       currentMessage = null;
       currentShortStackTrace = null;
       currentFullStackTrace = null;
+      exceptionName = null;
    }
 
    private void startMethodParameters()

@@ -74,8 +74,8 @@ public class TestParser {
       results.tally();
       Assert.assertEquals(1, results.getPassCount());
       MethodResult mr = results.getPassedTests().get(0);
-       System.out.println(mr.getException().getExceptionName());
-      Assert.assertNotSame("null", mr.getException().getExceptionName());
+      Assert.assertEquals("$java.lang.IllegalStateException$$EnhancerByMockitoWithCGLIB$$c0ded2d3",
+              mr.getException().getExceptionName());
    }
 
    @Test
