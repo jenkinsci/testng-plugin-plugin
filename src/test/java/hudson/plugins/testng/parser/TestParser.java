@@ -2,6 +2,7 @@ package hudson.plugins.testng.parser;
 
 import hudson.plugins.testng.CommonUtil;
 import hudson.plugins.testng.Constants;
+import hudson.plugins.testng.results.MethodResult;
 import hudson.plugins.testng.results.PackageResult;
 import hudson.plugins.testng.results.TestNGResult;
 import junit.framework.Assert;
@@ -72,6 +73,9 @@ public class TestParser {
       TestNGResult results = CommonUtil.getResults(CommonUtil.getResource(Constants.TESTNG_XML_EMPTY_EXCEPTION).getFile());
       results.tally();
       Assert.assertEquals(1, results.getPassCount());
+      MethodResult mr = results.getPassedTests().get(0);
+       System.out.println(mr.getException().getExceptionName());
+      Assert.assertNotSame("null", mr.getException().getExceptionName());
    }
 
    @Test

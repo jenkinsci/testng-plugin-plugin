@@ -11,7 +11,7 @@ script(src:"${app.rootUrl}/plugin/testng-plugin/js/toggle_table.js")
 
 script() {
     text("//Loads data for all the methods")
-    text("\nfunction showAllExecutedMethods() {")
+    text("\nfunction showAllExecMthds() {")
     text("\nvar foo = ")
     // apparently, calling st.bind spits out the required information
     // directly to output stream. So, no need to wrap it in text().
@@ -103,17 +103,17 @@ if (my.sortedTestMethodsByStartTime) {
     if (my.sortedTestMethodsByStartTime.size() > my.MAX_EXEC_MTHD_LIST_SIZE) {
         div(id:"showAllLink") {
             p() {
-                text("Showing only first ${my.MAX_EXEC_MTHD_LIST_SIZE} test methods.")
-                a(href:"javascript:showAllExecutedMethods()") {
+                text("Showing only first ${my.MAX_EXEC_MTHD_LIST_SIZE} test methods. ")
+                a(href:"javascript:showAllExecMthds()") {
                     text("Click to see all")
                 }
             }
         }
     }
-    a(href:"javascript:toggleTable('executionOrderTable')") {
+    a(href:"javascript:toggleTable('exec-tbl')") {
         text("hide/expand the table")
     }
-    table(border:"1px", class:"pane sortable", id:"executionOrderTable") {
+    table(border:"1px", class:"pane sortable", id:"exec-tbl") {
         thead() {
             tr() {
                 th(class:"pane-header", title:"Method") {
