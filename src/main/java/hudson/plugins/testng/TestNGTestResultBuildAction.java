@@ -15,10 +15,10 @@ import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 
 /**
- * TestNG's build action that exposes the results per build
+ * TestNG build action that exposes the results per build
  *
  * @author nullin
- * @since v0.34
+ * @since v1.0
  */
 public class TestNGTestResultBuildAction extends AbstractTestResultAction implements Serializable {
 

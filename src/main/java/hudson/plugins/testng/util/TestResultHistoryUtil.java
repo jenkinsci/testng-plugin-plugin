@@ -8,6 +8,11 @@ import hudson.plugins.testng.results.TestNGResult;
 
 import java.util.List;
 
+/**
+ * Utility methods around displaying results (esp history of results)
+ *
+ * @author nullin
+ */
 public class TestResultHistoryUtil {
 
    /**

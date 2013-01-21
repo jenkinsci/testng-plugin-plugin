@@ -131,8 +131,8 @@ public class TestNGProjectAction implements ProminentProjectAction {
     * If number of builds hasn't changed and if checkIfModified() returns true,
     * no need to regenerate the graph. Browser should reuse it's cached image
     *
-    * @param req
-    * @param rsp
+    * @param req request
+    * @param rsp response
     * @return true, if new image does NOT need to be generated, false otherwise
     */
    private boolean newGraphNotNeeded(final StaplerRequest req,

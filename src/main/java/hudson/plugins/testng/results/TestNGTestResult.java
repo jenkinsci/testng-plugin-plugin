@@ -15,7 +15,7 @@ public class TestNGTestResult {
     //list of test classes
     private List<ClassResult> classList = new ArrayList<ClassResult>();
 
-    //<test name="????">
+    //<test name="####">
     private String name;
 
     public TestNGTestResult(String name) {
@@ -33,7 +33,7 @@ public class TestNGTestResult {
     /**
      * Adds only the classes that already aren't part of the list
      *
-     * @param classList
+     * @param classList list of class results
      */
     public void addClassList(List<ClassResult> classList) {
         Set<ClassResult> tmpSet = new HashSet<ClassResult>(this.classList);

@@ -174,7 +174,7 @@ public class TestNGResult extends BaseResult implements Serializable {
     @Override
     public String toString() {
         return String.format("TestNGResult {" +
-                ", totalTests=%d, " +
+                "totalTests=%d, " +
                 "failedTests=%d, skippedTests=%d, failedConfigs=%d, " +
                 "skippedConfigs=%d}", //name,
                 passCount + failCount + skipCount, failCount,

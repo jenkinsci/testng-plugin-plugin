@@ -4,9 +4,9 @@ import hudson.Plugin;
 import hudson.model.Run;
 
 /**
- * TODO: should move to newer supported way of initializing plugins
- *
  * Entry point of TestNG Results plugin.
+ *
+ * TODO: should move to newer supported way of initializing plugins
  */
 public class PluginImpl extends Plugin {
 
