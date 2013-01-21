@@ -14,8 +14,8 @@ div() {
     if (my.result.totalCount == 0) {
         text("No test results")
     } else {
-        div() {
-            text("${my.result.failCount} failures")
+        div(id: "fail-skip") {
+            text("${my.result.failCount} failure${my.failCount != 1 ? "s" : ""}")
             if (prevResult) {
                 text("(${Functions.getDiffString(my.result.failCount - prevResult.failCount)})")
             }
@@ -34,8 +34,8 @@ div() {
             div(style: "width:${skippc}%; height: 1em; background-color: #FCE94F; float: left")
         }
 
-        div(align: "right") {
-            text("${my.result.totalCount} tests")
+        div(id: "pass", align: "right") {
+            text("${my.result.totalCount} test${my.totalCount != 1 ? "s" : ""}")
             if (prevResult) {
                 text("(${Functions.getDiffString(my.result.totalCount - prevResult.totalCount)})")
             }

@@ -12,10 +12,10 @@ script(src: "${app.rootUrl}/plugin/testng-plugin/js/toggle_table.js")
 h2("Failed Tests")
 
 if (my.result.failCount != 0) {
-    a(href: "javascript:toggleTable('failedTestsTable')") {
+    a(href: "javascript:toggleTable('fail-tbl')") {
         text("hide/expand the table")
     }
-    table(id:"failedTestsTable", border:"1px", class:"pane sortable") {
+    table(id:"fail-tbl", border:"1px", class:"pane sortable") {
         thead() {
             tr() {
                 th(class: "pane-header") {
@@ -48,7 +48,7 @@ if (my.result.failCount != 0) {
 h2("Failed Configuration Methods")
 
 if (my.result.failedConfigCount != 0) {
-    printMethods("Configuration", "failedConfigurationsTable", my.result.failedConfigs)
+    printMethods("Configuration", "fail-config-tbl", my.result.failedConfigs)
 } else {
     text("No Configuration method failed")
 }
@@ -56,7 +56,7 @@ if (my.result.failedConfigCount != 0) {
 h2("Skipped Tests")
 
 if (my.result.skipCount != 0) {
-    printMethods("Test", "skipTestsTable", my.result.skippedTests)
+    printMethods("Test", "skip-tbl", my.result.skippedTests)
 } else {
     text("No Test method was skipped")
 }
@@ -64,18 +64,18 @@ if (my.result.skipCount != 0) {
 h2("Skipped Configuration Methods")
 
 if (my.result.skippedConfigCount != 0) {
-    printMethods("Configuration", "skippedConfigurationsTable", my.result.skippedConfigs)
+    printMethods("Configuration", "skip-config-tbl", my.result.skippedConfigs)
 } else {
     text("No Configuration method was skipped")
 }
 
 h2("All Tests (grouped by their packages)")
 
-a(href:"javascript:toggleTable('allTestsTable')") {
+a(href:"javascript:toggleTable('all-tbl')") {
     text("hide/expand the table")
 }
 
-table(id:"allTestsTable", border:"1px", class:"pane sortable") {
+table(id:"all-tbl", border:"1px", class:"pane sortable") {
     thead() {
         tr() {
             th(class:"pane-header") {

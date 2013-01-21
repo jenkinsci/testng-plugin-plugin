@@ -23,7 +23,6 @@ import java.util.List;
 /**
  * Tests for {@link PackageResult}'s view page
  *
- * TODO: speed up the tests by running build once in the setup
  * TODO: add tests for checking fail and skip diffs between two test runs
  *
  * @author nullin

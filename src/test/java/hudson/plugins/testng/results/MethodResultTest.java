@@ -19,8 +19,6 @@ import java.io.IOException;
 /**
  * Tests for {@link MethodResult}'s view page
  *
- * TODO: speed up the tests by running build once in the setup
- *
  * @author nullin
  */
 public class MethodResultTest extends HudsonTestCase {
