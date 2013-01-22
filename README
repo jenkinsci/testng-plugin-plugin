@@ -17,10 +17,12 @@ Release Notes
 -------
 
 ### Future
-* Implement AbstractTestResultAction
-* Removed deprecated class BuildIndividualReport (deprecated since v0.23)
-* Removed deprecated fields isRelativePath, results, fullName (were deprecated since v0.23 or earlier)
-* Changed duration in results to be seconds instead of milliseconds (as we now implement AbstractTestResultAction)
+* Added: Implement AbstractTestResultAction
+* Removed: deprecated class BuildIndividualReport (deprecated since v0.23)
+* Removed: deprecated fields isRelativePath, results, fullName (were deprecated since v0.23 or earlier)
+* Changed: duration in results to be seconds instead of milliseconds (as we now implement AbstractTestResultAction)
+* Removed: Commented out Age column from reports as it wasn't symmetrical to Junit reports. Needs re-implementation
+* Fixed: JENKINS-16374 - Allow concurrent builds for Projects using TestNG plugin to proceed
 
 ### v0.33
 * Upped compatible Jenkins version to v1.447

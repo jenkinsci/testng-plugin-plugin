@@ -200,7 +200,7 @@ public class TestNGProjectAction implements ProminentProjectAction {
 
    public TestNGTestResultBuildAction getLastCompletedBuildAction() {
       for (AbstractBuild<?, ?> build = getProject().getLastCompletedBuild();
-               build != null; build = build.getPreviousBuild()) {
+               build != null; build = build.getPreviousCompletedBuild()) {
          final TestNGTestResultBuildAction action = build.getAction(getBuildActionClass());
          if (action != null) {
             return action;
@@ -212,7 +212,11 @@ public class TestNGProjectAction implements ProminentProjectAction {
    protected void populateDataSetBuilder(DataSetBuilder<String, ChartUtil.NumberOnlyBuildLabel> dataset) {
 
       for (AbstractBuild<?, ?> build = getProject().getLastBuild();
-               build != null; build = build.getPreviousBuild()) {
+               build != null;
+               // Getting prev builds regardless of whether they are running or not.
+               // Even running builds should show up on graph,
+               // even though the result is going to be shown as 0
+               build = build.getPreviousBuild()) {
          ChartUtil.NumberOnlyBuildLabel label = new ChartUtil.NumberOnlyBuildLabel(build);
          TestNGTestResultBuildAction action = build.getAction(getBuildActionClass());
          if (action != null) {

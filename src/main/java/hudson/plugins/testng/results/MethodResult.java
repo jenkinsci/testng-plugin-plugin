@@ -298,7 +298,9 @@ public class MethodResult extends BaseResult {
             addData(dataSetBuilder, statusMap, build);
         }
         for (AbstractBuild<?, ?> build = getOwner();
-             build != null && count++ < 10; build = build.getPreviousBuild()) {
+             build != null && count++ < 10;
+             //getting running builds as well (will deal accordingly)
+             build = build.getPreviousBuild()) {
             addData(dataSetBuilder, statusMap, build);
         }
     }
@@ -316,7 +318,12 @@ public class MethodResult extends BaseResult {
 
         if (methodResult == null) {
             dataSetBuilder.add(0, "resultRow", label);
-            statusMap.put(label, "UNKNOWN");
+            //deal with builds still running
+            if (build.isBuilding()) {
+                statusMap.put(label, "BUILD IN PROGRESS");
+            } else {
+                statusMap.put(label, "UNKNOWN");
+            }
         } else {
             //status is PASS, FAIL or SKIP
             dataSetBuilder.add(methodResult.getDuration(), "resultRow", label);

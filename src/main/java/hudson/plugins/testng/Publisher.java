@@ -46,7 +46,7 @@ public class Publisher extends Recorder {
    }
 
    public BuildStepMonitor getRequiredMonitorService() {
-      return BuildStepMonitor.STEP;
+      return BuildStepMonitor.NONE;
    }
 
    /**

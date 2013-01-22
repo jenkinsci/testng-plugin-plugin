@@ -27,7 +27,9 @@ public class TestResultHistoryUtil {
     *       object. <b>Never returns {@code null}.</b>
     */
    public static TestNGResult getPreviousBuildTestResults(AbstractBuild<?, ?> owner) {
-      AbstractBuild<?, ?> previousBuild = owner.getPreviousBuild();
+      // Doesn't make sense to return a build that is still running.
+      // We can compare results with a previous build that completed
+      AbstractBuild<?, ?> previousBuild = owner.getPreviousCompletedBuild();
       if (previousBuild != null
                && previousBuild.getAction(TestNGTestResultBuildAction.class) != null) {
          return previousBuild.getAction(TestNGTestResultBuildAction.class).getResult();
