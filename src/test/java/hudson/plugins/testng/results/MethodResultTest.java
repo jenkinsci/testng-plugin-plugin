@@ -48,7 +48,7 @@ public class MethodResultTest extends HudsonTestCase {
         HtmlPage page = createWebClient().goTo(methodUrl);
         HtmlElement expMsg = page.getElementById("exp-msg");
         String contents = expMsg.getTextContent();
-        assertStringContains(contents, "&lt;/a&gt;"); //escaped HTML
+        assertStringContains(contents, "</a>"); //escaped HTML so it shows up as string
     }
 
     @Test
@@ -75,7 +75,7 @@ public class MethodResultTest extends HudsonTestCase {
         HtmlPage page = createWebClient().goTo(methodUrl);
         HtmlElement expMsg = page.getElementById("exp-msg");
         String contents = expMsg.getTextContent();
-        assertStringContains(contents, "</a>"); //non-escaped HTML
+        assertFalse(contents.contains("</a>")); //non-escaped HTML so it shouldn't show up as text
     }
 
     @Test
@@ -102,8 +102,8 @@ public class MethodResultTest extends HudsonTestCase {
         HtmlPage page = createWebClient().goTo(methodUrl);
         HtmlElement expMsg = page.getElementById("description");
         String contents = expMsg.getTextContent();
-        assertStringContains(contents, "</a>"); //non-escaped HTML
-        assertStringContains(contents, "<a href=\""); //non-escaped HTML
+        assertFalse(contents.contains("</a>")); //non-escaped HTML so it doesn't show up as text
+        assertFalse(contents.contains("<a href=\"")); //non-escaped HTML
     }
 
     @Test
@@ -130,7 +130,7 @@ public class MethodResultTest extends HudsonTestCase {
         HtmlPage page = createWebClient().goTo(methodUrl);
         HtmlElement expMsg = page.getElementById("description");
         String contents = expMsg.getTextContent();
-        assertStringContains(contents, "&lt;/a&gt;"); //non-escaped HTML
+        assertStringContains(contents, "</a>"); //escaped HTML so it shows up as text
     }
 
     @Test
@@ -153,7 +153,8 @@ public class MethodResultTest extends HudsonTestCase {
         FreeStyleBuild build = p.scheduleBuild2(0).get();
 
         //Compare output
-        String methodUrl = build.getUrl() + PluginImpl.URL + "/org.example.test/org.example.test.ExampleIntegrationTest/FirstTest";
+        String methodUrl = build.getUrl() + PluginImpl.URL
+                + "/org.example.test/org.example.test.ExampleIntegrationTest/FirstTest";
         HtmlPage page = createWebClient().goTo(methodUrl);
         HtmlElement reporterOutput = page.getElementById("reporter-output");
         String contents = reporterOutput.getTextContent();
@@ -185,7 +186,8 @@ public class MethodResultTest extends HudsonTestCase {
         //run build
         FreeStyleBuild build = p.scheduleBuild2(0).get();
         TestNGResult testngResult = (TestNGResult) build.getTestResultAction().getResult();
-        TestResult methodResult = testngResult.findCorrespondingResult(PluginImpl.URL + "/test/test.Test1/includedGroups_1");
+        TestResult methodResult = testngResult.findCorrespondingResult(
+                        PluginImpl.URL + "/test/test.Test1/includedGroups_1");
 
         //Compare output for a method
         String urlPrefix = build.getUrl() + PluginImpl.URL;
@@ -227,7 +229,8 @@ public class MethodResultTest extends HudsonTestCase {
         assertNull(page.getElementById("exp-msg"));
 
         //method run using two parameters
-        page = createWebClient().goTo(urlPrefix + "/test.dataprovider/test.dataprovider.Sample1Test/verifyNames_1/");
+        page = createWebClient().goTo(urlPrefix
+                + "/test.dataprovider/test.dataprovider.Sample1Test/verifyNames_1/");
         element = page.getElementById("params");
         contents = element.getTextContent();
         //information about class and time taken
@@ -287,7 +290,8 @@ public class MethodResultTest extends HudsonTestCase {
         element = page.getElementById("exp-msg");
         assertStringContains(element.getTextContent(), "(none)");
         element = page.getElementById("exp-st");
-        assertStringContains(element.getTextContent(), "org.jenkins.TestDataProvider.test(TestDataProvider.java:15)");
+        assertStringContains(element.getTextContent(),
+                             "org.jenkins.TestDataProvider.test(TestDataProvider.java:15)");
 
         //compare output for a dp method that passed
         page = wc.goTo(urlPrefix + "/org.jenkins/org.jenkins.TestDataProvider/test_2/");
