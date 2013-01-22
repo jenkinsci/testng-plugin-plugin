@@ -27,7 +27,7 @@ div(id: "report") {
         //descriptions by default are escaped in testng result XML
         //if we are not dealing with HTML content, just replace \n by <br/> to make contents more readable
         if (my.description) {
-            text("${testngProjAction.escapeTestDescp ? FormatUtil.escapeString(my.description) : my.description.replace("\n", "<br/>")}")
+            raw("${testngProjAction.escapeTestDescp ? FormatUtil.escapeString(my.description) : my.description.replace("\n", "<br/>")}")
         }
     }
 
@@ -90,7 +90,7 @@ div(id: "report") {
         p(id:"exp-msg") {
             b("Message: ")
             if (my.exception.message) {
-                text("${testngProjAction.escapeExceptionMsg ? FormatUtil.escapeString(my.exception.message) : my.exception.message}")
+                raw("${testngProjAction.escapeExceptionMsg ? FormatUtil.escapeString(my.exception.message) : my.exception.message}")
             } else {
                 text("(none)")
             }
@@ -98,7 +98,7 @@ div(id: "report") {
         if (my.exception.stackTrace) {
             b("Stacktrace:")
             p(id:"exp-st") {
-                text(raw("${FormatUtil.formatStackTraceForHTML(my.exception.stackTrace)}"))
+                raw("${FormatUtil.formatStackTraceForHTML(my.exception.stackTrace)}")
             }
         }
     }
