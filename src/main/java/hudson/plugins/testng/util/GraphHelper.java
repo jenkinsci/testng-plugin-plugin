@@ -1,5 +1,11 @@
 package hudson.plugins.testng.util;
 
+import java.awt.*;
+import java.io.IOException;
+import java.text.DecimalFormat;
+import java.util.HashMap;
+import java.util.Map;
+
 import hudson.plugins.testng.PluginImpl;
 import hudson.plugins.testng.TestNGTestResultBuildAction;
 import hudson.util.ChartUtil.NumberOnlyBuildLabel;
@@ -23,12 +29,6 @@ import org.jfree.ui.RectangleEdge;
 import org.jfree.ui.RectangleInsets;
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
-
-import java.awt.*;
-import java.io.IOException;
-import java.text.DecimalFormat;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Helper class for trend graph generation
@@ -224,8 +224,7 @@ public class GraphHelper {
                //no link when method result doesn't exist
                return null;
             }
-            return label.build.getUpUrl() + label.build.getNumber()
-                     + "/" + PluginImpl.URL + "/" + methodUrl;
+            return label.build.getUpUrl() + label.build.getNumber() + methodUrl;
          }
       });
 

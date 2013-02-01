@@ -1,5 +1,8 @@
 package hudson.plugins.testng.results;
 
+import java.io.IOException;
+import java.util.*;
+
 import hudson.model.AbstractBuild;
 import hudson.plugins.testng.TestNGTestResultBuildAction;
 import hudson.plugins.testng.util.GraphHelper;
@@ -11,9 +14,6 @@ import org.jfree.chart.JFreeChart;
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
 import org.kohsuke.stapler.export.Exported;
-
-import java.io.IOException;
-import java.util.*;
 
 /**
  * Handles result pertaining to a single test method
@@ -277,6 +277,8 @@ public class MethodResult extends BaseResult {
         return new Graph(-1, 800, 150) {
             protected JFreeChart createGraph() {
                 return GraphHelper.createMethodChart(req, dataSetBuilder.build(), statusMap,
+                        // getUrl instead of getUpUrl as latter gets the complete url and we only need
+                        // relative url path from a specific build
                         getUrl());
             }
         };

@@ -16,6 +16,9 @@ graph and all details about which tests that failed are also presented.
 Release Notes
 -------
 
+### v1.1
+* Fixed: JENKINS-16592 - Invalid URL in testngreport on tests execution history chart
+
 ### v1.0
 * Added: Implement AbstractTestResultAction
 * Removed: deprecated class BuildIndividualReport (deprecated since v0.23)
