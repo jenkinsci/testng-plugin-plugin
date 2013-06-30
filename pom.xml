@@ -32,14 +32,9 @@
 
     <developers>
         <developer>
-            <id>nalin_makar</id>
+            <id>nullin</id>
             <name>Nalin Makar</name>
-            <email>nalin.makar@gmail.com</email>
-        </developer>
-        <developer>
-            <id>farshidce</id>
-            <name>Farshid Ghods</name>
-            <email>farshid.ghods@gmail.com</email>
+            <email>nullin@nullin.com</email>
         </developer>
     </developers>
 
