@@ -1,19 +1,20 @@
 package hudson.plugins.testng;
 
+import java.io.IOException;
+import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Map;
+
 import hudson.model.AbstractBuild;
 import hudson.model.AbstractProject;
 import hudson.model.ProminentProjectAction;
+import hudson.model.Result;
 import hudson.plugins.testng.util.GraphHelper;
 import hudson.util.ChartUtil;
 import hudson.util.DataSetBuilder;
 import org.jfree.chart.JFreeChart;
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
-
-import java.io.IOException;
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Action to associate the TestNG reports with the project
@@ -159,7 +160,7 @@ public class TestNGProjectAction implements ProminentProjectAction {
       return prevNumBuilds == numBuilds && req.checkIfModified(t, rsp);
    }
 
-  public void doGraphMap(final StaplerRequest req,
+   public void doGraphMap(final StaplerRequest req,
            StaplerResponse rsp) throws IOException {
       if (newGraphNotNeeded(req, rsp)) {
          return;
@@ -219,16 +220,15 @@ public class TestNGProjectAction implements ProminentProjectAction {
                build = build.getPreviousBuild()) {
          ChartUtil.NumberOnlyBuildLabel label = new ChartUtil.NumberOnlyBuildLabel(build);
          TestNGTestResultBuildAction action = build.getAction(getBuildActionClass());
+
+         if (build.getResult().isWorseThan(Result.UNSTABLE)) {
+            //We don't want to add aborted, failed or builds with no results into the graph
+            continue;
+         }
          if (action != null) {
             dataset.add(action.getTotalCount() - action.getFailCount() - action.getSkipCount(), "Passed", label);
             dataset.add(action.getFailCount(), "Failed", label);
             dataset.add(action.getSkipCount(), "Skipped", label);
-         } else {
-            //even if testng plugin wasn't run with this build,
-            //we should add this build to the graph
-            dataset.add(0, "Passed", label);
-            dataset.add(0, "Failed", label);
-            dataset.add(0, "Skipped", label);
          }
       }
    }

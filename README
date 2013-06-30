@@ -17,7 +17,8 @@ Release Notes
 -------
 
 ### v1.2
-* Fixed: JENKINS-18498 -  hudson.tasks.test.AggregatedTestResultAction$1 cannot be cast to hudson.tasks.test.TestResult
+* Fixed: JENKINS-18498 - hudson.tasks.test.AggregatedTestResultAction$1 cannot be cast to hudson.tasks.test.TestResult
+* Fixed: JENKINS-16832 - Do not show failed builds in trend graph
 
 ### v1.1
 * Fixed: JENKINS-16592 - Invalid URL in testngreport on tests execution history chart
