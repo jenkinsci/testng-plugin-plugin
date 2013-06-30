@@ -1,14 +1,14 @@
 package hudson.plugins.testng.results;
 
-import hudson.model.AbstractBuild;
-import org.kohsuke.stapler.StaplerRequest;
-import org.kohsuke.stapler.StaplerResponse;
-import org.kohsuke.stapler.export.Exported;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import hudson.model.AbstractBuild;
+import org.kohsuke.stapler.StaplerRequest;
+import org.kohsuke.stapler.StaplerResponse;
+import org.kohsuke.stapler.export.Exported;
 
 /**
  * Handle results related to a single test class
@@ -113,7 +113,6 @@ public class ClassResult extends BaseResult {
 
         for (MethodResult methodResult : this.testMethodList) {
             if (!methodResult.isConfig()) {
-                this.duration += methodResult.getDuration();
                 if ("FAIL".equals(methodResult.getStatus())) {
                     this.fail++;
                 } else if ("SKIP".equals(methodResult.getStatus())) {
@@ -122,6 +121,7 @@ public class ClassResult extends BaseResult {
                     this.pass++;
                 }
             }
+            this.duration += methodResult.getDuration();
             methodResult.setParent(this);
          /*
           * Setup testUuids to ensure that methods with same names can be
