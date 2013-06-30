@@ -1,12 +1,12 @@
 package hudson.plugins.testng.util;
 
+import java.util.List;
+
 import hudson.model.AbstractBuild;
 import hudson.plugins.testng.TestNGTestResultBuildAction;
 import hudson.plugins.testng.results.ClassResult;
 import hudson.plugins.testng.results.MethodResult;
 import hudson.plugins.testng.results.TestNGResult;
-
-import java.util.List;
 
 /**
  * Utility methods around displaying results (esp history of results)
@@ -80,7 +80,9 @@ public class TestResultHistoryUtil {
    }
 
    private static String diff(long prev, long curr, String name) {
-      if (prev <= curr) {
+      if (prev == curr) {
+         return "<li>" + name + ": " + curr + " (&plusmn;0)</li>";
+      } else if (prev < curr) {
          return "<li>" + name + ": " + curr + " (+" + (curr - prev) + ")</li>";
       } else { // if (a < b)
          return "<li>" + name + ": " + curr + " (-" + (prev - curr) + ")</li>";
