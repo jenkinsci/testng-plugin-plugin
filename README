@@ -17,6 +17,7 @@ Release Notes
 -------
 
 ### v1.2
+* Added: Error details to failed test list
 * Fixed: JENKINS-18498 - hudson.tasks.test.AggregatedTestResultAction$1 cannot be cast to hudson.tasks.test.TestResult
 * Fixed: JENKINS-16832 - Do not show failed builds in trend graph
 * Fixed: JENKINS-18206 - Total duration of a test class should include the times for the configuration methods

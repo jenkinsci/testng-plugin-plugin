@@ -48,9 +48,9 @@ for (group in my.testRunMap.values()) {
                                 a(href:"${method.upUrl}") {
                                     text("${method.name}")
                                 }
-                                if (method.groups || method.testInstanceName) {
+                                if (method.groups || method.testInstanceName || method.parameters?.size() > 0) {
                                     div(id:"${method.safeName}_1", style:"display:inline") {
-                                        text("(")
+                                        text(" (")
                                         a(href:"javascript:showMore(\"${method.safeName}\")") {
                                             text("...")
                                         }
@@ -65,6 +65,11 @@ for (group in my.testRunMap.values()) {
                                         if (method.groups) {
                                             div() {
                                                 text("Group(s): ${StringUtils.join(method.groups, ", ")}")
+                                            }
+                                        }
+                                        if (method.parameters?.size() > 0) {
+                                            div() {
+                                                text("Parameter(s): ${StringUtils.join(method.parameters, ", ")}")
                                             }
                                         }
                                     }

@@ -1,5 +1,11 @@
 package hudson.plugins.testng;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import hudson.Launcher;
@@ -13,12 +19,6 @@ import hudson.plugins.testng.results.TestNGResult;
 import org.junit.Test;
 import org.jvnet.hudson.test.HudsonTestCase;
 import org.jvnet.hudson.test.TestBuilder;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Tests for {@link TestNGTestResultBuildAction}'s view page
@@ -62,7 +62,8 @@ public class TestNGTestResultBuildActionTest extends HudsonTestCase {
         }
 
         //ensure only one failed test
-        elements = page.selectNodes("//table[@id='fail-tbl']/tbody/tr/td/a");
+        //there are three links in the cell, we pick the one without any id attr
+        elements = page.selectNodes("//table[@id='fail-tbl']/tbody/tr/td/a[not(@id)]");
         assertEquals(1, elements.size());
         MethodResult mr = testngResult.getFailedTests().get(0);
         assertEquals(super.getURL() + mr.getOwner().getUrl() + mr.getId(),

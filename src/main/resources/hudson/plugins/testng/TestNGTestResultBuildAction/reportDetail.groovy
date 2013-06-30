@@ -8,6 +8,7 @@ t = namespace("/lib/hudson")
 st = namespace("jelly:stapler")
 
 script(src: "${app.rootUrl}/plugin/testng-plugin/js/toggle_table.js")
+script(src: "${app.rootUrl}/plugin/testng-plugin/js/toggle_mthd_summary.js")
 
 h2("Failed Tests")
 
@@ -30,8 +31,18 @@ if (my.result.failCount != 0) {
             for (failedTest in my.result.failedTests) {
                 tr() {
                     td(align: "left") {
+                        a(id: "${failedTest.id}-showlink", href:"javascript:showStackTrace('${failedTest.id}', '${failedTest.upUrl}//summary')") {
+                            text(">>>")
+                        }
+                        a(style: "display:none", id: "${failedTest.id}-hidelink", href:"javascript:hideStackTrace('${failedTest.id}')") {
+                            text("<<<")
+                        }
+                        text(" ")
                         a(href:"${failedTest.upUrl}") {
                             text("${failedTest.parent.name}.${failedTest.name}")
+                        }
+                        div(id:"${failedTest.id}", style: "display:none", class: "hidden") {
+                            text("Loading...")
                         }
                     }
                     td(align: "right") {
@@ -45,28 +56,19 @@ if (my.result.failCount != 0) {
     text("No Test method failed")
 }
 
-h2("Failed Configuration Methods")
-
 if (my.result.failedConfigCount != 0) {
+    h2("Failed Configuration Methods")
     printMethods("Configuration", "fail-config-tbl", my.result.failedConfigs)
-} else {
-    text("No Configuration method failed")
 }
-
-h2("Skipped Tests")
 
 if (my.result.skipCount != 0) {
+    h2("Skipped Tests")
     printMethods("Test", "skip-tbl", my.result.skippedTests)
-} else {
-    text("No Test method was skipped")
 }
 
-h2("Skipped Configuration Methods")
-
 if (my.result.skippedConfigCount != 0) {
+    h2("Skipped Configuration Methods")
     printMethods("Configuration", "skip-config-tbl", my.result.skippedConfigs)
-} else {
-    text("No Configuration method was skipped")
 }
 
 h2("All Tests (grouped by their packages)")
