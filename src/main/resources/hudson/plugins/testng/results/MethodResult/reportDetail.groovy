@@ -44,7 +44,7 @@ div(id: "report") {
     }
 
     if (my.parameters?.size() > 0) {
-        table(border: "1px", class: "pane", id: "params") {
+        table(border: "1px", class: "pane", id: "params", style: "white-space:normal") {
             thead() {
                 tr() {
                     th(class: "pane-header", style: "width:5em;")
