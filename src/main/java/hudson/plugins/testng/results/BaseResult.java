@@ -1,7 +1,11 @@
 package hudson.plugins.testng.results;
 
+import java.io.Serializable;
+
 import hudson.model.AbstractBuild;
 import hudson.model.ModelObject;
+import hudson.plugins.testng.TestNGTestResultBuildAction;
+import hudson.tasks.test.AbstractTestResultAction;
 import hudson.tasks.test.TabulatedResult;
 import hudson.tasks.test.TestResult;
 import jenkins.model.Jenkins;
@@ -9,8 +13,6 @@ import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
 import org.kohsuke.stapler.export.Exported;
 import org.kohsuke.stapler.export.ExportedBean;
-
-import java.io.Serializable;
 
 /**
  * Base class that takes care of all the common functionality of the different kinds of
@@ -76,6 +78,32 @@ public abstract class BaseResult extends TabulatedResult implements ModelObject,
             }
         }
         return null;
+    }
+
+    /**
+     * Explicit override here to ensure that when we are building TestNG reports,
+     * we are only working with TestNG results (and not results from other test reporters).
+     *
+     * Can get into a bad situation if the same job has configured JUnit and TestNG reports
+     *
+     * @return
+     */
+    @Override
+    public AbstractTestResultAction getTestResultAction() {
+        AbstractBuild<?, ?> owner = getOwner();
+        if (owner != null) {
+            return owner.getAction(TestNGTestResultBuildAction.class);
+        }
+        return null;
+    }
+
+    /**
+     * @see BaseResult#getTestResultAction()
+     * @return
+     */
+    @Override
+    public AbstractTestResultAction getParentAction() {
+        return getTestResultAction();
     }
 
     @Override

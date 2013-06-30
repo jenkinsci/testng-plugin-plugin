@@ -1,11 +1,11 @@
 package hudson.plugins.testng.results;
 
+import java.io.Serializable;
+import java.util.*;
+
 import hudson.model.AbstractBuild;
 import hudson.plugins.testng.PluginImpl;
 import org.kohsuke.stapler.export.Exported;
-
-import java.io.Serializable;
-import java.util.*;
 
 /**
  * Represents all the results gathered for a single build (or a single suite,
@@ -226,11 +226,6 @@ public class TestNGResult extends BaseResult implements Serializable {
     @Exported(visibility = 999)
     public String getName() {
         return name;
-    }
-
-    @Override
-    public AbstractBuild<?, ?> getOwner() {
-        return owner;
     }
 
     @Override
