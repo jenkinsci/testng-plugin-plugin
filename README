@@ -18,6 +18,7 @@ Release Notes
 
 ###
 * Added: JENKINS-11899 - Print all URLs as HTML anchors (when escaping description and exception message)
+* Added: JENKINS-12275 - TestNG plugin should contribute to Dashboard View plugin
 * Fixed: JENKINS-17564 - Reporter output being escaped incorrectly
 
 ### v1.2

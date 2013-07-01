@@ -10,6 +10,7 @@ import hudson.model.AbstractProject;
 import hudson.model.ProminentProjectAction;
 import hudson.model.Result;
 import hudson.plugins.testng.util.GraphHelper;
+import hudson.tasks.test.TestResultProjectAction;
 import hudson.util.ChartUtil;
 import hudson.util.DataSetBuilder;
 import org.jfree.chart.JFreeChart;
@@ -21,7 +22,7 @@ import org.kohsuke.stapler.StaplerResponse;
  *
  * @author nullin
  */
-public class TestNGProjectAction implements ProminentProjectAction {
+public class TestNGProjectAction extends TestResultProjectAction implements ProminentProjectAction {
 
    private boolean escapeTestDescp;
    private boolean escapeExceptionMsg;
@@ -35,7 +36,7 @@ public class TestNGProjectAction implements ProminentProjectAction {
 
    public TestNGProjectAction(AbstractProject<?, ?> project,
          boolean escapeTestDescp, boolean escapeExceptionMsg) {
-      this.project = project;
+      super(project);
       this.escapeExceptionMsg = escapeExceptionMsg;
       this.escapeTestDescp = escapeTestDescp;
    }
@@ -55,17 +56,12 @@ public class TestNGProjectAction implements ProminentProjectAction {
    }
 
    /**
-    * The owner of this action.
-    */
-   private final AbstractProject<?, ?> project;
-
-   /**
     * Getter for property 'project'.
     *
     * @return Value for property 'project'.
     */
    public AbstractProject<?, ?> getProject() {
-      return project;
+      return super.project;
    }
 
    /**
