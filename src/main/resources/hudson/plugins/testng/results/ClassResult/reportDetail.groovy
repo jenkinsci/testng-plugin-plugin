@@ -52,7 +52,7 @@ for (group in my.testRunMap.values()) {
                                     div(id:"${method.safeName}_1", style:"display:inline") {
                                         text(" (")
                                         a(href:"javascript:showMore(\"${method.safeName}\")") {
-                                            text("...")
+                                            raw("&hellip;")
                                         }
                                         text(")")
                                     }

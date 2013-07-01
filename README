@@ -1,4 +1,4 @@
-TestNG Plugin for Jenkins (and maybe Hudson)
+TestNG Plugin for Jenkins
 =============
 
 https://wiki.jenkins-ci.org/display/JENKINS/testng-plugin
@@ -15,6 +15,9 @@ graph and all details about which tests that failed are also presented.
 
 Release Notes
 -------
+
+###
+* Fixed: JENKINS-17564 - Reporter output being escaped incorrectly
 
 ### v1.2
 * Added: Error details to failed test list

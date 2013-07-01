@@ -77,7 +77,7 @@ div(id: "report") {
         div(id: "reporter-output") {
             h3("Reporter Output")
             code(style: "margin-left:15px; display:block; border:1px black; background-color:#F0F0F0; width:800px") {
-                text("${my.reporterOutput}")
+                raw("${my.reporterOutput}")
             }
         }
     }
