@@ -213,7 +213,7 @@ public class TestNGProjectAction extends TestResultProjectAction implements Prom
          ChartUtil.NumberOnlyBuildLabel label = new ChartUtil.NumberOnlyBuildLabel(build);
          TestNGTestResultBuildAction action = build.getAction(getBuildActionClass());
 
-         if (build.getResult().isWorseThan(Result.UNSTABLE)) {
+         if (build.getResult() == null || build.getResult().isWorseThan(Result.UNSTABLE)) {
             //We don't want to add aborted, failed or builds with no results into the graph
             continue;
          }
