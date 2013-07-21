@@ -16,11 +16,14 @@ graph and all details about which tests that failed are also presented.
 Release Notes
 -------
 
-### v1.3
+### v1.4
 * Added: JENKINS-11899 - Print all URLs as HTML anchors (when escaping description and exception message)
 * Added: JENKINS-12275 - TestNG plugin should contribute to Dashboard View plugin
 * Fixed: JENKINS-18750 - NPE in testng graph
 * Fixed: JENKINS-17564 - Reporter output being escaped incorrectly
+
+### v1.3
+(Messed up release because of maven.jenkins-ci.org issues)
 
 ### v1.2
 * Added: Error details to failed test list
