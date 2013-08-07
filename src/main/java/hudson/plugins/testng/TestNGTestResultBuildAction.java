@@ -1,18 +1,22 @@
 package hudson.plugins.testng;
 
-import hudson.FilePath;
-import hudson.model.AbstractBuild;
-import hudson.model.Api;
-import hudson.plugins.testng.parser.ResultsParser;
-import hudson.plugins.testng.results.TestNGResult;
-import hudson.tasks.test.AbstractTestResultAction;
-import org.kohsuke.stapler.StaplerRequest;
-import org.kohsuke.stapler.StaplerResponse;
-
 import java.io.PrintStream;
 import java.io.Serializable;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.List;
+
+import hudson.FilePath;
+import hudson.model.AbstractBuild;
+import hudson.model.Api;
+import hudson.plugins.testng.parser.ResultsParser;
+import hudson.plugins.testng.results.MethodResult;
+import hudson.plugins.testng.results.TestNGResult;
+import hudson.tasks.junit.CaseResult;
+import hudson.tasks.test.AbstractTestResultAction;
+import org.kohsuke.stapler.StaplerRequest;
+import org.kohsuke.stapler.StaplerResponse;
 
 /**
  * TestNG build action that exposes the results per build
@@ -160,5 +164,43 @@ public class TestNGTestResultBuildAction extends AbstractTestResultAction implem
         skipCount = testResults.getSkipCount();
 
         return this;
+    }
+
+    public List<CaseResult> getFailedTests() {
+
+        class HackyCaseResult extends CaseResult {
+
+            private MethodResult methodResult;
+
+            public HackyCaseResult(MethodResult methodResult) {
+                super(null, methodResult.getDisplayName(), methodResult.getErrorStackTrace());
+                this.methodResult = methodResult;
+            }
+
+            public Status getStatus() {
+                //We don't calculate age of results currently
+                //so, can't state if the failure is a regression or not
+                return Status.FAILED;
+            }
+
+            public String getClassName() {
+                return methodResult.getClassName();
+            }
+
+            public String getDisplayName() {
+                return methodResult.getDisplayName();
+            }
+
+            public String getErrorDetails() {
+                return methodResult.getErrorDetails();
+            }
+        }
+
+        List< CaseResult > results = new ArrayList<CaseResult>(getFailCount());
+        for (MethodResult methodResult : getResult().getFailedTests()) {
+            results.add(new HackyCaseResult(methodResult));
+        }
+
+        return results;
     }
 }

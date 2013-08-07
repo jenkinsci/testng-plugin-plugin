@@ -16,6 +16,10 @@ graph and all details about which tests that failed are also presented.
 Release Notes
 -------
 
+### v1.4
+* Bumped up supported Jenkins version to v1.526 or later
+* Integrated TestNG plugin results into email-ext plugin
+
 ### v1.3
 * Added: JENKINS-11899 - Print all URLs as HTML anchors (when escaping description and exception message)
 * Added: JENKINS-12275 - TestNG plugin should contribute to Dashboard View plugin
