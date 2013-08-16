@@ -68,7 +68,7 @@ for (group in my.testRunMap.values()) {
                                             }
                                         }
                                         if (method.parameters?.size() > 0) {
-                                            div() {
+                                            div(style: "white-space:normal") {
                                                 text("Parameter(s): ${StringUtils.join(method.parameters, ", ")}")
                                             }
                                         }
