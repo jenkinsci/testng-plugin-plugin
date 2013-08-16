@@ -16,6 +16,9 @@ graph and all details about which tests that failed are also presented.
 Release Notes
 -------
 
+### upcoming
+* Fixed: JENKINS-19157 - Make st:bind work when Jenkins has jQuery plugin installed
+
 ### v1.4
 * Bumped up supported Jenkins version to v1.526 or later
 * Integrated TestNG plugin results into email-ext plugin

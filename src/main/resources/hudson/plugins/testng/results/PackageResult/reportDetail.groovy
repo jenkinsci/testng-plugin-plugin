@@ -8,16 +8,12 @@ t = namespace("/lib/hudson")
 st = namespace("jelly:stapler")
 
 script(src:"${app.rootUrl}/plugin/testng-plugin/js/toggle_table.js")
-
+//see https://issues.jenkins-ci.org/browse/JENKINS-18867 & https://issues.jenkins-ci.org/browse/JENKINS-18875
+st.bind(var:"thisPkgResult", value:my)
 script() {
     text("//Loads data for all the methods")
     text("\nfunction showAllExecMthds() {")
-    text("\nvar foo = ")
-    // apparently, calling st.bind spits out the required information
-    // directly to output stream. So, no need to wrap it in text().
-    // in fact, that approach doesn't work
-    st.bind(value:my)
-    text("\nfoo.getAllSortedTestMethodsByStartTime(function(t) {")
+    text("\nthisPkgResult.getAllSortedTestMethodsByStartTime(function(t) {")
     text("\ndocument.getElementById('sortedMethods').innerHTML = t.responseObject();")
     text("\n})")
     text("\ndocument.getElementById(\"showAllLink\").style.display = \"none\"; }")
