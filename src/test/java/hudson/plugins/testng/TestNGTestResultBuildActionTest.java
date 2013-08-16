@@ -71,10 +71,11 @@ public class TestNGTestResultBuildActionTest extends HudsonTestCase {
 
         //ensure only one failed config method
         elements = page.selectNodes("//table[@id='fail-config-tbl']/tbody/tr/td/a");
-        assertEquals(1, elements.size());
+        //asserting to 3, because a link for >>>, one for <<< and another for the method itself
+        assertEquals(3, elements.size());
         mr = testngResult.getFailedConfigs().get(0);
         assertEquals(super.getURL() + mr.getOwner().getUrl() + mr.getId(),
-                elements.get(0).getAttribute("href"));
+                elements.get(2).getAttribute("href"));
 
         //ensure only one skipped test method
         elements = page.selectNodes("//table[@id='skip-tbl']/tbody/tr/td/a");

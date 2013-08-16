@@ -31,7 +31,7 @@ if (my.result.failCount != 0) {
             for (failedTest in my.result.failedTests) {
                 tr() {
                     td(align: "left") {
-                        a(id: "${failedTest.id}-showlink", href:"javascript:showStackTrace('${failedTest.id}', '${failedTest.upUrl}//summary')") {
+                        a(id: "${failedTest.id}-showlink", href:"javascript:showStackTrace('${failedTest.id}', '${failedTest.upUrl}/summary')") {
                             text(">>>")
                         }
                         a(style: "display:none", id: "${failedTest.id}-hidelink", href:"javascript:hideStackTrace('${failedTest.id}')") {
@@ -58,17 +58,17 @@ if (my.result.failCount != 0) {
 
 if (my.result.failedConfigCount != 0) {
     h2("Failed Configuration Methods")
-    printMethods("Configuration", "fail-config-tbl", my.result.failedConfigs)
+    printMethods("Configuration", "fail-config-tbl", my.result.failedConfigs, true)
 }
 
 if (my.result.skipCount != 0) {
     h2("Skipped Tests")
-    printMethods("Test", "skip-tbl", my.result.skippedTests)
+    printMethods("Test", "skip-tbl", my.result.skippedTests, false)
 }
 
 if (my.result.skippedConfigCount != 0) {
     h2("Skipped Configuration Methods")
-    printMethods("Configuration", "skip-config-tbl", my.result.skippedConfigs)
+    printMethods("Configuration", "skip-config-tbl", my.result.skippedConfigs, false)
 }
 
 h2("All Tests (grouped by their packages)")
@@ -145,7 +145,16 @@ table(id:"all-tbl", border:"1px", class:"pane sortable") {
     }
 }
 
-def printMethods(type, tableName, methodList) {
+/**
+ * Prints out the tables containing information about methods executed during test
+ *
+ * @param type Description of the type of methods. Used as title of table
+ * @param tableName unique name for the table
+ * @param methodList list of methods that form the rows of the table
+ * @param showMoreArrows if arrows should be shown with link to get more details about the methods
+ * @return nothing
+ */
+def printMethods(type, tableName, methodList, showMoreArrows) {
     a(href: "javascript:toggleTable('${tableName}')") {
         text("hide/expand the table")
     }
@@ -161,8 +170,22 @@ def printMethods(type, tableName, methodList) {
             for (method in methodList) {
                 tr() {
                     td(align: "left") {
+                        if (showMoreArrows) {
+                            a(id: "${method.id}-showlink", href:"javascript:showStackTrace('${method.id}', '${method.upUrl}/summary')") {
+                                text(">>>")
+                            }
+                            a(style: "display:none", id: "${method.id}-hidelink", href:"javascript:hideStackTrace('${method.id}')") {
+                                text("<<<")
+                            }
+                            text(" ")
+                        }
                         a(href:"${method.upUrl}") {
                             text("${method.parent.name}.${method.name}")
+                        }
+                        if (showMoreArrows) {
+                            div(id:"${method.id}", style: "display:none", class: "hidden") {
+                                text("Loading...")
+                            }
                         }
                     }
                 }

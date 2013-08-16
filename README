@@ -18,6 +18,7 @@ Release Notes
 
 ### upcoming
 * Fixed: JENKINS-19157 - Make st:bind work when Jenkins has jQuery plugin installed
+* Add failure details to failed configuration methods on TestNG results page
 
 ### v1.4
 * Bumped up supported Jenkins version to v1.526 or later
