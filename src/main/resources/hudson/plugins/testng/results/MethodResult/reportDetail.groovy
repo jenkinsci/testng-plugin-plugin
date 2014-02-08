@@ -90,7 +90,7 @@ div(id: "report") {
         p(id:"exp-msg") {
             b("Message: ")
             if (my.exception.message) {
-                raw("${testngProjAction.escapeExceptionMsg ? my.annotate(my.exception.message) : my.exception.message}")
+                raw("${testngProjAction.escapeExceptionMsg ? my.annotate(my.exception.message) : my.exception.message.replace("\n", "<br/>")}")
             } else {
                 text("(none)")
             }

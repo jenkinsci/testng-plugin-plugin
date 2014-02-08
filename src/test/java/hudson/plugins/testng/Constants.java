@@ -44,4 +44,8 @@ public class Constants {
      * Test description has HTML tags
      */
     public static final String TESTNG_DESCRIPTION_HTML = "testng-description-html.xml";
+    /**
+     * Test description and Exception message have multi-lines
+     */
+    public static final String TESTNG_MULTILINE_EXCEPTION_AND_DESCRIPTION = "testng-xml-multiline-exp-msg-and-descp.xml";
 }

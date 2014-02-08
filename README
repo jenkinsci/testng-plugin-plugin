@@ -16,6 +16,9 @@ graph and all details about which tests that failed are also presented.
 Release Notes
 -------
 
+### Upcoming
+* Fixed: JENKINS-19353 - Exception error message newlines are escaped
+
 ### v1.5
 * Fixed: JENKINS-19157 - Make st:bind work when Jenkins has jQuery plugin installed
 * Add failure details to failed configuration methods on TestNG results page

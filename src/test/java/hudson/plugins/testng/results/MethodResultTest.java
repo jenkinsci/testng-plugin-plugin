@@ -1,9 +1,15 @@
 package hudson.plugins.testng.results;
 
+import java.io.IOException;
+
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import hudson.Launcher;
-import hudson.model.*;
+import hudson.model.AbstractBuild;
+import hudson.model.BuildListener;
+import hudson.model.FreeStyleBuild;
+import hudson.model.FreeStyleProject;
+import hudson.model.Result;
 import hudson.plugins.testng.CommonUtil;
 import hudson.plugins.testng.Constants;
 import hudson.plugins.testng.PluginImpl;
@@ -13,8 +19,6 @@ import junit.framework.Assert;
 import org.junit.Test;
 import org.jvnet.hudson.test.HudsonTestCase;
 import org.jvnet.hudson.test.TestBuilder;
-
-import java.io.IOException;
 
 /**
  * Tests for {@link MethodResult}'s view page
@@ -100,8 +104,8 @@ public class MethodResultTest extends HudsonTestCase {
         //Compare output
         String methodUrl = build.getUrl() + PluginImpl.URL + "/com.test/com.test.UploadTest/uploadFile";
         HtmlPage page = createWebClient().goTo(methodUrl);
-        HtmlElement expMsg = page.getElementById("description");
-        String contents = expMsg.getTextContent();
+        HtmlElement description = page.getElementById("description");
+        String contents = description.getTextContent();
         assertFalse(contents.contains("</a>")); //non-escaped HTML so it doesn't show up as text
         assertFalse(contents.contains("<a href=\"")); //non-escaped HTML
     }
@@ -128,9 +132,48 @@ public class MethodResultTest extends HudsonTestCase {
         //Compare output
         String methodUrl = build.getUrl() + PluginImpl.URL + "/com.test/com.test.UploadTest/uploadFile";
         HtmlPage page = createWebClient().goTo(methodUrl);
-        HtmlElement expMsg = page.getElementById("description");
-        String contents = expMsg.getTextContent();
+        HtmlElement description = page.getElementById("description");
+        String contents = description.getTextContent();
         assertStringContains(contents, "</a>"); //escaped HTML so it shows up as text
+    }
+
+    /**
+     * Tests to make sure that newline characters are escaped correctly in description and
+     * exception message even when escape settings are set to false.
+     *
+     * Note that newline in description has to be denoted by &#10; as it's an attribute in
+     * testng result XML, where as exception message doesn't as it's wrapped in a CDATA
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testMultilineDescriptionAndExceptionMessage() throws Exception {
+        FreeStyleProject p = createFreeStyleProject();
+        Publisher publisher = new Publisher("testng.xml", false /*escapeDescription*/, false /*escapeException*/);
+        p.getPublishersList().add(publisher);
+        p.onCreatedFromScratch(); //to setup project action
+
+        p.getBuildersList().add(new TestBuilder() {
+            public boolean perform(AbstractBuild<?, ?> build, Launcher launcher,
+                BuildListener listener) throws InterruptedException, IOException {
+                String contents = CommonUtil.getContents(Constants.TESTNG_MULTILINE_EXCEPTION_AND_DESCRIPTION);
+                build.getWorkspace().child("testng.xml").write(contents,"UTF-8");
+                return true;
+            }
+        });
+
+        //run build
+        FreeStyleBuild build = p.scheduleBuild2(0).get();
+
+        //Compare output
+        String methodUrl = build.getUrl() + PluginImpl.URL + "/com.fakepkg.test/com.fakepkg.test.FoobarTests/test";
+        HtmlPage page = createWebClient().goTo(methodUrl);
+        HtmlElement description = page.getElementById("description");
+        assertEquals(2, description.getElementsByTagName("br").size());
+
+        HtmlElement exp = page.getElementById("exp-msg");
+        assertEquals(2, exp.getElementsByTagName("br").size());
+
     }
 
     @Test
@@ -245,7 +288,7 @@ public class MethodResultTest extends HudsonTestCase {
      * @throws Exception
      */
     @Test
-    public void testMethodResults2() throws Exception {
+    public void testMethodResults_dataProviderTests() throws Exception {
         FreeStyleProject p = createFreeStyleProject();
         Publisher publisher = new Publisher("testng.xml", false, false);
         p.getPublishersList().add(publisher);
@@ -321,7 +364,7 @@ public class MethodResultTest extends HudsonTestCase {
      * @throws Exception
      */
     @Test
-    public void testMethodResults3() throws Exception {
+    public void testMethodResults_testInstanceNames() throws Exception {
         FreeStyleProject p = createFreeStyleProject();
         Publisher publisher = new Publisher("testng.xml", false, false);
         p.getPublishersList().add(publisher);
