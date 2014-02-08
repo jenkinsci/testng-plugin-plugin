@@ -15,7 +15,7 @@
             </param>
           </params>
         </test-method>
-        <test-method name="preSetUp" test-instance-name="precheckins.StandbyModeOps" signature="preSetUp()" is-config="true" status="PASS" duration-ms="24" finished-at="2010-08-30T13:13:20Z" started-at="2010-08-30T13:13:20Z" depends-on-methods="com.vmware.vcqa.TestBase.initTest">
+        <test-method name="preSetUp" test-instance-name="precheckins.StandbyModeOps" signature="preSetUp()" is-config="true" status="PASS" duration-ms="24" finished-at="2010-08-30T13:13:20Z" started-at="2010-08-30T13:13:20Z" depends-on-methods="com.fakepkg.test.TestBase.initTest">
         </test-method>
         <test-method status="PASS" signature="testSetUp()" test-instance-name="precheckins.StandbyModeOps" name="testSetUp" is-config="true" duration-ms="86537" started-at="2010-08-30T13:13:20Z" finished-at="2010-08-30T13:14:46Z">
         </test-method>
@@ -25,7 +25,7 @@
         </test-method>
         <test-method status="PASS" signature="verifySysAlert()" test-instance-name="precheckins.StandbyModeOps" name="verifySysAlert" is-config="true" duration-ms="53" started-at="2010-08-30T13:31:41Z" finished-at="2010-08-30T13:31:41Z">
         </test-method>
-        <test-method name="postCleanUp" test-instance-name="precheckins.StandbyModeOps" signature="postCleanUp()" is-config="true" status="PASS" duration-ms="26" finished-at="2010-08-30T13:31:41Z" started-at="2010-08-30T13:31:41Z" depends-on-methods="com.vmware.vcqa.TestBase.verifySysAlert">
+        <test-method name="postCleanUp" test-instance-name="precheckins.StandbyModeOps" signature="postCleanUp()" is-config="true" status="PASS" duration-ms="26" finished-at="2010-08-30T13:31:41Z" started-at="2010-08-30T13:31:41Z" depends-on-methods="com.fakepkg.test.TestBase.verifySysAlert">
         </test-method>
       </class>
     </test>
@@ -40,15 +40,15 @@
             </param>
           </params>
         </test-method>
-        <test-method status="PASS" signature="preSetUp()" name="preSetUp" is-config="true" duration-ms="19" started-at="2010-08-30T13:33:14Z" depends-on-methods="com.vmware.vcqa.TestBase.initTest" finished-at="2010-08-30T13:33:14Z">
+        <test-method status="PASS" signature="preSetUp()" name="preSetUp" is-config="true" duration-ms="19" started-at="2010-08-30T13:33:14Z" depends-on-methods="com.fakepkg.test.TestBase.initTest" finished-at="2010-08-30T13:33:14Z">
         </test-method>
         <test-method status="PASS" signature="testSetUp()" name="testSetUp" is-config="true" duration-ms="1109" started-at="2010-08-30T13:33:14Z" finished-at="2010-08-30T13:33:15Z">
         </test-method>
         <test-method status="PASS" signature="test()" name="test" duration-ms="83714" started-at="2010-08-30T13:33:15Z" description="
  Move Standalone host into DRS Cluster with ResPool.
- Destroy DRS Cluster, containing the host. 
- Create new Cluster. 
- Add host into Cluster. 
+ Destroy DRS Cluster, containing the host.
+ Create new Cluster.
+ Add host into Cluster.
  Move host into another Cluster rootPool.
  Move host back as Standalone  through enter/exit Maintenance mode)" finished-at="2010-08-30T13:34:39Z">
         </test-method>
@@ -56,7 +56,7 @@
         </test-method>
         <test-method status="PASS" signature="verifySysAlert()" name="verifySysAlert" is-config="true" duration-ms="60" started-at="2010-08-30T13:34:39Z" finished-at="2010-08-30T13:34:39Z">
         </test-method>
-        <test-method status="PASS" signature="postCleanUp()" name="postCleanUp" is-config="true" duration-ms="11" started-at="2010-08-30T13:34:39Z" depends-on-methods="com.vmware.vcqa.TestBase.verifySysAlert" finished-at="2010-08-30T13:34:39Z">
+        <test-method status="PASS" signature="postCleanUp()" name="postCleanUp" is-config="true" duration-ms="11" started-at="2010-08-30T13:34:39Z" depends-on-methods="com.fakepkg.test.TestBase.verifySysAlert" finished-at="2010-08-30T13:34:39Z">
         </test-method>
       </class>
       <class name="precheckins.VMotionOps">
@@ -69,7 +69,7 @@
             </param>
           </params>
         </test-method>
-        <test-method status="PASS" signature="preSetUp()" name="preSetUp" is-config="true" duration-ms="38" started-at="2010-08-30T15:19:51Z" depends-on-methods="com.vmware.vcqa.TestBase.initTest" finished-at="2010-08-30T15:19:51Z">
+        <test-method status="PASS" signature="preSetUp()" name="preSetUp" is-config="true" duration-ms="38" started-at="2010-08-30T15:19:51Z" depends-on-methods="com.fakepkg.test.TestBase.initTest" finished-at="2010-08-30T15:19:51Z">
         </test-method>
         <test-method status="PASS" signature="testSetUp()" name="testSetUp" is-config="true" duration-ms="800" started-at="2010-08-30T15:19:51Z" finished-at="2010-08-30T15:19:52Z">
         </test-method>
@@ -83,7 +83,7 @@
         </test-method>
         <test-method status="PASS" signature="verifySysAlert()" name="verifySysAlert" is-config="true" duration-ms="151" started-at="2010-08-30T15:25:19Z" finished-at="2010-08-30T15:25:19Z">
         </test-method>
-        <test-method status="PASS" signature="postCleanUp()" name="postCleanUp" is-config="true" duration-ms="45" started-at="2010-08-30T15:25:19Z" depends-on-methods="com.vmware.vcqa.TestBase.verifySysAlert" finished-at="2010-08-30T15:25:19Z">
+        <test-method status="PASS" signature="postCleanUp()" name="postCleanUp" is-config="true" duration-ms="45" started-at="2010-08-30T15:25:19Z" depends-on-methods="com.fakepkg.test.TestBase.verifySysAlert" finished-at="2010-08-30T15:25:19Z">
         </test-method>
       </class>
       <class name="precheckins.ResourcePoolOps">
@@ -96,23 +96,23 @@
             </param>
           </params>
         </test-method>
-        <test-method status="PASS" signature="preSetUp()" name="preSetUp" is-config="true" duration-ms="19" started-at="2010-08-30T14:23:13Z" depends-on-methods="com.vmware.vcqa.TestBase.initTest" finished-at="2010-08-30T14:23:13Z">
+        <test-method status="PASS" signature="preSetUp()" name="preSetUp" is-config="true" duration-ms="19" started-at="2010-08-30T14:23:13Z" depends-on-methods="com.fakepkg.test.TestBase.initTest" finished-at="2010-08-30T14:23:13Z">
         </test-method>
         <test-method status="PASS" signature="testSetUp()" name="testSetUp" is-config="true" duration-ms="9513" started-at="2010-08-30T14:23:13Z" finished-at="2010-08-30T14:23:23Z">
         </test-method>
-        <test-method status="PASS" signature="test()" name="test" duration-ms="562572" started-at="2010-08-30T14:23:23Z" description="Resource Pool Ops Precheckin Test.  Performs Below Operation 
+        <test-method status="PASS" signature="test()" name="test" duration-ms="562572" started-at="2010-08-30T14:23:23Z" description="Resource Pool Ops Precheckin Test.  Performs Below Operation
 - Creates Nested ResPool with diff Types Expandable/Fixed
-- Created VM with reservation and Moves into ResPool 
-- Updates ResPool to set Reservation and limit 
-- Poweres on all VMs to see it succeed. 
-- Destroys ResPool 
+- Created VM with reservation and Moves into ResPool
+- Updates ResPool to set Reservation and limit
+- Poweres on all VMs to see it succeed.
+- Destroys ResPool
 " finished-at="2010-08-30T14:32:45Z">
         </test-method>
         <test-method status="PASS" signature="testCleanUp()" name="testCleanUp" is-config="true" duration-ms="30402" started-at="2010-08-30T14:32:45Z" finished-at="2010-08-30T14:33:16Z">
         </test-method>
         <test-method status="PASS" signature="verifySysAlert()" name="verifySysAlert" is-config="true" duration-ms="63" started-at="2010-08-30T14:33:16Z" finished-at="2010-08-30T14:33:16Z">
         </test-method>
-        <test-method status="PASS" signature="postCleanUp()" name="postCleanUp" is-config="true" duration-ms="32" started-at="2010-08-30T14:33:16Z" depends-on-methods="com.vmware.vcqa.TestBase.verifySysAlert" finished-at="2010-08-30T14:33:16Z">
+        <test-method status="PASS" signature="postCleanUp()" name="postCleanUp" is-config="true" duration-ms="32" started-at="2010-08-30T14:33:16Z" depends-on-methods="com.fakepkg.test.TestBase.verifySysAlert" finished-at="2010-08-30T14:33:16Z">
         </test-method>
       </class>
       <class name="precheckins.FTOps">
@@ -125,20 +125,20 @@
             </param>
           </params>
         </test-method>
-        <test-method status="PASS" signature="preSetUp()" name="preSetUp" is-config="true" duration-ms="31" started-at="2010-08-30T13:55:57Z" depends-on-methods="com.vmware.vcqa.TestBase.initTest" finished-at="2010-08-30T13:55:57Z">
+        <test-method status="PASS" signature="preSetUp()" name="preSetUp" is-config="true" duration-ms="31" started-at="2010-08-30T13:55:57Z" depends-on-methods="com.fakepkg.test.TestBase.initTest" finished-at="2010-08-30T13:55:57Z">
         </test-method>
         <test-method status="PASS" signature="testSetUp()" name="testSetUp" is-config="true" duration-ms="102965" started-at="2010-08-30T13:55:57Z" finished-at="2010-08-30T13:57:40Z">
         </test-method>
         <test-method status="FAIL" signature="test()" name="test" duration-ms="73273" started-at="2010-08-30T13:57:40Z" description="Test all FT specific API&#039;s on BAT setup. This test calls FT APIs createSecondary, disableSecondary, enableSecondary and removeSecondary on a VM in powered off state and powers on the VM after calling each of these APIs to verify FT functionality" finished-at="2010-08-30T13:58:53Z">
-          <exception class="com.vmware.vcqa.util.AssertException">
+          <exception class="com.fakepkg.test.util.AssertException">
             <message>
               <![CDATA[Test Failed]]>
             </message>
             <full-stacktrace>
-              <![CDATA[com.vmware.vcqa.util.AssertException: Test Failed
-	at com.vmware.vcqa.util.Assert.assertBoolean(Assert.java:259)
-	at com.vmware.vcqa.util.Assert.assertTrue(Assert.java:57)
-	at com.vmware.vcqa.util.Assert.assertTrue(Assert.java:36)
+              <![CDATA[com.fakepkg.test.util.AssertException: Test Failed
+	at com.fakepkg.test.util.Assert.assertBoolean(Assert.java:259)
+	at com.fakepkg.test.util.Assert.assertTrue(Assert.java:57)
+	at com.fakepkg.test.util.Assert.assertTrue(Assert.java:36)
 	at precheckins.FTOps.test(FTOps.java:449)
 	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
 	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
@@ -170,7 +170,7 @@
         </test-method>
         <test-method status="PASS" signature="verifySysAlert()" name="verifySysAlert" is-config="true" duration-ms="68" started-at="2010-08-30T14:01:17Z" finished-at="2010-08-30T14:01:17Z">
         </test-method>
-        <test-method status="PASS" signature="postCleanUp()" name="postCleanUp" is-config="true" duration-ms="21" started-at="2010-08-30T14:01:17Z" depends-on-methods="com.vmware.vcqa.TestBase.verifySysAlert" finished-at="2010-08-30T14:01:17Z">
+        <test-method status="PASS" signature="postCleanUp()" name="postCleanUp" is-config="true" duration-ms="21" started-at="2010-08-30T14:01:17Z" depends-on-methods="com.fakepkg.test.TestBase.verifySysAlert" finished-at="2010-08-30T14:01:17Z">
         </test-method>
       </class>
       <class name="precheckins.ExtensibleOps">
@@ -183,7 +183,7 @@
             </param>
           </params>
         </test-method>
-        <test-method status="PASS" signature="preSetUp()" name="preSetUp" is-config="true" duration-ms="24" started-at="2010-08-30T13:55:54Z" depends-on-methods="com.vmware.vcqa.TestBase.initTest" finished-at="2010-08-30T13:55:54Z">
+        <test-method status="PASS" signature="preSetUp()" name="preSetUp" is-config="true" duration-ms="24" started-at="2010-08-30T13:55:54Z" depends-on-methods="com.fakepkg.test.TestBase.initTest" finished-at="2010-08-30T13:55:54Z">
         </test-method>
         <test-method status="PASS" signature="test()" name="test" duration-ms="1859" started-at="2010-08-30T13:55:54Z" description="Precheckin for Extensibility.
  Register \ Update \ UnRegister Extension." finished-at="2010-08-30T13:55:56Z">
@@ -194,7 +194,7 @@
         </test-method>
         <test-method status="PASS" signature="verifySysAlert()" name="verifySysAlert" is-config="true" duration-ms="143" started-at="2010-08-30T13:55:56Z" finished-at="2010-08-30T13:55:56Z">
         </test-method>
-        <test-method status="PASS" signature="postCleanUp()" name="postCleanUp" is-config="true" duration-ms="11" started-at="2010-08-30T13:55:56Z" depends-on-methods="com.vmware.vcqa.TestBase.verifySysAlert" finished-at="2010-08-30T13:55:56Z">
+        <test-method status="PASS" signature="postCleanUp()" name="postCleanUp" is-config="true" duration-ms="11" started-at="2010-08-30T13:55:56Z" depends-on-methods="com.fakepkg.test.TestBase.verifySysAlert" finished-at="2010-08-30T13:55:56Z">
         </test-method>
       </class>
       <class name="precheckins.HotPlugOps">
@@ -207,7 +207,7 @@
             </param>
           </params>
         </test-method>
-        <test-method status="PASS" signature="preSetUp()" name="preSetUp" is-config="true" duration-ms="19" started-at="2010-08-30T14:11:30Z" depends-on-methods="com.vmware.vcqa.TestBase.initTest" finished-at="2010-08-30T14:11:30Z">
+        <test-method status="PASS" signature="preSetUp()" name="preSetUp" is-config="true" duration-ms="19" started-at="2010-08-30T14:11:30Z" depends-on-methods="com.fakepkg.test.TestBase.initTest" finished-at="2010-08-30T14:11:30Z">
         </test-method>
         <test-method status="PASS" signature="testSetUp()" name="testSetUp" is-config="true" duration-ms="1042" started-at="2010-08-30T14:11:30Z" finished-at="2010-08-30T14:11:31Z">
         </test-method>
@@ -217,7 +217,7 @@
         </test-method>
         <test-method status="PASS" signature="verifySysAlert()" name="verifySysAlert" is-config="true" duration-ms="45" started-at="2010-08-30T14:12:06Z" finished-at="2010-08-30T14:12:06Z">
         </test-method>
-        <test-method status="PASS" signature="postCleanUp()" name="postCleanUp" is-config="true" duration-ms="55" started-at="2010-08-30T14:12:06Z" depends-on-methods="com.vmware.vcqa.TestBase.verifySysAlert" finished-at="2010-08-30T14:12:06Z">
+        <test-method status="PASS" signature="postCleanUp()" name="postCleanUp" is-config="true" duration-ms="55" started-at="2010-08-30T14:12:06Z" depends-on-methods="com.fakepkg.test.TestBase.verifySysAlert" finished-at="2010-08-30T14:12:06Z">
         </test-method>
       </class>
       <class name="precheckins.DVSOps">
@@ -230,37 +230,37 @@
             </param>
           </params>
         </test-method>
-        <test-method status="PASS" signature="preSetUp()" name="preSetUp" is-config="true" duration-ms="36" started-at="2010-08-30T13:37:34Z" depends-on-methods="com.vmware.vcqa.TestBase.initTest" finished-at="2010-08-30T13:37:34Z">
+        <test-method status="PASS" signature="preSetUp()" name="preSetUp" is-config="true" duration-ms="36" started-at="2010-08-30T13:37:34Z" depends-on-methods="com.fakepkg.test.TestBase.initTest" finished-at="2010-08-30T13:37:34Z">
         </test-method>
         <test-method status="PASS" signature="testSetUp()" name="testSetUp" is-config="true" duration-ms="5261" started-at="2010-08-30T13:37:34Z" finished-at="2010-08-30T13:37:39Z">
         </test-method>
-        <test-method status="PASS" signature="test()" name="test" duration-ms="284623" started-at="2010-08-30T13:37:39Z" description=" This is the precheckin test for DVS related operations. This does the 
- following basic operations on the VC. 
- 1. Create a DVS while simultaneously adding the host. 
- 2. Add an early binding portgroup to the DVS 
- 3. Reconfigure above portgroup to be ephemeral 
- 4. Attach a VM  to this ephemeral portgroup. 
- 5. Verify the power ops of the VM 
- 6  Add an early binding portgroup to the DVS 
- 7. Reconfigure above portgroup to be dynamic 
- 8. Attach a VM  to this dynamic binding portgroup. 
- 9. Verify the power ops of the VM 
- 10. Add a early binding portgroup to the DVS 
- 11. Attach a VM to this early binding portgroup. 
- 12. Verify the power ops of the VM. 
- 13. Add a late binding portgroup to the DVS 
- 14. Attach a VM to this late binding portgroup. 
- 15. Verify the power ops of the VM. 
- 16. Add a ephemeral portgroup to the DVS 
- 17. Attach a VM to this ephemeral portgroup. 
- 18. Verify the power ops of the VM.  
+        <test-method status="PASS" signature="test()" name="test" duration-ms="284623" started-at="2010-08-30T13:37:39Z" description=" This is the precheckin test for DVS related operations. This does the
+ following basic operations on the VC.
+ 1. Create a DVS while simultaneously adding the host.
+ 2. Add an early binding portgroup to the DVS
+ 3. Reconfigure above portgroup to be ephemeral
+ 4. Attach a VM  to this ephemeral portgroup.
+ 5. Verify the power ops of the VM
+ 6  Add an early binding portgroup to the DVS
+ 7. Reconfigure above portgroup to be dynamic
+ 8. Attach a VM  to this dynamic binding portgroup.
+ 9. Verify the power ops of the VM
+ 10. Add a early binding portgroup to the DVS
+ 11. Attach a VM to this early binding portgroup.
+ 12. Verify the power ops of the VM.
+ 13. Add a late binding portgroup to the DVS
+ 14. Attach a VM to this late binding portgroup.
+ 15. Verify the power ops of the VM.
+ 16. Add a ephemeral portgroup to the DVS
+ 17. Attach a VM to this ephemeral portgroup.
+ 18. Verify the power ops of the VM.
 " finished-at="2010-08-30T13:42:24Z">
         </test-method>
         <test-method status="PASS" signature="testCleanUp()" name="testCleanUp" is-config="true" duration-ms="9648" started-at="2010-08-30T13:42:24Z" finished-at="2010-08-30T13:42:33Z">
         </test-method>
         <test-method status="PASS" signature="verifySysAlert()" name="verifySysAlert" is-config="true" duration-ms="89" started-at="2010-08-30T13:42:33Z" finished-at="2010-08-30T13:42:33Z">
         </test-method>
-        <test-method status="PASS" signature="postCleanUp()" name="postCleanUp" is-config="true" duration-ms="17" started-at="2010-08-30T13:42:33Z" depends-on-methods="com.vmware.vcqa.TestBase.verifySysAlert" finished-at="2010-08-30T13:42:33Z">
+        <test-method status="PASS" signature="postCleanUp()" name="postCleanUp" is-config="true" duration-ms="17" started-at="2010-08-30T13:42:33Z" depends-on-methods="com.fakepkg.test.TestBase.verifySysAlert" finished-at="2010-08-30T13:42:33Z">
         </test-method>
       </class>
       <class name="precheckins.NetworkOps">
@@ -273,7 +273,7 @@
             </param>
           </params>
         </test-method>
-        <test-method status="PASS" signature="preSetUp()" name="preSetUp" is-config="true" duration-ms="32" started-at="2010-08-30T14:14:13Z" depends-on-methods="com.vmware.vcqa.TestBase.initTest" finished-at="2010-08-30T14:14:13Z">
+        <test-method status="PASS" signature="preSetUp()" name="preSetUp" is-config="true" duration-ms="32" started-at="2010-08-30T14:14:13Z" depends-on-methods="com.fakepkg.test.TestBase.initTest" finished-at="2010-08-30T14:14:13Z">
         </test-method>
         <test-method status="PASS" signature="testSetUp()" name="testSetUp" is-config="true" duration-ms="1161" started-at="2010-08-30T14:14:13Z" finished-at="2010-08-30T14:14:14Z">
         </test-method>
@@ -283,7 +283,7 @@
         </test-method>
         <test-method status="PASS" signature="verifySysAlert()" name="verifySysAlert" is-config="true" duration-ms="43" started-at="2010-08-30T14:14:39Z" finished-at="2010-08-30T14:14:39Z">
         </test-method>
-        <test-method status="PASS" signature="postCleanUp()" name="postCleanUp" is-config="true" duration-ms="11" started-at="2010-08-30T14:14:39Z" depends-on-methods="com.vmware.vcqa.TestBase.verifySysAlert" finished-at="2010-08-30T14:14:39Z">
+        <test-method status="PASS" signature="postCleanUp()" name="postCleanUp" is-config="true" duration-ms="11" started-at="2010-08-30T14:14:39Z" depends-on-methods="com.fakepkg.test.TestBase.verifySysAlert" finished-at="2010-08-30T14:14:39Z">
         </test-method>
       </class>
       <class name="precheckins.GenerateLogBundleOps">
@@ -296,7 +296,7 @@
             </param>
           </params>
         </test-method>
-        <test-method status="PASS" signature="preSetUp()" name="preSetUp" is-config="true" duration-ms="83" started-at="2010-08-30T14:01:17Z" depends-on-methods="com.vmware.vcqa.TestBase.initTest" finished-at="2010-08-30T14:01:17Z">
+        <test-method status="PASS" signature="preSetUp()" name="preSetUp" is-config="true" duration-ms="83" started-at="2010-08-30T14:01:17Z" depends-on-methods="com.fakepkg.test.TestBase.initTest" finished-at="2010-08-30T14:01:17Z">
         </test-method>
         <test-method status="PASS" signature="testSetUp()" name="testSetUp" is-config="true" duration-ms="42" started-at="2010-08-30T14:01:17Z" finished-at="2010-08-30T14:01:17Z">
         </test-method>
@@ -306,7 +306,7 @@
         </test-method>
         <test-method status="PASS" signature="verifySysAlert()" name="verifySysAlert" is-config="true" duration-ms="62" started-at="2010-08-30T14:02:37Z" finished-at="2010-08-30T14:02:37Z">
         </test-method>
-        <test-method status="PASS" signature="postCleanUp()" name="postCleanUp" is-config="true" duration-ms="10" started-at="2010-08-30T14:02:37Z" depends-on-methods="com.vmware.vcqa.TestBase.verifySysAlert" finished-at="2010-08-30T14:02:37Z">
+        <test-method status="PASS" signature="postCleanUp()" name="postCleanUp" is-config="true" duration-ms="10" started-at="2010-08-30T14:02:37Z" depends-on-methods="com.fakepkg.test.TestBase.verifySysAlert" finished-at="2010-08-30T14:02:37Z">
         </test-method>
       </class>
       <class name="precheckins.HostProfiles">
@@ -319,7 +319,7 @@
             </param>
           </params>
         </test-method>
-        <test-method status="PASS" signature="preSetUp()" name="preSetUp" is-config="true" duration-ms="34" started-at="2010-08-30T14:11:05Z" depends-on-methods="com.vmware.vcqa.TestBase.initTest" finished-at="2010-08-30T14:11:05Z">
+        <test-method status="PASS" signature="preSetUp()" name="preSetUp" is-config="true" duration-ms="34" started-at="2010-08-30T14:11:05Z" depends-on-methods="com.fakepkg.test.TestBase.initTest" finished-at="2010-08-30T14:11:05Z">
         </test-method>
         <test-method status="PASS" signature="testSetUp()" name="testSetUp" is-config="true" duration-ms="7333" started-at="2010-08-30T14:11:05Z" finished-at="2010-08-30T14:11:13Z">
         </test-method>
@@ -329,7 +329,7 @@
         </test-method>
         <test-method status="PASS" signature="verifySysAlert()" name="verifySysAlert" is-config="true" duration-ms="97" started-at="2010-08-30T14:11:30Z" finished-at="2010-08-30T14:11:30Z">
         </test-method>
-        <test-method status="PASS" signature="postCleanUp()" name="postCleanUp" is-config="true" duration-ms="11" started-at="2010-08-30T14:11:30Z" depends-on-methods="com.vmware.vcqa.TestBase.verifySysAlert" finished-at="2010-08-30T14:11:30Z">
+        <test-method status="PASS" signature="postCleanUp()" name="postCleanUp" is-config="true" duration-ms="11" started-at="2010-08-30T14:11:30Z" depends-on-methods="com.fakepkg.test.TestBase.verifySysAlert" finished-at="2010-08-30T14:11:30Z">
         </test-method>
       </class>
       <class name="precheckins.EntityOps">
@@ -342,23 +342,23 @@
             </param>
           </params>
         </test-method>
-        <test-method status="PASS" signature="preSetUp()" name="preSetUp" is-config="true" duration-ms="20" started-at="2010-08-30T13:54:57Z" depends-on-methods="com.vmware.vcqa.TestBase.initTest" finished-at="2010-08-30T13:54:57Z">
+        <test-method status="PASS" signature="preSetUp()" name="preSetUp" is-config="true" duration-ms="20" started-at="2010-08-30T13:54:57Z" depends-on-methods="com.fakepkg.test.TestBase.initTest" finished-at="2010-08-30T13:54:57Z">
         </test-method>
         <test-method status="PASS" signature="testSetUp()" name="testSetUp" is-config="true" duration-ms="940" started-at="2010-08-30T13:54:57Z" finished-at="2010-08-30T13:54:58Z">
         </test-method>
         <test-method status="PASS" signature="test()" name="test" duration-ms="8990" started-at="2010-08-30T13:54:58Z" description="Precheckin: Entity Ops:
-1. Add Field Definition 
-2. Rename Field Definition 
-3. Set Field 
-4. Set Custom Value 
-5. Remove Field Definition 
+1. Add Field Definition
+2. Rename Field Definition
+3. Set Field
+4. Set Custom Value
+5. Remove Field Definition
 6. Rename entity" finished-at="2010-08-30T13:55:07Z">
         </test-method>
         <test-method status="PASS" signature="testCleanUp()" name="testCleanUp" is-config="true" duration-ms="18" started-at="2010-08-30T13:55:07Z" finished-at="2010-08-30T13:55:07Z">
         </test-method>
         <test-method status="PASS" signature="verifySysAlert()" name="verifySysAlert" is-config="true" duration-ms="68" started-at="2010-08-30T13:55:07Z" finished-at="2010-08-30T13:55:07Z">
         </test-method>
-        <test-method status="PASS" signature="postCleanUp()" name="postCleanUp" is-config="true" duration-ms="11" started-at="2010-08-30T13:55:07Z" depends-on-methods="com.vmware.vcqa.TestBase.verifySysAlert" finished-at="2010-08-30T13:55:07Z">
+        <test-method status="PASS" signature="postCleanUp()" name="postCleanUp" is-config="true" duration-ms="11" started-at="2010-08-30T13:55:07Z" depends-on-methods="com.fakepkg.test.TestBase.verifySysAlert" finished-at="2010-08-30T13:55:07Z">
         </test-method>
       </class>
       <class name="precheckins.VMToolsOps">
@@ -371,7 +371,7 @@
             </param>
           </params>
         </test-method>
-        <test-method status="PASS" signature="preSetUp()" name="preSetUp" is-config="true" duration-ms="70" started-at="2010-08-30T14:40:18Z" depends-on-methods="com.vmware.vcqa.TestBase.initTest" finished-at="2010-08-30T14:40:18Z">
+        <test-method status="PASS" signature="preSetUp()" name="preSetUp" is-config="true" duration-ms="70" started-at="2010-08-30T14:40:18Z" depends-on-methods="com.fakepkg.test.TestBase.initTest" finished-at="2010-08-30T14:40:18Z">
         </test-method>
         <test-method status="PASS" signature="testSetUp()" name="testSetUp" is-config="true" duration-ms="841" started-at="2010-08-30T14:40:18Z" finished-at="2010-08-30T14:40:19Z">
         </test-method>
@@ -381,7 +381,7 @@
         </test-method>
         <test-method status="PASS" signature="verifySysAlert()" name="verifySysAlert" is-config="true" duration-ms="85" started-at="2010-08-30T15:19:51Z" finished-at="2010-08-30T15:19:51Z">
         </test-method>
-        <test-method status="PASS" signature="postCleanUp()" name="postCleanUp" is-config="true" duration-ms="54" started-at="2010-08-30T15:19:51Z" depends-on-methods="com.vmware.vcqa.TestBase.verifySysAlert" finished-at="2010-08-30T15:19:51Z">
+        <test-method status="PASS" signature="postCleanUp()" name="postCleanUp" is-config="true" duration-ms="54" started-at="2010-08-30T15:19:51Z" depends-on-methods="com.fakepkg.test.TestBase.verifySysAlert" finished-at="2010-08-30T15:19:51Z">
         </test-method>
       </class>
       <class name="precheckins.ProvisioningOps">
@@ -394,7 +394,7 @@
             </param>
           </params>
         </test-method>
-        <test-method status="PASS" signature="preSetUp()" name="preSetUp" is-config="true" duration-ms="24" started-at="2010-08-30T14:14:42Z" depends-on-methods="com.vmware.vcqa.TestBase.initTest" finished-at="2010-08-30T14:14:42Z">
+        <test-method status="PASS" signature="preSetUp()" name="preSetUp" is-config="true" duration-ms="24" started-at="2010-08-30T14:14:42Z" depends-on-methods="com.fakepkg.test.TestBase.initTest" finished-at="2010-08-30T14:14:42Z">
         </test-method>
         <test-method status="PASS" signature="testSetUp()" name="testSetUp" is-config="true" duration-ms="11061" started-at="2010-08-30T14:14:42Z" finished-at="2010-08-30T14:14:53Z">
         </test-method>
@@ -404,7 +404,7 @@
         </test-method>
         <test-method status="PASS" signature="verifySysAlert()" name="verifySysAlert" is-config="true" duration-ms="67" started-at="2010-08-30T14:16:42Z" finished-at="2010-08-30T14:16:43Z">
         </test-method>
-        <test-method status="PASS" signature="postCleanUp()" name="postCleanUp" is-config="true" duration-ms="17" started-at="2010-08-30T14:16:43Z" depends-on-methods="com.vmware.vcqa.TestBase.verifySysAlert" finished-at="2010-08-30T14:16:43Z">
+        <test-method status="PASS" signature="postCleanUp()" name="postCleanUp" is-config="true" duration-ms="17" started-at="2010-08-30T14:16:43Z" depends-on-methods="com.fakepkg.test.TestBase.verifySysAlert" finished-at="2010-08-30T14:16:43Z">
         </test-method>
       </class>
       <class name="precheckins.HADRSOps">
@@ -417,11 +417,11 @@
             </param>
           </params>
         </test-method>
-        <test-method status="PASS" signature="preSetUp()" name="preSetUp" is-config="true" duration-ms="19" started-at="2010-08-30T14:02:37Z" depends-on-methods="com.vmware.vcqa.TestBase.initTest" finished-at="2010-08-30T14:02:37Z">
+        <test-method status="PASS" signature="preSetUp()" name="preSetUp" is-config="true" duration-ms="19" started-at="2010-08-30T14:02:37Z" depends-on-methods="com.fakepkg.test.TestBase.initTest" finished-at="2010-08-30T14:02:37Z">
         </test-method>
         <test-method status="PASS" signature="testSetUp()" name="testSetUp" is-config="true" duration-ms="12160" started-at="2010-08-30T14:02:37Z" finished-at="2010-08-30T14:02:50Z">
         </test-method>
-        <test-method status="PASS" signature="test()" name="test" duration-ms="358327" started-at="2010-08-30T14:02:50Z" description="HADRS Precheckin test 
+        <test-method status="PASS" signature="test()" name="test" duration-ms="358327" started-at="2010-08-30T14:02:50Z" description="HADRS Precheckin test
 1. Create a cluster with HA(default settings) and DRS(in automatic mode) enabled.
 2. Create vm-1 on host-1, move host-1into cluster and check for HA configuration on host-1.
 3. Power-on vm-1. This should fail with AdmissionControlCheckFailed.
@@ -435,7 +435,7 @@
 12. Enter host-2 into maintenance mode. This should fail with a DRS insufficient resources fault
 13. Reconfigure the cluster with admission control off and enter host-2 into maintenance mode.
 14. vm-1 should be migrated by DRS and the enter maintenance mode should be successful.
-15. Reconfigure the cluster with admission control on and host-1 as the failover host. The powered-on vm should be migrated to host-2 
+15. Reconfigure the cluster with admission control on and host-1 as the failover host. The powered-on vm should be migrated to host-2
 16. Power-off vm-1 and enter host-1 into maintenance mode and move the hosts out of the cluster.
 17. Destroy vm-1 and the cluster.
 " finished-at="2010-08-30T14:08:48Z">
@@ -444,7 +444,7 @@
         </test-method>
         <test-method status="PASS" signature="verifySysAlert()" name="verifySysAlert" is-config="true" duration-ms="81" started-at="2010-08-30T14:09:28Z" finished-at="2010-08-30T14:09:28Z">
         </test-method>
-        <test-method status="PASS" signature="postCleanUp()" name="postCleanUp" is-config="true" duration-ms="9" started-at="2010-08-30T14:09:28Z" depends-on-methods="com.vmware.vcqa.TestBase.verifySysAlert" finished-at="2010-08-30T14:09:28Z">
+        <test-method status="PASS" signature="postCleanUp()" name="postCleanUp" is-config="true" duration-ms="9" started-at="2010-08-30T14:09:28Z" depends-on-methods="com.fakepkg.test.TestBase.verifySysAlert" finished-at="2010-08-30T14:09:28Z">
         </test-method>
       </class>
       <class name="precheckins.TaskOps">
@@ -457,7 +457,7 @@
             </param>
           </params>
         </test-method>
-        <test-method status="PASS" signature="preSetUp()" name="preSetUp" is-config="true" duration-ms="37" started-at="2010-08-30T14:35:49Z" depends-on-methods="com.vmware.vcqa.TestBase.initTest" finished-at="2010-08-30T14:35:49Z">
+        <test-method status="PASS" signature="preSetUp()" name="preSetUp" is-config="true" duration-ms="37" started-at="2010-08-30T14:35:49Z" depends-on-methods="com.fakepkg.test.TestBase.initTest" finished-at="2010-08-30T14:35:49Z">
         </test-method>
         <test-method status="PASS" signature="testSetUp()" name="testSetUp" is-config="true" duration-ms="902" started-at="2010-08-30T14:35:49Z" finished-at="2010-08-30T14:35:50Z">
         </test-method>
@@ -476,7 +476,7 @@
         </test-method>
         <test-method status="PASS" signature="verifySysAlert()" name="verifySysAlert" is-config="true" duration-ms="58" started-at="2010-08-30T14:36:41Z" finished-at="2010-08-30T14:36:41Z">
         </test-method>
-        <test-method status="PASS" signature="postCleanUp()" name="postCleanUp" is-config="true" duration-ms="22" started-at="2010-08-30T14:36:41Z" depends-on-methods="com.vmware.vcqa.TestBase.verifySysAlert" finished-at="2010-08-30T14:36:41Z">
+        <test-method status="PASS" signature="postCleanUp()" name="postCleanUp" is-config="true" duration-ms="22" started-at="2010-08-30T14:36:41Z" depends-on-methods="com.fakepkg.test.TestBase.verifySysAlert" finished-at="2010-08-30T14:36:41Z">
         </test-method>
       </class>
       <class name="precheckins.ViewManagerOps">
@@ -489,20 +489,20 @@
             </param>
           </params>
         </test-method>
-        <test-method status="PASS" signature="preSetUp()" name="preSetUp" is-config="true" duration-ms="20" started-at="2010-08-30T15:25:19Z" depends-on-methods="com.vmware.vcqa.TestBase.initTest" finished-at="2010-08-30T15:25:19Z">
+        <test-method status="PASS" signature="preSetUp()" name="preSetUp" is-config="true" duration-ms="20" started-at="2010-08-30T15:25:19Z" depends-on-methods="com.fakepkg.test.TestBase.initTest" finished-at="2010-08-30T15:25:19Z">
         </test-method>
         <test-method status="PASS" signature="testSetUp()" name="testSetUp" is-config="true" duration-ms="1881" started-at="2010-08-30T15:25:19Z" finished-at="2010-08-30T15:25:21Z">
         </test-method>
         <test-method status="PASS" signature="test()" name="test" duration-ms="24448" started-at="2010-08-30T15:25:21Z" description="View Manager Precheckin Test:
-Step 1a: Create a root Folder container view with no filter types with recursive set to false 
-Step 1b: Create a root Folder container view with no filter types with recursive set to true 
-Step 2: Create ListView with all ManagedObject types:Root Folder, Datacenter, Compute resource of standalone host Cluster Compute resource, Resource pool, Host, VM, datastore and Network 
-Step 3: CreateListViewFromView with a ContainerView 
-Step 4: Remove a managed Entity from the List View (VM) 
-Step 5: Reset a ListView with a new set of MORs 
-Step 6: Reset a ListView with the set of managed entities that are in ContainerView 
-Step 7: Create a inventory view 
-Step 8: Open and CloseFolder on the root folder 
+Step 1a: Create a root Folder container view with no filter types with recursive set to false
+Step 1b: Create a root Folder container view with no filter types with recursive set to true
+Step 2: Create ListView with all ManagedObject types:Root Folder, Datacenter, Compute resource of standalone host Cluster Compute resource, Resource pool, Host, VM, datastore and Network
+Step 3: CreateListViewFromView with a ContainerView
+Step 4: Remove a managed Entity from the List View (VM)
+Step 5: Reset a ListView with a new set of MORs
+Step 6: Reset a ListView with the set of managed entities that are in ContainerView
+Step 7: Create a inventory view
+Step 8: Open and CloseFolder on the root folder
 Step 9: Create a inventory view and then move a VM between two VM folders
 Step 10: Destroy view
 " finished-at="2010-08-30T15:25:45Z">
@@ -511,7 +511,7 @@ Step 10: Destroy view
         </test-method>
         <test-method status="PASS" signature="verifySysAlert()" name="verifySysAlert" is-config="true" duration-ms="67" started-at="2010-08-30T15:25:56Z" finished-at="2010-08-30T15:25:56Z">
         </test-method>
-        <test-method status="PASS" signature="postCleanUp()" name="postCleanUp" is-config="true" duration-ms="11" started-at="2010-08-30T15:25:56Z" depends-on-methods="com.vmware.vcqa.TestBase.verifySysAlert" finished-at="2010-08-30T15:25:56Z">
+        <test-method status="PASS" signature="postCleanUp()" name="postCleanUp" is-config="true" duration-ms="11" started-at="2010-08-30T15:25:56Z" depends-on-methods="com.fakepkg.test.TestBase.verifySysAlert" finished-at="2010-08-30T15:25:56Z">
         </test-method>
       </class>
       <class name="precheckins.LicensingOps">
@@ -524,16 +524,16 @@ Step 10: Destroy view
             </param>
           </params>
         </test-method>
-        <test-method status="PASS" signature="preSetUp()" name="preSetUp" is-config="true" duration-ms="38" started-at="2010-08-30T14:12:14Z" depends-on-methods="com.vmware.vcqa.TestBase.initTest" finished-at="2010-08-30T14:12:14Z">
+        <test-method status="PASS" signature="preSetUp()" name="preSetUp" is-config="true" duration-ms="38" started-at="2010-08-30T14:12:14Z" depends-on-methods="com.fakepkg.test.TestBase.initTest" finished-at="2010-08-30T14:12:14Z">
         </test-method>
         <test-method status="PASS" signature="testSetUp()" name="testSetUp" is-config="true" duration-ms="14295" started-at="2010-08-30T14:12:14Z" finished-at="2010-08-30T14:12:29Z">
         </test-method>
         <test-method status="PASS" signature="test()" name="test" duration-ms="45023" started-at="2010-08-30T14:12:29Z" description="* Basic Licensing Test - verify basic licensing by testing the following:
 .    1. Put VC in eval Add host in eval to DRS enabled cluster. (if eval has expired use Enterprise)
-	   2. Verify that eval assignments has been done successfully. 
-	   3. Assign VC an enterprise license and verify the assignment 
-	   4. Assign host an enterprise license and verity the assignment 
-	   5. Try to downgrade the license of a host to Foundation (Assignment should fail) 
+	   2. Verify that eval assignments has been done successfully.
+	   3. Assign VC an enterprise license and verify the assignment
+	   4. Assign host an enterprise license and verity the assignment
+	   5. Try to downgrade the license of a host to Foundation (Assignment should fail)
 	   6. Verify that the licenses are still Enterprise which was assigned before.
 	  " finished-at="2010-08-30T14:13:14Z">
         </test-method>
@@ -541,7 +541,7 @@ Step 10: Destroy view
         </test-method>
         <test-method status="PASS" signature="verifySysAlert()" name="verifySysAlert" is-config="true" duration-ms="175" started-at="2010-08-30T14:14:13Z" finished-at="2010-08-30T14:14:13Z">
         </test-method>
-        <test-method status="PASS" signature="postCleanUp()" name="postCleanUp" is-config="true" duration-ms="11" started-at="2010-08-30T14:14:13Z" depends-on-methods="com.vmware.vcqa.TestBase.verifySysAlert" finished-at="2010-08-30T14:14:13Z">
+        <test-method status="PASS" signature="postCleanUp()" name="postCleanUp" is-config="true" duration-ms="11" started-at="2010-08-30T14:14:13Z" depends-on-methods="com.fakepkg.test.TestBase.verifySysAlert" finished-at="2010-08-30T14:14:13Z">
         </test-method>
       </class>
       <class name="precheckins.DasNetworkOps">
@@ -554,7 +554,7 @@ Step 10: Destroy view
             </param>
           </params>
         </test-method>
-        <test-method status="PASS" signature="preSetUp()" name="preSetUp" is-config="true" duration-ms="25" started-at="2010-08-30T13:42:33Z" depends-on-methods="com.vmware.vcqa.TestBase.initTest" finished-at="2010-08-30T13:42:33Z">
+        <test-method status="PASS" signature="preSetUp()" name="preSetUp" is-config="true" duration-ms="25" started-at="2010-08-30T13:42:33Z" depends-on-methods="com.fakepkg.test.TestBase.initTest" finished-at="2010-08-30T13:42:33Z">
         </test-method>
         <test-method status="PASS" signature="testSetUp()" name="testSetUp" is-config="true" duration-ms="137527" started-at="2010-08-30T13:42:33Z" finished-at="2010-08-30T13:44:51Z">
         </test-method>
@@ -564,7 +564,7 @@ Step 10: Destroy view
         </test-method>
         <test-method status="PASS" signature="verifySysAlert()" name="verifySysAlert" is-config="true" duration-ms="69" started-at="2010-08-30T13:51:40Z" finished-at="2010-08-30T13:51:40Z">
         </test-method>
-        <test-method status="PASS" signature="postCleanUp()" name="postCleanUp" is-config="true" duration-ms="12" started-at="2010-08-30T13:51:40Z" depends-on-methods="com.vmware.vcqa.TestBase.verifySysAlert" finished-at="2010-08-30T13:51:40Z">
+        <test-method status="PASS" signature="postCleanUp()" name="postCleanUp" is-config="true" duration-ms="12" started-at="2010-08-30T13:51:40Z" depends-on-methods="com.fakepkg.test.TestBase.verifySysAlert" finished-at="2010-08-30T13:51:40Z">
         </test-method>
       </class>
       <class name="precheckins.DasOps">
@@ -577,11 +577,11 @@ Step 10: Destroy view
             </param>
           </params>
         </test-method>
-        <test-method status="PASS" signature="preSetUp()" name="preSetUp" is-config="true" duration-ms="25" started-at="2010-08-30T13:51:40Z" depends-on-methods="com.vmware.vcqa.TestBase.initTest" finished-at="2010-08-30T13:51:40Z">
+        <test-method status="PASS" signature="preSetUp()" name="preSetUp" is-config="true" duration-ms="25" started-at="2010-08-30T13:51:40Z" depends-on-methods="com.fakepkg.test.TestBase.initTest" finished-at="2010-08-30T13:51:40Z">
         </test-method>
         <test-method status="PASS" signature="testSetUp()" name="testSetUp" is-config="true" duration-ms="20082" started-at="2010-08-30T13:51:40Z" finished-at="2010-08-30T13:52:01Z">
         </test-method>
-        <test-method status="PASS" signature="test()" name="test" duration-ms="157253" started-at="2010-08-30T13:52:01Z" description="DAS Pre checkin test 
+        <test-method status="PASS" signature="test()" name="test" duration-ms="157253" started-at="2010-08-30T13:52:01Z" description="DAS Pre checkin test
 1) Create DAS only cluster with one host failover and strict admission control
  2) Add a host with one VM to the cluster. Monitor dasConfig task to complete
  successfully. 3) Power on VM. This should fail with AdmissionControlCheckFailed.
@@ -598,7 +598,7 @@ Step 10: Destroy view
         </test-method>
         <test-method status="PASS" signature="verifySysAlert()" name="verifySysAlert" is-config="true" duration-ms="61" started-at="2010-08-30T13:54:56Z" finished-at="2010-08-30T13:54:56Z">
         </test-method>
-        <test-method status="PASS" signature="postCleanUp()" name="postCleanUp" is-config="true" duration-ms="9" started-at="2010-08-30T13:54:56Z" depends-on-methods="com.vmware.vcqa.TestBase.verifySysAlert" finished-at="2010-08-30T13:54:56Z">
+        <test-method status="PASS" signature="postCleanUp()" name="postCleanUp" is-config="true" duration-ms="9" started-at="2010-08-30T13:54:56Z" depends-on-methods="com.fakepkg.test.TestBase.verifySysAlert" finished-at="2010-08-30T13:54:56Z">
         </test-method>
       </class>
       <class name="precheckins.AlarmOps">
@@ -611,24 +611,24 @@ Step 10: Destroy view
             </param>
           </params>
         </test-method>
-        <test-method status="PASS" signature="preSetUp()" name="preSetUp" is-config="true" duration-ms="56" started-at="2010-08-30T13:32:47Z" depends-on-methods="com.vmware.vcqa.TestBase.initTest" finished-at="2010-08-30T13:32:47Z">
+        <test-method status="PASS" signature="preSetUp()" name="preSetUp" is-config="true" duration-ms="56" started-at="2010-08-30T13:32:47Z" depends-on-methods="com.fakepkg.test.TestBase.initTest" finished-at="2010-08-30T13:32:47Z">
         </test-method>
         <test-method status="PASS" signature="testSetUp()" name="testSetUp" is-config="true" duration-ms="900" started-at="2010-08-30T13:32:47Z" finished-at="2010-08-30T13:32:48Z">
         </test-method>
         <test-method status="PASS" signature="test()" name="test" duration-ms="21675" started-at="2010-08-30T13:32:48Z" description="Precheckin: Alarms Ops
-1. Create alarm A1 on Host 
-2. Create alarm A2 on VM power on 
-3. Power on VM and get state of alarm A2 
-4. Acknowledge alarm A2 
-5. Reconfigure alarm A1 
-6. Set action enabled on alarm 
+1. Create alarm A1 on Host
+2. Create alarm A2 on VM power on
+3. Power on VM and get state of alarm A2
+4. Acknowledge alarm A2
+5. Reconfigure alarm A1
+6. Set action enabled on alarm
 7. Remove alarm A1 and A2" finished-at="2010-08-30T13:33:10Z">
         </test-method>
         <test-method status="PASS" signature="testCleanUp()" name="testCleanUp" is-config="true" duration-ms="4315" started-at="2010-08-30T13:33:10Z" finished-at="2010-08-30T13:33:14Z">
         </test-method>
         <test-method status="PASS" signature="verifySysAlert()" name="verifySysAlert" is-config="true" duration-ms="43" started-at="2010-08-30T13:33:14Z" finished-at="2010-08-30T13:33:14Z">
         </test-method>
-        <test-method status="PASS" signature="postCleanUp()" name="postCleanUp" is-config="true" duration-ms="50" started-at="2010-08-30T13:33:14Z" depends-on-methods="com.vmware.vcqa.TestBase.verifySysAlert" finished-at="2010-08-30T13:33:14Z">
+        <test-method status="PASS" signature="postCleanUp()" name="postCleanUp" is-config="true" duration-ms="50" started-at="2010-08-30T13:33:14Z" depends-on-methods="com.fakepkg.test.TestBase.verifySysAlert" finished-at="2010-08-30T13:33:14Z">
         </test-method>
       </class>
       <class name="precheckins.HostOps">
@@ -641,23 +641,23 @@ Step 10: Destroy view
             </param>
           </params>
         </test-method>
-        <test-method status="PASS" signature="preSetUp()" name="preSetUp" is-config="true" duration-ms="25" started-at="2010-08-30T14:09:28Z" depends-on-methods="com.vmware.vcqa.TestBase.initTest" finished-at="2010-08-30T14:09:29Z">
+        <test-method status="PASS" signature="preSetUp()" name="preSetUp" is-config="true" duration-ms="25" started-at="2010-08-30T14:09:28Z" depends-on-methods="com.fakepkg.test.TestBase.initTest" finished-at="2010-08-30T14:09:29Z">
         </test-method>
         <test-method status="PASS" signature="testSetUp()" name="testSetUp" is-config="true" duration-ms="1013" started-at="2010-08-30T14:09:29Z" finished-at="2010-08-30T14:09:30Z">
         </test-method>
         <test-method status="PASS" signature="test()" name="test" duration-ms="94852" started-at="2010-08-30T14:09:30Z" description="Precheckin: Host Ops:
-1. Destroy host from inventory if the host already exists 
-2. Add standalone host under DC --&gt; Folder foobar 
-3. Disconnect host 
-4. Reconnect Host 
-5. Move host into original host folder 
+1. Destroy host from inventory if the host already exists
+2. Add standalone host under DC --&gt; Folder foobar
+3. Disconnect host
+4. Reconnect Host
+5. Move host into original host folder
 6. Remove host if it was added" finished-at="2010-08-30T14:11:04Z">
         </test-method>
         <test-method status="PASS" signature="testCleanUp()" name="testCleanUp" is-config="true" duration-ms="703" started-at="2010-08-30T14:11:04Z" finished-at="2010-08-30T14:11:05Z">
         </test-method>
         <test-method status="PASS" signature="verifySysAlert()" name="verifySysAlert" is-config="true" duration-ms="77" started-at="2010-08-30T14:11:05Z" finished-at="2010-08-30T14:11:05Z">
         </test-method>
-        <test-method status="PASS" signature="postCleanUp()" name="postCleanUp" is-config="true" duration-ms="22" started-at="2010-08-30T14:11:05Z" depends-on-methods="com.vmware.vcqa.TestBase.verifySysAlert" finished-at="2010-08-30T14:11:05Z">
+        <test-method status="PASS" signature="postCleanUp()" name="postCleanUp" is-config="true" duration-ms="22" started-at="2010-08-30T14:11:05Z" depends-on-methods="com.fakepkg.test.TestBase.verifySysAlert" finished-at="2010-08-30T14:11:05Z">
         </test-method>
       </class>
       <class name="precheckins.EventOps">
@@ -670,20 +670,20 @@ Step 10: Destroy view
             </param>
           </params>
         </test-method>
-        <test-method status="PASS" signature="preSetUp()" name="preSetUp" is-config="true" duration-ms="39" started-at="2010-08-30T13:55:07Z" depends-on-methods="com.vmware.vcqa.TestBase.initTest" finished-at="2010-08-30T13:55:07Z">
+        <test-method status="PASS" signature="preSetUp()" name="preSetUp" is-config="true" duration-ms="39" started-at="2010-08-30T13:55:07Z" depends-on-methods="com.fakepkg.test.TestBase.initTest" finished-at="2010-08-30T13:55:07Z">
         </test-method>
         <test-method status="PASS" signature="testSetUp()" name="testSetUp" is-config="true" duration-ms="1119" started-at="2010-08-30T13:55:07Z" finished-at="2010-08-30T13:55:08Z">
         </test-method>
-        <test-method status="PASS" signature="test()" name="test" duration-ms="41306" started-at="2010-08-30T13:55:08Z" description="Precheckin: Event Ops: 1. Log User Event 
+        <test-method status="PASS" signature="test()" name="test" duration-ms="41306" started-at="2010-08-30T13:55:08Z" description="Precheckin: Event Ops: 1. Log User Event
 2. Post Event (Only on VC)
-3. Create collector for event 
+3. Create collector for event
 " finished-at="2010-08-30T13:55:49Z">
         </test-method>
         <test-method status="PASS" signature="testCleanUp()" name="testCleanUp" is-config="true" duration-ms="5101" started-at="2010-08-30T13:55:49Z" finished-at="2010-08-30T13:55:54Z">
         </test-method>
         <test-method status="PASS" signature="verifySysAlert()" name="verifySysAlert" is-config="true" duration-ms="43" started-at="2010-08-30T13:55:54Z" finished-at="2010-08-30T13:55:54Z">
         </test-method>
-        <test-method status="PASS" signature="postCleanUp()" name="postCleanUp" is-config="true" duration-ms="12" started-at="2010-08-30T13:55:54Z" depends-on-methods="com.vmware.vcqa.TestBase.verifySysAlert" finished-at="2010-08-30T13:55:54Z">
+        <test-method status="PASS" signature="postCleanUp()" name="postCleanUp" is-config="true" duration-ms="12" started-at="2010-08-30T13:55:54Z" depends-on-methods="com.fakepkg.test.TestBase.verifySysAlert" finished-at="2010-08-30T13:55:54Z">
         </test-method>
       </class>
       <class name="precheckins.DRSOps">
@@ -696,7 +696,7 @@ Step 10: Destroy view
             </param>
           </params>
         </test-method>
-        <test-method status="PASS" signature="preSetUp()" name="preSetUp" is-config="true" duration-ms="50" started-at="2010-08-30T13:34:39Z" depends-on-methods="com.vmware.vcqa.TestBase.initTest" finished-at="2010-08-30T13:34:39Z">
+        <test-method status="PASS" signature="preSetUp()" name="preSetUp" is-config="true" duration-ms="50" started-at="2010-08-30T13:34:39Z" depends-on-methods="com.fakepkg.test.TestBase.initTest" finished-at="2010-08-30T13:34:39Z">
         </test-method>
         <test-method status="PASS" signature="testSetUp()" name="testSetUp" is-config="true" duration-ms="16044" started-at="2010-08-30T13:34:39Z" finished-at="2010-08-30T13:34:55Z">
         </test-method>
@@ -707,8 +707,8 @@ Step 10: Destroy view
   4. Poweron VM in host-1.
   5. Cancel the recommendations that are generated
      for initial palcement.
-  6. Call apply recommendations with the same cancel 
-     recommendations ID, this throws &#039;invalid id&#039; exception as 
+  6. Call apply recommendations with the same cancel
+     recommendations ID, this throws &#039;invalid id&#039; exception as
      recommendation are cancelled already.
   7. Try poweron VM in host-1.
   8. Now apply recommendations that are generated for intial placement.
@@ -718,14 +718,14 @@ Step 10: Destroy view
  12. Create VM-Host Hard Anti-Affinity Rule (VM should not power on.)
  13. Create VM-Host Hard Affinity Rule (VM should power on.)
  14. Create VM-Host Soft Anti-Affinity Rule (VM should power, with DRSFault)
- 15. Create VM-Host Soft Affinity Rule (VM should power on.) 
+ 15. Create VM-Host Soft Affinity Rule (VM should power on.)
  16. Remove the rule created above, while removing the rule, disable DRS as well and verify that the rule is deleted forever." finished-at="2010-08-30T13:37:19Z">
         </test-method>
         <test-method status="PASS" signature="testCleanUp()" name="testCleanUp" is-config="true" duration-ms="14074" started-at="2010-08-30T13:37:19Z" finished-at="2010-08-30T13:37:33Z">
         </test-method>
         <test-method status="PASS" signature="verifySysAlert()" name="verifySysAlert" is-config="true" duration-ms="71" started-at="2010-08-30T13:37:33Z" finished-at="2010-08-30T13:37:33Z">
         </test-method>
-        <test-method status="PASS" signature="postCleanUp()" name="postCleanUp" is-config="true" duration-ms="26" started-at="2010-08-30T13:37:33Z" depends-on-methods="com.vmware.vcqa.TestBase.verifySysAlert" finished-at="2010-08-30T13:37:34Z">
+        <test-method status="PASS" signature="postCleanUp()" name="postCleanUp" is-config="true" duration-ms="26" started-at="2010-08-30T13:37:33Z" depends-on-methods="com.fakepkg.test.TestBase.verifySysAlert" finished-at="2010-08-30T13:37:34Z">
         </test-method>
       </class>
       <class name="precheckins.VMOps">
@@ -738,7 +738,7 @@ Step 10: Destroy view
             </param>
           </params>
         </test-method>
-        <test-method status="PASS" signature="preSetUp()" name="preSetUp" is-config="true" duration-ms="74" started-at="2010-08-30T14:36:41Z" depends-on-methods="com.vmware.vcqa.TestBase.initTest" finished-at="2010-08-30T14:36:41Z">
+        <test-method status="PASS" signature="preSetUp()" name="preSetUp" is-config="true" duration-ms="74" started-at="2010-08-30T14:36:41Z" depends-on-methods="com.fakepkg.test.TestBase.initTest" finished-at="2010-08-30T14:36:41Z">
         </test-method>
         <test-method status="PASS" signature="testSetUp()" name="testSetUp" is-config="true" duration-ms="947" started-at="2010-08-30T14:36:41Z" finished-at="2010-08-30T14:36:42Z">
         </test-method>
@@ -748,7 +748,7 @@ Step 10: Destroy view
         </test-method>
         <test-method status="PASS" signature="testCleanUp()" name="testCleanUp" is-config="true" duration-ms="0" started-at="2010-08-30T14:40:18Z" finished-at="2010-08-30T14:40:18Z">
         </test-method>
-        <test-method status="PASS" signature="postCleanUp()" name="postCleanUp" is-config="true" duration-ms="27" started-at="2010-08-30T14:40:18Z" depends-on-methods="com.vmware.vcqa.TestBase.verifySysAlert" finished-at="2010-08-30T14:40:18Z">
+        <test-method status="PASS" signature="postCleanUp()" name="postCleanUp" is-config="true" duration-ms="27" started-at="2010-08-30T14:40:18Z" depends-on-methods="com.fakepkg.test.TestBase.verifySysAlert" finished-at="2010-08-30T14:40:18Z">
         </test-method>
       </class>
       <class name="precheckins.VirtualAppOps">
@@ -761,11 +761,11 @@ Step 10: Destroy view
             </param>
           </params>
         </test-method>
-        <test-method status="PASS" signature="preSetUp()" name="preSetUp" is-config="true" duration-ms="59" started-at="2010-08-30T15:25:56Z" depends-on-methods="com.vmware.vcqa.TestBase.initTest" finished-at="2010-08-30T15:25:56Z">
+        <test-method status="PASS" signature="preSetUp()" name="preSetUp" is-config="true" duration-ms="59" started-at="2010-08-30T15:25:56Z" depends-on-methods="com.fakepkg.test.TestBase.initTest" finished-at="2010-08-30T15:25:56Z">
         </test-method>
         <test-method status="PASS" signature="testSetUp()" name="testSetUp" is-config="true" duration-ms="1060" started-at="2010-08-30T15:25:56Z" finished-at="2010-08-30T15:25:57Z">
         </test-method>
-        <test-method status="PASS" signature="test()" name="test" duration-ms="156588" started-at="2010-08-30T15:25:57Z" description="Perform all lifecycle operations on a vApp as follows - 
+        <test-method status="PASS" signature="test()" name="test" duration-ms="156588" started-at="2010-08-30T15:25:57Z" description="Perform all lifecycle operations on a vApp as follows -
 1. Create a vApp and a VM under the vApp.
 2. Create a child vApp under the first vApp and create a VM under the child-vApp.
 3. Set the StartAction of the first VM as powerOn and StopAction as powerOff.
@@ -784,7 +784,7 @@ Step 10: Destroy view
         </test-method>
         <test-method status="PASS" signature="verifySysAlert()" name="verifySysAlert" is-config="true" duration-ms="74" started-at="2010-08-30T15:28:53Z" finished-at="2010-08-30T15:28:53Z">
         </test-method>
-        <test-method status="PASS" signature="postCleanUp()" name="postCleanUp" is-config="true" duration-ms="10" started-at="2010-08-30T15:28:53Z" depends-on-methods="com.vmware.vcqa.TestBase.verifySysAlert" finished-at="2010-08-30T15:28:53Z">
+        <test-method status="PASS" signature="postCleanUp()" name="postCleanUp" is-config="true" duration-ms="10" started-at="2010-08-30T15:28:53Z" depends-on-methods="com.fakepkg.test.TestBase.verifySysAlert" finished-at="2010-08-30T15:28:53Z">
         </test-method>
       </class>
       <class name="precheckins.PerfOps">
@@ -797,7 +797,7 @@ Step 10: Destroy view
             </param>
           </params>
         </test-method>
-        <test-method status="PASS" signature="preSetUp()" name="preSetUp" is-config="true" duration-ms="29" started-at="2010-08-30T14:14:39Z" depends-on-methods="com.vmware.vcqa.TestBase.initTest" finished-at="2010-08-30T14:14:39Z">
+        <test-method status="PASS" signature="preSetUp()" name="preSetUp" is-config="true" duration-ms="29" started-at="2010-08-30T14:14:39Z" depends-on-methods="com.fakepkg.test.TestBase.initTest" finished-at="2010-08-30T14:14:39Z">
         </test-method>
         <test-method status="PASS" signature="testSetUp()" name="testSetUp" is-config="true" duration-ms="1062" started-at="2010-08-30T14:14:39Z" finished-at="2010-08-30T14:14:40Z">
         </test-method>
@@ -807,7 +807,7 @@ Step 10: Destroy view
         </test-method>
         <test-method status="PASS" signature="verifySysAlert()" name="verifySysAlert" is-config="true" duration-ms="63" started-at="2010-08-30T14:14:42Z" finished-at="2010-08-30T14:14:42Z">
         </test-method>
-        <test-method status="PASS" signature="postCleanUp()" name="postCleanUp" is-config="true" duration-ms="14" started-at="2010-08-30T14:14:42Z" depends-on-methods="com.vmware.vcqa.TestBase.verifySysAlert" finished-at="2010-08-30T14:14:42Z">
+        <test-method status="PASS" signature="postCleanUp()" name="postCleanUp" is-config="true" duration-ms="14" started-at="2010-08-30T14:14:42Z" depends-on-methods="com.fakepkg.test.TestBase.verifySysAlert" finished-at="2010-08-30T14:14:42Z">
         </test-method>
       </class>
       <class name="precheckins.InventoryOps">
@@ -820,23 +820,23 @@ Step 10: Destroy view
             </param>
           </params>
         </test-method>
-        <test-method status="PASS" signature="preSetUp()" name="preSetUp" is-config="true" duration-ms="34" started-at="2010-08-30T14:12:07Z" depends-on-methods="com.vmware.vcqa.TestBase.initTest" finished-at="2010-08-30T14:12:07Z">
+        <test-method status="PASS" signature="preSetUp()" name="preSetUp" is-config="true" duration-ms="34" started-at="2010-08-30T14:12:07Z" depends-on-methods="com.fakepkg.test.TestBase.initTest" finished-at="2010-08-30T14:12:07Z">
         </test-method>
         <test-method status="PASS" signature="testSetUp()" name="testSetUp" is-config="true" duration-ms="1239" started-at="2010-08-30T14:12:07Z" finished-at="2010-08-30T14:12:08Z">
         </test-method>
         <test-method status="PASS" signature="test()" name="test" duration-ms="3199" started-at="2010-08-30T14:12:08Z" description="InventoryOps Precheckin Test:
-Step 1: Create a folder under the root folder 
+Step 1: Create a folder under the root folder
 Step 2: Create a Folder under the VM folder
 Step 3: Create a Folder under the Host folder
-Step 4: Move a Folder into another folder 
-Step 5: Create and Rename a Datacenter under root folder 
+Step 4: Move a Folder into another folder
+Step 5: Create and Rename a Datacenter under root folder
 " finished-at="2010-08-30T14:12:11Z">
         </test-method>
         <test-method status="PASS" signature="testCleanUp()" name="testCleanUp" is-config="true" duration-ms="3185" started-at="2010-08-30T14:12:11Z" finished-at="2010-08-30T14:12:14Z">
         </test-method>
         <test-method status="PASS" signature="verifySysAlert()" name="verifySysAlert" is-config="true" duration-ms="73" started-at="2010-08-30T14:12:14Z" finished-at="2010-08-30T14:12:14Z">
         </test-method>
-        <test-method status="PASS" signature="postCleanUp()" name="postCleanUp" is-config="true" duration-ms="25" started-at="2010-08-30T14:12:14Z" depends-on-methods="com.vmware.vcqa.TestBase.verifySysAlert" finished-at="2010-08-30T14:12:14Z">
+        <test-method status="PASS" signature="postCleanUp()" name="postCleanUp" is-config="true" duration-ms="25" started-at="2010-08-30T14:12:14Z" depends-on-methods="com.fakepkg.test.TestBase.verifySysAlert" finished-at="2010-08-30T14:12:14Z">
         </test-method>
       </class>
       <class name="precheckins.SVIOps">
@@ -849,7 +849,7 @@ Step 5: Create and Rename a Datacenter under root folder
             </param>
           </params>
         </test-method>
-        <test-method status="PASS" signature="preSetUp()" name="preSetUp" is-config="true" duration-ms="25" started-at="2010-08-30T14:33:16Z" depends-on-methods="com.vmware.vcqa.TestBase.initTest" finished-at="2010-08-30T14:33:16Z">
+        <test-method status="PASS" signature="preSetUp()" name="preSetUp" is-config="true" duration-ms="25" started-at="2010-08-30T14:33:16Z" depends-on-methods="com.fakepkg.test.TestBase.initTest" finished-at="2010-08-30T14:33:16Z">
         </test-method>
         <test-method status="PASS" signature="testSetUp()" name="testSetUp" is-config="true" duration-ms="4298" started-at="2010-08-30T14:33:16Z" finished-at="2010-08-30T14:33:20Z">
         </test-method>
@@ -859,7 +859,7 @@ Step 5: Create and Rename a Datacenter under root folder
         </test-method>
         <test-method status="PASS" signature="verifySysAlert()" name="verifySysAlert" is-config="true" duration-ms="282" started-at="2010-08-30T14:35:49Z" finished-at="2010-08-30T14:35:49Z">
         </test-method>
-        <test-method status="PASS" signature="postCleanUp()" name="postCleanUp" is-config="true" duration-ms="33" started-at="2010-08-30T14:35:49Z" depends-on-methods="com.vmware.vcqa.TestBase.verifySysAlert" finished-at="2010-08-30T14:35:49Z">
+        <test-method status="PASS" signature="postCleanUp()" name="postCleanUp" is-config="true" duration-ms="33" started-at="2010-08-30T14:35:49Z" depends-on-methods="com.fakepkg.test.TestBase.verifySysAlert" finished-at="2010-08-30T14:35:49Z">
         </test-method>
       </class>
       <class name="precheckins.RecordReplayOps">
@@ -872,7 +872,7 @@ Step 5: Create and Rename a Datacenter under root folder
             </param>
           </params>
         </test-method>
-        <test-method status="PASS" signature="preSetUp()" name="preSetUp" is-config="true" duration-ms="58" started-at="2010-08-30T14:16:43Z" depends-on-methods="com.vmware.vcqa.TestBase.initTest" finished-at="2010-08-30T14:16:43Z">
+        <test-method status="PASS" signature="preSetUp()" name="preSetUp" is-config="true" duration-ms="58" started-at="2010-08-30T14:16:43Z" depends-on-methods="com.fakepkg.test.TestBase.initTest" finished-at="2010-08-30T14:16:43Z">
         </test-method>
         <test-method status="PASS" signature="testSetUp()" name="testSetUp" is-config="true" duration-ms="14178" started-at="2010-08-30T14:16:43Z" finished-at="2010-08-30T14:16:57Z">
         </test-method>
@@ -882,7 +882,7 @@ Step 5: Create and Rename a Datacenter under root folder
         </test-method>
         <test-method status="PASS" signature="verifySysAlert()" name="verifySysAlert" is-config="true" duration-ms="68" started-at="2010-08-30T14:23:13Z" finished-at="2010-08-30T14:23:13Z">
         </test-method>
-        <test-method status="PASS" signature="postCleanUp()" name="postCleanUp" is-config="true" duration-ms="35" started-at="2010-08-30T14:23:13Z" depends-on-methods="com.vmware.vcqa.TestBase.verifySysAlert" finished-at="2010-08-30T14:23:13Z">
+        <test-method status="PASS" signature="postCleanUp()" name="postCleanUp" is-config="true" duration-ms="35" started-at="2010-08-30T14:23:13Z" depends-on-methods="com.fakepkg.test.TestBase.verifySysAlert" finished-at="2010-08-30T14:23:13Z">
         </test-method>
       </class>
     </test>
@@ -897,27 +897,27 @@ Step 5: Create and Rename a Datacenter under root folder
             </param>
           </params>
         </test-method>
-        <test-method status="PASS" signature="preSetUp()" name="preSetUp" is-config="true" duration-ms="29" started-at="2010-08-30T13:10:07Z" depends-on-methods="com.vmware.vcqa.TestBase.initTest" finished-at="2010-08-30T13:10:07Z">
+        <test-method status="PASS" signature="preSetUp()" name="preSetUp" is-config="true" duration-ms="29" started-at="2010-08-30T13:10:07Z" depends-on-methods="com.fakepkg.test.TestBase.initTest" finished-at="2010-08-30T13:10:07Z">
         </test-method>
         <test-method status="FAIL" signature="testSetUp()" name="testSetUp" is-config="true" duration-ms="0" started-at="2010-08-30T13:10:07Z" finished-at="2010-08-30T13:10:07Z">
-          <exception class="com.vmware.vc.ManagedObjectNotFound">
+          <exception class="com.fakepkg.test.ManagedObjectNotFound">
             <full-stacktrace>
-              <![CDATA[com.vmware.vc.ManagedObjectNotFound
-	at com.vmware.vc.ManagedObjectNotFound$Factory.parse(Unknown Source)
-	at com.vmware.vc.ManagedObjectNotFoundFault$Factory.parse(Unknown Source)
+              <![CDATA[com.fakepkg.test.ManagedObjectNotFound
+	at com.fakepkg.test.ManagedObjectNotFound$Factory.parse(Unknown Source)
+	at com.fakepkg.test.ManagedObjectNotFoundFault$Factory.parse(Unknown Source)
 	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
 	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
 	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
 	at java.lang.reflect.Method.invoke(Method.java:597)
-	at com.vmware.vc.ExtensionMapper.getTypeObject(Unknown Source)
-	at com.vmware.vc.InternalVimServiceStub.processFault(Unknown Source)
-	at com.vmware.vc.InternalVimServiceStub.queryConfigOption(Unknown Source)
-	at com.vmware.vcqa.vim.EnvironmentBrowser.queryConfigOption(EnvironmentBrowser.java:101)
-	at com.vmware.vcqa.vim.HostSystem.getCfgOption(HostSystem.java:3402)
-	at com.vmware.vcqa.vim.HostSystem.getCfgOption(HostSystem.java:3361)
-	at com.vmware.vcqa.vim.HostSystem.getDefaultDevices(HostSystem.java:3575)
-	at com.vmware.vcqa.vim.ControllerAssigner.<init>(ControllerAssigner.java:83)
-	at com.vmware.vcqa.vim.VMSpecManager.<init>(VMSpecManager.java:183)
+	at com.fakepkg.test.ExtensionMapper.getTypeObject(Unknown Source)
+	at com.fakepkg.test.InternalVimServiceStub.processFault(Unknown Source)
+	at com.fakepkg.test.InternalVimServiceStub.queryConfigOption(Unknown Source)
+	at com.fakepkg.test.vim.EnvironmentBrowser.queryConfigOption(EnvironmentBrowser.java:101)
+	at com.fakepkg.test.vim.HostSystem.getCfgOption(HostSystem.java:3402)
+	at com.fakepkg.test.vim.HostSystem.getCfgOption(HostSystem.java:3361)
+	at com.fakepkg.test.vim.HostSystem.getDefaultDevices(HostSystem.java:3575)
+	at com.fakepkg.test.vim.ControllerAssigner.<init>(ControllerAssigner.java:83)
+	at com.fakepkg.test.vim.VMSpecManager.<init>(VMSpecManager.java:183)
 	at precheckins.LegacyOps.testSetUp(LegacyOps.java:144)
 	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
 	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
@@ -953,7 +953,7 @@ Step 5: Create and Rename a Datacenter under root folder
         </test-method>
         <test-method status="PASS" signature="verifySysAlert()" name="verifySysAlert" is-config="true" duration-ms="74" started-at="2010-08-30T13:11:38Z" finished-at="2010-08-30T13:11:38Z">
         </test-method>
-        <test-method status="PASS" signature="postCleanUp()" name="postCleanUp" is-config="true" duration-ms="18" started-at="2010-08-30T13:11:38Z" depends-on-methods="com.vmware.vcqa.TestBase.verifySysAlert" finished-at="2010-08-30T13:11:38Z">
+        <test-method status="PASS" signature="postCleanUp()" name="postCleanUp" is-config="true" duration-ms="18" started-at="2010-08-30T13:11:38Z" depends-on-methods="com.fakepkg.test.TestBase.verifySysAlert" finished-at="2010-08-30T13:11:38Z">
         </test-method>
       </class>
     </test>
@@ -968,7 +968,7 @@ Step 5: Create and Rename a Datacenter under root folder
             </param>
           </params>
         </test-method>
-        <test-method status="PASS" signature="preSetUp()" name="preSetUp" is-config="true" duration-ms="19" started-at="2010-08-30T13:07:21Z" depends-on-methods="com.vmware.vcqa.TestBase.initTest" finished-at="2010-08-30T13:07:21Z">
+        <test-method status="PASS" signature="preSetUp()" name="preSetUp" is-config="true" duration-ms="19" started-at="2010-08-30T13:07:21Z" depends-on-methods="com.fakepkg.test.TestBase.initTest" finished-at="2010-08-30T13:07:21Z">
         </test-method>
         <test-method status="PASS" signature="testSetUp()" name="testSetUp" is-config="true" duration-ms="104509" started-at="2010-08-30T13:07:21Z" finished-at="2010-08-30T13:09:05Z">
         </test-method>
@@ -978,7 +978,7 @@ Step 5: Create and Rename a Datacenter under root folder
         </test-method>
         <test-method status="PASS" signature="verifySysAlert()" name="verifySysAlert" is-config="true" duration-ms="58" started-at="2010-08-30T13:10:06Z" finished-at="2010-08-30T13:10:06Z">
         </test-method>
-        <test-method status="PASS" signature="postCleanUp()" name="postCleanUp" is-config="true" duration-ms="11" started-at="2010-08-30T13:10:06Z" depends-on-methods="com.vmware.vcqa.TestBase.verifySysAlert" finished-at="2010-08-30T13:10:07Z">
+        <test-method status="PASS" signature="postCleanUp()" name="postCleanUp" is-config="true" duration-ms="11" started-at="2010-08-30T13:10:06Z" depends-on-methods="com.fakepkg.test.TestBase.verifySysAlert" finished-at="2010-08-30T13:10:07Z">
         </test-method>
       </class>
     </test>
@@ -993,20 +993,20 @@ Step 5: Create and Rename a Datacenter under root folder
             </param>
           </params>
         </test-method>
-        <test-method status="PASS" signature="preSetUp()" name="preSetUp" is-config="true" duration-ms="38" started-at="2010-08-30T13:31:41Z" depends-on-methods="com.vmware.vcqa.TestBase.initTest" finished-at="2010-08-30T13:31:41Z">
+        <test-method status="PASS" signature="preSetUp()" name="preSetUp" is-config="true" duration-ms="38" started-at="2010-08-30T13:31:41Z" depends-on-methods="com.fakepkg.test.TestBase.initTest" finished-at="2010-08-30T13:31:41Z">
         </test-method>
         <test-method status="PASS" signature="testSetUp()" name="testSetUp" is-config="true" duration-ms="772" started-at="2010-08-30T13:31:41Z" finished-at="2010-08-30T13:31:42Z">
         </test-method>
-        <test-method status="PASS" signature="test()" name="test" duration-ms="16155" started-at="2010-08-30T13:31:42Z" description="Case - 1 : Query for a VM that is there in the inventory 
-Case - 2 : Create a VM and query for that VM. 
-Case - 3 : Register/Unregister a Push Provider 
+        <test-method status="PASS" signature="test()" name="test" duration-ms="16155" started-at="2010-08-30T13:31:42Z" description="Case - 1 : Query for a VM that is there in the inventory
+Case - 2 : Create a VM and query for that VM.
+Case - 3 : Register/Unregister a Push Provider
 Case - 4 : Register/Unregister a Pull Provider" finished-at="2010-08-30T13:31:58Z">
         </test-method>
         <test-method status="PASS" signature="testCleanUp()" name="testCleanUp" is-config="true" duration-ms="2622" started-at="2010-08-30T13:31:58Z" finished-at="2010-08-30T13:32:00Z">
         </test-method>
         <test-method status="PASS" signature="verifySysAlert()" name="verifySysAlert" is-config="true" duration-ms="119" started-at="2010-08-30T13:32:00Z" finished-at="2010-08-30T13:32:00Z">
         </test-method>
-        <test-method status="PASS" signature="postCleanUp()" name="postCleanUp" is-config="true" duration-ms="10" started-at="2010-08-30T13:32:00Z" depends-on-methods="com.vmware.vcqa.TestBase.verifySysAlert" finished-at="2010-08-30T13:32:00Z">
+        <test-method status="PASS" signature="postCleanUp()" name="postCleanUp" is-config="true" duration-ms="10" started-at="2010-08-30T13:32:00Z" depends-on-methods="com.fakepkg.test.TestBase.verifySysAlert" finished-at="2010-08-30T13:32:00Z">
         </test-method>
       </class>
       <class name="precheckins.StorageManagementServiceOps">
@@ -1019,7 +1019,7 @@ Case - 4 : Register/Unregister a Pull Provider" finished-at="2010-08-30T13:31:58
             </param>
           </params>
         </test-method>
-        <test-method status="PASS" signature="preSetUp()" name="preSetUp" is-config="true" duration-ms="64" started-at="2010-08-30T13:32:01Z" depends-on-methods="com.vmware.vcqa.TestBase.initTest" finished-at="2010-08-30T13:32:01Z">
+        <test-method status="PASS" signature="preSetUp()" name="preSetUp" is-config="true" duration-ms="64" started-at="2010-08-30T13:32:01Z" depends-on-methods="com.fakepkg.test.TestBase.initTest" finished-at="2010-08-30T13:32:01Z">
         </test-method>
         <test-method status="PASS" signature="testSetUp()" name="testSetUp" is-config="true" duration-ms="28" started-at="2010-08-30T13:32:01Z" finished-at="2010-08-30T13:32:01Z">
         </test-method>
@@ -1029,7 +1029,7 @@ Case - 4 : Register/Unregister a Pull Provider" finished-at="2010-08-30T13:31:58
         </test-method>
         <test-method status="PASS" signature="verifySysAlert()" name="verifySysAlert" is-config="true" duration-ms="73" started-at="2010-08-30T13:32:47Z" finished-at="2010-08-30T13:32:47Z">
         </test-method>
-        <test-method status="PASS" signature="postCleanUp()" name="postCleanUp" is-config="true" duration-ms="16" started-at="2010-08-30T13:32:47Z" depends-on-methods="com.vmware.vcqa.TestBase.verifySysAlert" finished-at="2010-08-30T13:32:47Z">
+        <test-method status="PASS" signature="postCleanUp()" name="postCleanUp" is-config="true" duration-ms="16" started-at="2010-08-30T13:32:47Z" depends-on-methods="com.fakepkg.test.TestBase.verifySysAlert" finished-at="2010-08-30T13:32:47Z">
         </test-method>
       </class>
     </test>
@@ -1044,7 +1044,7 @@ Case - 4 : Register/Unregister a Pull Provider" finished-at="2010-08-30T13:31:58
             </param>
           </params>
         </test-method>
-        <test-method status="PASS" signature="preSetUp()" name="preSetUp" is-config="true" duration-ms="26" started-at="2010-08-30T13:11:38Z" depends-on-methods="com.vmware.vcqa.TestBase.initTest" finished-at="2010-08-30T13:11:38Z">
+        <test-method status="PASS" signature="preSetUp()" name="preSetUp" is-config="true" duration-ms="26" started-at="2010-08-30T13:11:38Z" depends-on-methods="com.fakepkg.test.TestBase.initTest" finished-at="2010-08-30T13:11:38Z">
         </test-method>
         <test-method status="PASS" signature="testSetUp()" name="testSetUp" is-config="true" duration-ms="47194" started-at="2010-08-30T13:11:38Z" finished-at="2010-08-30T13:12:25Z">
         </test-method>
@@ -1054,7 +1054,7 @@ Case - 4 : Register/Unregister a Pull Provider" finished-at="2010-08-30T13:31:58
         </test-method>
         <test-method status="PASS" signature="verifySysAlert()" name="verifySysAlert" is-config="true" duration-ms="91" started-at="2010-08-30T13:13:20Z" finished-at="2010-08-30T13:13:20Z">
         </test-method>
-        <test-method status="PASS" signature="postCleanUp()" name="postCleanUp" is-config="true" duration-ms="11" started-at="2010-08-30T13:13:20Z" depends-on-methods="com.vmware.vcqa.TestBase.verifySysAlert" finished-at="2010-08-30T13:13:20Z">
+        <test-method status="PASS" signature="postCleanUp()" name="postCleanUp" is-config="true" duration-ms="11" started-at="2010-08-30T13:13:20Z" depends-on-methods="com.fakepkg.test.TestBase.verifySysAlert" finished-at="2010-08-30T13:13:20Z">
         </test-method>
       </class>
     </test>
@@ -1069,7 +1069,7 @@ Case - 4 : Register/Unregister a Pull Provider" finished-at="2010-08-30T13:31:58
             </param>
           </params>
         </test-method>
-        <test-method status="PASS" signature="preSetUp()" name="preSetUp" is-config="true" duration-ms="42" started-at="2010-08-30T13:05:11Z" depends-on-methods="com.vmware.vcqa.TestBase.initTest" finished-at="2010-08-30T13:05:11Z">
+        <test-method status="PASS" signature="preSetUp()" name="preSetUp" is-config="true" duration-ms="42" started-at="2010-08-30T13:05:11Z" depends-on-methods="com.fakepkg.test.TestBase.initTest" finished-at="2010-08-30T13:05:11Z">
         </test-method>
         <test-method status="PASS" signature="testSetUp()" name="testSetUp" is-config="true" duration-ms="55496" started-at="2010-08-30T13:05:11Z" finished-at="2010-08-30T13:06:07Z">
         </test-method>
@@ -1079,7 +1079,7 @@ Case - 4 : Register/Unregister a Pull Provider" finished-at="2010-08-30T13:31:58
         </test-method>
         <test-method status="PASS" signature="verifySysAlert()" name="verifySysAlert" is-config="true" duration-ms="54" started-at="2010-08-30T13:07:21Z" finished-at="2010-08-30T13:07:21Z">
         </test-method>
-        <test-method status="PASS" signature="postCleanUp()" name="postCleanUp" is-config="true" duration-ms="18" started-at="2010-08-30T13:07:21Z" depends-on-methods="com.vmware.vcqa.TestBase.verifySysAlert" finished-at="2010-08-30T13:07:21Z">
+        <test-method status="PASS" signature="postCleanUp()" name="postCleanUp" is-config="true" duration-ms="18" started-at="2010-08-30T13:07:21Z" depends-on-methods="com.fakepkg.test.TestBase.verifySysAlert" finished-at="2010-08-30T13:07:21Z">
         </test-method>
       </class>
     </test>
@@ -1094,7 +1094,7 @@ Case - 4 : Register/Unregister a Pull Provider" finished-at="2010-08-30T13:31:58
             </param>
           </params>
         </test-method>
-        <test-method status="PASS" signature="preSetUp()" name="preSetUp" is-config="true" duration-ms="34" started-at="2010-08-30T13:02:51Z" depends-on-methods="com.vmware.vcqa.TestBase.initTest" finished-at="2010-08-30T13:02:51Z">
+        <test-method status="PASS" signature="preSetUp()" name="preSetUp" is-config="true" duration-ms="34" started-at="2010-08-30T13:02:51Z" depends-on-methods="com.fakepkg.test.TestBase.initTest" finished-at="2010-08-30T13:02:51Z">
         </test-method>
         <test-method status="PASS" signature="testSetUp()" name="testSetUp" is-config="true" duration-ms="77506" started-at="2010-08-30T13:02:51Z" finished-at="2010-08-30T13:04:09Z">
         </test-method>
@@ -1104,7 +1104,7 @@ Case - 4 : Register/Unregister a Pull Provider" finished-at="2010-08-30T13:31:58
         </test-method>
         <test-method status="PASS" signature="verifySysAlert()" name="verifySysAlert" is-config="true" duration-ms="70" started-at="2010-08-30T13:05:11Z" finished-at="2010-08-30T13:05:11Z">
         </test-method>
-        <test-method status="PASS" signature="postCleanUp()" name="postCleanUp" is-config="true" duration-ms="64" started-at="2010-08-30T13:05:11Z" depends-on-methods="com.vmware.vcqa.TestBase.verifySysAlert" finished-at="2010-08-30T13:05:11Z">
+        <test-method status="PASS" signature="postCleanUp()" name="postCleanUp" is-config="true" duration-ms="64" started-at="2010-08-30T13:05:11Z" depends-on-methods="com.fakepkg.test.TestBase.verifySysAlert" finished-at="2010-08-30T13:05:11Z">
         </test-method>
       </class>
     </test>
@@ -1119,7 +1119,7 @@ Case - 4 : Register/Unregister a Pull Provider" finished-at="2010-08-30T13:31:58
             </param>
           </params>
         </test-method>
-        <test-method status="PASS" signature="preSetUp()" name="preSetUp" is-config="true" duration-ms="53" started-at="2010-08-30T13:01:04Z" depends-on-methods="com.vmware.vcqa.TestBase.initTest" finished-at="2010-08-30T13:01:04Z">
+        <test-method status="PASS" signature="preSetUp()" name="preSetUp" is-config="true" duration-ms="53" started-at="2010-08-30T13:01:04Z" depends-on-methods="com.fakepkg.test.TestBase.initTest" finished-at="2010-08-30T13:01:04Z">
         </test-method>
         <test-method status="PASS" signature="testSetUp()" name="testSetUp" is-config="true" duration-ms="46301" started-at="2010-08-30T13:01:04Z" finished-at="2010-08-30T13:01:50Z">
         </test-method>
@@ -1129,7 +1129,7 @@ Case - 4 : Register/Unregister a Pull Provider" finished-at="2010-08-30T13:31:58
         </test-method>
         <test-method status="PASS" signature="verifySysAlert()" name="verifySysAlert" is-config="true" duration-ms="353" started-at="2010-08-30T13:02:51Z" finished-at="2010-08-30T13:02:51Z">
         </test-method>
-        <test-method status="PASS" signature="postCleanUp()" name="postCleanUp" is-config="true" duration-ms="27" started-at="2010-08-30T13:02:51Z" depends-on-methods="com.vmware.vcqa.TestBase.verifySysAlert" finished-at="2010-08-30T13:02:51Z">
+        <test-method status="PASS" signature="postCleanUp()" name="postCleanUp" is-config="true" duration-ms="27" started-at="2010-08-30T13:02:51Z" depends-on-methods="com.fakepkg.test.TestBase.verifySysAlert" finished-at="2010-08-30T13:02:51Z">
         </test-method>
       </class>
     </test>
