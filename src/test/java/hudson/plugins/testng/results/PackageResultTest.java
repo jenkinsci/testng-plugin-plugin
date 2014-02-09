@@ -1,5 +1,10 @@
 package hudson.plugins.testng.results;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import hudson.Launcher;
@@ -14,11 +19,6 @@ import hudson.plugins.testng.Publisher;
 import org.junit.Test;
 import org.jvnet.hudson.test.HudsonTestCase;
 import org.jvnet.hudson.test.TestBuilder;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 /**
  * Tests for {@link PackageResult}'s view page
@@ -44,7 +44,7 @@ public class PackageResultTest extends HudsonTestCase {
     @Test
     public void testPrecheckinPackageResults() throws Exception {
         FreeStyleProject p = createFreeStyleProject();
-        Publisher publisher = new Publisher("testng.xml", false, false);
+        Publisher publisher = new Publisher("testng.xml", false, false, false);
         p.getPublishersList().add(publisher);
         p.onCreatedFromScratch(); //to setup project action
 
@@ -149,7 +149,7 @@ public class PackageResultTest extends HudsonTestCase {
     @Test
     public void testMyPackagePackageResults() throws Exception {
         FreeStyleProject p = createFreeStyleProject();
-        Publisher publisher = new Publisher("testng.xml", false, false);
+        Publisher publisher = new Publisher("testng.xml", false, false, false);
         p.getPublishersList().add(publisher);
         p.onCreatedFromScratch(); //to setup project action
 

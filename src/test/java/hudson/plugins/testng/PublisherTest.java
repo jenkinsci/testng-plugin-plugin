@@ -1,5 +1,9 @@
 package hudson.plugins.testng;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.PrintStream;
+
 import hudson.FilePath;
 import hudson.Launcher;
 import hudson.model.AbstractBuild;
@@ -9,10 +13,6 @@ import hudson.model.Result;
 import junit.framework.Assert;
 import org.junit.Test;
 import org.jvnet.hudson.test.HudsonTestCase;
-
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.PrintStream;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -69,7 +69,7 @@ public class PublisherTest extends HudsonTestCase {
 
     @Test
     public void testBuildAborted() throws Exception {
-        Publisher publisher = new Publisher("**/testng-results.xml", false, false);
+        Publisher publisher = new Publisher("**/testng-results.xml", false, false, false);
         Launcher launcherMock = mock(Launcher.class);
         AbstractBuild buildMock = mock(AbstractBuild.class);
         BuildListener listenerMock = mock(BuildListener.class);
@@ -89,14 +89,14 @@ public class PublisherTest extends HudsonTestCase {
     @Test
     public void testRoundTrip() throws Exception {
         FreeStyleProject p = createFreeStyleProject();
-        Publisher before = new Publisher("", false, false);
+        Publisher before = new Publisher("", false, false, true);
         p.getPublishersList().add(before);
 
         submit(createWebClient().getPage(p,"configure").getFormByName("config"));
 
         Publisher after = p.getPublishersList().get(Publisher.class);
 
-        assertEqualBeans(before, after, "reportFilenamePattern,escapeTestDescp,escapeExceptionMsg");
+        assertEqualBeans(before, after, "reportFilenamePattern,escapeTestDescp,escapeExceptionMsg,showFailedBuilds");
     }
 
 }

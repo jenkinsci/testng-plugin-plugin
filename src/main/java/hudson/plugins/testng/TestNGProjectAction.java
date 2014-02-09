@@ -24,8 +24,9 @@ import org.kohsuke.stapler.StaplerResponse;
  */
 public class TestNGProjectAction extends TestResultProjectAction implements ProminentProjectAction {
 
-   private boolean escapeTestDescp;
-   private boolean escapeExceptionMsg;
+   private transient boolean escapeTestDescp;
+   private transient boolean escapeExceptionMsg;
+   private transient boolean showFailedBuilds;
 
    /**
     * Used to figure out if we need to regenerate the graphs or not.
@@ -35,10 +36,11 @@ public class TestNGProjectAction extends TestResultProjectAction implements Prom
    private transient Map<String, Integer> requestMap = new HashMap<String, Integer>();
 
    public TestNGProjectAction(AbstractProject<?, ?> project,
-         boolean escapeTestDescp, boolean escapeExceptionMsg) {
+         boolean escapeTestDescp, boolean escapeExceptionMsg, boolean showFailedBuilds) {
       super(project);
       this.escapeExceptionMsg = escapeExceptionMsg;
       this.escapeTestDescp = escapeTestDescp;
+      this.showFailedBuilds = showFailedBuilds;
    }
 
    protected Class<TestNGTestResultBuildAction> getBuildActionClass() {
@@ -213,8 +215,13 @@ public class TestNGProjectAction extends TestResultProjectAction implements Prom
          ChartUtil.NumberOnlyBuildLabel label = new ChartUtil.NumberOnlyBuildLabel(build);
          TestNGTestResultBuildAction action = build.getAction(getBuildActionClass());
 
-         if (build.getResult() == null || build.getResult().isWorseThan(Result.UNSTABLE)) {
-            //We don't want to add aborted, failed or builds with no results into the graph
+         if (build.getResult() == null || build.getResult().isWorseThan(Result.FAILURE)) {
+            //We don't want to add aborted or builds with no results into the graph
+            continue;
+         }
+
+         if (!showFailedBuilds && build.getResult().equals(Result.FAILURE)) {
+            //failed build and configuration states that we should skip this build
             continue;
          }
 

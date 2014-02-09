@@ -1,5 +1,13 @@
 package hudson.plugins.testng.results;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import hudson.Launcher;
@@ -15,9 +23,6 @@ import hudson.tasks.test.TestResult;
 import org.junit.Test;
 import org.jvnet.hudson.test.HudsonTestCase;
 import org.jvnet.hudson.test.TestBuilder;
-
-import java.io.IOException;
-import java.util.*;
 
 /**
  * Tests for {@link ClassResult}'s view page
@@ -43,7 +48,7 @@ public class ClassResultTest extends HudsonTestCase {
     @Test
     public void testPrecheckinLegacyOpsClassResults() throws Exception {
         FreeStyleProject p = createFreeStyleProject();
-        Publisher publisher = new Publisher("testng.xml", false, false);
+        Publisher publisher = new Publisher("testng.xml", false, false, false);
         p.getPublishersList().add(publisher);
         p.onCreatedFromScratch(); //to setup project action
 
@@ -143,7 +148,7 @@ public class ClassResultTest extends HudsonTestCase {
     @Test
     public void testClassResults() throws Exception {
         FreeStyleProject p = createFreeStyleProject();
-        Publisher publisher = new Publisher("testng.xml", false, false);
+        Publisher publisher = new Publisher("testng.xml", false, false, false);
         p.getPublishersList().add(publisher);
         p.onCreatedFromScratch(); //to setup project action
 

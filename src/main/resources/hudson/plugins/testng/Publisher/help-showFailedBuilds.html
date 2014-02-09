@@ -1,0 +1,12 @@
+<div>
+   <b>Show Failed builds in Trend Graph?</b>
+   <p>If checked, the plug-in includes results from failed builds in the trend graph. (Disabled by default) </p>
+   <p><b>Note</b>:
+       <ul>
+           <li>If this is a maven build, it is better to configure the build step with
+            <code>-Dmaven.test.failure.ignore=true</code> option. This results in build with test failures
+            being marked as Unstable, thus distinguishing it from build that failed because of non test related issues</li>
+           <li>Even when this option is selected, failed builds with no results and aborted builds will not be displayed in graphs</li>
+       </ul>
+   </p>
+</div>

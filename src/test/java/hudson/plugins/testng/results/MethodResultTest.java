@@ -30,7 +30,7 @@ public class MethodResultTest extends HudsonTestCase {
     @Test
     public void testEscapeExceptionMessageTrue() throws Exception {
         FreeStyleProject p = createFreeStyleProject();
-        Publisher publisher = new Publisher("testng.xml", false, true /*escapeExpMsg*/);
+        Publisher publisher = new Publisher("testng.xml", false, true /*escapeExpMsg*/, false);
         p.getPublishersList().add(publisher);
         p.onCreatedFromScratch(); //to setup project action
 
@@ -58,7 +58,7 @@ public class MethodResultTest extends HudsonTestCase {
     @Test
     public void testEscapeExceptionMessageFalse() throws Exception {
         FreeStyleProject p = createFreeStyleProject();
-        Publisher publisher = new Publisher("testng.xml", false, false /*escapeExpMsg*/);
+        Publisher publisher = new Publisher("testng.xml", false, false /*escapeExpMsg*/, false);
         p.getPublishersList().add(publisher);
         p.onCreatedFromScratch(); //to setup project action
 
@@ -85,7 +85,7 @@ public class MethodResultTest extends HudsonTestCase {
     @Test
     public void testEscapeDescriptionFalse() throws Exception {
         FreeStyleProject p = createFreeStyleProject();
-        Publisher publisher = new Publisher("testng.xml", false /*escapeDescription*/, false);
+        Publisher publisher = new Publisher("testng.xml", false /*escapeDescription*/, false, false);
         p.getPublishersList().add(publisher);
         p.onCreatedFromScratch(); //to setup project action
 
@@ -113,7 +113,7 @@ public class MethodResultTest extends HudsonTestCase {
     @Test
     public void testEscapeDescriptionTrue() throws Exception {
         FreeStyleProject p = createFreeStyleProject();
-        Publisher publisher = new Publisher("testng.xml", true /*escapeDescription*/, false);
+        Publisher publisher = new Publisher("testng.xml", true /*escapeDescription*/, false, false);
         p.getPublishersList().add(publisher);
         p.onCreatedFromScratch(); //to setup project action
 
@@ -149,7 +149,7 @@ public class MethodResultTest extends HudsonTestCase {
     @Test
     public void testMultilineDescriptionAndExceptionMessage() throws Exception {
         FreeStyleProject p = createFreeStyleProject();
-        Publisher publisher = new Publisher("testng.xml", false /*escapeDescription*/, false /*escapeException*/);
+        Publisher publisher = new Publisher("testng.xml", false /*escapeDescription*/, false /*escapeException*/, false);
         p.getPublishersList().add(publisher);
         p.onCreatedFromScratch(); //to setup project action
 
@@ -179,7 +179,7 @@ public class MethodResultTest extends HudsonTestCase {
     @Test
     public void testReporterLogOutput() throws Exception {
         FreeStyleProject p = createFreeStyleProject();
-        Publisher publisher = new Publisher("testng.xml", false, false);
+        Publisher publisher = new Publisher("testng.xml", false, false, false);
         p.getPublishersList().add(publisher);
         p.onCreatedFromScratch(); //to setup project action
 
@@ -213,7 +213,7 @@ public class MethodResultTest extends HudsonTestCase {
     @Test
     public void testMethodResults1() throws Exception {
         FreeStyleProject p = createFreeStyleProject();
-        Publisher publisher = new Publisher("testng.xml", false, false);
+        Publisher publisher = new Publisher("testng.xml", false, false, false);
         p.getPublishersList().add(publisher);
         p.onCreatedFromScratch(); //to setup project action
 
@@ -290,7 +290,7 @@ public class MethodResultTest extends HudsonTestCase {
     @Test
     public void testMethodResults_dataProviderTests() throws Exception {
         FreeStyleProject p = createFreeStyleProject();
-        Publisher publisher = new Publisher("testng.xml", false, false);
+        Publisher publisher = new Publisher("testng.xml", false, false, false);
         p.getPublishersList().add(publisher);
         p.onCreatedFromScratch(); //to setup project action
 
@@ -366,7 +366,7 @@ public class MethodResultTest extends HudsonTestCase {
     @Test
     public void testMethodResults_testInstanceNames() throws Exception {
         FreeStyleProject p = createFreeStyleProject();
-        Publisher publisher = new Publisher("testng.xml", false, false);
+        Publisher publisher = new Publisher("testng.xml", false, false, false);
         p.getPublishersList().add(publisher);
         p.onCreatedFromScratch(); //to setup project action
 

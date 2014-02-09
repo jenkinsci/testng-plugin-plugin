@@ -37,17 +37,20 @@ public class Publisher extends Recorder {
    public final boolean escapeTestDescp;
    //should exception messages be HTML escaped or not
    public final boolean escapeExceptionMsg;
+   //should failed builds be included in graphs or not
+   public final boolean showFailedBuilds;
 
    @Extension
    public static final DescriptorImpl DESCRIPTOR = new DescriptorImpl();
 
    @DataBoundConstructor
-   public Publisher(String reportFilenamePattern,
-         boolean escapeTestDescp, boolean escapeExceptionMsg) {
+   public Publisher(String reportFilenamePattern, boolean escapeTestDescp,
+                    boolean escapeExceptionMsg, boolean showFailedBuilds) {
       reportFilenamePattern.getClass();
       this.reportFilenamePattern = reportFilenamePattern;
       this.escapeTestDescp = escapeTestDescp;
       this.escapeExceptionMsg = escapeExceptionMsg;
+      this.showFailedBuilds = showFailedBuilds;
    }
 
    public BuildStepMonitor getRequiredMonitorService() {
@@ -68,7 +71,7 @@ public class Publisher extends Recorder {
    @Override
    public Collection<? extends Action> getProjectActions(AbstractProject<?, ?> project) {
       Collection<Action> actions = new ArrayList<Action>();
-      actions.add(new TestNGProjectAction(project, escapeTestDescp, escapeExceptionMsg));
+      actions.add(new TestNGProjectAction(project, escapeTestDescp, escapeExceptionMsg, showFailedBuilds));
       return actions;
    }
 

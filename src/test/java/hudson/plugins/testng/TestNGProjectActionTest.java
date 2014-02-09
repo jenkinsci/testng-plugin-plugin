@@ -1,5 +1,7 @@
 package hudson.plugins.testng;
 
+import java.io.IOException;
+
 import hudson.Launcher;
 import hudson.model.AbstractBuild;
 import hudson.model.BuildListener;
@@ -10,8 +12,6 @@ import junit.framework.Assert;
 import org.junit.Test;
 import org.jvnet.hudson.test.HudsonTestCase;
 import org.jvnet.hudson.test.TestBuilder;
-
-import java.io.IOException;
 
 /**
  * Tests for {@link TestNGProjectAction}
@@ -35,7 +35,7 @@ public class TestNGProjectActionTest extends HudsonTestCase {
     @Test
     public void testSettings() throws Exception {
         FreeStyleProject p = createFreeStyleProject();
-        Publisher publisher = new Publisher("some.xml", false, true);
+        Publisher publisher = new Publisher("some.xml", false, true, false);
         p.getPublishersList().add(publisher);
         p.onCreatedFromScratch(); //to setup project action
 
