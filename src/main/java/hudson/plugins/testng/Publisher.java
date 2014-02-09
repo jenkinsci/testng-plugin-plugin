@@ -1,17 +1,5 @@
 package hudson.plugins.testng;
 
-import hudson.Extension;
-import hudson.FilePath;
-import hudson.Launcher;
-import hudson.model.*;
-import hudson.plugins.testng.results.TestNGResult;
-import hudson.tasks.BuildStepDescriptor;
-import hudson.tasks.BuildStepMonitor;
-import hudson.tasks.Recorder;
-import net.sf.json.JSONObject;
-import org.kohsuke.stapler.DataBoundConstructor;
-import org.kohsuke.stapler.StaplerRequest;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -19,6 +7,23 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+
+import hudson.EnvVars;
+import hudson.Extension;
+import hudson.FilePath;
+import hudson.Launcher;
+import hudson.model.AbstractBuild;
+import hudson.model.AbstractProject;
+import hudson.model.Action;
+import hudson.model.BuildListener;
+import hudson.model.Result;
+import hudson.plugins.testng.results.TestNGResult;
+import hudson.tasks.BuildStepDescriptor;
+import hudson.tasks.BuildStepMonitor;
+import hudson.tasks.Recorder;
+import net.sf.json.JSONObject;
+import org.kohsuke.stapler.DataBoundConstructor;
+import org.kohsuke.stapler.StaplerRequest;
 
 /**
  * This class defines a @Publisher and @Extension
@@ -71,8 +76,7 @@ public class Publisher extends Recorder {
     * {@inheritDoc}
     */
    @Override
-   public boolean perform(AbstractBuild<?, ?> build, Launcher launcher,
-            final BuildListener listener)
+   public boolean perform(AbstractBuild<?, ?> build, Launcher launcher, final BuildListener listener)
          throws InterruptedException, IOException {
 
       PrintStream logger = listener.getLogger();
@@ -82,10 +86,14 @@ public class Publisher extends Recorder {
          return true;
       }
 
+      // replace any variables in the user specified pattern
+      EnvVars env = build.getEnvironment(listener);
+      env.overrideAll(build.getBuildVariables());
+      String pathsPattern = env.expand(reportFilenamePattern);
+
       logger.println("TestNG Reports Processing: START");
-      logger.println("Looking for TestNG results report in workspace using pattern: "
-                     + reportFilenamePattern);
-      FilePath[] paths = locateReports(build.getWorkspace(), reportFilenamePattern);
+      logger.println("Looking for TestNG results report in workspace using pattern: " + pathsPattern);
+      FilePath[] paths = locateReports(build.getWorkspace(), pathsPattern);
 
       if (paths.length == 0) {
          logger.println("Did not find any matching files.");
