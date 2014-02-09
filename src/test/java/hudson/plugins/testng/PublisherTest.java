@@ -69,7 +69,9 @@ public class PublisherTest extends HudsonTestCase {
 
     @Test
     public void testBuildAborted() throws Exception {
-        Publisher publisher = new Publisher("**/testng-results.xml", false, false, false);
+        PublisherCtor publisherCtor = new PublisherCtor().setReportFilenamePattern("testng.xml")
+                        .setEscapeTestDescp(false).setEscapeExceptionMsg(false).setShowFailedBuilds(false);
+        Publisher publisher = publisherCtor.getNewPublisher();
         Launcher launcherMock = mock(Launcher.class);
         AbstractBuild buildMock = mock(AbstractBuild.class);
         BuildListener listenerMock = mock(BuildListener.class);

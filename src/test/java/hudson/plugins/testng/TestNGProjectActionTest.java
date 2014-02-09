@@ -35,7 +35,9 @@ public class TestNGProjectActionTest extends HudsonTestCase {
     @Test
     public void testSettings() throws Exception {
         FreeStyleProject p = createFreeStyleProject();
-        Publisher publisher = new Publisher("some.xml", false, true, false);
+        PublisherCtor publisherCtor = new PublisherCtor().setReportFilenamePattern("some.xml")
+                        .setEscapeTestDescp(false).setEscapeExceptionMsg(true);
+        Publisher publisher = publisherCtor.getNewPublisher();
         p.getPublishersList().add(publisher);
         p.onCreatedFromScratch(); //to setup project action
 

@@ -35,7 +35,8 @@ public class TestNGTestResultBuildActionTest extends HudsonTestCase {
     @Test
     public void testBuildAction_1() throws Exception {
         FreeStyleProject p = createFreeStyleProject();
-        Publisher publisher = new Publisher("testng.xml", false, false, false);
+        PublisherCtor publisherCtor = new PublisherCtor().setReportFilenamePattern("testng.xml");
+        Publisher publisher = publisherCtor.getNewPublisher();
         p.getPublishersList().add(publisher);
         p.onCreatedFromScratch(); //to setup project action
 
@@ -124,7 +125,8 @@ public class TestNGTestResultBuildActionTest extends HudsonTestCase {
     @Test
     public void testBuildAction_2() throws Exception {
         FreeStyleProject p = createFreeStyleProject();
-        Publisher publisher = new Publisher("testng.xml", false, false, false);
+        PublisherCtor publisherCtor = new PublisherCtor().setReportFilenamePattern("testng.xml");
+        Publisher publisher = publisherCtor.getNewPublisher();
         p.getPublishersList().add(publisher);
         p.onCreatedFromScratch(); //to setup project action
 
