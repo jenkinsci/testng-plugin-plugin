@@ -39,18 +39,20 @@ public class Publisher extends Recorder {
    public final boolean escapeExceptionMsg;
    //should failed builds be included in graphs or not
    public final boolean showFailedBuilds;
+   //skipped tests mark build as unstable
+   public final boolean unstableOnSkippedTests;
 
    @Extension
    public static final DescriptorImpl DESCRIPTOR = new DescriptorImpl();
 
    @DataBoundConstructor
-   public Publisher(String reportFilenamePattern, boolean escapeTestDescp,
-                    boolean escapeExceptionMsg, boolean showFailedBuilds) {
-      reportFilenamePattern.getClass();
+   public Publisher(String reportFilenamePattern, boolean escapeTestDescp, boolean escapeExceptionMsg,
+                    boolean showFailedBuilds, boolean unstableOnSkippedTests) {
       this.reportFilenamePattern = reportFilenamePattern;
       this.escapeTestDescp = escapeTestDescp;
       this.escapeExceptionMsg = escapeExceptionMsg;
       this.showFailedBuilds = showFailedBuilds;
+      this.unstableOnSkippedTests = unstableOnSkippedTests;
    }
 
    public BuildStepMonitor getRequiredMonitorService() {
@@ -130,7 +132,12 @@ public class Publisher extends Recorder {
          //create an individual report for all of the results and add it to the build
          TestNGTestResultBuildAction action = new TestNGTestResultBuildAction(build, results);
          build.getActions().add(action);
+         if (unstableOnSkippedTests && (results.getSkippedConfigCount() > 0 || results.getSkipCount() > 0)) {
+            logger.println("Skipped Tests/Configs found. Marking build as UNSTABLE.");
+            build.setResult(Result.UNSTABLE);
+         }
          if (results.getFailedConfigCount() > 0 || results.getFailCount() > 0) {
+            logger.println("Failed Tests/Configs found. Marking build as UNSTABLE.");
             build.setResult(Result.UNSTABLE);
          }
       } else {

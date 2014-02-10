@@ -11,9 +11,10 @@ public class PublisherCtor {
     private boolean escapeExceptionMsg = true;
     private boolean escapeTestDescp = true;
     private boolean showFailedBuilds = false;
+    private boolean unstableOnSkippedTests = false;
 
     public Publisher getNewPublisher() {
-        return new Publisher(reportFilenamePattern, escapeTestDescp, escapeExceptionMsg, showFailedBuilds);
+        return new Publisher(reportFilenamePattern, escapeTestDescp, escapeExceptionMsg, showFailedBuilds, unstableOnSkippedTests);
     }
 
     public PublisherCtor setReportFilenamePattern(String reportFilenamePattern) {
@@ -36,4 +37,8 @@ public class PublisherCtor {
         return this;
     }
 
+    public PublisherCtor setUnstableOnSkippedTests(boolean unstableOnSkippedTests) {
+        this.unstableOnSkippedTests = unstableOnSkippedTests;
+        return this;
+    }
 }

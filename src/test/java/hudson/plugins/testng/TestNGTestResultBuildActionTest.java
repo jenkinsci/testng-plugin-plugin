@@ -13,9 +13,11 @@ import hudson.model.AbstractBuild;
 import hudson.model.BuildListener;
 import hudson.model.FreeStyleBuild;
 import hudson.model.FreeStyleProject;
+import hudson.model.Result;
 import hudson.plugins.testng.results.MethodResult;
 import hudson.plugins.testng.results.PackageResult;
 import hudson.plugins.testng.results.TestNGResult;
+import junit.framework.Assert;
 import org.junit.Test;
 import org.jvnet.hudson.test.HudsonTestCase;
 import org.jvnet.hudson.test.TestBuilder;
@@ -196,4 +198,78 @@ public class TestNGTestResultBuildActionTest extends HudsonTestCase {
         element = page.getElementById("pass");
         assertStringContains(element.getTextContent(), "526 tests");
     }
+
+    //unstableOnSkippedTests set to false
+    @Test
+    public void test_skipped_tests_default_setting() throws Exception {
+        FreeStyleProject p = createFreeStyleProject();
+        PublisherCtor publisherCtor = new PublisherCtor().setReportFilenamePattern("testng.xml");
+        Publisher publisher = publisherCtor.getNewPublisher();
+        p.getPublishersList().add(publisher);
+        p.onCreatedFromScratch(); //to setup project action
+
+        p.getBuildersList().add(new TestBuilder() {
+            public boolean perform(AbstractBuild<?, ?> build, Launcher launcher,
+                BuildListener listener) throws InterruptedException, IOException {
+                String contents = CommonUtil.getContents(Constants.TESTNG_SKIPPED_TEST);
+                build.getWorkspace().child("testng.xml").write(contents,"UTF-8");
+                return true;
+            }
+        });
+
+        //run build
+        FreeStyleBuild build = p.scheduleBuild2(0).get();
+        Assert.assertSame(Result.SUCCESS, build.getResult());
+    }
+
+    //unstableOnSkippedTests set to true
+    @Test
+    public void test_skipped_tests_enabled() throws Exception {
+        FreeStyleProject p = createFreeStyleProject();
+        PublisherCtor publisherCtor = new PublisherCtor().setReportFilenamePattern("testng.xml")
+                .setUnstableOnSkippedTests(true);
+        Publisher publisher = publisherCtor.getNewPublisher();
+        p.getPublishersList().add(publisher);
+        p.onCreatedFromScratch(); //to setup project action
+
+        p.getBuildersList().add(new TestBuilder() {
+            public boolean perform(AbstractBuild<?, ?> build, Launcher launcher,
+                BuildListener listener) throws InterruptedException, IOException {
+                String contents = CommonUtil.getContents(Constants.TESTNG_SKIPPED_TEST);
+                build.getWorkspace().child("testng.xml").write(contents,"UTF-8");
+                return true;
+            }
+        });
+
+        //run build
+        FreeStyleBuild build = p.scheduleBuild2(0).get();
+        Assert.assertSame(Result.UNSTABLE, build.getResult());
+    }
+
+    //unstableOnSkippedTests set to true. Has no effect as build is already marked failed
+    @Test
+    public void test_skipped_tests_enabled_failedbuild() throws Exception {
+        FreeStyleProject p = createFreeStyleProject();
+        PublisherCtor publisherCtor = new PublisherCtor().setReportFilenamePattern("testng.xml")
+                .setUnstableOnSkippedTests(true);
+        Publisher publisher = publisherCtor.getNewPublisher();
+        p.getPublishersList().add(publisher);
+        p.onCreatedFromScratch(); //to setup project action
+
+        p.getBuildersList().add(new TestBuilder() {
+            public boolean perform(AbstractBuild<?, ?> build, Launcher launcher,
+                BuildListener listener) throws InterruptedException, IOException {
+                String contents = CommonUtil.getContents(Constants.TESTNG_SKIPPED_TEST);
+                build.getWorkspace().child("testng.xml").write(contents,"UTF-8");
+                build.setResult(Result.FAILURE);
+                return true;
+            }
+        });
+
+        //run build
+        FreeStyleBuild build = p.scheduleBuild2(0).get();
+        Assert.assertSame(Result.FAILURE, build.getResult());
+    }
+
+
 }

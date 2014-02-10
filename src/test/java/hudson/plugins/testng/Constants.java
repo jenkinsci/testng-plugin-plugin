@@ -48,4 +48,8 @@ public class Constants {
      * Test description and Exception message have multi-lines
      */
     public static final String TESTNG_MULTILINE_EXCEPTION_AND_DESCRIPTION = "testng-xml-multiline-exp-msg-and-descp.xml";
+    /**
+     * Contains 1 passed and 1 skipped test
+     */
+    public static final String TESTNG_SKIPPED_TEST = "testng-skipped-tests.xml";
 }
