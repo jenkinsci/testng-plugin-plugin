@@ -417,4 +417,31 @@ public class MethodResult extends BaseResult {
     public boolean hasChildren() {
         return false;
     }
+    
+    @Override
+    public int getFailedSince() {
+        MethodResult result = this;
+        int lastFailure = owner.getNumber();
+        
+        while (result != null && result.getStatus().equals("FAIL")) {
+            lastFailure = result.getOwner().getNumber();
+            
+            result = (MethodResult) result.getPreviousResult();
+        }
+        
+        return lastFailure;
+    }
+    
+    public long getFailAge() {
+        long failAge = 0;
+        MethodResult result = this;
+        
+        while (result != null && result.getStatus().equals("FAIL")) {
+            failAge++;
+            
+            result = (MethodResult) result.getPreviousResult();
+        }
+        
+        return failAge;
+    }
 }

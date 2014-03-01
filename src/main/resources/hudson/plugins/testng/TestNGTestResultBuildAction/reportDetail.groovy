@@ -25,6 +25,9 @@ if (my.result.failCount != 0) {
                 th(class: "pane-header") {
                     text("Duration")
                 }
+                th(class: "pane-header") {
+                    test("Age")
+                }
             }
         }
         tbody() {
@@ -47,6 +50,9 @@ if (my.result.failCount != 0) {
                     }
                     td(align: "right") {
                         text("${FormatUtil.formatTime(failedTest.duration)}")
+                    }
+                    td(align: "right") {
+                        text("${failedTest.failAge}")
                     }
                 }
             }
