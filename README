@@ -16,6 +16,9 @@ graph and all details about which tests that failed are also presented.
 Release Notes
 -------
 
+### Upcoming
+* Fixed: JENKINS-23285 - All links on trend graph map are wrong on "testngreports" subpage
+
 ### 1.6
 * Fixed: JENKINS-19353 - Exception error message newlines are escaped
 * Fixed: JENKINS-20968 - Doesn't resolve parameters in "TestNG XML report pattern" field

@@ -46,8 +46,7 @@ public class GraphHelper {
       rsp.sendRedirect2(req.getContextPath() + "/images/headless.png");
    }
 
-   public static JFreeChart createChart(StaplerRequest req, CategoryDataset dataset) {
-
+   public static JFreeChart createChart(final StaplerRequest req, CategoryDataset dataset) {
       final JFreeChart chart = ChartFactory.createStackedAreaChart(
           null,                     // chart title
           null,                     // unused
@@ -88,7 +87,8 @@ public class GraphHelper {
           @Override
           public String generateURL(CategoryDataset dataset, int row, int column) {
               NumberOnlyBuildLabel label = (NumberOnlyBuildLabel) dataset.getColumnKey(column);
-              return  label.build.getNumber() + "/" + PluginImpl.URL + "/";
+              String path = req.getParameter("rel");
+              return  (path == null ? "" : path) + label.build.getNumber() + "/" + PluginImpl.URL + "/";
           }
 
           @Override
