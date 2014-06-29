@@ -16,6 +16,7 @@ import org.kohsuke.stapler.export.Exported;
 @SuppressWarnings("serial")
 public class ClassResult extends BaseResult {
 
+    private String pkgName; //name of package containing this class
     private List<MethodResult> testMethodList = new ArrayList<MethodResult>();
 
     //cache
@@ -27,8 +28,21 @@ public class ClassResult extends BaseResult {
     private transient int skip;
     private transient int pass;
 
-    public ClassResult(String name) {
+    public ClassResult(String pkgName, String name) {
         super(name);
+        this.pkgName = pkgName;
+    }
+
+    public String getPkgName() {
+        return pkgName;
+    }
+
+    public String getCanonicalName() {
+        if (PackageResult.NO_PKG_NAME.equals(pkgName)) {
+            return getName();
+        } else {
+            return pkgName + "." + getName();
+        }
     }
 
     /**
@@ -123,10 +137,10 @@ public class ClassResult extends BaseResult {
             }
             this.duration += methodResult.getDuration();
             methodResult.setParent(this);
-         /*
-          * Setup testUuids to ensure that methods with same names can be
-          * reached using unique urls
-          */
+            /*
+             * Setup testUuids to ensure that methods with same names can be
+             * reached using unique urls
+             */
             String methodName = methodResult.getName();
             if (methodInstanceMap.containsKey(methodName)) {
                 int currIdx = methodInstanceMap.get(methodName);

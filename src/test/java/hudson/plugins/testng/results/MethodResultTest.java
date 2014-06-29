@@ -51,7 +51,7 @@ public class MethodResultTest extends HudsonTestCase {
         Assert.assertEquals(Result.UNSTABLE, build.getResult());
 
         //Compare output
-        String methodUrl = build.getUrl() + PluginImpl.URL + "/gov.nasa.jpl/gov.nasa.jpl.FoobarTests/b";
+        String methodUrl = build.getUrl() + PluginImpl.URL + "/gov.nasa.jpl/FoobarTests/b";
         HtmlPage page = createWebClient().goTo(methodUrl);
         HtmlElement expMsg = page.getElementById("exp-msg");
         String contents = expMsg.getTextContent();
@@ -80,7 +80,7 @@ public class MethodResultTest extends HudsonTestCase {
         FreeStyleBuild build = p.scheduleBuild2(0).get();
 
         //Compare output
-        String methodUrl = build.getUrl() + PluginImpl.URL + "/gov.nasa.jpl/gov.nasa.jpl.FoobarTests/b";
+        String methodUrl = build.getUrl() + PluginImpl.URL + "/gov.nasa.jpl/FoobarTests/b";
         HtmlPage page = createWebClient().goTo(methodUrl);
         HtmlElement expMsg = page.getElementById("exp-msg");
         String contents = expMsg.getTextContent();
@@ -109,7 +109,7 @@ public class MethodResultTest extends HudsonTestCase {
         FreeStyleBuild build = p.scheduleBuild2(0).get();
 
         //Compare output
-        String methodUrl = build.getUrl() + PluginImpl.URL + "/com.test/com.test.UploadTest/uploadFile";
+        String methodUrl = build.getUrl() + PluginImpl.URL + "/com.test/UploadTest/uploadFile";
         HtmlPage page = createWebClient().goTo(methodUrl);
         HtmlElement description = page.getElementById("description");
         String contents = description.getTextContent();
@@ -139,7 +139,7 @@ public class MethodResultTest extends HudsonTestCase {
         FreeStyleBuild build = p.scheduleBuild2(0).get();
 
         //Compare output
-        String methodUrl = build.getUrl() + PluginImpl.URL + "/com.test/com.test.UploadTest/uploadFile";
+        String methodUrl = build.getUrl() + PluginImpl.URL + "/com.test/UploadTest/uploadFile";
         HtmlPage page = createWebClient().goTo(methodUrl);
         HtmlElement description = page.getElementById("description");
         String contents = description.getTextContent();
@@ -177,7 +177,7 @@ public class MethodResultTest extends HudsonTestCase {
         FreeStyleBuild build = p.scheduleBuild2(0).get();
 
         //Compare output
-        String methodUrl = build.getUrl() + PluginImpl.URL + "/com.fakepkg.test/com.fakepkg.test.FoobarTests/test";
+        String methodUrl = build.getUrl() + PluginImpl.URL + "/com.fakepkg.test/FoobarTests/test";
         HtmlPage page = createWebClient().goTo(methodUrl);
         HtmlElement description = page.getElementById("description");
         assertEquals(2, description.getElementsByTagName("br").size());
@@ -209,7 +209,7 @@ public class MethodResultTest extends HudsonTestCase {
 
         //Compare output
         String methodUrl = build.getUrl() + PluginImpl.URL
-                + "/org.example.test/org.example.test.ExampleIntegrationTest/FirstTest";
+                + "/org.example.test/ExampleIntegrationTest/FirstTest";
         HtmlPage page = createWebClient().goTo(methodUrl);
         HtmlElement reporterOutput = page.getElementById("reporter-output");
         String contents = reporterOutput.getTextContent();
@@ -243,16 +243,16 @@ public class MethodResultTest extends HudsonTestCase {
         FreeStyleBuild build = p.scheduleBuild2(0).get();
         TestNGResult testngResult = (TestNGResult) build.getTestResultAction().getResult();
         TestResult methodResult = testngResult.findCorrespondingResult(
-                        PluginImpl.URL + "/test/test.Test1/includedGroups_1");
+                        PluginImpl.URL + "/test/Test1/includedGroups_1");
 
         //Compare output for a method
         String urlPrefix = build.getUrl() + PluginImpl.URL;
-        HtmlPage page = createWebClient().goTo(urlPrefix + "/test/test.Test1/includedGroups_1/");
+        HtmlPage page = createWebClient().goTo(urlPrefix + "/test/Test1/includedGroups_1/");
         HtmlElement element = page.getElementById("parent");
         String contents = element.getTextContent();
         //information about class and time taken
-        assertStringContains(contents, "test.Test1");
-        assertTrue(element.getAttribute("href").endsWith(urlPrefix + "/test/test.Test1"));
+        assertStringContains(contents, "Test1");
+        assertTrue(element.getAttribute("href").endsWith(urlPrefix + "/test/Test1"));
 
         //duration string
         assertStringContains(page.getElementById("report").getTextContent(), methodResult.getDurationString());
@@ -286,7 +286,7 @@ public class MethodResultTest extends HudsonTestCase {
 
         //method run using two parameters
         page = createWebClient().goTo(urlPrefix
-                + "/test.dataprovider/test.dataprovider.Sample1Test/verifyNames_1/");
+                + "/test.dataprovider/Sample1Test/verifyNames_1/");
         element = page.getElementById("params");
         contents = element.getTextContent();
         //information about class and time taken
@@ -323,7 +323,7 @@ public class MethodResultTest extends HudsonTestCase {
         //Compare output for a dp method that failed
         String urlPrefix = build.getUrl() + PluginImpl.URL;
         WebClient wc = createWebClient();
-        HtmlPage page = wc.goTo(urlPrefix + "/org.jenkins/org.jenkins.TestDataProvider/test/");
+        HtmlPage page = wc.goTo(urlPrefix + "/org.jenkins/TestDataProvider/test/");
 
         //method status information
         HtmlElement element = page.getElementById("status");
@@ -351,7 +351,7 @@ public class MethodResultTest extends HudsonTestCase {
                              "org.jenkins.TestDataProvider.test(TestDataProvider.java:15)");
 
         //compare output for a dp method that passed
-        page = wc.goTo(urlPrefix + "/org.jenkins/org.jenkins.TestDataProvider/test_2/");
+        page = wc.goTo(urlPrefix + "/org.jenkins/TestDataProvider/test_2/");
 
         //method status information
         element = page.getElementById("status");
@@ -400,7 +400,7 @@ public class MethodResultTest extends HudsonTestCase {
         //Compare output for a dp method that failed
         String urlPrefix = build.getUrl() + PluginImpl.URL;
         WebClient wc = createWebClient();
-        HtmlPage page = wc.goTo(urlPrefix + "/testng.instancename/testng.instancename.MyITestFactoryTest/factoryTest1/");
+        HtmlPage page = wc.goTo(urlPrefix + "/testng.instancename/MyITestFactoryTest/factoryTest1/");
 
         //method instance name information
         HtmlElement element = page.getElementById("inst-name");

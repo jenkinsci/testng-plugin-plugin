@@ -1,11 +1,18 @@
 package hudson.plugins.testng.results;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import hudson.model.AbstractBuild;
 import hudson.plugins.testng.util.FormatUtil;
+import org.kohsuke.stapler.StaplerRequest;
+import org.kohsuke.stapler.StaplerResponse;
 import org.kohsuke.stapler.bind.JavaScriptMethod;
 import org.kohsuke.stapler.export.Exported;
-
-import java.util.*;
 
 /**
  * Handles package level results
@@ -13,6 +20,7 @@ import java.util.*;
 @SuppressWarnings("serial")
 public class PackageResult extends BaseResult {
 
+    public static final String NO_PKG_NAME = "No Package";
     //TODO: switch to using a Map instead of List
     //list of all classes run from this package
     private List<ClassResult> classList = new ArrayList<ClassResult>();
@@ -200,6 +208,34 @@ public class PackageResult extends BaseResult {
     @Override
     public boolean hasChildren() {
         return classList != null && !classList.isEmpty();
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * Overriding so that we can be backward compatible with shared links. We changed name
+     * for classes to be simple name instead of canonical.
+     *
+     * TODO: Added this in release 1.7. Delete this method in one of the next few release.
+     *
+     * @param token
+     * @param req
+     * @param rsp
+     * @return
+     */
+    @Override
+    public Object getDynamic(String token, StaplerRequest req, StaplerResponse rsp) {
+        if (token.indexOf('.') == -1) {
+            return super.getDynamic(token, req, rsp);
+        }
+        if (this.classList != null) {
+            for (ClassResult classResult : this.classList) {
+                if (token.equals(classResult.getPkgName() + "." + classResult.getName())) {
+                    return classResult;
+                }
+            }
+        }
+        return null;
     }
 
 }

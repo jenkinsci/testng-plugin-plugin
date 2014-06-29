@@ -196,13 +196,7 @@ public class TestNGResult extends BaseResult implements Serializable {
         packageMap.clear();
         for (TestNGTestResult _test : testList) {
             for (ClassResult _class : _test.getClassList()) {
-                String pkg = _class.getName();
-                int lastDot = pkg.lastIndexOf('.');
-                if (lastDot == -1) {
-                    pkg = "No Package";
-                } else {
-                    pkg = pkg.substring(0, lastDot);
-                }
+                String pkg = _class.getPkgName();
                 if (packageMap.containsKey(pkg)) {
                     List<ClassResult> classResults = packageMap.get(pkg).getChildren();
                     if (!classResults.contains(_class)) {

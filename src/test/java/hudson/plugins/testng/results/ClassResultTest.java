@@ -67,12 +67,12 @@ public class ClassResultTest extends HudsonTestCase {
         //run build
         FreeStyleBuild build = p.scheduleBuild2(0).get();
         TestNGResult testngResult = (TestNGResult) build.getTestResultAction().getResult();
-        TestResult classResult = testngResult.findCorrespondingResult(PluginImpl.URL + "/precheckins/precheckins.LegacyOps");
+        TestResult classResult = testngResult.findCorrespondingResult(PluginImpl.URL + "/precheckins/LegacyOps");
         Map<String, GroupedTestRun> testRunMap = ((ClassResult)classResult).getTestRunMap();
 
         //Get page
         String urlPrefix = build.getUrl() + PluginImpl.URL;
-        HtmlPage page = createWebClient().goTo(urlPrefix + "/precheckins/precheckins.LegacyOps/");
+        HtmlPage page = createWebClient().goTo(urlPrefix + "/precheckins/LegacyOps/");
 
         List<HtmlElement> elements = page.selectNodes("//div[starts-with(@id, 'run-')]/span[@id='run-info']");
 
@@ -169,12 +169,12 @@ public class ClassResultTest extends HudsonTestCase {
         //run build
         FreeStyleBuild build = p.scheduleBuild2(0).get();
         TestNGResult testngResult = (TestNGResult) build.getTestResultAction().getResult();
-        TestResult classResult = testngResult.findCorrespondingResult(PluginImpl.URL + "/test/test.CommandLineTest");
+        TestResult classResult = testngResult.findCorrespondingResult(PluginImpl.URL + "/test/CommandLineTest");
         Map<String, GroupedTestRun> testRunMap = ((ClassResult)classResult).getTestRunMap();
 
         //Get page
         String urlPrefix = build.getUrl() + PluginImpl.URL;
-        HtmlPage page = createWebClient().goTo(urlPrefix + "/test/test.CommandLineTest");
+        HtmlPage page = createWebClient().goTo(urlPrefix + "/test/CommandLineTest");
 
         List<HtmlElement> elements = page.selectNodes("//div[starts-with(@id, 'run-')]/table[@id='config']");
         // there are no configuration methods

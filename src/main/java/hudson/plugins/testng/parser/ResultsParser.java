@@ -1,17 +1,32 @@
 package hudson.plugins.testng.parser;
 
-import hudson.FilePath;
-import hudson.plugins.testng.results.*;
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
-import org.xmlpull.v1.XmlPullParserFactory;
-
-import java.io.*;
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.PrintStream;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 import java.util.logging.Logger;
+
+import hudson.FilePath;
+import hudson.plugins.testng.results.ClassResult;
+import hudson.plugins.testng.results.MethodResult;
+import hudson.plugins.testng.results.MethodResultException;
+import hudson.plugins.testng.results.PackageResult;
+import hudson.plugins.testng.results.TestNGResult;
+import hudson.plugins.testng.results.TestNGTestResult;
+import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
+import org.xmlpull.v1.XmlPullParserFactory;
 
 /**
  * Parses TestNG result XMLs generated using org.testng.reporters.XmlReporter
@@ -411,7 +426,7 @@ public class ResultsParser {
       currentMethod = new MethodResult(name, status, description, duration,
          startedAtDate, isConfig, currentTestRunId, currentTest.getName(),
          currentSuite, testInstanceName);
-      List<String> groups = methodGroupMap.get(currentClass.getName() + "|" + name);
+      List<String> groups = methodGroupMap.get(currentClass.getCanonicalName() + "|" + name);
       if (groups != null) {
          currentMethod.setGroups(groups);
       }
@@ -428,10 +443,15 @@ public class ResultsParser {
 
    private void startClass(String name)
    {
+      int idx = name.lastIndexOf('.');
+      String simpleName = idx == -1 ?
+              name : name.substring(idx + 1, name.length());
+      String pkgName = idx == -1 ?
+              PackageResult.NO_PKG_NAME : name.substring(0, idx);
       if (classResultMap.containsKey(name)) {
          currentClass = classResultMap.get(name);
       } else {
-         currentClass = new ClassResult(name);
+         currentClass = new ClassResult(pkgName, simpleName);
          classResultMap.put(name, currentClass);
       }
       currentMethodList = new ArrayList<MethodResult>();
