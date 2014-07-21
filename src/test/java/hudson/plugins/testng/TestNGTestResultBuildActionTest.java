@@ -14,6 +14,7 @@ import hudson.model.BuildListener;
 import hudson.model.FreeStyleBuild;
 import hudson.model.FreeStyleProject;
 import hudson.model.Result;
+import hudson.plugins.testng.results.ClassResult;
 import hudson.plugins.testng.results.MethodResult;
 import hudson.plugins.testng.results.PackageResult;
 import hudson.plugins.testng.results.TestNGResult;
@@ -71,6 +72,8 @@ public class TestNGTestResultBuildActionTest extends HudsonTestCase {
         MethodResult mr = testngResult.getFailedTests().get(0);
         assertEquals(super.getURL() + mr.getOwner().getUrl() + mr.getId(),
                 elements.get(0).getAttribute("href"));
+        assertEquals(((ClassResult)mr.getParent()).getCanonicalName() + "." + mr.getName(),
+                elements.get(0).getTextContent());
 
         //ensure only one failed config method
         elements = page.selectNodes("//table[@id='fail-config-tbl']/tbody/tr/td/a");
@@ -79,6 +82,8 @@ public class TestNGTestResultBuildActionTest extends HudsonTestCase {
         mr = testngResult.getFailedConfigs().get(0);
         assertEquals(super.getURL() + mr.getOwner().getUrl() + mr.getId(),
                 elements.get(2).getAttribute("href"));
+        assertEquals(((ClassResult)mr.getParent()).getCanonicalName() + "." + mr.getName(),
+                elements.get(2).getTextContent());
 
         //ensure only one skipped test method
         elements = page.selectNodes("//table[@id='skip-tbl']/tbody/tr/td/a");
@@ -86,6 +91,8 @@ public class TestNGTestResultBuildActionTest extends HudsonTestCase {
         mr = testngResult.getSkippedTests().get(0);
         assertEquals(super.getURL() + mr.getOwner().getUrl() + mr.getId(),
                 elements.get(0).getAttribute("href"));
+        assertEquals(((ClassResult)mr.getParent()).getCanonicalName() + "." + mr.getName(),
+                elements.get(0).getTextContent());
 
         //ensure no skipped config
         elements = page.selectNodes("//table[@id='skip-config-tbl']");

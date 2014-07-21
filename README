@@ -16,6 +16,9 @@ graph and all details about which tests that failed are also presented.
 Release Notes
 -------
 
+### 1.8
+* Fixed: Added back package names in certain places where they were helpful (see JENKINS-19217)
+
 ### 1.7
 * Fixed: JENKINS-23285 - All links on trend graph map are wrong on "testngreports" subpage
 * Fixed: JENKINS-19217 - Change class names to not contain package names on result pages

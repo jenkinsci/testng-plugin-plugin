@@ -39,7 +39,7 @@ if (my.result.failCount != 0) {
                         }
                         text(" ")
                         a(href:"${failedTest.upUrl}") {
-                            text("${failedTest.parent.name}.${failedTest.name}")
+                            text("${failedTest.parent.canonicalName}.${failedTest.name}")
                         }
                         div(id:"${failedTest.id}", style: "display:none", class: "hidden") {
                             text("Loading...")
@@ -180,7 +180,7 @@ def printMethods(type, tableName, methodList, showMoreArrows) {
                             text(" ")
                         }
                         a(href:"${method.upUrl}") {
-                            text("${method.parent.name}.${method.name}")
+                            text("${method.parent.canonicalName}.${method.name}")
                         }
                         if (showMoreArrows) {
                             div(id:"${method.id}", style: "display:none", class: "hidden") {

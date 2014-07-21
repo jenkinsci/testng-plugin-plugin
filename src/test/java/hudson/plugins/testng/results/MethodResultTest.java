@@ -251,7 +251,7 @@ public class MethodResultTest extends HudsonTestCase {
         HtmlElement element = page.getElementById("parent");
         String contents = element.getTextContent();
         //information about class and time taken
-        assertStringContains(contents, "Test1");
+        assertStringContains(contents, "test.Test1");
         assertTrue(element.getAttribute("href").endsWith(urlPrefix + "/test/Test1"));
 
         //duration string

@@ -103,7 +103,7 @@ public class TestResultHistoryUtil {
             if (methodResult.getParent() instanceof ClassResult) {
                htmlStr.append("<a href=\"").append(methodResult.getUpUrl());
                htmlStr.append("\">");
-               htmlStr.append(methodResult.getParent().getName());
+               htmlStr.append(((ClassResult)methodResult.getParent()).getCanonicalName());
                htmlStr.append(".").append(methodResult.getName()).append("</a>");
             } else {
                htmlStr.append(methodResult.getName());

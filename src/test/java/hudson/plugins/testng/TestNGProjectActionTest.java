@@ -7,6 +7,7 @@ import hudson.model.AbstractBuild;
 import hudson.model.BuildListener;
 import hudson.model.FreeStyleBuild;
 import hudson.model.FreeStyleProject;
+import hudson.plugins.testng.util.TestResultHistoryUtil;
 import hudson.tasks.test.TestResult;
 import junit.framework.Assert;
 import org.junit.Test;
@@ -66,5 +67,8 @@ public class TestNGProjectActionTest extends HudsonTestCase {
         Assert.assertFalse(projAction.getEscapeTestDescp());
         Assert.assertTrue(projAction.getEscapeExceptionMsg());
         Assert.assertSame(testResult, projAction.getLastCompletedBuildAction().getResult());
+
+        String summary = TestResultHistoryUtil.toSummary(projAction.getLastCompletedBuildAction());
+        Assert.assertTrue(summary.contains("gov.nasa.jpl.FoobarTests.b"));
     }
 }

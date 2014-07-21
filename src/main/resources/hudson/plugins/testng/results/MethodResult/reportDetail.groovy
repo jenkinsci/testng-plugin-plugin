@@ -15,7 +15,7 @@ div(id: "report") {
     h1("${my.name}")
     text("(from ")
     a(href: "${my.parent.upUrl}", id: "parent") {
-        text("${my.parent.name}")
+        text("${my.parent.canonicalName}")
     }
     text(" took ${my.durationString})")
 
