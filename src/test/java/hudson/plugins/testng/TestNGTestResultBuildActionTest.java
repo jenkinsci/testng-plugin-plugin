@@ -18,6 +18,7 @@ import hudson.plugins.testng.results.ClassResult;
 import hudson.plugins.testng.results.MethodResult;
 import hudson.plugins.testng.results.PackageResult;
 import hudson.plugins.testng.results.TestNGResult;
+import hudson.tasks.test.AbstractTestResultAction;
 import junit.framework.Assert;
 import org.junit.Test;
 import org.jvnet.hudson.test.HudsonTestCase;
@@ -54,7 +55,7 @@ public class TestNGTestResultBuildActionTest extends HudsonTestCase {
 
         //run build
         FreeStyleBuild build = p.scheduleBuild2(0).get();
-        TestNGResult testngResult = (TestNGResult) build.getTestResultAction().getResult();
+        TestNGResult testngResult = (TestNGResult) build.getAction(AbstractTestResultAction.class).getResult();
 
         //Get page
         HtmlPage page = createWebClient().goTo(build.getUrl() + PluginImpl.URL);
@@ -150,7 +151,7 @@ public class TestNGTestResultBuildActionTest extends HudsonTestCase {
 
         //run build
         FreeStyleBuild build = p.scheduleBuild2(0).get();
-        TestNGResult testngResult = (TestNGResult) build.getTestResultAction().getResult();
+        TestNGResult testngResult = (TestNGResult) build.getAction(AbstractTestResultAction.class).getResult();
 
         //Get page
         HtmlPage page = createWebClient().goTo(build.getUrl() + PluginImpl.URL);

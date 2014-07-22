@@ -20,6 +20,7 @@ import hudson.plugins.testng.Constants;
 import hudson.plugins.testng.PluginImpl;
 import hudson.plugins.testng.Publisher;
 import hudson.plugins.testng.PublisherCtor;
+import hudson.tasks.test.AbstractTestResultAction;
 import hudson.tasks.test.TestResult;
 import org.junit.Test;
 import org.jvnet.hudson.test.HudsonTestCase;
@@ -66,7 +67,7 @@ public class ClassResultTest extends HudsonTestCase {
 
         //run build
         FreeStyleBuild build = p.scheduleBuild2(0).get();
-        TestNGResult testngResult = (TestNGResult) build.getTestResultAction().getResult();
+        TestNGResult testngResult = (TestNGResult) build.getAction(AbstractTestResultAction.class).getResult();
         TestResult classResult = testngResult.findCorrespondingResult(PluginImpl.URL + "/precheckins/LegacyOps");
         Map<String, GroupedTestRun> testRunMap = ((ClassResult)classResult).getTestRunMap();
 
@@ -168,7 +169,7 @@ public class ClassResultTest extends HudsonTestCase {
 
         //run build
         FreeStyleBuild build = p.scheduleBuild2(0).get();
-        TestNGResult testngResult = (TestNGResult) build.getTestResultAction().getResult();
+        TestNGResult testngResult = (TestNGResult) build.getAction(AbstractTestResultAction.class).getResult();
         TestResult classResult = testngResult.findCorrespondingResult(PluginImpl.URL + "/test/CommandLineTest");
         Map<String, GroupedTestRun> testRunMap = ((ClassResult)classResult).getTestRunMap();
 

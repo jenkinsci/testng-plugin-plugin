@@ -15,6 +15,7 @@ import hudson.plugins.testng.Constants;
 import hudson.plugins.testng.PluginImpl;
 import hudson.plugins.testng.Publisher;
 import hudson.plugins.testng.PublisherCtor;
+import hudson.tasks.test.AbstractTestResultAction;
 import hudson.tasks.test.TestResult;
 import junit.framework.Assert;
 import org.junit.Test;
@@ -241,7 +242,7 @@ public class MethodResultTest extends HudsonTestCase {
 
         //run build
         FreeStyleBuild build = p.scheduleBuild2(0).get();
-        TestNGResult testngResult = (TestNGResult) build.getTestResultAction().getResult();
+        TestNGResult testngResult = (TestNGResult) build.getAction(AbstractTestResultAction.class).getResult();
         TestResult methodResult = testngResult.findCorrespondingResult(
                         PluginImpl.URL + "/test/Test1/includedGroups_1");
 

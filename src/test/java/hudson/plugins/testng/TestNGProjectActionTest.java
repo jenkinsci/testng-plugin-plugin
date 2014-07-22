@@ -8,6 +8,7 @@ import hudson.model.BuildListener;
 import hudson.model.FreeStyleBuild;
 import hudson.model.FreeStyleProject;
 import hudson.plugins.testng.util.TestResultHistoryUtil;
+import hudson.tasks.test.AbstractTestResultAction;
 import hudson.tasks.test.TestResult;
 import junit.framework.Assert;
 import org.junit.Test;
@@ -56,9 +57,9 @@ public class TestNGProjectActionTest extends HudsonTestCase {
         FreeStyleBuild build = p.scheduleBuild2(0).get();
 
         //assert of test result
-        Assert.assertNotNull(build.getTestResultAction());
+        Assert.assertNotNull(build.getAction(AbstractTestResultAction.class));
         TestResult testResult;
-        Assert.assertNotNull(testResult = (TestResult) build.getTestResultAction().getResult());
+        Assert.assertNotNull(testResult = (TestResult) build.getAction(AbstractTestResultAction.class).getResult());
         Assert.assertTrue(testResult.getTotalCount() > 0);
 
         //assert on project action

@@ -17,6 +17,7 @@ import hudson.plugins.testng.Constants;
 import hudson.plugins.testng.PluginImpl;
 import hudson.plugins.testng.Publisher;
 import hudson.plugins.testng.PublisherCtor;
+import hudson.tasks.test.AbstractTestResultAction;
 import org.junit.Test;
 import org.jvnet.hudson.test.HudsonTestCase;
 import org.jvnet.hudson.test.TestBuilder;
@@ -61,7 +62,7 @@ public class PackageResultTest extends HudsonTestCase {
 
         //run build
         FreeStyleBuild build = p.scheduleBuild2(0).get();
-        TestNGResult testngResult = (TestNGResult) build.getTestResultAction().getResult();
+        TestNGResult testngResult = (TestNGResult) build.getAction(AbstractTestResultAction.class).getResult();
         PackageResult pkgResult = (PackageResult) testngResult.findCorrespondingResult(PluginImpl.URL + "/precheckins");
 
         //Get page
