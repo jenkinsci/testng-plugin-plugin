@@ -19,6 +19,7 @@ Release Notes
 ### 1.9
 * Fixed the duration values to be more accurate by accounting for tests executing in parallel
 * Fixed: JENKINS-24176 - Test result trend breaks lazy-loading (Jesse Glick)
+* Fix default value of testng.reportFilenamePattern (juherr)
 
 ### 1.8
 * Fixed: Added back package names in certain places where they were helpful (see JENKINS-19217)
