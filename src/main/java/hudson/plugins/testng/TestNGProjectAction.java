@@ -2,8 +2,6 @@ package hudson.plugins.testng;
 
 import java.io.IOException;
 import java.util.Calendar;
-import java.util.HashMap;
-import java.util.Map;
 
 import hudson.model.AbstractBuild;
 import hudson.model.AbstractProject;
@@ -13,6 +11,7 @@ import hudson.plugins.testng.util.GraphHelper;
 import hudson.tasks.test.TestResultProjectAction;
 import hudson.util.ChartUtil;
 import hudson.util.DataSetBuilder;
+import java.util.Set;
 import org.jfree.chart.JFreeChart;
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
@@ -27,13 +26,6 @@ public class TestNGProjectAction extends TestResultProjectAction implements Prom
    private transient boolean escapeTestDescp;
    private transient boolean escapeExceptionMsg;
    private transient boolean showFailedBuilds;
-
-   /**
-    * Used to figure out if we need to regenerate the graphs or not.
-    * Only used in newGraphNotNeeded() method. Key is the request URI and value
-    * is the number of builds for the project.
-    */
-   private transient Map<String, Integer> requestMap = new HashMap<String, Integer>();
 
    public TestNGProjectAction(AbstractProject<?, ?> project,
          boolean escapeTestDescp, boolean escapeExceptionMsg, boolean showFailedBuilds) {
@@ -127,7 +119,7 @@ public class TestNGProjectAction extends TestResultProjectAction implements Prom
    }
 
    /**
-    * If number of builds hasn't changed and if checkIfModified() returns true,
+    * If the last build is the same,
     * no need to regenerate the graph. Browser should reuse it's cached image
     *
     * @param req request
@@ -137,25 +129,7 @@ public class TestNGProjectAction extends TestResultProjectAction implements Prom
    private boolean newGraphNotNeeded(final StaplerRequest req,
          StaplerResponse rsp) {
       Calendar t = getProject().getLastCompletedBuild().getTimestamp();
-      Integer prevNumBuilds = requestMap.get(req.getRequestURI());
-      int numBuilds = getProject().getBuilds().size();
-
-      //change null to 0
-      prevNumBuilds = prevNumBuilds == null ? 0 : prevNumBuilds;
-      if (prevNumBuilds != numBuilds) {
-        requestMap.put(req.getRequestURI(), numBuilds);
-      }
-
-      if (requestMap.size() > 10) {
-        //keep map size in check
-        requestMap.clear();
-      }
-
-      /*
-       * checkIfModified() is after '&&' because we want it evaluated only
-       * if number of builds is different
-       */
-      return prevNumBuilds == numBuilds && req.checkIfModified(t, rsp);
+      return req.checkIfModified(t, rsp);
    }
 
    public void doGraphMap(final StaplerRequest req,
@@ -209,9 +183,9 @@ public class TestNGProjectAction extends TestResultProjectAction implements Prom
    }
 
    protected void populateDataSetBuilder(DataSetBuilder<String, ChartUtil.NumberOnlyBuildLabel> dataset) {
-
+      Set<Integer> loadedBuilds = getProject()._getRuns().getLoadedBuilds().keySet(); // cf. AbstractTestResultAction.getPreviousResult(Class, false)
       for (AbstractBuild<?, ?> build = getProject().getLastBuild();
-         build != null; build = build.getPreviousCompletedBuild()) {
+         build != null; build = loadedBuilds.contains(build.number - 1) ? build.getPreviousCompletedBuild() : null) {
          ChartUtil.NumberOnlyBuildLabel label = new ChartUtil.NumberOnlyBuildLabel(build);
          TestNGTestResultBuildAction action = build.getAction(getBuildActionClass());
 
