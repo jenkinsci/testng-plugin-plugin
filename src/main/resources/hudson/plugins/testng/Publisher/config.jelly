@@ -1,7 +1,7 @@
 <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout"
          xmlns:t="/lib/hudson" xmlns:f="/lib/form" xmlns:bh="/lib/health">
    <f:entry title="TestNG XML report pattern" field="reportFilenamePattern">
-      <f:textbox name="testng.reportFilenamePattern" value="${instance.reportFilenamePattern}" default="**/testng-result.xml"/>
+      <f:textbox name="testng.reportFilenamePattern" value="${instance.reportFilenamePattern}" default="**/testng-results.xml"/>
    </f:entry>
    <f:advanced>
       <f:entry title="Escape Test description string?" field="escapeTestDescp">
