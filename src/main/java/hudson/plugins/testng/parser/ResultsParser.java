@@ -416,15 +416,16 @@ public class ResultsParser {
             String startedAt,
             String isConfig)
    {
-      Date startedAtDate;
+      Date startedAtDate = null;
       try {
          startedAtDate = this.dateFormat.parse(startedAt);
       } catch (ParseException e) {
          log("Unable to parse started-at value: " + startedAt);
-         startedAtDate = null;
       }
+
       currentMethod = new MethodResult(name, status, description, duration,
-         startedAtDate, isConfig, currentTestRunId, currentTest.getName(),
+         startedAtDate == null ? -1 : startedAtDate.getTime(),
+         isConfig, currentTestRunId, currentTest.getName(),
          currentSuite, testInstanceName);
       List<String> groups = methodGroupMap.get(currentClass.getCanonicalName() + "|" + name);
       if (groups != null) {

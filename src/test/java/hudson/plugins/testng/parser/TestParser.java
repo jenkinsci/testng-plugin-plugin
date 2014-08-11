@@ -1,5 +1,10 @@
 package hudson.plugins.testng.parser;
 
+import java.net.URL;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Map;
+
 import hudson.plugins.testng.CommonUtil;
 import hudson.plugins.testng.Constants;
 import hudson.plugins.testng.results.MethodResult;
@@ -7,11 +12,6 @@ import hudson.plugins.testng.results.PackageResult;
 import hudson.plugins.testng.results.TestNGResult;
 import junit.framework.Assert;
 import org.junit.Test;
-
-import java.net.URL;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Map;
 
 public class TestParser {
 
@@ -52,7 +52,7 @@ public class TestParser {
       PackageResult result = packageResults.values().iterator().next();
       Assert.assertEquals("org.jenkins", result.getName());
       //durations are all in seconds
-      Assert.assertEquals(0.012f, result.getDuration());
+      Assert.assertEquals(0.009f, result.getDuration());
    }
 
    @Test

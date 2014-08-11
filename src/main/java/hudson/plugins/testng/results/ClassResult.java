@@ -23,7 +23,8 @@ public class ClassResult extends BaseResult {
     private Map<String, GroupedTestRun> testRunMap = null;
 
     //cached values, updated via tally
-    private transient float duration;
+    private transient long startTime;
+    private transient long endTime;
     private transient int fail;
     private transient int skip;
     private transient int pass;
@@ -88,7 +89,15 @@ public class ClassResult extends BaseResult {
     @Exported
     @Override
     public float getDuration() {
-        return duration;
+        return (endTime - startTime) / 1000f;
+    }
+
+    public long getStartTime() {
+        return startTime; //in ms
+    }
+
+    public long getEndTime() {
+        return endTime; //in ms
     }
 
     @Override
@@ -119,10 +128,11 @@ public class ClassResult extends BaseResult {
     }
 
     public void tally() {
-        this.duration = 0;
         this.fail = 0;
         this.skip = 0;
         this.pass = 0;
+        this.startTime = Long.MAX_VALUE; //start with max
+        this.endTime = 0; //start with min
         Map<String, Integer> methodInstanceMap = new HashMap<String, Integer>();
 
         for (MethodResult methodResult : this.testMethodList) {
@@ -135,7 +145,25 @@ public class ClassResult extends BaseResult {
                     this.pass++;
                 }
             }
-            this.duration += methodResult.getDuration();
+            /*
+            It's possible that timestamps were not parsed correctly, so check for -1 values.
+            And then, we check for the oldest start time and latest end time to figure out
+            time taken to execute a class. (Same would be done for PackageResults and
+            TestNGResults as well.
+
+            Note that this helps give a better idea of time taken for test execution when
+            tests were run in parallel, but still doesn't give a good picture when all tests
+            within a class finished execute within a second, because millisecond information
+            is not available on the start time of method execution.
+             */
+            long timestamp = methodResult.getStartTime();
+            if (timestamp != -1 && this.startTime > timestamp) {
+                startTime = timestamp;
+            }
+            timestamp = methodResult.getEndTime();
+            if (timestamp != -1 && this.endTime < timestamp) {
+                endTime = timestamp;
+            }
             methodResult.setParent(this);
             /*
              * Setup testUuids to ensure that methods with same names can be

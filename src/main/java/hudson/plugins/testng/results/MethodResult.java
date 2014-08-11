@@ -32,7 +32,9 @@ public class MethodResult extends BaseResult {
     //Exception thrown on running this test method (if any)
     private MethodResultException exception;
     //start time
-    private Date startedAt;
+    private long startedAt;
+    //end time
+    private long endedAt;
     //a test instance name if one is provided using ITest interface
     private String testInstanceName;
     //name of the <test> containing this method
@@ -61,7 +63,7 @@ public class MethodResult extends BaseResult {
                         String status,
                         String description,
                         String duration,
-                        Date startedAt,
+                        long startedAt,
                         String isConfig,
                         String testRunId,
                         String parentTestName,
@@ -78,7 +80,10 @@ public class MethodResult extends BaseResult {
         this.startedAt = startedAt;
 
         try {
-            this.duration = (float) Long.parseLong(duration) / 1000f;
+            long durationMs = Long.parseLong(duration);
+            //more accurate end time when test took less than a second to run
+            this.endedAt = startedAt + durationMs;
+            this.duration = (float) durationMs / 1000f;
         } catch (NumberFormatException e) {
             System.err.println("Unable to parse duration value: " + duration);
         }
@@ -116,7 +121,15 @@ public class MethodResult extends BaseResult {
 
     @Exported
     public Date getStartedAt() {
+        return new Date(startedAt);
+    }
+
+    public long getStartTime() {
         return startedAt;
+    }
+
+    public long getEndTime() {
+        return endedAt;
     }
 
     public MethodResultException getException() {

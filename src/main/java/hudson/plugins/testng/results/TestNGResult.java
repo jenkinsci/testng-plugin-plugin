@@ -23,7 +23,8 @@ public class TestNGResult extends BaseResult implements Serializable {
     private List<MethodResult> skippedTests = new ArrayList<MethodResult>();
     private List<MethodResult> failedConfigurationMethods = new ArrayList<MethodResult>();
     private List<MethodResult> skippedConfigurationMethods = new ArrayList<MethodResult>();
-    private long duration;
+    private long startTime;
+    private long endTime;
     private int passCount;
     private int failCount;
     private int skipCount;
@@ -106,7 +107,7 @@ public class TestNGResult extends BaseResult implements Serializable {
     @Exported
     @Override
     public float getDuration() {
-        return (float) duration / 1000f;
+        return (float) (endTime - startTime) / 1000f;
     }
 
     @Exported(name = "fail-config")
@@ -210,10 +211,17 @@ public class TestNGResult extends BaseResult implements Serializable {
                 }
             }
         }
-        duration = 0;
+
+        startTime = Long.MAX_VALUE;
+        endTime = 0;
         for (PackageResult pkgResult : packageMap.values()) {
             pkgResult.tally();
-            duration += pkgResult.getDuration();
+            if (this.startTime > pkgResult.getStartTime()) {
+                startTime = pkgResult.getStartTime(); //cf. ClassResult#tally()
+            }
+            if (this.endTime < pkgResult.getEndTime()) {
+                endTime = pkgResult.getEndTime();
+            }
         }
     }
 

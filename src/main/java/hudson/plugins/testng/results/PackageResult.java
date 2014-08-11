@@ -29,7 +29,8 @@ public class PackageResult extends BaseResult {
     private List<MethodResult> sortedTestMethodsByStartTime = null;
 
     //cached vars updated using tally method
-    private transient float duration;
+    private transient long startTime;
+    private transient long endTime;
     private transient int fail;
     private transient int skip;
     private transient int pass;
@@ -58,7 +59,15 @@ public class PackageResult extends BaseResult {
     @Exported
     @Override
     public float getDuration() {
-        return duration;
+        return (endTime - startTime) / 1000f;
+    }
+
+    public long getStartTime() {
+        return startTime;
+    }
+
+    public long getEndTime() {
+        return endTime;
     }
 
     @Override
@@ -150,17 +159,23 @@ public class PackageResult extends BaseResult {
 
     @Override
     public void tally() {
-        duration = 0;
         fail = 0;
         skip = 0;
         pass = 0;
+        startTime = Long.MAX_VALUE;
+        endTime = 0;
         for (ClassResult _c : classList) {
             _c.setParent(this);
             _c.tally();
-            duration += _c.getDuration();
             fail += _c.getFailCount();
             skip += _c.getSkipCount();
             pass += _c.getPassCount();
+            if (this.startTime > _c.getStartTime()) {
+                startTime = _c.getStartTime(); //cf. ClassResult#tally()
+            }
+            if (this.endTime < _c.getEndTime()) {
+                endTime = _c.getEndTime();
+            }
         }
     }
 
