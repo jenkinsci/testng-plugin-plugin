@@ -16,6 +16,10 @@ graph and all details about which tests that failed are also presented.
 Release Notes
 -------
 
+### 1.9.1
+* Make duration calculation for PackageResults more accurate
+* Retain white-space formatting in reporter output (steveims)
+
 ### 1.9
 * Fixed the duration values to be more accurate by accounting for tests executing in parallel
 * Fixed: JENKINS-24176 - Test result trend breaks lazy-loading (Jesse Glick)
