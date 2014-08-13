@@ -76,7 +76,7 @@ div(id: "report") {
     if (my.reporterOutput) {
         div(id: "reporter-output") {
             h3("Reporter Output")
-            code(style: "margin-left:15px; display:block; border:1px black; background-color:#F0F0F0; width:800px") {
+            code(style: "white-space:pre; margin-left:15px; display:block; border:1px black; background-color:#F0F0F0") {
                 raw("${my.reporterOutput}")
             }
         }
