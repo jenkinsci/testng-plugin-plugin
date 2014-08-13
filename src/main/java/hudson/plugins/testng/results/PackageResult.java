@@ -2,6 +2,7 @@ package hudson.plugins.testng.results;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -30,7 +31,7 @@ public class PackageResult extends BaseResult {
 
     //cached vars updated using tally method
     private transient long startTime;
-    private transient long endTime;
+    private transient long duration;
     private transient int fail;
     private transient int skip;
     private transient int pass;
@@ -59,7 +60,7 @@ public class PackageResult extends BaseResult {
     @Exported
     @Override
     public float getDuration() {
-        return (endTime - startTime) / 1000f;
+        return duration / 1000f;
     }
 
     public long getStartTime() {
@@ -67,7 +68,7 @@ public class PackageResult extends BaseResult {
     }
 
     public long getEndTime() {
-        return endTime;
+        return startTime + duration;
     }
 
     @Override
@@ -162,21 +163,53 @@ public class PackageResult extends BaseResult {
         fail = 0;
         skip = 0;
         pass = 0;
-        startTime = Long.MAX_VALUE;
-        endTime = 0;
+        List<long[]> timeSeries = new ArrayList<long[]>(classList.size());
         for (ClassResult _c : classList) {
             _c.setParent(this);
             _c.tally();
             fail += _c.getFailCount();
             skip += _c.getSkipCount();
             pass += _c.getPassCount();
-            if (this.startTime > _c.getStartTime()) {
-                startTime = _c.getStartTime(); //cf. ClassResult#tally()
-            }
-            if (this.endTime < _c.getEndTime()) {
-                endTime = _c.getEndTime();
-            }
+            timeSeries.add(new long[] {_c.getStartTime(), _c.getEndTime() - _c.getStartTime()});
         }
+
+        Collections.sort(timeSeries, new Comparator<long[]>() {
+            public int compare(long[] ts1, long[] ts2) {
+                return ts1[0] < ts2[0] ? -1 : (ts1[0] > ts2[0] ? 1 : 0);
+            }
+        });
+
+        timeSeries.add(new long[] {System.currentTimeMillis(), 0}); //to help with following algorithm
+        startTime = timeSeries.get(0)[0]; //start time for all classes within this package
+        duration = 0;
+        int activeTS = 0;
+        int nextTS = 1;
+        do {
+            long[] ts1 = timeSeries.get(activeTS);
+            long[] ts2 = timeSeries.get(nextTS);
+
+            long s1 = ts1[0];
+            long e1 = ts1[0] + ts1[1];
+
+            long s2 = ts2[0];
+            long e2 = ts2[0] + ts2[1];
+
+            if (s1 <= s2 && e1 >= e2) {
+                //ts2 series is completely contained in ts1, so nothing to do
+                nextTS++;
+                continue;
+            }
+
+            if (e1 <= s2) {
+                //no overlap (disjoint time series)
+                duration += ts1[1];
+            } else {
+                //overlap
+                duration += s2 - s1;
+            }
+            activeTS = nextTS;
+            nextTS++;
+        } while (nextTS < timeSeries.size()); // we never process the last entry in the array
     }
 
     /**
