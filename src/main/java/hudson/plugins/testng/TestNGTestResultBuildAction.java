@@ -15,6 +15,9 @@ import hudson.plugins.testng.results.MethodResult;
 import hudson.plugins.testng.results.TestNGResult;
 import hudson.tasks.junit.CaseResult;
 import hudson.tasks.test.AbstractTestResultAction;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
 
@@ -25,6 +28,8 @@ import org.kohsuke.stapler.StaplerResponse;
  * @since v1.0
  */
 public class TestNGTestResultBuildAction extends AbstractTestResultAction implements Serializable {
+
+    private static final Logger LOGGER = Logger.getLogger(TestNGTestResultBuildAction.class.getName());
 
     /**
      * Unique identifier for this class.
@@ -40,21 +45,43 @@ public class TestNGTestResultBuildAction extends AbstractTestResultAction implem
     /*
      * Cache test counts to speed up loading of graphs
      */
-    protected transient int passCount;
-    protected transient int failCount;
-    protected transient int skipCount;
+    protected Integer passCount; // null if uncomputed
+    protected int failCount;
+    protected int skipCount;
 
-    public TestNGTestResultBuildAction(AbstractBuild<?, ?> build, TestNGResult testngResults) {
-        super(build);
-
+    public TestNGTestResultBuildAction(TestNGResult testngResults) {
         if (testngResults != null) {
-            testngResults.setOwner(build);
             this.testngResultRef = new WeakReference<TestNGResult>(testngResults);
 
             //initialize the cached values when TestNGBuildAction is instantiated
-            this.passCount = testngResults.getPassCount();
-            this.failCount = testngResults.getFailCount();
-            this.skipCount = testngResults.getSkipCount();
+            count(testngResults);
+        }
+    }
+
+    private void count(TestNGResult testngResults) {
+        this.passCount = testngResults.getPassCount();
+        this.failCount = testngResults.getFailCount();
+        this.skipCount = testngResults.getSkipCount();
+    }
+
+    private void countAndSave(TestNGResult testngResults) {
+        int savedPassCount = passCount != null ? passCount : -1;
+        int savedFailCount = failCount;
+        int savedSkipCount = skipCount;
+        count(testngResults);
+        if (passCount != savedPassCount || failCount != savedFailCount || skipCount != savedSkipCount) {
+            LOGGER.log(Level.FINE, "saving {0}", owner);
+            try {
+                owner.save();
+            } catch (IOException x) {
+                LOGGER.log(Level.WARNING, "failed to save " + owner, x);
+            }
+        }
+    }
+
+    private void countAsNeeded() {
+        if (passCount == null) {
+            countAndSave(getResult());
         }
     }
 
@@ -64,21 +91,21 @@ public class TestNGTestResultBuildAction extends AbstractTestResultAction implem
     }
 
     public TestNGResult getResult(AbstractBuild build) {
-        if (testngResultRef == null) {
-            testngResultRef = new WeakReference<TestNGResult>(loadResults(build, null));
-            return testngResultRef.get();
-        }
-
-        TestNGResult tr = testngResultRef.get();
+        TestNGResult tr = testngResultRef != null ? testngResultRef.get() : null;
         if (tr == null) {
-            testngResultRef = new WeakReference<TestNGResult>(loadResults(build, null));
-            return testngResultRef.get();
-        } else {
-            return tr;
+            tr = loadResults(build, null);
+            countAndSave(tr);
+            testngResultRef = new WeakReference<TestNGResult>(tr);
         }
+        return tr;
     }
 
     static TestNGResult loadResults(AbstractBuild<?, ?> owner, PrintStream logger) {
+        if (LOGGER.isLoggable(Level.FINER)) {
+            LOGGER.log(Level.FINER, "loading results for " + owner, new Throwable());
+        } else {
+            LOGGER.log(Level.FINE, "loading results for {0}", owner);
+        }
         FilePath testngDir = Publisher.getTestNGReport(owner);
         FilePath[] paths = null;
         try {
@@ -109,16 +136,19 @@ public class TestNGTestResultBuildAction extends AbstractTestResultAction implem
 
     @Override
     public int getFailCount() {
+        countAsNeeded();
         return failCount;
     }
 
     @Override
     public int getSkipCount() {
+        countAsNeeded();
         return skipCount;
     }
 
     @Override
     public int getTotalCount() {
+        countAsNeeded();
         return failCount + passCount + skipCount;
     }
 
@@ -145,25 +175,6 @@ public class TestNGTestResultBuildAction extends AbstractTestResultAction implem
     @Override
     public Api getApi() {
         return new Api(getResult());
-    }
-
-    /**
-     * {@inheritDoc}
-     * <p/>
-     * NOTE: Executed when build action is read from disk - e.g. on Jenkins startup
-     */
-    @Override
-    public Object readResolve() {
-        super.readResolve();
-
-        TestNGResult testResults = getResult();
-
-        //initialize the cached values
-        passCount = testResults.getPassCount();
-        failCount = testResults.getFailCount();
-        skipCount = testResults.getSkipCount();
-
-        return this;
     }
 
     public List<CaseResult> getFailedTests() {

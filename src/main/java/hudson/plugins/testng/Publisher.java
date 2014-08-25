@@ -130,8 +130,7 @@ public class Publisher extends Recorder {
 
       if (results.getTestList().size() > 0) {
          //create an individual report for all of the results and add it to the build
-         TestNGTestResultBuildAction action = new TestNGTestResultBuildAction(build, results);
-         build.getActions().add(action);
+         build.addAction(new TestNGTestResultBuildAction(results));
          if (unstableOnSkippedTests && (results.getSkippedConfigCount() > 0 || results.getSkipCount() > 0)) {
             logger.println("Skipped Tests/Configs found. Marking build as UNSTABLE.");
             build.setResult(Result.UNSTABLE);
