@@ -37,6 +37,10 @@ public class Constants {
      */
     public static final String TESTNG_XML_TESTNG = "testng-results-testng.xml";
     /**
+     * XML generated with a failure in setup/teardown on running unit test suites for TestNG
+     */
+    public static final String TESTNG_XML_TESTNG_FAIL_IN_TEARDOWN = "testng-failed-during-teardown.xml";
+    /**
      * Exception message has HTML tags
      */
     public static final String TESTNG_XML_EXP_MSG_XML = "testng-xml-exp-msg.xml";

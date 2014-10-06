@@ -69,6 +69,12 @@ public class TestParser {
    }
 
    @Test
+   public void failedSetupOrTearDownMethodShouldResultInFailure() {
+	   TestNGResult results = CommonUtil.getResults(CommonUtil.getResource(Constants.TESTNG_XML_TESTNG_FAIL_IN_TEARDOWN).getFile());
+	   results.getFailCount();
+	   Assert.assertEquals(1, results.getFailedConfigCount());
+   }
+   @Test
    public void testParseEmptyException() {
       TestNGResult results = CommonUtil.getResults(CommonUtil.getResource(Constants.TESTNG_XML_EMPTY_EXCEPTION).getFile());
       results.tally();

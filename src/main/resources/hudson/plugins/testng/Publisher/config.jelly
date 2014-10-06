@@ -16,5 +16,8 @@
       <f:entry title="Mark build unstable on skipped tests?" field="unstableOnSkippedTests">
          <f:checkbox name="testng.unstableOnSkippedTests" default="false" />
       </f:entry>
+      <f:entry title="Mark build failed on failed tests or configurations?" field="failBuildOnFailedTestsOrConfig">
+         <f:checkbox name="testng.failBuildOnFailedTestsOrConfig" default="false" />
+      </f:entry>
    </f:advanced>
 </j:jelly>
