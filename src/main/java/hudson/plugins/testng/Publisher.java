@@ -41,18 +41,22 @@ public class Publisher extends Recorder {
    public final boolean showFailedBuilds;
    //skipped tests mark build as unstable
    public final boolean unstableOnSkippedTests;
+   //failed config mark build as failure
+   public final boolean failureOnFailedTestConfig;
+
 
    @Extension
    public static final DescriptorImpl DESCRIPTOR = new DescriptorImpl();
 
    @DataBoundConstructor
    public Publisher(String reportFilenamePattern, boolean escapeTestDescp, boolean escapeExceptionMsg,
-                    boolean showFailedBuilds, boolean unstableOnSkippedTests) {
+                    boolean showFailedBuilds, boolean unstableOnSkippedTests, boolean failureOnFailedTestConfig) {
       this.reportFilenamePattern = reportFilenamePattern;
       this.escapeTestDescp = escapeTestDescp;
       this.escapeExceptionMsg = escapeExceptionMsg;
       this.showFailedBuilds = showFailedBuilds;
       this.unstableOnSkippedTests = unstableOnSkippedTests;
+      this.failureOnFailedTestConfig = failureOnFailedTestConfig;
    }
 
    public BuildStepMonitor getRequiredMonitorService() {
@@ -132,11 +136,13 @@ public class Publisher extends Recorder {
          //create an individual report for all of the results and add it to the build
          TestNGTestResultBuildAction action = new TestNGTestResultBuildAction(build, results);
          build.getActions().add(action);
-         if (unstableOnSkippedTests && (results.getSkippedConfigCount() > 0 || results.getSkipCount() > 0)) {
+         if (failureOnFailedTestConfig && results.getFailedConfigCount() > 0) {
+             logger.println("Failed configuration methods found. Marking build as FAILURE.");
+             build.setResult(Result.FAILURE);
+         } else if (unstableOnSkippedTests && (results.getSkippedConfigCount() > 0 || results.getSkipCount() > 0)) {
             logger.println("Skipped Tests/Configs found. Marking build as UNSTABLE.");
             build.setResult(Result.UNSTABLE);
-         }
-         if (results.getFailedConfigCount() > 0 || results.getFailCount() > 0) {
+         } else if (results.getFailedConfigCount() > 0 || results.getFailCount() > 0) {
             logger.println("Failed Tests/Configs found. Marking build as UNSTABLE.");
             build.setResult(Result.UNSTABLE);
          }
