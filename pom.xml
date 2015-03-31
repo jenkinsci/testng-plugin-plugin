@@ -1,5 +1,4 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <url>http://wiki.jenkins-ci.org/display/JENKINS/testng-plugin</url>
     <parent>
@@ -9,7 +8,7 @@
     </parent>
 
     <artifactId>testng-plugin</artifactId>
-    <version>1.9.2-SNAPSHOT</version>
+    <version>1.10</version>
     <packaging>hpi</packaging>
     <name>TestNG Results Plugin</name>
 
@@ -47,7 +46,7 @@
         <connection>scm:git:https://github.com/jenkinsci/testng-plugin-plugin.git</connection>
         <developerConnection>scm:git:ssh://git@github.com/jenkinsci/testng-plugin-plugin.git</developerConnection>
         <url>https://github.com/jenkinsci/testng-plugin-plugin</url>
-        <tag>HEAD</tag>
+        <tag>testng-plugin-1.10</tag>
     </scm>
     <build>
         <plugins>
