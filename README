@@ -17,8 +17,10 @@ Release Notes
 -------
 
 ### Upcoming
+* Upped compatible Jenkins version to v1.554.3
 * Added: MIT license
 * Added: Add property to fail build on config fail (damienbiggs)
+* Added: Make sure TestNGTestResultBuildAction caches counts and loads results lazily (Jesse Glick)
 
 ### 1.9.1
 * Make duration calculation for PackageResults more accurate
