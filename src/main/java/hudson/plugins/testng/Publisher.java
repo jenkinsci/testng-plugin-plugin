@@ -134,8 +134,7 @@ public class Publisher extends Recorder {
 
       if (results.getTestList().size() > 0) {
          //create an individual report for all of the results and add it to the build
-         TestNGTestResultBuildAction action = new TestNGTestResultBuildAction(build, results);
-         build.getActions().add(action);
+         build.addAction(new TestNGTestResultBuildAction(results));
          if (failureOnFailedTestConfig && results.getFailedConfigCount() > 0) {
              logger.println("Failed configuration methods found. Marking build as FAILURE.");
              build.setResult(Result.FAILURE);

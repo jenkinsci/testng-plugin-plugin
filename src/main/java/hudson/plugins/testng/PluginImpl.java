@@ -16,7 +16,6 @@ public class PluginImpl extends Plugin {
     public static final String ICON_FILE_NAME = "/plugin/testng-plugin/icons/report.png";
 
     public void start() throws Exception {
-        Run.XSTREAM.registerConverter(new BuildActionConverter());
         //this is the name with which older build actions are stored with in build.xml files
         //here for backward compatibility
         Run.XSTREAM.alias("hudson.plugins.testng.TestNGBuildAction", TestNGTestResultBuildAction.class);
