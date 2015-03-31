@@ -1,11 +1,14 @@
 package hudson.plugins.testng;
 
+import java.io.IOException;
 import java.io.PrintStream;
 import java.io.Serializable;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import hudson.FilePath;
 import hudson.model.AbstractBuild;
@@ -15,9 +18,6 @@ import hudson.plugins.testng.results.MethodResult;
 import hudson.plugins.testng.results.TestNGResult;
 import hudson.tasks.junit.CaseResult;
 import hudson.tasks.test.AbstractTestResultAction;
-import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
 
@@ -101,11 +101,7 @@ public class TestNGTestResultBuildAction extends AbstractTestResultAction implem
     }
 
     static TestNGResult loadResults(AbstractBuild<?, ?> owner, PrintStream logger) {
-        if (LOGGER.isLoggable(Level.FINER)) {
-            LOGGER.log(Level.FINER, "loading results for " + owner, new Throwable());
-        } else {
-            LOGGER.log(Level.FINE, "loading results for {0}", owner);
-        }
+        LOGGER.log(Level.FINE, "loading results for {0}", owner);
         FilePath testngDir = Publisher.getTestNGReport(owner);
         FilePath[] paths = null;
         try {
