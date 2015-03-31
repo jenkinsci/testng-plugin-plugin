@@ -16,6 +16,9 @@ graph and all details about which tests that failed are also presented.
 Release Notes
 -------
 
+### Upcoming
+* Added MIT license
+
 ### 1.9.1
 * Make duration calculation for PackageResults more accurate
 * Retain white-space formatting in reporter output (steveims)
