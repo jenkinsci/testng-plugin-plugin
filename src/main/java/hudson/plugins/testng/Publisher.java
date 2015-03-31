@@ -41,18 +41,21 @@ public class Publisher extends Recorder {
    public final boolean showFailedBuilds;
    //skipped tests mark build as unstable
    public final boolean unstableOnSkippedTests;
+   //fail the build on failed tests/config
+   public final boolean failBuildOnFailedTestsOrConfig;
 
    @Extension
    public static final DescriptorImpl DESCRIPTOR = new DescriptorImpl();
 
    @DataBoundConstructor
    public Publisher(String reportFilenamePattern, boolean escapeTestDescp, boolean escapeExceptionMsg,
-                    boolean showFailedBuilds, boolean unstableOnSkippedTests) {
+                    boolean showFailedBuilds, boolean unstableOnSkippedTests, boolean failBuildOnFailedTestsOrConfig) {
       this.reportFilenamePattern = reportFilenamePattern;
       this.escapeTestDescp = escapeTestDescp;
       this.escapeExceptionMsg = escapeExceptionMsg;
       this.showFailedBuilds = showFailedBuilds;
       this.unstableOnSkippedTests = unstableOnSkippedTests;
+      this.failBuildOnFailedTestsOrConfig = failBuildOnFailedTestsOrConfig;
    }
 
    public BuildStepMonitor getRequiredMonitorService() {
@@ -137,8 +140,14 @@ public class Publisher extends Recorder {
             build.setResult(Result.UNSTABLE);
          }
          if (results.getFailedConfigCount() > 0 || results.getFailCount() > 0) {
-            logger.println("Failed Tests/Configs found. Marking build as UNSTABLE.");
-            build.setResult(Result.UNSTABLE);
+        	if(failBuildOnFailedTestsOrConfig) {
+        		 logger.println("Failed Tests/Configs found. Marking build as FAILURE.");
+                 build.setResult(Result.FAILURE);
+        	} else {
+        		 logger.println("Failed Tests/Configs found. Marking build as UNSTABLE.");
+                 build.setResult(Result.UNSTABLE);
+        	}
+           
          }
       } else {
          logger.println("Found matching files but did not find any TestNG results.");
