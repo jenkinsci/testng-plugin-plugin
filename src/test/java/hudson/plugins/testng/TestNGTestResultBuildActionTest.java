@@ -279,5 +279,50 @@ public class TestNGTestResultBuildActionTest extends HudsonTestCase {
         Assert.assertSame(Result.FAILURE, build.getResult());
     }
 
+    @Test
+    public void test_failed_config_default_setting() throws Exception {
+        FreeStyleProject p = createFreeStyleProject();
+        PublisherCtor publisherCtor = new PublisherCtor().setReportFilenamePattern("testng.xml");
+        Publisher publisher = publisherCtor.getNewPublisher();
+        p.getPublishersList().add(publisher);
+        p.onCreatedFromScratch(); //to setup project action
+
+        p.getBuildersList().add(new TestBuilder() {
+            public boolean perform(AbstractBuild<?, ?> build, Launcher launcher,
+                                   BuildListener listener) throws InterruptedException, IOException {
+                String contents = CommonUtil.getContents(Constants.TESTNG_FAILED_TEST_CONFIG);
+                build.getWorkspace().child("testng.xml").write(contents,"UTF-8");
+                return true;
+            }
+        });
+
+        //run build
+        FreeStyleBuild build = p.scheduleBuild2(0).get();
+        Assert.assertSame(Result.UNSTABLE, build.getResult());
+    }
+
+    @Test
+    public void test_failed_config_enabled_failedbuild() throws Exception {
+        FreeStyleProject p = createFreeStyleProject();
+        PublisherCtor publisherCtor = new PublisherCtor().setReportFilenamePattern("testng.xml")
+                .setFailureOnFailedTestConfig(true);
+        Publisher publisher = publisherCtor.getNewPublisher();
+        p.getPublishersList().add(publisher);
+        p.onCreatedFromScratch(); //to setup project action
+
+        p.getBuildersList().add(new TestBuilder() {
+            public boolean perform(AbstractBuild<?, ?> build, Launcher launcher,
+                                   BuildListener listener) throws InterruptedException, IOException {
+                String contents = CommonUtil.getContents(Constants.TESTNG_FAILED_TEST_CONFIG);
+                build.getWorkspace().child("testng.xml").write(contents,"UTF-8");
+                return true;
+            }
+        });
+
+        //run build
+        FreeStyleBuild build = p.scheduleBuild2(0).get();
+        Assert.assertSame(Result.FAILURE, build.getResult());
+    }
+
 
 }

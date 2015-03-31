@@ -13,8 +13,11 @@
       <f:entry title="Show failed builds in trend graph?" field="showFailedBuilds">
          <f:checkbox name="testng.showFailedBuilds" default="false" />
       </f:entry>
-      <f:entry title="Mark build unstable on skipped tests?" field="unstableOnSkippedTests">
+      <f:entry title="Mark build as unstable on skipped tests?" field="unstableOnSkippedTests">
          <f:checkbox name="testng.unstableOnSkippedTests" default="false" />
+      </f:entry>
+      <f:entry title="Mark build as failure on failed configuration?" field="failureOnFailedTestConfig">
+         <f:checkbox name="testng.failureOnFailedTestConfig" default="false" />
       </f:entry>
    </f:advanced>
 </j:jelly>
