@@ -17,7 +17,8 @@ Release Notes
 -------
 
 ### Upcoming
-* Added MIT license
+* Added: MIT license
+* Added: Add property to fail build on config fail (damienbiggs)
 
 ### 1.9.1
 * Make duration calculation for PackageResults more accurate
