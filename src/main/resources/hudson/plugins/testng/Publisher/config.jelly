@@ -20,7 +20,7 @@
          <f:checkbox name="testng.failureOnFailedTestConfig" default="false" />
       </f:entry>
 
-      <f:optionalBlock name="dynamic" title="Use thresholds" field="useThresholds">
+      <f:optionalBlock name="useThresholds" title="Use thresholds" field="useThresholds">
          <f:section title="Mark build unstable thresholds">
          <f:entry title="${%Skipped}" field="unstableSkips">
             <f:textbox default="0"/>

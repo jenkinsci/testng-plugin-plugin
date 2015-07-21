@@ -44,7 +44,26 @@ public class Publisher extends Recorder {
    public final boolean unstableOnSkippedTests;
    //failed config mark build as failure
    public final boolean failureOnFailedTestConfig;
-   public final boolean useThresholds;
+   public final Threshold useThresholds;
+   public class Threshold{
+      public int unstableSkips;
+      public int unstableFails;
+      public int failedSkips;
+      public int failedFails;
+      public boolean usePercentage;
+
+      public void setUnstableSkips(int skips){this.unstableSkips=skips;}
+      public void setUnstableFails(int fails){this.unstableFails=fails;}
+      public void setFailedSkips(int skips){this.failedSkips=skips;}
+      public void setFailedFails(int fails){this.failedFails=fails;}
+      public void setUsePercentage(boolean percent){this.usePercentage=percent;}
+
+      public void getUnstableSkips(int skips){this.unstableSkips=skips;}
+      public void getUnstableFails(int fails){this.unstableFails=fails;}
+      public void getFailedSkips(int skips){this.failedSkips=skips;}
+      public void getFailedFails(int fails){this.failedFails=fails;}
+      public void getUsePercentage(boolean percent){this.usePercentage=percent;}
+   }
    //number of skips that will trigger "Unstable"
    public final int unstableSkips;
    //number of fails that will trigger "Unstable"
@@ -61,7 +80,7 @@ public class Publisher extends Recorder {
 
    @DataBoundConstructor
    public Publisher(String reportFilenamePattern, boolean escapeTestDescp, boolean escapeExceptionMsg,
-                    boolean showFailedBuilds, boolean unstableOnSkippedTests, boolean failureOnFailedTestConfig, boolean useThresholds,
+                    boolean showFailedBuilds, boolean unstableOnSkippedTests, boolean failureOnFailedTestConfig, Threshold useThresholds,
                     int unstableSkips, int unstableFails, int failedSkips, int failedFails, boolean usePercentage) {
       this.reportFilenamePattern = reportFilenamePattern;
       this.escapeTestDescp = escapeTestDescp;
@@ -174,7 +193,7 @@ public class Publisher extends Recorder {
                build.setResult(Result.UNSTABLE);
             } else if (results.getFailedConfigCount() > 0 || results.getFailCount() > 0) {
                logger.println("Failed Tests/Configs found. Marking build as UNSTABLE.");
-               build.setResult(Result.UNSTABLE);
+               build.setResult(Result.FAILURE);
             }
          }
       } else {
