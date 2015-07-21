@@ -11,9 +11,6 @@ public class PublisherCtor {
     private boolean escapeExceptionMsg = true;
     private boolean escapeTestDescp = true;
     private boolean showFailedBuilds = false;
-    private boolean unstableOnSkippedTests = false;
-    private boolean failureOnFailedTestConfig = false;
-    private boolean useThresholds = false;
     private int unstableSkips = 0;
     private int unstableFails = 0;
     private int failedSkips = 0;
@@ -22,7 +19,6 @@ public class PublisherCtor {
 
     public Publisher getNewPublisher() {
         return new Publisher(reportFilenamePattern, escapeTestDescp, escapeExceptionMsg, showFailedBuilds,
-                unstableOnSkippedTests, failureOnFailedTestConfig, useThresholds,
                 unstableSkips, unstableFails, failedSkips, failedFails, usePercentage);
     }
 
@@ -43,21 +39,6 @@ public class PublisherCtor {
 
     public PublisherCtor setShowFailedBuilds(boolean showFailedBuilds) {
         this.showFailedBuilds = showFailedBuilds;
-        return this;
-    }
-
-    public PublisherCtor setUnstableOnSkippedTests(boolean unstableOnSkippedTests) {
-        this.unstableOnSkippedTests = unstableOnSkippedTests;
-        return this;
-    }
-
-    public PublisherCtor setFailureOnFailedTestConfig(boolean failureOnFailedTestConfig) {
-        this.failureOnFailedTestConfig = failureOnFailedTestConfig;
-        return this;
-    }
-
-    public PublisherCtor setUseThresholds(boolean useThresholds) {
-        this.useThresholds = useThresholds;
         return this;
     }
 
