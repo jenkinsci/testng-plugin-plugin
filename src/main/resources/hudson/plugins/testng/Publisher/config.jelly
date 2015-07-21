@@ -6,38 +6,46 @@
    <f:advanced>
       <f:entry title="Escape Test description string?" field="escapeTestDescp">
          <f:checkbox name="testng.escapeTestDescp" default="true" />
-	  </f:entry>
-	  <f:entry title="Escape exception messages?" field="escapeExceptionMsg">
+	   </f:entry>
+	   <f:entry title="Escape exception messages?" field="escapeExceptionMsg">
          <f:checkbox name="testng.escapeExceptionMsg" default="true" />
       </f:entry>
       <f:entry title="Show failed builds in trend graph?" field="showFailedBuilds">
          <f:checkbox name="testng.showFailedBuilds" default="false" />
       </f:entry>
+      <f:entry title="Mark build as unstable on skipped tests?" field="unstableOnSkippedTests">
+         <f:checkbox name="testng.unstableOnSkippedTests" default="false" />
+      </f:entry>
+      <f:entry title="Mark build as failure on failed configuration?" field="failureOnFailedTestConfig">
+         <f:checkbox name="testng.failureOnFailedTestConfig" default="false" />
+      </f:entry>
 
-      <f:section title="Mark build unstable thresholds">
-      <f:entry title="${%Skipped}" field="unstableSkips">
-         <f:textbox default="0"/>
-      </f:entry>
-      <f:entry title="${%Failed}" field="unstableFails">
-         <f:textbox default="0"/>
-      </f:entry>
-      </f:section>
+      <f:optionalBlock name="dynamic" title="Use thresholds" field="useThresholds">
+         <f:section title="Mark build unstable thresholds">
+         <f:entry title="${%Skipped}" field="unstableSkips">
+            <f:textbox default="0"/>
+         </f:entry>
+         <f:entry title="${%Failed}" field="unstableFails">
+            <f:textbox default="0"/>
+         </f:entry>
+         </f:section>
 
-      <f:section title="Mark build failed thresholds">
-      <f:entry title="${%Skipped}" field="failedSkips">
-         <f:textbox default="0"/>
-      </f:entry>
-      <f:entry title="${%Failed}" field="failedFails">
-         <f:textbox default="0"/>
-      </f:entry>
-      </f:section>
+         <f:section title="Mark build failed thresholds">
+         <f:entry title="${%Skipped}" field="failedSkips">
+            <f:textbox default="0"/>
+         </f:entry>
+         <f:entry title="${%Failed}" field="failedFails">
+            <f:textbox default="0"/>
+         </f:entry>
+         </f:section>
 
-      <f:entry field="usePercentage" title="Number/Percentage">
-         <select name="usePercentage">
-               <option value="false" selected="true">Number</option>
-               <option value="true">Percentage</option>
-         </select>
-      </f:entry>
+         <f:entry field="usePercentage" title="Number/Percentage">
+            <select name="usePercentage">
+                  <option value="false" selected="true">Number</option>
+                  <option value="true">Percentage</option>
+            </select>
+         </f:entry>
+      </f:optionalBlock>
 
    </f:advanced>
 </j:jelly>
