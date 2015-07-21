@@ -11,12 +11,15 @@ public class PublisherCtor {
     private boolean escapeExceptionMsg = true;
     private boolean escapeTestDescp = true;
     private boolean showFailedBuilds = false;
-    private boolean unstableOnSkippedTests = false;
-    private boolean failureOnFailedTestConfig = false;
+    private int unstableSkips = 0;
+    private int unstableFails = 0;
+    private int failedSkips = 0;
+    private int failedFails = 0;
+    private boolean usePercentage = false;
 
     public Publisher getNewPublisher() {
         return new Publisher(reportFilenamePattern, escapeTestDescp, escapeExceptionMsg, showFailedBuilds,
-                unstableOnSkippedTests, failureOnFailedTestConfig);
+                unstableSkips, unstableFails, failedSkips, failedFails, usePercentage);
     }
 
     public PublisherCtor setReportFilenamePattern(String reportFilenamePattern) {
@@ -39,13 +42,23 @@ public class PublisherCtor {
         return this;
     }
 
-    public PublisherCtor setUnstableOnSkippedTests(boolean unstableOnSkippedTests) {
-        this.unstableOnSkippedTests = unstableOnSkippedTests;
+    public PublisherCtor setUnstableSkips(int unstableSkips) {
+        this.unstableSkips = unstableSkips;
         return this;
     }
 
-    public PublisherCtor setFailureOnFailedTestConfig(boolean failureOnFailedTestConfig) {
-        this.failureOnFailedTestConfig = failureOnFailedTestConfig;
+    public PublisherCtor setUnstableFails(int unstableFails) {
+        this.unstableFails = unstableFails;
+        return this;
+    }
+
+    public PublisherCtor setFailedSkips(int failedSkips) {
+        this.failedSkips = failedSkips;
+        return this;
+    }
+
+    public PublisherCtor setFailedFails(int failedFails) {
+        this.failedFails = failedFails;
         return this;
     }
 }

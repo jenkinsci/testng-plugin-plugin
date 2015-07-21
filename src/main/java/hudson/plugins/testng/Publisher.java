@@ -39,10 +39,15 @@ public class Publisher extends Recorder {
    public final boolean escapeExceptionMsg;
    //should failed builds be included in graphs or not
    public final boolean showFailedBuilds;
-   //skipped tests mark build as unstable
-   public final boolean unstableOnSkippedTests;
-   //failed config mark build as failure
-   public final boolean failureOnFailedTestConfig;
+   //number of skips that will trigger "Unstable"
+   public final int unstableSkips;
+    //number of fails that will trigger "Unstable"
+   public final int unstableFails;
+   //number of skips that will trigger "Failed"
+   public final int failedSkips;
+   //number of fails that will trigger "Failed"
+   public final int failedFails;
+   public final boolean usePercentage;
 
 
    @Extension
@@ -50,13 +55,18 @@ public class Publisher extends Recorder {
 
    @DataBoundConstructor
    public Publisher(String reportFilenamePattern, boolean escapeTestDescp, boolean escapeExceptionMsg,
-                    boolean showFailedBuilds, boolean unstableOnSkippedTests, boolean failureOnFailedTestConfig) {
+                    boolean showFailedBuilds, int unstableSkips, int unstableFails, int failedSkips, int failedFails, boolean usePercentage) {
       this.reportFilenamePattern = reportFilenamePattern;
       this.escapeTestDescp = escapeTestDescp;
       this.escapeExceptionMsg = escapeExceptionMsg;
       this.showFailedBuilds = showFailedBuilds;
-      this.unstableOnSkippedTests = unstableOnSkippedTests;
-      this.failureOnFailedTestConfig = failureOnFailedTestConfig;
+      this.unstableSkips = unstableSkips;
+      this.unstableFails = unstableFails;
+      this.failedSkips = failedSkips;
+      this.failedFails = failedFails;
+      this.usePercentage = usePercentage;
+      //this.unstableOnSkippedTests = unstableOnSkippedTests;
+      //this.failureOnFailedTestConfig = failureOnFailedTestConfig;
    }
 
    public BuildStepMonitor getRequiredMonitorService() {
@@ -135,15 +145,16 @@ public class Publisher extends Recorder {
       if (results.getTestList().size() > 0) {
          //create an individual report for all of the results and add it to the build
          build.addAction(new TestNGTestResultBuildAction(results));
-         if (failureOnFailedTestConfig && results.getFailedConfigCount() > 0) {
-             logger.println("Failed configuration methods found. Marking build as FAILURE.");
-             build.setResult(Result.FAILURE);
-         } else if (unstableOnSkippedTests && (results.getSkippedConfigCount() > 0 || results.getSkipCount() > 0)) {
-            logger.println("Skipped Tests/Configs found. Marking build as UNSTABLE.");
-            build.setResult(Result.UNSTABLE);
-         } else if (results.getFailedConfigCount() > 0 || results.getFailCount() > 0) {
-            logger.println("Failed Tests/Configs found. Marking build as UNSTABLE.");
-            build.setResult(Result.UNSTABLE);
+         if(usePercentage) {
+            //TODO add logic for using percentages
+         } else {
+            if (results.getFailCount() >= failedFails || results.getSkipCount() >= failedSkips) {
+                logger.println("Failed Tests exceeded threshold of " + failedFails + " or Skipped Tests exceeded threshold of " + failedSkips + ". Marking build as FAILURE.");
+                build.setResult(Result.FAILURE);
+            } else if (results.getFailCount() >= unstableFails || results.getSkipCount() >= unstableSkips) {
+               logger.println("Failed Tests exceeded threshold of " + unstableFails + " or Skipped Tests exceeded threshold of " + unstableSkips + ". Marking build as UNSTABLE.");
+               build.setResult(Result.UNSTABLE);
+            }
          }
       } else {
          logger.println("Found matching files but did not find any TestNG results.");
