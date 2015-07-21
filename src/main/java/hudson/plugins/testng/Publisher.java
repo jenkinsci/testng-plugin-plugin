@@ -155,7 +155,15 @@ public class Publisher extends Recorder {
          build.addAction(new TestNGTestResultBuildAction(results));
          if(useThresholds) {
             if(usePercentage) {
-               //TODO add logic for using percentages
+               float failedPercent = 100 * results.getFailCount() / (float) results.getTotalCount();
+               float skipPercent = 100 * results.getSkipCount() / (float) results.getTotalCount();
+               if (failedPercent >= failedFails || skipPercent >= failedSkips) {
+                  logger.println("Failed Tests exceeded threshold of " + failedFails + " or Skipped Tests exceeded threshold of " + failedSkips + ". Marking build as FAILURE.");
+                  build.setResult(Result.FAILURE);
+               } else if (failedPercent >= unstableFails || skipPercent >= unstableSkips) {
+                  logger.println("Failed Tests exceeded threshold of " + unstableFails + " or Skipped Tests exceeded threshold of " + unstableSkips + ". Marking build as UNSTABLE.");
+                  build.setResult(Result.UNSTABLE);
+               }
             } else {
                if (results.getFailCount() >= failedFails || results.getSkipCount() >= failedSkips) {
                   logger.println("Failed Tests exceeded threshold of " + failedFails + " or Skipped Tests exceeded threshold of " + failedSkips + ". Marking build as FAILURE.");
