@@ -39,12 +39,6 @@ public class Publisher extends Recorder {
    public final boolean escapeExceptionMsg;
    //should failed builds be included in graphs or not
    public final boolean showFailedBuilds;
-   //True to use thresholds
-   //skipped tests mark build as unstable
-   public final boolean unstableOnSkippedTests;
-   //failed config mark build as failure
-   public final boolean failureOnFailedTestConfig;
-   public final boolean useThresholds;
    //number of skips that will trigger "Unstable"
    public final int unstableSkips;
    //number of fails that will trigger "Unstable"
@@ -61,15 +55,11 @@ public class Publisher extends Recorder {
 
    @DataBoundConstructor
    public Publisher(String reportFilenamePattern, boolean escapeTestDescp, boolean escapeExceptionMsg,
-                    boolean showFailedBuilds, boolean unstableOnSkippedTests, boolean failureOnFailedTestConfig, boolean useThresholds,
-                    int unstableSkips, int unstableFails, int failedSkips, int failedFails, boolean usePercentage) {
+                    boolean showFailedBuilds, int unstableSkips, int unstableFails, int failedSkips, int failedFails, boolean usePercentage) {
       this.reportFilenamePattern = reportFilenamePattern;
       this.escapeTestDescp = escapeTestDescp;
       this.escapeExceptionMsg = escapeExceptionMsg;
       this.showFailedBuilds = showFailedBuilds;
-      this.unstableOnSkippedTests = unstableOnSkippedTests;
-      this.failureOnFailedTestConfig = failureOnFailedTestConfig;
-      this.useThresholds = useThresholds;
       this.unstableSkips = unstableSkips;
       this.unstableFails = unstableFails;
       this.failedSkips = failedSkips;
@@ -153,35 +143,22 @@ public class Publisher extends Recorder {
       if (results.getTestList().size() > 0) {
          //create an individual report for all of the results and add it to the build
          build.addAction(new TestNGTestResultBuildAction(results));
-         if(useThresholds) {
-            if(usePercentage) {
-               float failedPercent = 100 * results.getFailCount() / (float) results.getTotalCount();
-               float skipPercent = 100 * results.getSkipCount() / (float) results.getTotalCount();
-               if (failedPercent >= failedFails || skipPercent >= failedSkips) {
-                  logger.println("Failed Tests exceeded threshold of " + failedFails + " or Skipped Tests exceeded threshold of " + failedSkips + ". Marking build as FAILURE.");
-                  build.setResult(Result.FAILURE);
-               } else if (failedPercent >= unstableFails || skipPercent >= unstableSkips) {
-                  logger.println("Failed Tests exceeded threshold of " + unstableFails + " or Skipped Tests exceeded threshold of " + unstableSkips + ". Marking build as UNSTABLE.");
-                  build.setResult(Result.UNSTABLE);
-               }
-            } else {
-               if (results.getFailCount() >= failedFails || results.getSkipCount() >= failedSkips) {
-                  logger.println("Failed Tests exceeded threshold of " + failedFails + " or Skipped Tests exceeded threshold of " + failedSkips + ". Marking build as FAILURE.");
-                  build.setResult(Result.FAILURE);
-               } else if (results.getFailCount() >= unstableFails || results.getSkipCount() >= unstableSkips) {
-                  logger.println("Failed Tests exceeded threshold of " + unstableFails + " or Skipped Tests exceeded threshold of " + unstableSkips + ". Marking build as UNSTABLE.");
-                  build.setResult(Result.UNSTABLE);
-               }
+         if(usePercentage) {
+            float failedPercent = 100 * results.getFailCount() / (float) results.getTotalCount();
+            float skipPercent = 100 * results.getSkipCount() / (float) results.getTotalCount();
+            if (failedPercent >= failedFails || skipPercent >= failedSkips) {
+               logger.println("Failed Tests exceeded threshold of " + failedFails + " or Skipped Tests exceeded threshold of " + failedSkips + ". Marking build as FAILURE.");
+               build.setResult(Result.FAILURE);
+            } else if (failedPercent >= unstableFails || skipPercent >= unstableSkips) {
+               logger.println("Failed Tests exceeded threshold of " + unstableFails + " or Skipped Tests exceeded threshold of " + unstableSkips + ". Marking build as UNSTABLE.");
+               build.setResult(Result.UNSTABLE);
             }
          } else {
-            if (failureOnFailedTestConfig && results.getFailedConfigCount() > 0) {
-               logger.println("Failed configuration methods found. Marking build as FAILURE.");
+            if (results.getFailCount() >= failedFails || results.getSkipCount() >= failedSkips) {
+               logger.println("Failed Tests exceeded threshold of " + failedFails + " or Skipped Tests exceeded threshold of " + failedSkips + ". Marking build as FAILURE.");
                build.setResult(Result.FAILURE);
-            } else if (unstableOnSkippedTests && (results.getSkippedConfigCount() > 0 || results.getSkipCount() > 0)) {
-               logger.println("Skipped Tests/Configs found. Marking build as UNSTABLE.");
-               build.setResult(Result.UNSTABLE);
-            } else if (results.getFailedConfigCount() > 0 || results.getFailCount() > 0) {
-               logger.println("Failed Tests/Configs found. Marking build as UNSTABLE.");
+            } else if (results.getFailCount() >= unstableFails || results.getSkipCount() >= unstableSkips) {
+               logger.println("Failed Tests exceeded threshold of " + unstableFails + " or Skipped Tests exceeded threshold of " + unstableSkips + ". Marking build as UNSTABLE.");
                build.setResult(Result.UNSTABLE);
             }
          }
