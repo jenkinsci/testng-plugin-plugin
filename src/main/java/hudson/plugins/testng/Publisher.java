@@ -37,6 +37,8 @@ public class Publisher extends Recorder {
    public final boolean escapeTestDescp;
    //should exception messages be HTML escaped or not
    public final boolean escapeExceptionMsg;
+   //failed config mark build as failure
+   public final boolean failureOnFailedTestConfig;
    //should failed builds be included in graphs or not
    public final boolean showFailedBuilds;
    //number of skips that will trigger "Unstable"
@@ -55,11 +57,12 @@ public class Publisher extends Recorder {
 
    @DataBoundConstructor
    public Publisher(String reportFilenamePattern, boolean escapeTestDescp, boolean escapeExceptionMsg,
-                    boolean showFailedBuilds, int unstableSkips, int unstableFails, int failedSkips, int failedFails, boolean usePercentage) {
+                    boolean showFailedBuilds, boolean failureOnFailedTestConfig, int unstableSkips, int unstableFails, int failedSkips, int failedFails, boolean usePercentage) {
       this.reportFilenamePattern = reportFilenamePattern;
       this.escapeTestDescp = escapeTestDescp;
       this.escapeExceptionMsg = escapeExceptionMsg;
       this.showFailedBuilds = showFailedBuilds;
+      this.failureOnFailedTestConfig = failureOnFailedTestConfig;
       this.unstableSkips = unstableSkips;
       this.unstableFails = unstableFails;
       this.failedSkips = failedSkips;
@@ -143,6 +146,10 @@ public class Publisher extends Recorder {
       if (results.getTestList().size() > 0) {
          //create an individual report for all of the results and add it to the build
          build.addAction(new TestNGTestResultBuildAction(results));
+         if (failureOnFailedTestConfig && results.getFailedConfigCount() > 0) {
+            logger.println("Failed configuration methods found. Marking build as FAILURE.");
+            build.setResult(Result.FAILURE);
+         }
          if(usePercentage) {
             float failedPercent = 100 * results.getFailCount() / (float) results.getTotalCount();
             float skipPercent = 100 * results.getSkipCount() / (float) results.getTotalCount();
