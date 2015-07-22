@@ -303,7 +303,7 @@ public class MethodResult extends BaseResult {
      *
      * @return a json for a chart
      */
-    private String getChartJson() {
+    public String getChartJson() {
         int count = 0;
         JSONArray jsonObject = new JSONArray();
         JSONArray passes = new JSONArray();
