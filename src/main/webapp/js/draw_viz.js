@@ -1,8 +1,6 @@
 function resultsGraph(id, data) {
 
     console.log(data);
-    console.log(data.buildNum[data.buildNum.length-1]);
-    console.log(data.buildNum[0]);
 
     var transformedData = [
         ['buildNum'].concat(data.buildNum.reverse()),
@@ -41,10 +39,8 @@ function resultsGraph(id, data) {
         tooltip: {
             format: {
                 title: function (d) { return 'Build ' + d; },
-                value: function (name, id, index) {
-                    //num -- pass/fail/skip -- buildNum
-                    var percent = data.
-                    return name + " (" + percent + "%)";
+                value: function (name, id, index,value) {
+                    return name;
                 }
             }
         }
