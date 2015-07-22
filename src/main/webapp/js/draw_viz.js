@@ -1,9 +1,9 @@
 function resultsGraph(id, data) {
 
     var transformedData = [
-        ['pass'].concat(data[0]),
         ['fail'].concat(data[1]),
-        ['skip'].concat(data[2])
+        ['pass'].concat(data[2]),
+        ['skip'].concat(data[0])
         ];
 
     var chart = c3.generate({
@@ -25,6 +25,7 @@ function resultsGraph(id, data) {
                 ratio: 1 // this makes bar width 100% of length between ticks
             }
         },
+        grid: { lines: {front: true}, x: {show: true}, y: {show: true}},
         size: {
           width: 600
         }
