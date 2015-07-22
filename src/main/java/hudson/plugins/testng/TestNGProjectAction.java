@@ -240,7 +240,7 @@ public class TestNGProjectAction extends TestResultProjectAction implements Prom
       JSONArray fails = new JSONArray();
       JSONArray skips = new JSONArray();
       JSONArray buildNum = new JSONArray();
-      JSONArray timestamps = new JSONArray();
+      JSONArray durations = new JSONArray();
 
       int count = 0;
 
@@ -259,14 +259,14 @@ public class TestNGProjectAction extends TestResultProjectAction implements Prom
             fails.add(action.getFailCount());
             skips.add(action.getSkipCount());
             buildNum.add(Integer.toString(build.getNumber()));
-            timestamps.add(build.getTimestampString());
+            durations.add(build.getDuration());
          }
       }
       jsonObject.put("pass", passes);
       jsonObject.put("fail", fails);
       jsonObject.put("skip", skips);
       jsonObject.put("buildNum", buildNum);
-      jsonObject.put("timestamp", timestamps);
+      jsonObject.put("duration", durations);
       jsonObject.put("baseUrl", getProject().getUrl());
       return jsonObject.toString();
    }
