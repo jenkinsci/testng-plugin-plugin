@@ -1,5 +1,6 @@
 package hudson.plugins.testng.TestNGProjectAction
 
+import hudson.plugins.testng.TestNGProjectAction
 import hudson.plugins.testng.util.TestResultHistoryUtil
 
 f = namespace(lib.FormTagLib)
@@ -11,7 +12,6 @@ link(rel: "stylesheet", href:"${app.rootUrl}/plugin/testng-plugin/css/c3.min.css
 
 script(src:"${app.rootUrl}/plugin/testng-plugin/js/d3.min.js")
 script(src:"${app.rootUrl}/plugin/testng-plugin/js/c3.min.js")
-script(src:"${app.rootUrl}/plugin/testng-plugin/js/uvcharts.min.js")
 script(src:"${app.rootUrl}/plugin/testng-plugin/js/draw_viz.js")
 
 
@@ -49,6 +49,6 @@ l.layout(title: "TestNG Results Trend") {
 }
 
 script() {
-    //text("document.getElementById('chart').innerHTML = 'test from javascript';")
-    text("resultsGraph('chart');")
+    text("var data = ${my.getChartJson()};")
+    text("\nresultsGraph('chart', data);")
 }
