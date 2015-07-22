@@ -7,13 +7,17 @@ l = namespace(lib.LayoutTagLib)
 t = namespace("/lib/hudson")
 st = namespace("jelly:stapler")
 
+script(src:"${app.rootUrl}/plugin/testng-plugin/js/d3.min.js")
+
 l.layout(title: "TestNG Results Trend") {
     st.include(page: "sidepanel.jelly", it: my.project)
     l.main_panel() {
 
         h1("TestNG Results Trends")
         if (my.isGraphActive()) {
-            img(lazymap: "graphMap?rel=../", alt: "[Test result trend chart]", src: "graph")
+            div(id: "chart")
+            
+            //img(lazymap: "graphMap?rel=../", alt: "[Test result trend chart]", src: "graph")
         } else {
             p("Need at least 2 builds with results to show trend graph")
         }
