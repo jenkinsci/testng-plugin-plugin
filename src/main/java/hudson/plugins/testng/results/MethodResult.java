@@ -11,6 +11,7 @@ import hudson.util.ChartUtil;
 import hudson.util.DataSetBuilder;
 import hudson.util.Graph;
 import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
 import org.jfree.chart.JFreeChart;
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
@@ -305,10 +306,9 @@ public class MethodResult extends BaseResult {
      */
     public String getChartJson() {
         int count = 0;
-        JSONArray jsonObject = new JSONArray();
-        JSONArray passes = new JSONArray();
-        JSONArray fails = new JSONArray();
-        JSONArray skips = new JSONArray();
+        JSONObject jsonObject = new JSONObject();
+        JSONArray status = new JSONArray();
+        JSONArray time = new JSONArray();
 
         MethodResult methodResult = null;
         for (AbstractBuild<?, ?> build = getOwner().getProject().getLastCompletedBuild();
@@ -317,14 +317,12 @@ public class MethodResult extends BaseResult {
              build = build.getPreviousBuild()) {
             methodResult = getMethodResultFromBuild(build);
             if(methodResult != null) {
-                passes.add(methodResult.getPassCount());
-                fails.add(methodResult.getFailCount());
-                skips.add(methodResult.getSkipCount());
+                status.add(methodResult.getStatus());
+                time.add(methodResult.getDuration());
             }
         }
-        jsonObject.add(skips);
-        jsonObject.add(fails);
-        jsonObject.add(passes);
+        jsonObject.put("status", status);
+        jsonObject.put("duration", time);
         return jsonObject.toString();
     }
 
