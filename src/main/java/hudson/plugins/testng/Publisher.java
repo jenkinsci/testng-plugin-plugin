@@ -37,36 +37,36 @@ public class Publisher extends Recorder {
    public final boolean escapeTestDescp;
    //should exception messages be HTML escaped or not
    public final boolean escapeExceptionMsg;
+   //failed config mark build as failure
+   public final boolean failureOnFailedTestConfig;
    //should failed builds be included in graphs or not
    public final boolean showFailedBuilds;
    //number of skips that will trigger "Unstable"
    public final int unstableSkips;
-    //number of fails that will trigger "Unstable"
+   //number of fails that will trigger "Unstable"
    public final int unstableFails;
    //number of skips that will trigger "Failed"
    public final int failedSkips;
    //number of fails that will trigger "Failed"
    public final int failedFails;
-   public final boolean usePercentage;
+   public final int thresholdMode;
 
 
    @Extension
    public static final DescriptorImpl DESCRIPTOR = new DescriptorImpl();
 
    @DataBoundConstructor
-   public Publisher(String reportFilenamePattern, boolean escapeTestDescp, boolean escapeExceptionMsg,
-                    boolean showFailedBuilds, int unstableSkips, int unstableFails, int failedSkips, int failedFails, boolean usePercentage) {
+   public Publisher(String reportFilenamePattern, boolean escapeTestDescp, boolean escapeExceptionMsg, boolean showFailedBuilds, boolean failureOnFailedTestConfig, int unstableSkips, int unstableFails, int failedSkips, int failedFails, int thresholdMode) {
       this.reportFilenamePattern = reportFilenamePattern;
       this.escapeTestDescp = escapeTestDescp;
       this.escapeExceptionMsg = escapeExceptionMsg;
       this.showFailedBuilds = showFailedBuilds;
+      this.failureOnFailedTestConfig = failureOnFailedTestConfig;
       this.unstableSkips = unstableSkips;
       this.unstableFails = unstableFails;
       this.failedSkips = failedSkips;
       this.failedFails = failedFails;
-      this.usePercentage = usePercentage;
-      //this.unstableOnSkippedTests = unstableOnSkippedTests;
-      //this.failureOnFailedTestConfig = failureOnFailedTestConfig;
+      this.thresholdMode = thresholdMode;
    }
 
    public BuildStepMonitor getRequiredMonitorService() {
@@ -145,16 +145,44 @@ public class Publisher extends Recorder {
       if (results.getTestList().size() > 0) {
          //create an individual report for all of the results and add it to the build
          build.addAction(new TestNGTestResultBuildAction(results));
-         if(usePercentage) {
-            //TODO add logic for using percentages
+         if (failureOnFailedTestConfig && results.getFailedConfigCount() > 0) {
+            logger.println("Failed configuration methods found. Marking build as FAILURE.");
+            build.setResult(Result.FAILURE);
          } else {
-            if (results.getFailCount() >= failedFails || results.getSkipCount() >= failedSkips) {
-                logger.println("Failed Tests exceeded threshold of " + failedFails + " or Skipped Tests exceeded threshold of " + failedSkips + ". Marking build as FAILURE.");
-                build.setResult(Result.FAILURE);
-            } else if (results.getFailCount() >= unstableFails || results.getSkipCount() >= unstableSkips) {
-               logger.println("Failed Tests exceeded threshold of " + unstableFails + " or Skipped Tests exceeded threshold of " + unstableSkips + ". Marking build as UNSTABLE.");
-               build.setResult(Result.UNSTABLE);
-            }
+        	 if (thresholdMode == 1) { //number of tests
+        		 if (results.getFailCount() > failedFails)  {
+        			 logger.println(String.format("%d tests failed, which exceeded threshold of %d. Marking build as FAILURE", results.getFailCount(), failedFails)); 
+        			 build.setResult(Result.FAILURE);
+        		 } else if (results.getSkipCount() > failedSkips) {
+        			 logger.println(String.format("%d tests were skipped, which exceeded threshold of %d. Marking build as FAILURE", results.getSkipCount(), failedSkips)); 
+        			 build.setResult(Result.FAILURE);
+        		 } else if (results.getFailCount() > unstableFails) {
+        			 logger.println(String.format("%d tests failed, which exceeded threshold of %d. Marking build as UNSTABLE", results.getFailCount(), unstableFails)); 
+        			 build.setResult(Result.UNSTABLE);
+        		 } else if (results.getSkipCount() > unstableSkips) {
+        			 logger.println(String.format("%d tests were skipped, which exceeded threshold of %d. Marking build as UNSTABLE", results.getSkipCount(), unstableSkips)); 
+        			 build.setResult(Result.UNSTABLE);
+        		 }
+        	 } else if (thresholdMode == 2) { //percentage of tests
+        		 float failedPercent = 100 * results.getFailCount() / (float) results.getTotalCount();
+        		 float skipPercent = 100 * results.getSkipCount() / (float) results.getTotalCount();
+        		 if (failedPercent > failedFails) {
+        			 logger.println(String.format("%f%% of tests failed, which exceeded threshold of %d%%. Marking build as FAILURE", failedPercent, failedFails)); 
+        			 build.setResult(Result.FAILURE);
+        		 } else if (skipPercent > failedSkips) {
+        			 logger.println(String.format("%f%% of tests were skipped, which exceeded threshold of %d%%. Marking build as FAILURE", skipPercent, failedSkips)); 
+        			 build.setResult(Result.FAILURE);
+        		 } else if (failedPercent > unstableFails) {
+        			 logger.println(String.format("%f%% of tests failed, which exceeded threshold of %d%%. Marking build as UNSTABLE", failedPercent, unstableFails)); 
+        			 build.setResult(Result.UNSTABLE);
+        		 } else if (skipPercent > unstableSkips) {
+        			 logger.println(String.format("%f%% of tests were skipped, which exceeded threshold of %d%%. Marking build as UNSTABLE", skipPercent, unstableSkips)); 
+        			 build.setResult(Result.UNSTABLE);
+        		 }
+        	 } else {
+        		 Exception e = new RuntimeException("Invalid threshold type: " + thresholdMode);
+        		 e.printStackTrace(logger);
+        	 }
          }
       } else {
          logger.println("Found matching files but did not find any TestNG results.");

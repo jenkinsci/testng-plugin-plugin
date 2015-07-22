@@ -13,6 +13,7 @@ import hudson.model.Result;
 import junit.framework.Assert;
 import org.junit.Test;
 import org.jvnet.hudson.test.HudsonTestCase;
+import hudson.plugins.testng.PublisherCtor;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -91,7 +92,7 @@ public class PublisherTest extends HudsonTestCase {
     @Test
     public void testRoundTrip() throws Exception {
         FreeStyleProject p = createFreeStyleProject();
-        Publisher before = new Publisher("", false, false, true, 0, 0, 0, 0, false);
+        Publisher before = new Publisher("", false, false, true, false, 0, 0, 0, 0, 1);
         p.getPublishersList().add(before);
 
         submit(createWebClient().getPage(p,"configure").getFormByName("config"));
