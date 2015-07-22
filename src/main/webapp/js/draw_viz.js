@@ -1,8 +1,11 @@
 function resultsGraph(id, data) {
 
     console.log(data);
+    console.log(data.buildNum[data.buildNum.length-1]);
+    console.log(data.buildNum[0]);
 
     var transformedData = [
+        ['buildNum'].concat(data.buildNum.reverse()),
         ['fail'].concat(data.fail.reverse()),
         ['pass'].concat(data.pass.reverse()),
         ['skip'].concat(data.skip.reverse())
@@ -23,7 +26,8 @@ function resultsGraph(id, data) {
             onclick: function (d, element) {
                 var url = window.location.href;
                 window.open(url.substring(0, url.length - 14) + d.x,"_self");
-            }
+            },
+            x: "buildNum"
         },
         bar: {
             width: {
