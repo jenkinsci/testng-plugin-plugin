@@ -305,7 +305,7 @@ public class TestNGTestResultBuildActionTest extends HudsonTestCase {
     public void test_failed_config_enabled_failedbuild() throws Exception {
         FreeStyleProject p = createFreeStyleProject();
         PublisherCtor publisherCtor = new PublisherCtor().setReportFilenamePattern("testng.xml")
-                .setFailedFails(0);
+                .setFailureOnFailedTestConfig(true);
         Publisher publisher = publisherCtor.getNewPublisher();
         p.getPublishersList().add(publisher);
         p.onCreatedFromScratch(); //to setup project action
