@@ -21,7 +21,7 @@ l.layout(title: "TestNG Results Trend") {
 
         h1("TestNG Results Trends")
         if (my.isGraphActive()) {
-            div(id: "chart", class: "ct-chart")
+            div(id: "chart")
             //img(lazymap: "graphMap?rel=../", alt: "[Test result trend chart]", src: "graph")
         } else {
             p("Need at least 2 builds with results to show trend graph")
