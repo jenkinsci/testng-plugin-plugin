@@ -37,6 +37,16 @@ function resultsGraph(id, data) {
         grid: { lines: {front: true}, x: {show: true}, y: {show: true}},
         size: {
             width: 600
+        },
+        tooltip: {
+            format: {
+                title: function (d) { return 'Build ' + d; },
+                value: function (name, id, index) {
+                    //num -- pass/fail/skip -- buildNum
+                    var percent = data.
+                    return name + " (" + percent + "%)";
+                }
+            }
         }
     });
 }
