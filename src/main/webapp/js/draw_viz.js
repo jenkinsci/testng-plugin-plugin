@@ -9,8 +9,12 @@ function resultsGraph(id) {
         bindto: '#' + id,
         data: {
             type: 'bar',
-            json: mockdata
-            //groups: ["pass", "fail", "skip"]
+            json: mockdata,
+            colors: {
+                'pass': '#729FCF',
+                'skip': '#FCE94F',
+                'fail': '#EF2929'
+            }
         }
     });
 }
