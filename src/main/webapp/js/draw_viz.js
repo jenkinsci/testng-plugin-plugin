@@ -30,6 +30,7 @@ function resultsGraph(id, data) {
                 ratio: 1 // this makes bar width 100% of length between ticks
             }
         },
+        grid: { lines: {front: true}, x: {show: true}, y: {show: true}},
         size: {
             width: 600
         }
