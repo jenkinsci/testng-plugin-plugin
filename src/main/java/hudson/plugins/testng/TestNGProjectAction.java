@@ -237,11 +237,11 @@ public class TestNGProjectAction extends TestResultProjectAction implements Prom
       JSONArray passes = new JSONArray();
       JSONArray fails = new JSONArray();
       JSONArray skips = new JSONArray();
+      JSONArray buildNum = new JSONArray();
 
       Set<Integer> loadedBuilds = getProject()._getRuns().getLoadedBuilds().keySet(); // cf. AbstractTestResultAction.getPreviousResult(Class, false)
       for (AbstractBuild<?, ?> build = getProject().getLastBuild();
            build != null; build = loadedBuilds.contains(build.number - 1) ? build.getPreviousCompletedBuild() : null) {
-         ChartUtil.NumberOnlyBuildLabel label = new ChartUtil.NumberOnlyBuildLabel(build);
          TestNGTestResultBuildAction action = build.getAction(getBuildActionClass());
 
          if (build.getResult() == null || build.getResult().isWorseThan(Result.FAILURE)) {
@@ -249,15 +249,11 @@ public class TestNGProjectAction extends TestResultProjectAction implements Prom
             continue;
          }
 
-         if (!showFailedBuilds && build.getResult().equals(Result.FAILURE)) {
-            //failed build and configuration states that we should skip this build
-            continue;
-         }
-
          if (action != null) {
             passes.add(action.getTotalCount() - action.getFailCount() - action.getSkipCount());
             fails.add(action.getFailCount());
             skips.add(action.getSkipCount());
+            buildNum.add(Integer.toString(build.getNumber()));
          }
       }
       jsonObject.add(skips);
