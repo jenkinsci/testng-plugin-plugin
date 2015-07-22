@@ -20,10 +20,9 @@ function resultsGraph(id, data) {
             color: function (color, d) {
                 // d will be 'id' when called for legends
                 if(d.id) {
-                    console.log(d)
-                    if(data.status[d.index] == "FAIL"){
+                    if(data.status.concat().reverse()[d.index] == "FAIL"){
                         return d3.rgb("#FF5252");
-                    } else if(data.status[d.index] == "UNSTABLE"){
+                    } else if(data.status.concat().reverse()[d.index] == "SKIP"){
                         return d3.rgb("#FFC107");
                     }
                 }
@@ -37,7 +36,7 @@ function resultsGraph(id, data) {
         },
         axis: {
             y: {
-                label: "Duration"
+                label: "Duration (Seconds)"
             }
         },
         bar: {
