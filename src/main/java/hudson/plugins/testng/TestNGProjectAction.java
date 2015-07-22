@@ -3,6 +3,7 @@ package hudson.plugins.testng;
 import java.io.IOException;
 import java.util.Calendar;
 
+import com.sun.accessibility.internal.resources.accessibility;
 import hudson.model.AbstractBuild;
 import hudson.model.AbstractProject;
 import hudson.model.ProminentProjectAction;
@@ -14,6 +15,7 @@ import hudson.util.DataSetBuilder;
 import java.util.Set;
 
 import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
 import org.jfree.chart.JFreeChart;
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
@@ -233,11 +235,12 @@ public class TestNGProjectAction extends TestResultProjectAction implements Prom
     * @return a json for a chart
     */
    public String getChartJson() {
-      JSONArray jsonObject = new JSONArray();
+      JSONObject jsonObject = new JSONObject();
       JSONArray passes = new JSONArray();
       JSONArray fails = new JSONArray();
       JSONArray skips = new JSONArray();
       JSONArray buildNum = new JSONArray();
+      JSONArray timestamps = new JSONArray();
 
       Set<Integer> loadedBuilds = getProject()._getRuns().getLoadedBuilds().keySet(); // cf. AbstractTestResultAction.getPreviousResult(Class, false)
       for (AbstractBuild<?, ?> build = getProject().getLastBuild();
@@ -254,11 +257,15 @@ public class TestNGProjectAction extends TestResultProjectAction implements Prom
             fails.add(action.getFailCount());
             skips.add(action.getSkipCount());
             buildNum.add(Integer.toString(build.getNumber()));
+            timestamps.add(build.getTimestampString());
          }
       }
-      jsonObject.add(skips);
-      jsonObject.add(fails);
-      jsonObject.add(passes);
+      jsonObject.put("pass", passes);
+      jsonObject.put("fail", fails);
+      jsonObject.put("skip", skips);
+      jsonObject.put("buildNum", buildNum);
+      jsonObject.put("timestamp", timestamps);
+      jsonObject.put("baseUrl", getProject().getUrl());
       return jsonObject.toString();
    }
 }
