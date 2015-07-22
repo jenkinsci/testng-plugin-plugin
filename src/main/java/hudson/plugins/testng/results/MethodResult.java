@@ -309,6 +309,7 @@ public class MethodResult extends BaseResult {
         JSONObject jsonObject = new JSONObject();
         JSONArray status = new JSONArray();
         JSONArray time = new JSONArray();
+        JSONArray buildNum = new JSONArray();
 
         MethodResult methodResult = null;
         for (AbstractBuild<?, ?> build = getOwner().getProject().getLastCompletedBuild();
@@ -319,10 +320,12 @@ public class MethodResult extends BaseResult {
             if(methodResult != null) {
                 status.add(methodResult.getStatus());
                 time.add(methodResult.getDuration());
+                buildNum.add(Integer.toString(build.getNumber()));
             }
         }
         jsonObject.put("status", status);
         jsonObject.put("duration", time);
+        jsonObject.put("buildNum", buildNum);
         return jsonObject.toString();
     }
 
