@@ -18,20 +18,20 @@
       </f:entry>
       <f:section title="Mark build unstable thresholds">
       <f:entry title="${%Skipped}" field="unstableSkips">
-         <f:textbox default="0"/>
+         <f:textbox default="1"/>
       </f:entry>
       <f:entry title="${%Failed}" field="unstableFails">
-         <f:textbox default="0"/>
+         <f:textbox default="1"/>
       </f:entry>
       </f:section>
 
 
       <f:section title="Mark build failed thresholds">
       <f:entry title="${%Skipped}" field="failedSkips">
-         <f:textbox default="0"/>
+         <f:textbox default="1"/>
       </f:entry>
       <f:entry title="${%Failed}" field="failedFails">
-         <f:textbox default="0"/>
+         <f:textbox default="1"/>
       </f:entry>
       </f:section>
 

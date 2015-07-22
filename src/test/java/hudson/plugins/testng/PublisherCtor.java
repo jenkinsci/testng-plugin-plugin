@@ -12,10 +12,10 @@ public class PublisherCtor {
     private boolean escapeTestDescp = true;
     private boolean showFailedBuilds = false;
     private boolean failureOnFailedTestConfig = false;
-    private int unstableSkips = 0;
-    private int unstableFails = 0;
-    private int failedSkips = 0;
-    private int failedFails = 0;
+    private int unstableSkips = 1;
+    private int unstableFails = 1;
+    private int failedSkips = 1;
+    private int failedFails = 1;
     private boolean usePercentage = false;
 
     public Publisher getNewPublisher() {

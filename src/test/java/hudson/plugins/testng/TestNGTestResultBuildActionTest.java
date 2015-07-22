@@ -324,5 +324,49 @@ public class TestNGTestResultBuildActionTest extends HudsonTestCase {
         Assert.assertSame(Result.FAILURE, build.getResult());
     }
 
+   @Test
+   public void test_threshold_for_skips_failure() throws Exception {
+      FreeStyleProject p = createFreeStyleProject();
+      PublisherCtor publisherCtor = new PublisherCtor().setReportFilenamePattern("testng.xml")
+            .setFailedSkips(2).setUnstableSkips(2);
+      Publisher publisher = publisherCtor.getNewPublisher();
+      p.getPublishersList().add(publisher);
+      p.onCreatedFromScratch(); //to setup project action
 
+      p.getBuildersList().add(new TestBuilder() {
+         public boolean perform(AbstractBuild<?, ?> build, Launcher launcher,
+                                BuildListener listener) throws InterruptedException, IOException {
+            String contents = CommonUtil.getContents(Constants.TESTNG_SKIPPED_TEST);
+            build.getWorkspace().child("testng.xml").write(contents,"UTF-8");
+            return true;
+         }
+      });
+
+      //run build
+      FreeStyleBuild build = p.scheduleBuild2(0).get();
+      Assert.assertSame(Result.SUCCESS, build.getResult());
+   }
+
+   @Test
+   public void test_threshold_for_skips_unstable() throws Exception {
+      FreeStyleProject p = createFreeStyleProject();
+      PublisherCtor publisherCtor = new PublisherCtor().setReportFilenamePattern("testng.xml")
+            .setFailedSkips(2);
+      Publisher publisher = publisherCtor.getNewPublisher();
+      p.getPublishersList().add(publisher);
+      p.onCreatedFromScratch(); //to setup project action
+
+      p.getBuildersList().add(new TestBuilder() {
+         public boolean perform(AbstractBuild<?, ?> build, Launcher launcher,
+                                BuildListener listener) throws InterruptedException, IOException {
+            String contents = CommonUtil.getContents(Constants.TESTNG_SKIPPED_TEST);
+            build.getWorkspace().child("testng.xml").write(contents,"UTF-8");
+            return true;
+         }
+      });
+
+      //run build
+      FreeStyleBuild build = p.scheduleBuild2(0).get();
+      Assert.assertSame(Result.UNSTABLE, build.getResult());
+   }
 }
