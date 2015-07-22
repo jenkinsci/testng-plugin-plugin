@@ -234,7 +234,7 @@ public class TestNGProjectAction extends TestResultProjectAction implements Prom
     *
     * @return a json for a chart
     */
-   private String getChartJson() {
+   public String getChartJson() {
       JSONObject jsonObject = new JSONObject();
       JSONArray passes = new JSONArray();
       JSONArray fails = new JSONArray();

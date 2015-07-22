@@ -1,16 +1,17 @@
-function resultsGraph(id) {
+function resultsGraph(id, data) {
 
-    var mockdata = [
-        ['fail', 3, 4, 4, 6, 4, 5, 5, 5, 5, 2, 1],
-        ['pass', 2, 2, 2, 2, 2, 2, 2, 2, 2, 7, 5],
-        ['skip', 5, 6, 7, 7, 3, 3, 3, 3, 3, 0, 4]];
+    var transformedData = [
+        ['pass'].concat(data[0]),
+        ['fail'].concat(data[1]),
+        ['skip'].concat(data[2])
+        ];
 
     var chart = c3.generate({
         bindto: '#' + id,
         data: {
             groups:[['fail', 'pass', 'skip']],
             type: 'bar',
-            columns: mockdata,
+            columns: transformedData,
             colors: {
                 'fail': '#EF2929',
                 'pass': '#729FCF',
