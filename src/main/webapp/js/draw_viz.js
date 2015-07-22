@@ -38,7 +38,10 @@ function resultsGraph(id, data) {
         },
         tooltip: {
             format: {
-                title: function (d) { return 'Build ' + d; },
+                title: function (d) {
+                    console.log(d);
+                    return 'Build ' + d;
+                },
                 value: function (name, id, index,value) {
                     return name;
                 }
