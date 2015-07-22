@@ -16,11 +16,11 @@ public class PublisherCtor {
     private int unstableFails = 1;
     private int failedSkips = 1;
     private int failedFails = 1;
-    private boolean usePercentage = false;
+    private int thresholdMode = 1; //default mode is 1 (number of tests)
 
     public Publisher getNewPublisher() {
         return new Publisher(reportFilenamePattern, escapeTestDescp, failureOnFailedTestConfig, escapeExceptionMsg, showFailedBuilds,
-                unstableSkips, unstableFails, failedSkips, failedFails, usePercentage);
+                unstableSkips, unstableFails, failedSkips, failedFails, thresholdMode);
     }
 
     public PublisherCtor setReportFilenamePattern(String reportFilenamePattern) {
@@ -68,8 +68,8 @@ public class PublisherCtor {
         return this;
     }
 
-    public PublisherCtor setUsePercentage(boolean usePercentage) {
-        this.usePercentage = usePercentage;
+    public PublisherCtor setThresholdType(int thresholdMode) {
+        this.thresholdMode = thresholdMode;
         return this;
     }
 }
