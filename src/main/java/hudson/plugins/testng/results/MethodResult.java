@@ -10,6 +10,7 @@ import hudson.tasks.test.TestResult;
 import hudson.util.ChartUtil;
 import hudson.util.DataSetBuilder;
 import hudson.util.Graph;
+import net.sf.json.JSONArray;
 import org.jfree.chart.JFreeChart;
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
@@ -298,6 +299,36 @@ public class MethodResult extends BaseResult {
     }
 
     /**
+     * Returns json for charting
+     *
+     * @return a json for a chart
+     */
+    private String getChartJson() {
+        int count = 0;
+        JSONArray jsonObject = new JSONArray();
+        JSONArray passes = new JSONArray();
+        JSONArray fails = new JSONArray();
+        JSONArray skips = new JSONArray();
+
+        MethodResult methodResult = null;
+        for (AbstractBuild<?, ?> build = getOwner().getProject().getLastCompletedBuild();
+             build != null && count++ < 10;
+            //getting running builds as well (will deal accordingly)
+             build = build.getPreviousBuild()) {
+            methodResult = getMethodResultFromBuild(build);
+            if(methodResult != null) {
+                passes.add(methodResult.getPassCount());
+                fails.add(methodResult.getFailCount());
+                skips.add(methodResult.getSkipCount());
+            }
+        }
+        jsonObject.add(skips);
+        jsonObject.add(fails);
+        jsonObject.add(passes);
+        return jsonObject.toString();
+    }
+
+    /**
      * Populates the data set build with results from any successive and at max 9
      * previous builds.
      *
@@ -320,16 +351,21 @@ public class MethodResult extends BaseResult {
         }
     }
 
-    private void addData(DataSetBuilder<String, ChartUtil.NumberOnlyBuildLabel> dataSetBuilder,
-                         Map<ChartUtil.NumberOnlyBuildLabel, String> statusMap,
-                         AbstractBuild<?, ?> build) {
-        ChartUtil.NumberOnlyBuildLabel label = new ChartUtil.NumberOnlyBuildLabel(build);
+    private MethodResult getMethodResultFromBuild(AbstractBuild<?, ?> build) {
         TestNGTestResultBuildAction action = build.getAction(TestNGTestResultBuildAction.class);
         TestNGResult results;
         MethodResult methodResult = null;
         if (action != null && (results = action.getResult()) != null) {
             methodResult = getMethodResult(results);
         }
+        return methodResult;
+    }
+
+    private void addData(DataSetBuilder<String, ChartUtil.NumberOnlyBuildLabel> dataSetBuilder,
+                         Map<ChartUtil.NumberOnlyBuildLabel, String> statusMap,
+                         AbstractBuild<?, ?> build) {
+        ChartUtil.NumberOnlyBuildLabel label = new ChartUtil.NumberOnlyBuildLabel(build);
+        MethodResult methodResult = getMethodResultFromBuild(build);
 
         if (methodResult == null) {
             dataSetBuilder.add(0, "resultRow", label);
