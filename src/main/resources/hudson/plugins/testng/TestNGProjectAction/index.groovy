@@ -7,7 +7,12 @@ l = namespace(lib.LayoutTagLib)
 t = namespace("/lib/hudson")
 st = namespace("jelly:stapler")
 
+link(rel: "stylesheet", href:"${app.rootUrl}/plugin/testng-plugin/css/c3.min.css")
+
 script(src:"${app.rootUrl}/plugin/testng-plugin/js/d3.min.js")
+script(src:"${app.rootUrl}/plugin/testng-plugin/js/c3.min.js")
+script(src:"${app.rootUrl}/plugin/testng-plugin/js/draw_viz.js")
+
 
 l.layout(title: "TestNG Results Trend") {
     st.include(page: "sidepanel.jelly", it: my.project)
@@ -15,8 +20,7 @@ l.layout(title: "TestNG Results Trend") {
 
         h1("TestNG Results Trends")
         if (my.isGraphActive()) {
-            div(id: "chart")
-            
+            div(id: "chart", class: "ct-chart")
             //img(lazymap: "graphMap?rel=../", alt: "[Test result trend chart]", src: "graph")
         } else {
             p("Need at least 2 builds with results to show trend graph")
@@ -41,4 +45,9 @@ l.layout(title: "TestNG Results Trend") {
             p("No builds have successfully recorded TestNG results yet")
         }
     }
+}
+
+script() {
+    //text("document.getElementById('chart').innerHTML = 'test from javascript';")
+    text("resultsGraph('chart');")
 }
