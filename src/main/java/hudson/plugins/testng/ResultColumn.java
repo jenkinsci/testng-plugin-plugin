@@ -17,7 +17,8 @@ public class ResultColumn extends ListViewColumn {
       AbstractTestResultAction tests = run != null ? run.getAction(AbstractTestResultAction.class) : null;
       String resultString = "No tests run";
       if(tests != null && tests.getTotalCount() > 0) {
-         resultString = tests.getFailCount() + " of " + tests.getTotalCount() + "failed: " + tests.getFailureDiffString();
+//         resultString = tests.getFailCount() + " of " + tests.getTotalCount() + "failed: " + tests.getFailureDiffString();
+         resultString = tests.getFailCount() + "(" + tests.getFailureDiffString().replace(" / ","") + ")" + " failed/" + tests.getTotalCount();
       }
 
       return resultString;
