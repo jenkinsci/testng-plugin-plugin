@@ -242,16 +242,10 @@ public class TestNGProjectAction extends TestResultProjectAction implements Prom
       Set<Integer> loadedBuilds = getProject()._getRuns().getLoadedBuilds().keySet(); // cf. AbstractTestResultAction.getPreviousResult(Class, false)
       for (AbstractBuild<?, ?> build = getProject().getLastBuild();
            build != null; build = loadedBuilds.contains(build.number - 1) ? build.getPreviousCompletedBuild() : null) {
-         ChartUtil.NumberOnlyBuildLabel label = new ChartUtil.NumberOnlyBuildLabel(build);
          TestNGTestResultBuildAction action = build.getAction(getBuildActionClass());
 
          if (build.getResult() == null || build.getResult().isWorseThan(Result.FAILURE)) {
             //We don't want to add aborted or builds with no results into the graph
-            continue;
-         }
-
-         if (!showFailedBuilds && build.getResult().equals(Result.FAILURE)) {
-            //failed build and configuration states that we should skip this build
             continue;
          }
 
