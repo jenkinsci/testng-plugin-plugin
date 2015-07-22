@@ -1,8 +1,6 @@
 function resultsGraph(id, data) {
 
     console.log(data);
-    console.log(data.buildNum[data.buildNum.length-1]);
-    console.log(data.buildNum[0]);
 
     var transformedData = [
         ['buildNum'].concat(data.buildNum.reverse()),
@@ -37,6 +35,14 @@ function resultsGraph(id, data) {
         grid: { lines: {front: true}, x: {show: true}, y: {show: true}},
         size: {
             width: 600
+        },
+        tooltip: {
+            format: {
+                title: function (d) { return 'Build ' + d; },
+                value: function (name, id, index,value) {
+                    return name;
+                }
+            }
         }
     });
 }
