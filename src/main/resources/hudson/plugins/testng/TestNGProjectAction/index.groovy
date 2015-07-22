@@ -11,6 +11,7 @@ link(rel: "stylesheet", href:"${app.rootUrl}/plugin/testng-plugin/css/c3.min.css
 
 script(src:"${app.rootUrl}/plugin/testng-plugin/js/d3.min.js")
 script(src:"${app.rootUrl}/plugin/testng-plugin/js/c3.min.js")
+script(src:"${app.rootUrl}/plugin/testng-plugin/js/uvcharts.min.js")
 script(src:"${app.rootUrl}/plugin/testng-plugin/js/draw_viz.js")
 
 
