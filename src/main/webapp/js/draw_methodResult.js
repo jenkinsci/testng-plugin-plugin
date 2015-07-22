@@ -23,6 +23,8 @@ function resultsGraph(id, data) {
                     console.log(d)
                     if(data.status[d.index] == "FAIL"){
                         return d3.rgb("#FF5252");
+                    } else if(data.status[d.index] == "UNSTABLE"){
+                        return d3.rgb("#FFC107");
                     }
                 }
                 return color;

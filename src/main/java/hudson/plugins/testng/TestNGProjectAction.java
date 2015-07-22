@@ -242,9 +242,11 @@ public class TestNGProjectAction extends TestResultProjectAction implements Prom
       JSONArray buildNum = new JSONArray();
       JSONArray timestamps = new JSONArray();
 
+      int count = 0;
+
       Set<Integer> loadedBuilds = getProject()._getRuns().getLoadedBuilds().keySet(); // cf. AbstractTestResultAction.getPreviousResult(Class, false)
       for (AbstractBuild<?, ?> build = getProject().getLastBuild();
-           build != null; build = loadedBuilds.contains(build.number - 1) ? build.getPreviousCompletedBuild() : null) {
+           build != null && count++ < 30; build = loadedBuilds.contains(build.number - 1) ? build.getPreviousCompletedBuild() : null) {
          TestNGTestResultBuildAction action = build.getAction(getBuildActionClass());
 
          if (build.getResult() == null || build.getResult().isWorseThan(Result.FAILURE)) {
