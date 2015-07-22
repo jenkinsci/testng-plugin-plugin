@@ -12,6 +12,8 @@ import hudson.tasks.test.TestResultProjectAction;
 import hudson.util.ChartUtil;
 import hudson.util.DataSetBuilder;
 import java.util.Set;
+
+import net.sf.json.JSONArray;
 import org.jfree.chart.JFreeChart;
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
@@ -223,5 +225,44 @@ public class TestNGProjectAction extends TestResultProjectAction implements Prom
     */
    public int getGraphHeight() {
       return 200;
+   }
+
+   /**
+    * Returns json for charting
+    *
+    * @return a json for a chart
+    */
+   private String getChartJson() {
+      JSONArray jsonObject = new JSONArray();
+      JSONArray passes = new JSONArray();
+      JSONArray fails = new JSONArray();
+      JSONArray skips = new JSONArray();
+
+      Set<Integer> loadedBuilds = getProject()._getRuns().getLoadedBuilds().keySet(); // cf. AbstractTestResultAction.getPreviousResult(Class, false)
+      for (AbstractBuild<?, ?> build = getProject().getLastBuild();
+           build != null; build = loadedBuilds.contains(build.number - 1) ? build.getPreviousCompletedBuild() : null) {
+         ChartUtil.NumberOnlyBuildLabel label = new ChartUtil.NumberOnlyBuildLabel(build);
+         TestNGTestResultBuildAction action = build.getAction(getBuildActionClass());
+
+         if (build.getResult() == null || build.getResult().isWorseThan(Result.FAILURE)) {
+            //We don't want to add aborted or builds with no results into the graph
+            continue;
+         }
+
+         if (!showFailedBuilds && build.getResult().equals(Result.FAILURE)) {
+            //failed build and configuration states that we should skip this build
+            continue;
+         }
+
+         if (action != null) {
+            passes.add(action.getTotalCount() - action.getFailCount() - action.getSkipCount());
+            fails.add(action.getFailCount());
+            skips.add(action.getSkipCount());
+         }
+      }
+      jsonObject.add(skips);
+      jsonObject.add(fails);
+      jsonObject.add(passes);
+      return jsonObject.toString();
    }
 }
