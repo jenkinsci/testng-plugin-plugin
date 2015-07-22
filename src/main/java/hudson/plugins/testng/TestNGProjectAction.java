@@ -237,6 +237,7 @@ public class TestNGProjectAction extends TestResultProjectAction implements Prom
       JSONArray passes = new JSONArray();
       JSONArray fails = new JSONArray();
       JSONArray skips = new JSONArray();
+      JSONArray buildNum = new JSONArray();
 
       Set<Integer> loadedBuilds = getProject()._getRuns().getLoadedBuilds().keySet(); // cf. AbstractTestResultAction.getPreviousResult(Class, false)
       for (AbstractBuild<?, ?> build = getProject().getLastBuild();
@@ -258,6 +259,7 @@ public class TestNGProjectAction extends TestResultProjectAction implements Prom
             passes.add(action.getTotalCount() - action.getFailCount() - action.getSkipCount());
             fails.add(action.getFailCount());
             skips.add(action.getSkipCount());
+            buildNum.add(Integer.toString(build.getNumber()));
          }
       }
       jsonObject.add(skips);
