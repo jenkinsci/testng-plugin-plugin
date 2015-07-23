@@ -8,8 +8,6 @@ import hudson.tasks.test.TestResultProjectAction;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
-import java.util.SortedMap;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -142,7 +140,7 @@ public class TestNGProjectAction extends TestResultProjectAction implements Prom
       int count = 0;
 
       List<? extends AbstractBuild<?, ?>> loadedBuilds = new ArrayList<AbstractBuild<?, ?>>(getProject()._getRuns().getLoadedBuilds().values());
-      AbstractBuild<?, ?> build = getProject().getLastBuild();
+      AbstractBuild<?, ?> build;
       for (int i = 0; i < loadedBuilds.size() && count++ < 25; i++) {
          build = loadedBuilds.get(i);
          TestNGTestResultBuildAction action = build.getAction(getBuildActionClass());
