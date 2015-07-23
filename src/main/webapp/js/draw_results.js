@@ -67,10 +67,10 @@ function resultsGraph(id, data) {
                 window.open(url + '/' + data.buildNum[d.index],"_self");
             }
         },
-        axis: { x: { type: 'category', categories: data.buildNum, tick: { culling: 10}}},
+        axis: { x: { type: 'category', categories: data.buildNum}},
         grid: { lines: {front: true}, x: {show: true}, y: {show: true}},
         size: {
-            width: 600
+            width: 800
         },
         tooltip: {
             format: {
