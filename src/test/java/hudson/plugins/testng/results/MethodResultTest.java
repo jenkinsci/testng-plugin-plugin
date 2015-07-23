@@ -34,6 +34,7 @@ public class MethodResultTest extends HudsonTestCase {
         FreeStyleProject p = createFreeStyleProject();
         PublisherCtor publisherCtor = new PublisherCtor().setReportFilenamePattern("testng.xml")
                         .setEscapeTestDescp(false).setEscapeExceptionMsg(true);
+        publisherCtor.setFailedFails(10); //this prevents default fail thresholds from determining result
         Publisher publisher = publisherCtor.getNewPublisher();
         p.getPublishersList().add(publisher);
         p.onCreatedFromScratch(); //to setup project action
