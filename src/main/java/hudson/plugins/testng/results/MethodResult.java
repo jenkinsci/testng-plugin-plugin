@@ -247,7 +247,7 @@ public class MethodResult extends BaseResult {
         JSONArray buildNum = new JSONArray();
 
         MethodResult methodResult = null;
-        for (AbstractBuild<?, ?> build = getOwner().getProject().getLastCompletedBuild();
+        for (AbstractBuild<?, ?> build = getOwner().getProject().getNearestBuild(getOwner().getNumber());
              build != null && count++ < 10;
             //getting running builds as well (will deal accordingly)
              build = build.getPreviousBuild()) {
