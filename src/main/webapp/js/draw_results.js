@@ -40,11 +40,13 @@ function resultsGraph(id, data) {
     }
 
     data.buildNum.reverse();
+    data.buildStatus.reverse();
+    data.duration.reverse();
 
     var transformedData = [
-        ['fail'].concat(data.fail.concat().reverse()),
-        ['pass'].concat(data.pass.concat().reverse()),
-        ['skip'].concat(data.skip.concat().reverse())
+        ['fail'].concat(data.fail.reverse()),
+        ['pass'].concat(data.pass.reverse()),
+        ['skip'].concat(data.skip.reverse())
         ];
 
     var chart = c3.generate({
@@ -73,7 +75,7 @@ function resultsGraph(id, data) {
         tooltip: {
             format: {
                 title: function (d) {
-                    return 'Build ' + data.buildNum[d] + ": " + data.buildStatus.concat().reverse()[d];
+                    return 'Build ' + data.buildNum[d] + ": " + data.buildStatus[d];
                 },
                 value: function (name, id, index, value) {
                     return name;
@@ -101,7 +103,7 @@ function resultsGraph(id, data) {
                         text += "</tr>";
                 }
                 text += "<tr class='" + $$.CLASS.tooltipName + "-" + "final" + "'>";
-                text += "<td class='name' colspan=2>" + "Duration: " + data.duration.concat().reverse()[d[0].index] + "</td>";
+                text += "<td class='name' colspan=2>" + "Duration: " + data.duration[d[0].index] + "</td>";
                 text += "</tr>";
                 return text + "</table>";
             }
