@@ -1,8 +1,17 @@
 <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout"
          xmlns:t="/lib/hudson" xmlns:f="/lib/form" xmlns:bh="/lib/health">
     <j:set var="testResultString" value="${it.getTestResultString(job)}"/>
-
+	<j:set var="tr" value="${it.getTestResultAction(job)}"/>
     <td>
-        ${testResultString}
+    	<j:choose>
+	        <j:when test="${tr!=null}">
+                <a href="${rootURL}/${job.url}lastCompletedBuild/${tr.urlName}/">
+                ${testResultString}
+                </a>
+			</j:when>
+			<j:otherwise>
+				${testResultString}
+			</j:otherwise>
+		</j:choose>
     </td>
 </j:jelly>

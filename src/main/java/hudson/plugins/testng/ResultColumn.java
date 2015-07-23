@@ -13,8 +13,7 @@ import org.kohsuke.stapler.StaplerRequest;
 public class ResultColumn extends ListViewColumn {
 
    public String getTestResultString(Job<?,?> job) {
-      Run run = job.getLastCompletedBuild();
-      AbstractTestResultAction tests = run != null ? run.getAction(AbstractTestResultAction.class) : null;
+      AbstractTestResultAction tests = getTestResultAction(job);
       String resultString = "No tests run";
       if(tests != null && tests.getTotalCount() > 0) {
          resultString = tests.getFailCount() + "";
@@ -25,6 +24,11 @@ public class ResultColumn extends ListViewColumn {
       }
 
       return resultString;
+   }
+   
+   public AbstractTestResultAction<?> getTestResultAction(Job<?,?> job) {
+       Run<?,?> b = job.getLastCompletedBuild();
+       return b != null ? b.getAction(AbstractTestResultAction.class) : null;
    }
 
    public static class TestResultDescriptor extends ListViewColumnDescriptor {
