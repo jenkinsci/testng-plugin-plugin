@@ -1,9 +1,6 @@
 function resultsGraph(id, data) {
 
-    console.log(data);
-
     var transformedData = [
-        ['buildNum'].concat(data.buildNum.reverse()),
         ['fail'].concat(data.fail.reverse()),
         ['pass'].concat(data.pass.reverse()),
         ['skip'].concat(data.skip.reverse())
@@ -24,14 +21,9 @@ function resultsGraph(id, data) {
             onclick: function (d, element) {
                 var url = window.location.href;
                 window.open(url.substring(0, url.length - 14) + d.x,"_self");
-            },
-            x: "buildNum"
-        },
-        bar: {
-            width: {
-                ratio: 1 // this makes bar width 100% of length between ticks
             }
         },
+        axis: { x: { type: 'category', categories: data.buildNum.reverse()}},
         grid: { lines: {front: true}, x: {show: true}, y: {show: true}},
         size: {
             width: 600
@@ -39,8 +31,7 @@ function resultsGraph(id, data) {
         tooltip: {
             format: {
                 title: function (d) {
-                    console.log(d);
-                    return 'Build ' + d;
+                    return 'Build ' + data.buildNum[d];
                 },
                 value: function (name, id, index,value) {
                     return name;
