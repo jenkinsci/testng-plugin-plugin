@@ -8,6 +8,11 @@ l = namespace(lib.LayoutTagLib)
 t = namespace("/lib/hudson")
 st = namespace("jelly:stapler")
 
+link(rel: "stylesheet", href:"${app.rootUrl}/plugin/testng-plugin/css/c3.min.css")
+
+script(src:"${app.rootUrl}/plugin/testng-plugin/js/d3.min.js")
+script(src:"${app.rootUrl}/plugin/testng-plugin/js/c3.min.js")
+script(src:"${app.rootUrl}/plugin/testng-plugin/js/draw_results.js")
 
 l.layout(title: "TestNG Results Trend") {
     st.include(page: "sidepanel.jelly", it: my.project)
