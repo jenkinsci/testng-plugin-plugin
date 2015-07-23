@@ -1,16 +1,13 @@
 function resultsGraph(id, data) {
-
-    console.log(data);
-
+    data.buildNum.reverse();
+    data.status.reverse();
     var transformedData = [
-        ['x'].concat(data.buildNum.reverse()),
         ['duration'].concat(data.duration.reverse())
         ];
 
     var chart = c3.generate({
-//        bindto: '#' + id,
+        bindto: '#' + id,
         data: {
-            x: "x",
             groups:[['duration']],
             type: 'bar',
             columns: transformedData,
@@ -20,31 +17,31 @@ function resultsGraph(id, data) {
             color: function (color, d) {
                 // d will be 'id' when called for legends
                 if(d.id) {
-                    if(data.status.concat().reverse()[d.index] == "FAIL"){
+                    if(data.status[d.index] == "FAIL"){
                         return d3.rgb("#FF5252");
-                    } else if(data.status.concat().reverse()[d.index] == "SKIP"){
+                    } else if(data.status[d.index] == "SKIP"){
                         return d3.rgb("#FFC107");
                     }
                 }
                 return color;
             },
-            order: null,   // stack order by data definition.
-//            onclick: function (d, element) {
-//                var url = window.location.href;
-//                window.open(url.substring(0, url.length - 14) + d.x,"_self");
-//            }
+            selection: { grouped: true },
+            onclick: function (d, element) {
+                var url = window.location.href;
+                var newUrl = url.replace(/\/[^\/]*\/testngreports/gi,'/' + data.buildNum[d.index] + '/testngreports');
+                window.open(newUrl,"_self");
+            }
         },
         axis: {
-            y: {
-                label: "Duration (Seconds)"
-            }
+            y: { label: "Duration (Seconds)" },
+            x: { type: 'category', categories: data.buildNum }
         },
         bar: {
             width: {
-                ratio: .75 // this makes bar width 75% of length between ticks
+                ratio: .75 // this makes bar width 100% of length between ticks
             }
         },
-        grid: { lines: {front: true}, x: {show: true}, y: {show: true}},
+        grid: { x: {show: true}, y: {show: true}},
         size: {
             width: 800
         }
