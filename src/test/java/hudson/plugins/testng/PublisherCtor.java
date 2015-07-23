@@ -12,11 +12,11 @@ public class PublisherCtor {
     private boolean escapeTestDescp = true;
     private boolean showFailedBuilds = false;
     private boolean failureOnFailedTestConfig = false;
-    private int unstableSkips = 0;
+    private int unstableSkips = 100;
     private int unstableFails = 0;
-    private int failedSkips = 0;
-    private int failedFails = 0;
-    private int thresholdMode = 1; //default mode is 1 (number of tests)
+    private int failedSkips = 100;
+    private int failedFails = 100;
+    private int thresholdMode = 2; //default mode is 2 (percentage of tests)
 
     public Publisher getNewPublisher() {
         return new Publisher(reportFilenamePattern, escapeTestDescp, escapeExceptionMsg, showFailedBuilds, failureOnFailedTestConfig, 
