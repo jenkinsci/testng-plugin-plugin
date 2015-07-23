@@ -1,9 +1,9 @@
 function resultsGraph(id, data) {
 
     var transformedData = [
-        ['fail'].concat(data.fail.reverse()),
-        ['pass'].concat(data.pass.reverse()),
-        ['skip'].concat(data.skip.reverse())
+        ['fail'].concat(data.fail.concat().reverse()),
+        ['pass'].concat(data.pass.concat().reverse()),
+        ['skip'].concat(data.skip.concat().reverse())
         ];
 
     var chart = c3.generate({
@@ -24,7 +24,7 @@ function resultsGraph(id, data) {
                 window.open(url.substring(0, url.length - 14) + data.buildNum[d.x],"_self");
             }
         },
-        axis: { x: { type: 'category', categories: data.buildNum.reverse()}},
+        axis: { x: { type: 'category', categories: data.buildNum.concat().reverse()}},
         grid: { lines: {front: true}, x: {show: true}, y: {show: true}},
         size: {
             width: 600
