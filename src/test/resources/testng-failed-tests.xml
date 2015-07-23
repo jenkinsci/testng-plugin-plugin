@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testng-results skipped="0" failed="0" total="121" passed="121">
+  <reporter-output>
+  </reporter-output>
+  <suite name="Skipped Tests suite" duration-ms="23913" started-at="2012-01-23T10:51:27Z" finished-at="2012-01-23T10:51:51Z">
+    <groups>
+    </groups>
+    <test name="Skipped Tests test" duration-ms="23913" started-at="2012-01-23T10:51:27Z" finished-at="2012-01-23T10:51:51Z">
+      <class name="com.fakepkg.test.MyFakeTest">
+        <test-method status="FAIL" signature="methodSignature()[pri:0, instance:my.package.MyFakeTest@1d6747b]" name="testShouldFAIL" duration-ms="11" started-at="2012-01-23T10:51:51Z" finished-at="2012-01-23T10:51:51Z" />
+        <test-method status="PASS" signature="methodSignature()[pri:0, instance:my.package.MyFakeTest@1d6747b]" name="testShouldPass" duration-ms="11" started-at="2012-01-23T10:51:51Z" finished-at="2012-01-23T10:51:51Z" />
+      </class>
+    </test>
+  </suite>
+</testng-results>
