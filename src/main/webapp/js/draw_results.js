@@ -1,5 +1,34 @@
 function resultsGraph(id, data) {
 
+    //convert duration to readable format
+    for(var i=data.duration.length-1; i>=0; i--) {
+        data.duration[i] = msToTime(data.duration[i]);
+        data.duration[i] = trimTime(data.duration[i]);
+    }
+
+    function msToTime(duration) {
+        var milliseconds = parseInt((duration%1000)/100)
+            , seconds = parseInt((duration/1000)%60)
+            , minutes = parseInt((duration/(1000*60))%60)
+            , hours = parseInt((duration/(1000*60*60))%24);
+
+        hours = (hours < 10) ? "0" + hours : hours;
+        minutes = (minutes < 10) ? "0" + minutes : minutes;
+        seconds = (seconds < 10) ? "0" + seconds : seconds;
+
+        return hours + "h" + minutes + "m" + seconds + "." + milliseconds + "s";
+    }
+
+    function trimTime(timeString) {
+        while(timeString.substring(0,3) == "00h" || timeString.substring(0,3) == "00m" || timeString.substring(0,3) == "00s"){
+            timeString = timeString.substring(3);
+        }
+        while(timeString.substring(0,1) == "0"){
+                    timeString = timeString.substring(1);
+                }
+        return timeString;
+    }
+
     data.buildNum.reverse();
 
     var transformedData = [
@@ -34,7 +63,7 @@ function resultsGraph(id, data) {
         tooltip: {
             format: {
                 title: function (d) {
-                    return 'Build ' + data.buildNum[d];
+                    return 'Build ' + data.buildNum[d] + ": " + data.duration.concat().reverse()[d];
                 },
                 value: function (name, id, index,value) {
                     return name;
@@ -43,3 +72,4 @@ function resultsGraph(id, data) {
         }
     });
 }
+
