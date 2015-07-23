@@ -22,9 +22,8 @@ function resultsGraph(id, data) {
             order: null,
             selection: { grouped: true },
             onclick: function (d, element) {
-                var url = window.location.href;
-                var jobUrl = url.truncate(url, url.indexOf(data.baseUrl));
-                window.open(jobUrl + '/' + data.buildNum[d.index],"_self");
+                var url = window.location.href.replace('/testngreports/','');
+                window.open(url + '/' + data.buildNum[d.index],"_self");
             }
         },
         axis: { x: { type: 'category', categories: data.buildNum}},
