@@ -133,6 +133,7 @@ public class TestNGProjectAction extends TestResultProjectAction implements Prom
       JSONArray skips = new JSONArray();
       JSONArray buildNum = new JSONArray();
       JSONArray durations = new JSONArray();
+      JSONArray buildStatus = new JSONArray();
 
       int count = 0;
 
@@ -152,6 +153,7 @@ public class TestNGProjectAction extends TestResultProjectAction implements Prom
             skips.add(action.getSkipCount());
             buildNum.add(Integer.toString(build.getNumber()));
             durations.add(build.getDuration());
+            buildStatus.add(build.getResult().color);
          }
       }
       jsonObject.put("pass", passes);
@@ -159,6 +161,7 @@ public class TestNGProjectAction extends TestResultProjectAction implements Prom
       jsonObject.put("skip", skips);
       jsonObject.put("buildNum", buildNum);
       jsonObject.put("duration", durations);
+      jsonObject.put("buildStatus", buildStatus);
       return jsonObject.toString();
    }
 }

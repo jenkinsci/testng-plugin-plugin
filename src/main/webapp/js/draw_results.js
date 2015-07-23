@@ -1,9 +1,19 @@
 function resultsGraph(id, data) {
-
     //convert duration to readable format
     for(var i=data.duration.length-1; i>=0; i--) {
         data.duration[i] = msToTime(data.duration[i]);
         data.duration[i] = trimTime(data.duration[i]);
+    }
+
+    //convert status color to status string
+    for(var i=data.buildStatus.length-1; i>=0; i--) {
+        if(data.buildStatus[i]=="RED"){
+            data.buildStatus[i] = "FAIL";
+        } else if(data.buildStatus[i]=="YELLOW") {
+            data.buildStatus[i] = "UNSTABLE";
+        } else if(data.buildStatus[i]=="BLUE"){
+            data.buildStatus[i] = "SUCCESS";
+        }
     }
 
     function msToTime(duration) {
@@ -63,7 +73,7 @@ function resultsGraph(id, data) {
         tooltip: {
             format: {
                 title: function (d) {
-                    return 'Build ' + data.buildNum[d];
+                    return 'Build ' + data.buildNum[d] + ": " + data.buildStatus.concat().reverse()[d];
                 },
                 value: function (name, id, index, value) {
                     return name;
