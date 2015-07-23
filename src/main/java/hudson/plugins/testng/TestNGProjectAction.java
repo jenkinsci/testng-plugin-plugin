@@ -159,7 +159,6 @@ public class TestNGProjectAction extends TestResultProjectAction implements Prom
       jsonObject.put("skip", skips);
       jsonObject.put("buildNum", buildNum);
       jsonObject.put("duration", durations);
-      jsonObject.put("baseUrl", getProject().getUrl());
       return jsonObject.toString();
    }
 }
