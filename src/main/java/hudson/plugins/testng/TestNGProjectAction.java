@@ -139,7 +139,7 @@ public class TestNGProjectAction extends TestResultProjectAction implements Prom
 
       Set<Integer> loadedBuilds = getProject()._getRuns().getLoadedBuilds().keySet(); // cf. AbstractTestResultAction.getPreviousResult(Class, false)
       for (AbstractBuild<?, ?> build = getProject().getLastBuild();
-           build != null && count++ < 30; build = loadedBuilds.contains(build.number - 1) ? build.getPreviousCompletedBuild() : null) {
+           build != null && count++ < 25; build = loadedBuilds.contains(build.number - 1) ? build.getPreviousCompletedBuild() : null) {
          TestNGTestResultBuildAction action = build.getAction(getBuildActionClass());
 
          if (build.getResult() == null || build.getResult().isWorseThan(Result.FAILURE)) {
