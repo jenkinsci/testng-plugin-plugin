@@ -22,7 +22,10 @@ if (my.result.failCount != 0) {
                 th(class: "pane-header") {
                     text("Test Method")
                 }
-                th(class: "pane-header") {
+                th(class: "pane-header", style:"width:5em") {
+                    text("Age")
+                }
+                th(class: "pane-header", style:"width:5em") {
                     text("Duration")
                 }
             }
@@ -32,10 +35,10 @@ if (my.result.failCount != 0) {
                 tr() {
                     td(align: "left") {
                         a(id: "${failedTest.id}-showlink", href:"javascript:showStackTrace('${failedTest.id}', '${failedTest.upUrl}/summary')") {
-                            text(">>>")
+                            text("▼")
                         }
                         a(style: "display:none", id: "${failedTest.id}-hidelink", href:"javascript:hideStackTrace('${failedTest.id}')") {
-                            text("<<<")
+                            text("▲")
                         }
                         text(" ")
                         a(href:"${failedTest.upUrl}") {
@@ -45,7 +48,12 @@ if (my.result.failCount != 0) {
                             text("Loading...")
                         }
                     }
-                    td(align: "right") {
+                    td(align: "center") {
+                        a(href:"${failedTest.upUrl}") {
+                            text("${failedTest.failureAge}")
+                        }
+                    }
+                    td(align: "center") {
                         text("${FormatUtil.formatTime(failedTest.duration)}")
                     }
                 }

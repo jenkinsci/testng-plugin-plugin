@@ -1,20 +1,12 @@
 package hudson.plugins.testng.results;
 
-import java.io.IOException;
 import java.util.*;
 
 import hudson.model.AbstractBuild;
 import hudson.plugins.testng.TestNGTestResultBuildAction;
-import hudson.plugins.testng.util.GraphHelper;
 import hudson.tasks.test.TestResult;
-import hudson.util.ChartUtil;
-import hudson.util.DataSetBuilder;
-import hudson.util.Graph;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
-import org.jfree.chart.JFreeChart;
-import org.kohsuke.stapler.StaplerRequest;
-import org.kohsuke.stapler.StaplerResponse;
 import org.kohsuke.stapler.export.Exported;
 
 /**
@@ -243,63 +235,6 @@ public class MethodResult extends BaseResult {
     }
 
     /**
-     * Creates test method execution history graph
-     *
-     * @param req request
-     * @param rsp response
-     * @throws IOException
-     */
-    public void doGraph(final StaplerRequest req, StaplerResponse rsp) throws IOException {
-        Graph g = getGraph(req, rsp);
-        if (g != null) {
-            g.doPng(req, rsp);
-        }
-    }
-
-    /**
-     * Creates map to make the graph click-able
-     *
-     * @param req request
-     * @param rsp response
-     * @throws IOException
-     */
-    public void doGraphMap(final StaplerRequest req, StaplerResponse rsp) throws IOException {
-        Graph g = getGraph(req, rsp);
-        if (g != null) {
-            g.doMap(req, rsp);
-        }
-    }
-
-    /**
-     * Returns graph instance if needed
-     *
-     * @param req request
-     * @param rsp response
-     * @return a graph
-     */
-    private hudson.util.Graph getGraph(final StaplerRequest req, StaplerResponse rsp) {
-        Calendar t = getOwner().getProject().getLastCompletedBuild().getTimestamp();
-        if (req.checkIfModified(t, rsp)) {
-            return null;
-        }
-
-        final DataSetBuilder<String, ChartUtil.NumberOnlyBuildLabel> dataSetBuilder =
-                new DataSetBuilder<String, ChartUtil.NumberOnlyBuildLabel>();
-        final Map<ChartUtil.NumberOnlyBuildLabel, String> statusMap =
-                new HashMap<ChartUtil.NumberOnlyBuildLabel, String>();
-
-        populateDataSetBuilder(dataSetBuilder, statusMap);
-        return new Graph(-1, 800, 150) {
-            protected JFreeChart createGraph() {
-                return GraphHelper.createMethodChart(req, dataSetBuilder.build(), statusMap,
-                        // getUrl instead of getUpUrl as latter gets the complete url and we only need
-                        // relative url path from a specific build
-                        getUrl());
-            }
-        };
-    }
-
-    /**
      * Returns json for charting
      *
      * @return a json for a chart
@@ -329,29 +264,6 @@ public class MethodResult extends BaseResult {
         return jsonObject.toString();
     }
 
-    /**
-     * Populates the data set build with results from any successive and at max 9
-     * previous builds.
-     *
-     * @param dataSetBuilder the data set
-     * @param statusMap      key as build and value as the execution status (result) of
-     *                       test method execution
-     */
-    private void populateDataSetBuilder(
-            DataSetBuilder<String, ChartUtil.NumberOnlyBuildLabel> dataSetBuilder,
-            Map<ChartUtil.NumberOnlyBuildLabel, String> statusMap) {
-        int count = 0;
-        for (AbstractBuild<?, ?> build = getOwner(); build != null; build = build.getNextBuild()) {
-            addData(dataSetBuilder, statusMap, build);
-        }
-        for (AbstractBuild<?, ?> build = getOwner();
-             build != null && count++ < 10;
-             //getting running builds as well (will deal accordingly)
-             build = build.getPreviousBuild()) {
-            addData(dataSetBuilder, statusMap, build);
-        }
-    }
-
     private MethodResult getMethodResultFromBuild(AbstractBuild<?, ?> build) {
         TestNGTestResultBuildAction action = build.getAction(TestNGTestResultBuildAction.class);
         TestNGResult results;
@@ -360,27 +272,6 @@ public class MethodResult extends BaseResult {
             methodResult = getMethodResult(results);
         }
         return methodResult;
-    }
-
-    private void addData(DataSetBuilder<String, ChartUtil.NumberOnlyBuildLabel> dataSetBuilder,
-                         Map<ChartUtil.NumberOnlyBuildLabel, String> statusMap,
-                         AbstractBuild<?, ?> build) {
-        ChartUtil.NumberOnlyBuildLabel label = new ChartUtil.NumberOnlyBuildLabel(build);
-        MethodResult methodResult = getMethodResultFromBuild(build);
-
-        if (methodResult == null) {
-            dataSetBuilder.add(0, "resultRow", label);
-            //deal with builds still running
-            if (build.isBuilding()) {
-                statusMap.put(label, "BUILD IN PROGRESS");
-            } else {
-                statusMap.put(label, "UNKNOWN");
-            }
-        } else {
-            //status is PASS, FAIL or SKIP
-            dataSetBuilder.add(methodResult.getDuration(), "resultRow", label);
-            statusMap.put(label, methodResult.getStatus());
-        }
     }
 
     /**
@@ -467,4 +358,26 @@ public class MethodResult extends BaseResult {
     public boolean hasChildren() {
         return false;
     }
+    
+    /**
+     * Gets the age of a result
+     *
+     * @return the number of consecutive builds for which we have failed result for
+     *         this package
+     */
+    public long getFailureAge() {
+    	long failAge;
+    	if (!this.status.equalsIgnoreCase("fail")) {
+    		failAge = 0;
+    	} else {
+    		MethodResult result = (MethodResult) getPreviousResult();
+            if (result == null) {
+                failAge = 1;
+            } else {
+                failAge =  1 + result.getFailureAge();
+            }
+    	}
+    	return failAge;
+    }
+    
 }

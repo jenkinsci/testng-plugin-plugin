@@ -1,9 +1,11 @@
 function resultsGraph(id, data) {
 
+    data.buildNum.reverse();
+
     var transformedData = [
-        ['fail'].concat(data.fail.reverse()),
-        ['pass'].concat(data.pass.reverse()),
-        ['skip'].concat(data.skip.reverse())
+        ['fail'].concat(data.fail.concat().reverse()),
+        ['pass'].concat(data.pass.concat().reverse()),
+        ['skip'].concat(data.skip.concat().reverse())
         ];
 
     var chart = c3.generate({
@@ -17,13 +19,14 @@ function resultsGraph(id, data) {
                 'pass': '#729FCF',
                 'skip': '#FCE94F'
             },
-            order: null,   // stack order by data definition.
+            order: null,
+            selection: { grouped: true },
             onclick: function (d, element) {
-                var url = window.location.href;
-                window.open(url.substring(0, url.length - 14) + d.x,"_self");
+                var url = window.location.href.replace('/testngreports/','');
+                window.open(url + '/' + data.buildNum[d.index],"_self");
             }
         },
-        axis: { x: { type: 'category', categories: data.buildNum.reverse()}},
+        axis: { x: { type: 'category', categories: data.buildNum}},
         grid: { lines: {front: true}, x: {show: true}, y: {show: true}},
         size: {
             width: 600

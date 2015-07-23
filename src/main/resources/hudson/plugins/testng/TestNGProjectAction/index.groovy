@@ -12,7 +12,7 @@ link(rel: "stylesheet", href:"${app.rootUrl}/plugin/testng-plugin/css/c3.min.css
 
 script(src:"${app.rootUrl}/plugin/testng-plugin/js/d3.min.js")
 script(src:"${app.rootUrl}/plugin/testng-plugin/js/c3.min.js")
-script(src:"${app.rootUrl}/plugin/testng-plugin/js/draw_viz.js")
+script(src:"${app.rootUrl}/plugin/testng-plugin/js/draw_results.js")
 
 
 l.layout(title: "TestNG Results Trend") {
@@ -49,6 +49,6 @@ l.layout(title: "TestNG Results Trend") {
 }
 
 script() {
-    text("var data = ${my.getChartJson()};")
+    text("\nvar data = ${my.getChartJson()};")
     text("\nresultsGraph('chart', data);")
 }

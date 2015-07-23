@@ -1,24 +1,14 @@
 package hudson.plugins.testng;
 
-import java.io.IOException;
-import java.util.Calendar;
-
-import com.sun.accessibility.internal.resources.accessibility;
 import hudson.model.AbstractBuild;
 import hudson.model.AbstractProject;
 import hudson.model.ProminentProjectAction;
 import hudson.model.Result;
-import hudson.plugins.testng.util.GraphHelper;
 import hudson.tasks.test.TestResultProjectAction;
-import hudson.util.ChartUtil;
-import hudson.util.DataSetBuilder;
 import java.util.Set;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
-import org.jfree.chart.JFreeChart;
-import org.kohsuke.stapler.StaplerRequest;
-import org.kohsuke.stapler.StaplerResponse;
 
 /**
  * Action to associate the TestNG reports with the project
@@ -99,59 +89,15 @@ public class TestNGProjectAction extends TestResultProjectAction implements Prom
       return PluginImpl.URL;
    }
 
-   /**
-    * Generates the graph that shows test pass/fail ratio
-    * @param req -
-    * @param rsp -
-    * @throws IOException -
-    */
-   public void doGraph(final StaplerRequest req,
-                      StaplerResponse rsp) throws IOException {
-      if (newGraphNotNeeded(req, rsp)) {
-        return;
-      }
-
-      final DataSetBuilder<String, ChartUtil.NumberOnlyBuildLabel> dataSetBuilder =
-            new DataSetBuilder<String, ChartUtil.NumberOnlyBuildLabel>();
-
-      populateDataSetBuilder(dataSetBuilder);
-      new hudson.util.Graph(-1, getGraphWidth(), getGraphHeight()) {
-         protected JFreeChart createGraph() {
-            return GraphHelper.createChart(req, dataSetBuilder.build());
+   public TestNGTestResultBuildAction getLastCompletedBuildAction() {
+      for (AbstractBuild<?, ?> build = getProject().getLastCompletedBuild();
+               build != null; build = build.getPreviousCompletedBuild()) {
+         final TestNGTestResultBuildAction action = build.getAction(getBuildActionClass());
+         if (action != null) {
+            return action;
          }
-      }.doPng(req,rsp);
-   }
-
-   /**
-    * If the last build is the same,
-    * no need to regenerate the graph. Browser should reuse it's cached image
-    *
-    * @param req request
-    * @param rsp response
-    * @return true, if new image does NOT need to be generated, false otherwise
-    */
-   private boolean newGraphNotNeeded(final StaplerRequest req,
-         StaplerResponse rsp) {
-      Calendar t = getProject().getLastCompletedBuild().getTimestamp();
-      return req.checkIfModified(t, rsp);
-   }
-
-   public void doGraphMap(final StaplerRequest req,
-           StaplerResponse rsp) throws IOException {
-      if (newGraphNotNeeded(req, rsp)) {
-         return;
       }
-
-      final DataSetBuilder<String, ChartUtil.NumberOnlyBuildLabel> dataSetBuilder =
-      new DataSetBuilder<String, ChartUtil.NumberOnlyBuildLabel>();
-
-      //TODO: optimize by using cache
-      populateDataSetBuilder(dataSetBuilder);
-      new hudson.util.Graph(-1, getGraphWidth(), getGraphHeight()) {
-         protected JFreeChart createGraph() {
-           return GraphHelper.createChart(req, dataSetBuilder.build());
-         }
-      }.doMap(req, rsp);
+      return null;
    }
 
    /**
@@ -173,60 +119,6 @@ public class TestNGProjectAction extends TestResultProjectAction implements Prom
          build = build.getPreviousBuild();
       }
       return true;
-   }
-
-   public TestNGTestResultBuildAction getLastCompletedBuildAction() {
-      for (AbstractBuild<?, ?> build = getProject().getLastCompletedBuild();
-               build != null; build = build.getPreviousCompletedBuild()) {
-         final TestNGTestResultBuildAction action = build.getAction(getBuildActionClass());
-         if (action != null) {
-            return action;
-         }
-      }
-      return null;
-   }
-
-   protected void populateDataSetBuilder(DataSetBuilder<String, ChartUtil.NumberOnlyBuildLabel> dataset) {
-      Set<Integer> loadedBuilds = getProject()._getRuns().getLoadedBuilds().keySet(); // cf. AbstractTestResultAction.getPreviousResult(Class, false)
-      for (AbstractBuild<?, ?> build = getProject().getLastBuild();
-         build != null; build = loadedBuilds.contains(build.number - 1) ? build.getPreviousCompletedBuild() : null) {
-         ChartUtil.NumberOnlyBuildLabel label = new ChartUtil.NumberOnlyBuildLabel(build);
-         TestNGTestResultBuildAction action = build.getAction(getBuildActionClass());
-
-         if (build.getResult() == null || build.getResult().isWorseThan(Result.FAILURE)) {
-            //We don't want to add aborted or builds with no results into the graph
-            continue;
-         }
-
-         if (!showFailedBuilds && build.getResult().equals(Result.FAILURE)) {
-            //failed build and configuration states that we should skip this build
-            continue;
-         }
-
-         if (action != null) {
-            dataset.add(action.getTotalCount() - action.getFailCount() - action.getSkipCount(), "Passed", label);
-            dataset.add(action.getFailCount(), "Failed", label);
-            dataset.add(action.getSkipCount(), "Skipped", label);
-         }
-      }
-   }
-
-   /**
-    * Getter for property 'graphWidth'.
-    *
-    * @return Value for property 'graphWidth'.
-    */
-   public int getGraphWidth() {
-      return 500;
-   }
-
-   /**
-    * Getter for property 'graphHeight'.
-    *
-    * @return Value for property 'graphHeight'.
-    */
-   public int getGraphHeight() {
-      return 200;
    }
 
    /**
@@ -267,7 +159,6 @@ public class TestNGProjectAction extends TestResultProjectAction implements Prom
       jsonObject.put("skip", skips);
       jsonObject.put("buildNum", buildNum);
       jsonObject.put("duration", durations);
-      jsonObject.put("baseUrl", getProject().getUrl());
       return jsonObject.toString();
    }
 }
