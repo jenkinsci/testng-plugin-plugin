@@ -90,7 +90,6 @@ function resultsGraph(id, data) {
                         text += "<td class='value'>" + value + "</td>";
                         text += "</tr>";
                 }
-                console.log(d);
                 text += "<tr class='" + $$.CLASS.tooltipName + "-" + "final" + "'>";
                 text += "<td class='name' colspan=2>" + "Duration: " + data.duration.concat().reverse()[d[0].index] + "</td>";
                 text += "</tr>";
