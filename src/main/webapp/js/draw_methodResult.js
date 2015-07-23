@@ -47,6 +47,29 @@ function resultsGraph(id, data) {
         },
         legend: {
             show: false
+        },
+        tooltip: {
+            format: {
+                title: function (d) {
+                    return 'Build ' + data.buildNum[d];
+                },
+                value: function (name, id, index, value) {
+                    return name;
+                }
+            },
+            contents: function (d, defaultTitleFormat, defaultValueFormat, color) {
+                var $$ = this, config = $$.config,
+                      titleFormat = config.tooltip_format_title || defaultTitleFormat,
+                      nameFormat = config.tooltip_format_name || function (name) { return name; },
+                      valueFormat = config.tooltip_format_value || defaultValueFormat,
+                      text, i, title, value, name, bgcolor;
+                title = "Build " + data.buildNum[d[0].index];
+                text = "<table class='" + $$.CLASS.tooltip + "'>" + (title || title === 0 ? "<tr><th colspan='2'>" + title + "</th></tr>" : "");
+                text += "<tr class='" + $$.CLASS.tooltipName + "-" + "final" + "'>";
+                text += "<td class='name' colspan=2>" + "Duration: " + data.duration[d[0].index] + "s</td>";
+                text += "</tr>";
+                return text + "</table>";
+            }
         }
     });
 }
