@@ -44,6 +44,9 @@ function resultsGraph(id, data) {
         grid: { x: {show: true}, y: {show: true}},
         size: {
             width: 800
+        },
+        legend: {
+            show: false
         }
     });
 }
