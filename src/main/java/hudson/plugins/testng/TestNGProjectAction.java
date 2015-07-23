@@ -5,7 +5,11 @@ import hudson.model.AbstractProject;
 import hudson.model.ProminentProjectAction;
 import hudson.model.Result;
 import hudson.tasks.test.TestResultProjectAction;
+
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
+import java.util.SortedMap;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -137,9 +141,10 @@ public class TestNGProjectAction extends TestResultProjectAction implements Prom
 
       int count = 0;
 
-      Set<Integer> loadedBuilds = getProject()._getRuns().getLoadedBuilds().keySet(); // cf. AbstractTestResultAction.getPreviousResult(Class, false)
-      for (AbstractBuild<?, ?> build = getProject().getLastBuild();
-           build != null && count++ < 25; build = loadedBuilds.contains(build.number - 1) ? build.getPreviousCompletedBuild() : null) {
+      List<? extends AbstractBuild<?, ?>> loadedBuilds = new ArrayList<AbstractBuild<?, ?>>(getProject()._getRuns().getLoadedBuilds().values());
+      AbstractBuild<?, ?> build = getProject().getLastBuild();
+      for (int i = loadedBuilds.size() - 1; i >= 0 && count++ < 25; i--) {
+         build = loadedBuilds.get(i);
          TestNGTestResultBuildAction action = build.getAction(getBuildActionClass());
 
          if (build.getResult() == null || build.getResult().isWorseThan(Result.FAILURE)) {

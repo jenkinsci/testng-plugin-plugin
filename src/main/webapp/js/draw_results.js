@@ -39,14 +39,14 @@ function resultsGraph(id, data) {
         return timeString;
     }
 
-    data.buildNum.reverse();
-    data.buildStatus.reverse();
-    data.duration.reverse();
+    data.buildNum;
+    data.buildStatus;
+    data.duration;
 
     var transformedData = [
-        ['fail'].concat(data.fail.reverse()),
-        ['pass'].concat(data.pass.reverse()),
-        ['skip'].concat(data.skip.reverse())
+        ['fail'].concat(data.fail),
+        ['pass'].concat(data.pass),
+        ['skip'].concat(data.skip)
         ];
 
     var chart = c3.generate({
