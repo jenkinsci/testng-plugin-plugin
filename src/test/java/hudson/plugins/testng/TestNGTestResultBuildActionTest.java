@@ -211,8 +211,8 @@ public class TestNGTestResultBuildActionTest extends HudsonTestCase {
     public void test_failed_config_default_setting() throws Exception {
         FreeStyleProject p = createFreeStyleProject();
         PublisherCtor publisherCtor = new PublisherCtor().setReportFilenamePattern("testng.xml");
-        publisherCtor.setFailedSkips(10); //these prevent the skip that results from config failure from determining result
-        publisherCtor.setUnstableSkips(10);
+        publisherCtor.setFailedSkips(100); //these prevent the skip that results from config failure from determining result
+        publisherCtor.setUnstableSkips(100);
         Publisher publisher = publisherCtor.getNewPublisher();
         p.getPublishersList().add(publisher);
         p.onCreatedFromScratch(); //to setup project action
@@ -274,14 +274,14 @@ public class TestNGTestResultBuildActionTest extends HudsonTestCase {
 
        //run build
        FreeStyleBuild build = p.scheduleBuild2(0).get();
-       Assert.assertSame(Result.FAILURE, build.getResult());
+       Assert.assertSame(Result.SUCCESS, build.getResult());
     }
     
    @Test
    public void test_threshold_for_skips_failure() throws Exception {
       FreeStyleProject p = createFreeStyleProject();
       PublisherCtor publisherCtor = new PublisherCtor().setReportFilenamePattern("testng.xml")
-            .setFailedSkips(2).setUnstableSkips(2);
+            .setFailedSkips(100).setUnstableSkips(100);
       Publisher publisher = publisherCtor.getNewPublisher();
       p.getPublishersList().add(publisher);
       p.onCreatedFromScratch(); //to setup project action
@@ -304,7 +304,7 @@ public class TestNGTestResultBuildActionTest extends HudsonTestCase {
    public void test_threshold_for_skips_unstable() throws Exception {
       FreeStyleProject p = createFreeStyleProject();
       PublisherCtor publisherCtor = new PublisherCtor().setReportFilenamePattern("testng.xml")
-            .setFailedSkips(2);
+            .setUnstableSkips(0).setFailedSkips(100);
       Publisher publisher = publisherCtor.getNewPublisher();
       p.getPublishersList().add(publisher);
       p.onCreatedFromScratch(); //to setup project action
@@ -334,7 +334,7 @@ public class TestNGTestResultBuildActionTest extends HudsonTestCase {
       p.getBuildersList().add(new TestBuilder() {
          public boolean perform(AbstractBuild<?, ?> build, Launcher launcher,
                                 BuildListener listener) throws InterruptedException, IOException {
-            String contents = CommonUtil.getContents(Constants.TESTNG_SKIPPED_TEST);
+            String contents = CommonUtil.getContents(Constants.TESTNG_FAILED_TEST);
             build.getWorkspace().child("testng.xml").write(contents,"UTF-8");
             return true;
          }
@@ -342,14 +342,14 @@ public class TestNGTestResultBuildActionTest extends HudsonTestCase {
 
       //run build
       FreeStyleBuild build = p.scheduleBuild2(0).get();
-      Assert.assertSame(Result.FAILURE, build.getResult());
+      Assert.assertSame(Result.UNSTABLE, build.getResult());
    }
    
   @Test
   public void test_threshold_for_fails_failure() throws Exception {
      FreeStyleProject p = createFreeStyleProject();
      PublisherCtor publisherCtor = new PublisherCtor().setReportFilenamePattern("testng.xml")
-           .setFailedFails(2).setUnstableFails(2);
+           .setFailedFails(100).setUnstableFails(100);
      Publisher publisher = publisherCtor.getNewPublisher();
      p.getPublishersList().add(publisher);
      p.onCreatedFromScratch(); //to setup project action
@@ -372,7 +372,7 @@ public class TestNGTestResultBuildActionTest extends HudsonTestCase {
   public void test_threshold_for_fails_unstable() throws Exception {
      FreeStyleProject p = createFreeStyleProject();
      PublisherCtor publisherCtor = new PublisherCtor().setReportFilenamePattern("testng.xml")
-           .setFailedFails(2);
+           .setFailedFails(100);
      Publisher publisher = publisherCtor.getNewPublisher();
      p.getPublishersList().add(publisher);
      p.onCreatedFromScratch(); //to setup project action
