@@ -19,9 +19,9 @@ public class ResultColumn extends ListViewColumn {
       if(tests != null && tests.getTotalCount() > 0) {
          resultString = tests.getFailCount() + "";
          if(!tests.getFailureDiffString().contains("±0")) {
-            resultString = resultString + " (" + tests.getFailureDiffString().replace(" / ", "") + ") ";
+            resultString = resultString + "(" + tests.getFailureDiffString().replace(" / ", "") + ") ";
          }
-         resultString = resultString + " failed/" + tests.getTotalCount();
+         resultString = resultString + " failed/" + tests.getTotalCount() + " total";
       }
 
       return resultString;
@@ -42,7 +42,7 @@ public class ResultColumn extends ListViewColumn {
 
       @Override
       public String getDisplayName() {
-         return "Test Results";
+         return "Latest TestNG Results";
       }
    }
 
