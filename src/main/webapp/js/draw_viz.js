@@ -13,7 +13,7 @@ function resultsGraph(id, data) {
         bindto: '#' + id,
         data: {
             groups:[['fail', 'pass', 'skip']],
-            type: 'bar',
+            type: 'area',
             columns: transformedData,
             colors: {
                 'fail': '#EF2929',
