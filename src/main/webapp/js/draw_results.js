@@ -43,7 +43,7 @@ function resultsGraph(id, data) {
     data.buildStatus.reverse();
     data.duration.reverse();
 
-    var labels = Math.max.apply(Math, data.buildNum.map(function (s) { return s.length})) > 2 ? data.buildNum.slice(0).map(function (val, idx) { return idx % 2 ? "" : val}) : data.buildNum.slice(0);
+    var labels = Math.max.apply(Math, data.buildNum.map(function (s) { return s.length})) > 2 ? data.buildNum.slice(0).map(function (val, idx) { return idx % 3 ? "" : val}) : data.buildNum.slice(0);
 
     var transformedData = [
         ['fail'].concat(data.fail.reverse()),
