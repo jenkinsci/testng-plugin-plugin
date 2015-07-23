@@ -143,7 +143,7 @@ public class TestNGProjectAction extends TestResultProjectAction implements Prom
 
       List<? extends AbstractBuild<?, ?>> loadedBuilds = new ArrayList<AbstractBuild<?, ?>>(getProject()._getRuns().getLoadedBuilds().values());
       AbstractBuild<?, ?> build = getProject().getLastBuild();
-      for (int i = loadedBuilds.size() - 1; i >= 0 && count++ < 25; i--) {
+      for (int i = 0; i < loadedBuilds.size() && count++ < 25; i++) {
          build = loadedBuilds.get(i);
          TestNGTestResultBuildAction action = build.getAction(getBuildActionClass());
 
