@@ -132,7 +132,7 @@ public class PackageResultTest extends HudsonTestCase {
         //assert that link to get all methods is no longer visible
         assertStringContains(divShowAllLink.getAttribute("style"), "none");
 
-        //verify bar
+        //verify pie
         HtmlElement element = page.getElementById("fail-skip");
         assertStringContains(element.getTextContent(), "1 failure");
         assertFalse(element.getTextContent().contains("failures"));
@@ -177,7 +177,7 @@ public class PackageResultTest extends HudsonTestCase {
         HtmlElement divShowAllLink = page.getElementById("showAllLink");
         assertNull(divShowAllLink);
 
-        //verify bar
+        //verify pie
         HtmlElement element = page.getElementById("fail-skip");
         assertStringContains(element.getTextContent(), "0 failures");
         assertFalse(element.getTextContent().contains("skipped"));

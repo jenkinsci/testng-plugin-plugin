@@ -118,7 +118,7 @@ public class TestNGTestResultBuildActionTest extends HudsonTestCase {
         Collections.sort(linksFromResult);
         assertEquals(linksFromResult, linksInPage);
 
-        //verify bar
+        //verify pie
         HtmlElement element = page.getElementById("fail-skip");
         assertStringContains(element.getTextContent(), "1 failure");
         assertFalse(element.getTextContent().contains("failures"));
@@ -199,7 +199,7 @@ public class TestNGTestResultBuildActionTest extends HudsonTestCase {
         assertEquals(linksFromResult, linksInPage);
         assertTrue(linksInPage.contains("No Package"));
 
-        //verify bar
+        //verify pie
         HtmlElement element = page.getElementById("fail-skip");
         assertStringContains(element.getTextContent(), "0 failures");
         assertFalse(element.getTextContent().contains("skipped"));

@@ -27,14 +27,15 @@ div() {
             }
         }
 
-        div(style: "width:100%; height:1em; background-color: #729FCF") {
-            def failpc = my.result.failCount * 100 / my.result.totalCount
-            def skippc = my.result.skipCount * 100 / my.result.totalCount
-            div(style: "width:${failpc}%; height: 1em; background-color: #EF2929; float: left")
-            div(style: "width:${skippc}%; height: 1em; background-color: #FCE94F; float: left")
+        div(id: "pie")
+        script() {
+            text("var passCount = ${my.result.passCount};")
+            text("\nvar skipCount = ${my.result.skipCount};")
+            text("\nvar failCount = ${my.result.failCount};")
+            text("\nresultsGraph('pie', passCount, skipCount, failCount);")
         }
 
-        div(id: "pass", align: "right") {
+        div(id: "pass", align: "left") {
             text("${my.result.totalCount} test${my.totalCount != 1 ? "s" : ""}")
             if (prevResult) {
                 text("(${Functions.getDiffString(my.result.totalCount - prevResult.totalCount)})")
