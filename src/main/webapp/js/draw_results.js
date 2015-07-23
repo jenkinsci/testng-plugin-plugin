@@ -67,7 +67,7 @@ function resultsGraph(id, data) {
                 window.open(url + '/' + data.buildNum[d.index],"_self");
             }
         },
-        axis: { x: { type: 'category', categories: data.buildNum}},
+        axis: { x: { type: 'category', categories: data.buildNum, tick: { rotate: Math.max(data.buildNum.map(function (s) { return s.length; })) > 2 ? 45 : 0}}},
         grid: { lines: {front: true}, x: {show: true}, y: {show: true}},
         size: {
             width: 600
