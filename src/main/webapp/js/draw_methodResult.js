@@ -8,7 +8,7 @@ function resultsGraph(id, data) {
         ];
 
     var chart = c3.generate({
-        bindto: '#' + id,
+//        bindto: '#' + id,
         data: {
             x: "x",
             groups:[['duration']],
@@ -29,10 +29,10 @@ function resultsGraph(id, data) {
                 return color;
             },
             order: null,   // stack order by data definition.
-            onclick: function (d, element) {
-                var url = window.location.href;
-                window.open(url.substring(0, url.length - 14) + d.x,"_self");
-            }
+//            onclick: function (d, element) {
+//                var url = window.location.href;
+//                window.open(url.substring(0, url.length - 14) + d.x,"_self");
+//            }
         },
         axis: {
             y: {
@@ -41,12 +41,22 @@ function resultsGraph(id, data) {
         },
         bar: {
             width: {
-                ratio: .75 // this makes bar width 100% of length between ticks
+                ratio: .75 // this makes bar width 75% of length between ticks
             }
         },
         grid: { lines: {front: true}, x: {show: true}, y: {show: true}},
         size: {
             width: 600
+        },
+        tooltip: {
+            format: {
+                title: function (d) {
+                    return 'Build ' + d;
+                },
+                value: function (name, id, index,value) {
+                    return name;
+                }
+            }
         }
     });
 }
