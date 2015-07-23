@@ -430,4 +430,26 @@ public class MethodResult extends BaseResult {
     public boolean hasChildren() {
         return false;
     }
+    
+    /**
+     * Gets the age of a result
+     *
+     * @return the number of consecutive builds for which we have failed result for
+     *         this package
+     */
+    public long getFailureAge() {
+    	long failAge;
+    	if (!this.status.equalsIgnoreCase("fail")) {
+    		failAge = 0;
+    	} else {
+    		MethodResult result = (MethodResult) getPreviousResult();
+            if (result == null) {
+                failAge = 1;
+            } else {
+                failAge =  1 + result.getFailureAge();
+            }
+    	}
+    	return failAge;
+    }
+    
 }

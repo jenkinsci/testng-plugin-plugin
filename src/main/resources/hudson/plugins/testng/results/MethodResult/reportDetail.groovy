@@ -23,6 +23,11 @@ div(id: "report") {
         h1("${my.status}")
     }
 
+    def failString = "FAIL"
+    if (my.status == failString) {
+        text("Consecutive Failures: ${my.failureAge}")
+    }
+
     div(id: "description") {
         //descriptions by default are escaped in testng result XML
         //if we are not dealing with HTML content, just replace \n by <br/> to make contents more readable
