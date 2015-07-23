@@ -17,10 +17,9 @@ function resultsGraph(id, data) {
                 'pass': '#729FCF',
                 'skip': '#FCE94F'
             },
-            order: null,   // stack order by data definition.
             onclick: function (d, element) {
                 var url = window.location.href;
-                window.open(url.substring(0, url.length - 14) + d.x,"_self");
+                window.open(url.substring(0, url.length - 14) + data.buildNum[d.x],"_self");
             }
         },
         axis: { x: { type: 'category', categories: data.buildNum.reverse()}},
