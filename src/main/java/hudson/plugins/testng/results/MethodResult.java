@@ -322,18 +322,18 @@ public class MethodResult extends BaseResult {
     public Object getCssClass() {
         if (this.status != null) {
             if (this.status.equalsIgnoreCase("pass")) {
-                return "result-passed";
+                return "mr-result-passed";
             } else {
                 if (this.status.equalsIgnoreCase("skip")) {
-                    return "result-skipped";
+                    return "mr-result-skipped";
                 } else {
                     if (this.status.equalsIgnoreCase("fail")) {
-                        return "result-failed";
+                        return "mr-result-failed";
                     }
                 }
             }
         }
-        return "result-passed";
+        return "mr-result-passed";
     }
 
     /**

@@ -1,0 +1,11 @@
+.mr-result-passed {
+    color: #2196F3;
+}
+
+.mr-result-skipped {
+    color: #FFC107;
+}
+
+.mr-result-failed {
+    color: #FF5252;
+}
