@@ -17,7 +17,7 @@ public class ResultColumn extends ListViewColumn {
       String resultString = "No tests run";
       if(tests != null && tests.getTotalCount() > 0) {
          resultString = tests.getFailCount() + "";
-         if(!tests.getFailureDiffString().contains("±0")) {
+         if(!tests.getFailureDiffString().equals("")) {
             resultString = resultString + "(" + tests.getFailureDiffString().replace(" / ", "") + ") ";
          }
          resultString = resultString + " failed/" + tests.getTotalCount() + " total";
