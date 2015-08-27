@@ -106,6 +106,7 @@ public class Publisher extends Recorder {
 
       if (paths.length == 0) {
          logger.println("Did not find any matching files.");
+         build.setResult(Result.FAILURE);
          //build can still continue
          return true;
       }
