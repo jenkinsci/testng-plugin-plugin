@@ -67,7 +67,9 @@ public class PackageResultTest extends HudsonTestCase {
 
         //Get page
         String urlPrefix = build.getUrl() + PluginImpl.URL;
-        HtmlPage page = createWebClient().goTo(urlPrefix + "/precheckins");
+        WebClient webClient = createWebClient();
+        webClient.setThrowExceptionOnScriptError(false);
+        HtmlPage page = webClient.goTo(urlPrefix + "/precheckins");
 
         List<HtmlElement> elements = page.selectNodes("//table[@id='allClasses']/tbody/tr/td/a");
 
@@ -171,7 +173,9 @@ public class PackageResultTest extends HudsonTestCase {
 
         //Get page
         String urlPrefix = build.getUrl() + PluginImpl.URL;
-        HtmlPage page = createWebClient().goTo(urlPrefix + "/my.package");
+        WebClient webClient = createWebClient();
+        webClient.setThrowExceptionOnScriptError(false);
+        HtmlPage page = webClient.goTo(urlPrefix + "/my.package");
 
         //verify only first 25 methods are shown
         HtmlElement divShowAllLink = page.getElementById("showAllLink");

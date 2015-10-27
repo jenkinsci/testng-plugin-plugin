@@ -2,19 +2,14 @@ package hudson.plugins.testng;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.IOException;
 import java.io.PrintStream;
 
 import hudson.FilePath;
 import hudson.Launcher;
 import hudson.model.*;
-import hudson.tasks.test.AbstractTestResultAction;
-import hudson.tasks.test.TestResult;
 import junit.framework.Assert;
 import org.junit.Test;
 import org.jvnet.hudson.test.HudsonTestCase;
-import hudson.plugins.testng.PublisherCtor;
-import org.jvnet.hudson.test.TestBuilder;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -96,7 +91,9 @@ public class PublisherTest extends HudsonTestCase {
         Publisher before = new Publisher("", false, false, true, false, false, 0, 0, 0, 0, 1);
         p.getPublishersList().add(before);
 
-        submit(createWebClient().getPage(p, "configure").getFormByName("config"));
+        WebClient webClient = createWebClient();
+        webClient.setThrowExceptionOnScriptError(false);
+        submit(webClient.getPage(p, "configure").getFormByName("config"));
 
         Publisher after = p.getPublishersList().get(Publisher.class);
 

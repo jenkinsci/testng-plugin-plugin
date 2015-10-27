@@ -58,7 +58,9 @@ public class TestNGTestResultBuildActionTest extends HudsonTestCase {
         TestNGResult testngResult = (TestNGResult) build.getAction(AbstractTestResultAction.class).getResult();
 
         //Get page
-        HtmlPage page = createWebClient().goTo(build.getUrl() + PluginImpl.URL);
+        WebClient webClient = createWebClient();
+        webClient.setThrowExceptionOnScriptError(false);
+        HtmlPage page = webClient.goTo(build.getUrl() + PluginImpl.URL);
 
         //make sure no cell is empty
         List<HtmlElement> elements = page.selectNodes("//table[substring(@id, string-length(@id)- string-length('-tbl') +1)]/*/tr/td");
@@ -154,7 +156,9 @@ public class TestNGTestResultBuildActionTest extends HudsonTestCase {
         TestNGResult testngResult = (TestNGResult) build.getAction(AbstractTestResultAction.class).getResult();
 
         //Get page
-        HtmlPage page = createWebClient().goTo(build.getUrl() + PluginImpl.URL);
+        WebClient webClient = createWebClient();
+        webClient.setThrowExceptionOnScriptError(false);
+        HtmlPage page = webClient.goTo(build.getUrl() + PluginImpl.URL);
 
         //make sure no cell is empty
         List<HtmlElement> elements = page.selectNodes("//table[substring(@id, string-length(@id)- string-length('-tbl') +1)]/*/tr/td");

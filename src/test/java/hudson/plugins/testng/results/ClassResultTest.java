@@ -73,7 +73,9 @@ public class ClassResultTest extends HudsonTestCase {
 
         //Get page
         String urlPrefix = build.getUrl() + PluginImpl.URL;
-        HtmlPage page = createWebClient().goTo(urlPrefix + "/precheckins/LegacyOps/");
+        WebClient webClient = createWebClient();
+        webClient.setThrowExceptionOnScriptError(false);
+        HtmlPage page = webClient.goTo(urlPrefix + "/precheckins/LegacyOps/");
 
         List<HtmlElement> elements = page.selectNodes("//div[starts-with(@id, 'run-')]/span[@id='run-info']");
 
@@ -175,7 +177,9 @@ public class ClassResultTest extends HudsonTestCase {
 
         //Get page
         String urlPrefix = build.getUrl() + PluginImpl.URL;
-        HtmlPage page = createWebClient().goTo(urlPrefix + "/test/CommandLineTest");
+        WebClient webClient = createWebClient();
+        webClient.setThrowExceptionOnScriptError(false);
+        HtmlPage page = webClient.goTo(urlPrefix + "/test/CommandLineTest");
 
         List<HtmlElement> elements = page.selectNodes("//div[starts-with(@id, 'run-')]/table[@id='config']");
         // there are no configuration methods
