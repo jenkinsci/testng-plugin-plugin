@@ -92,7 +92,7 @@ public class PublisherTest extends HudsonTestCase {
     @Test
     public void testRoundTrip() throws Exception {
         FreeStyleProject p = createFreeStyleProject();
-        Publisher before = new Publisher("", false, false, true, false, 0, 0, 0, 0, 1);
+        Publisher before = new Publisher("", false, false, true, false, false, 0, 0, 0, 0, 1);
         p.getPublishersList().add(before);
 
         submit(createWebClient().getPage(p,"configure").getFormByName("config"));

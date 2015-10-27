@@ -16,6 +16,9 @@
       <f:entry title="Mark build as failure on failed configuration?" field="failureOnFailedTestConfig">
          <f:checkbox name="testng.failureOnFailedTestConfig" default="false" />
       </f:entry>
+      <f:entry title="Mark build as failure if no results?" field="failureOnNoResults">
+         <f:checkbox name="testng.failureOnNoResults" default="false" />
+      </f:entry>
       <f:section title="Mark build unstable thresholds">
       <f:entry title="${%Skipped}" field="unstableSkips">
          <f:textbox default="100"/>

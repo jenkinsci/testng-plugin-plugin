@@ -39,6 +39,8 @@ public class Publisher extends Recorder {
    public final boolean escapeExceptionMsg;
    //failed config mark build as failure
    public final boolean failureOnFailedTestConfig;
+   //if there are no results, mark build as failure
+   public final boolean failureOnNoResults;
    //should failed builds be included in graphs or not
    public final boolean showFailedBuilds;
    //number of skips that will trigger "Unstable"
@@ -56,12 +58,13 @@ public class Publisher extends Recorder {
    public static final DescriptorImpl DESCRIPTOR = new DescriptorImpl();
 
    @DataBoundConstructor
-   public Publisher(String reportFilenamePattern, boolean escapeTestDescp, boolean escapeExceptionMsg, boolean showFailedBuilds, boolean failureOnFailedTestConfig, int unstableSkips, int unstableFails, int failedSkips, int failedFails, int thresholdMode) {
+   public Publisher(String reportFilenamePattern, boolean escapeTestDescp, boolean escapeExceptionMsg, boolean showFailedBuilds, boolean failureOnFailedTestConfig, boolean failureOnNoResults, int unstableSkips, int unstableFails, int failedSkips, int failedFails, int thresholdMode) {
       this.reportFilenamePattern = reportFilenamePattern;
       this.escapeTestDescp = escapeTestDescp;
       this.escapeExceptionMsg = escapeExceptionMsg;
       this.showFailedBuilds = showFailedBuilds;
       this.failureOnFailedTestConfig = failureOnFailedTestConfig;
+      this.failureOnNoResults = failureOnNoResults;
       this.unstableSkips = unstableSkips;
       this.unstableFails = unstableFails;
       this.failedSkips = failedSkips;
@@ -116,7 +119,9 @@ public class Publisher extends Recorder {
 
       if (paths.length == 0) {
          logger.println("Did not find any matching files.");
-         build.setResult(Result.FAILURE);
+         if(failureOnNoResults) {
+            build.setResult(Result.FAILURE);
+         }
          //build can still continue
          return true;
       }

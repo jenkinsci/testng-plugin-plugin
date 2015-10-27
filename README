@@ -18,6 +18,7 @@ Release Notes
 ### 1.11
 * Added thresholds for marking builds as a failure or unstable
 * Changed history charts to JavaScript
+* Added ability fail job if no tests are found
 
 ### 1.10
 * Upped compatible Jenkins version to v1.554.3
