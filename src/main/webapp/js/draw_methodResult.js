@@ -1,7 +1,4 @@
 function resultsGraph(id, data) {
-
-    console.log(data);
-
     data.buildNum.reverse();
     data.status.reverse();
     var transformedData = [
