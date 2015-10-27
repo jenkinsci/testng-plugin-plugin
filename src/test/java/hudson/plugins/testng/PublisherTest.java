@@ -2,18 +2,19 @@ package hudson.plugins.testng;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
 import java.io.PrintStream;
 
 import hudson.FilePath;
 import hudson.Launcher;
-import hudson.model.AbstractBuild;
-import hudson.model.BuildListener;
-import hudson.model.FreeStyleProject;
-import hudson.model.Result;
+import hudson.model.*;
+import hudson.tasks.test.AbstractTestResultAction;
+import hudson.tasks.test.TestResult;
 import junit.framework.Assert;
 import org.junit.Test;
 import org.jvnet.hudson.test.HudsonTestCase;
 import hudson.plugins.testng.PublisherCtor;
+import org.jvnet.hudson.test.TestBuilder;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -95,11 +96,43 @@ public class PublisherTest extends HudsonTestCase {
         Publisher before = new Publisher("", false, false, true, false, false, 0, 0, 0, 0, 1);
         p.getPublishersList().add(before);
 
-        submit(createWebClient().getPage(p,"configure").getFormByName("config"));
+        submit(createWebClient().getPage(p, "configure").getFormByName("config"));
 
         Publisher after = p.getPublishersList().get(Publisher.class);
 
         assertEqualBeans(before, after, "reportFilenamePattern,escapeTestDescp,escapeExceptionMsg,showFailedBuilds");
+    }
+
+    @Test
+    public void testNoResults() throws Exception {
+        FreeStyleProject p = createFreeStyleProject();
+        PublisherCtor publisherCtor = new PublisherCtor().setReportFilenamePattern("some.xml")
+              .setFailureOnNoResults(true);
+        Publisher publisher = publisherCtor.getNewPublisher();
+        p.getPublishersList().add(publisher);
+
+        //run build
+        FreeStyleBuild build = p.scheduleBuild2(0).get();
+
+        //assert result is FAILURE
+        Assert.assertTrue(build.getLog(50).toString().contains("Did not find any matching files"));
+        Assert.assertTrue(build.getResult().equals(Result.FAILURE));
+    }
+
+    @Test
+    public void testNoResultsOff() throws Exception {
+        FreeStyleProject p = createFreeStyleProject();
+        PublisherCtor publisherCtor = new PublisherCtor().setReportFilenamePattern("some.xml")
+              .setFailureOnNoResults(false);
+        Publisher publisher = publisherCtor.getNewPublisher();
+        p.getPublishersList().add(publisher);
+
+        //run build
+        FreeStyleBuild build = p.scheduleBuild2(0).get();
+
+        //assert result is not FAILURE
+        Assert.assertTrue(build.getLog(50).toString().contains("Did not find any matching files"));
+        Assert.assertFalse(build.getResult().equals(Result.FAILURE));
     }
 
 }

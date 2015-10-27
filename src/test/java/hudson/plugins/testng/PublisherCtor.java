@@ -49,6 +49,11 @@ public class PublisherCtor {
        return this;
     }
 
+    public PublisherCtor setFailureOnNoResults(boolean failureOnNoResults) {
+       this.failureOnNoResults = failureOnNoResults;
+       return this;
+    }
+
    public PublisherCtor setUnstableSkips(int unstableSkips) {
         this.unstableSkips = unstableSkips;
         return this;
