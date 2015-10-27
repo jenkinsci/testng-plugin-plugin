@@ -180,10 +180,10 @@ def printMethods(type, tableName, methodList, showMoreArrows) {
                     td(align: "left") {
                         if (showMoreArrows) {
                             a(id: "${method.id}-showlink", href:"javascript:showStackTrace('${method.id}', '${method.upUrl}/summary')") {
-                                text(">>>")
+                                text("▼")
                             }
                             a(style: "display:none", id: "${method.id}-hidelink", href:"javascript:hideStackTrace('${method.id}')") {
-                                text("<<<")
+                                text("▲")
                             }
                             text(" ")
                         }
