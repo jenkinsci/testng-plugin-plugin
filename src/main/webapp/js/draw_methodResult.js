@@ -1,9 +1,21 @@
 function resultsGraph(id, data) {
+
+    console.log(data);
+
     data.buildNum.reverse();
     data.status.reverse();
     var transformedData = [
         ['duration'].concat(data.duration.reverse())
         ];
+
+    var currentBuildIndex = 0;
+    for(var i=0; i<data.buildNum.length; i++){
+        if(data.buildNum[i] == data.currentBuild){
+            currentBuildIndex = i - 0.5;
+            console.log("setting current build index to " + i);
+            break;
+        }
+    }
 
     var chart = c3.generate({
         bindto: '#' + id,
@@ -70,6 +82,9 @@ function resultsGraph(id, data) {
                 text += "</tr>";
                 return text + "</table>";
             }
-        }
+        },
+        regions: [
+          {axis: 'x', start: currentBuildIndex, end: currentBuildIndex+1, class: 'chartHighlight'}
+        ]
     });
 }
