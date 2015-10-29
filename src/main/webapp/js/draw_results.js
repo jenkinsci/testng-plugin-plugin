@@ -40,13 +40,6 @@ function resultsGraph(id, data) {
     }
 
     data.buildNum.reverse();
-
-
-
-    //TODO remove after testing
-    data.buildNum = [1000,1001,1002,1003,1004,1005,1006,1007,1008,1009,1010,1011,1012,1013,1014,1015,1016,1017,1018,"",1020,"",1022,"",1024];
-
-
     data.buildStatus.reverse();
     data.duration.reverse();
 
