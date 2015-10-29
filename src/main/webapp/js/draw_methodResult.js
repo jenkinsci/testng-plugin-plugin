@@ -5,6 +5,15 @@ function resultsGraph(id, data) {
         ['duration'].concat(data.duration.reverse())
         ];
 
+    var urlPieces = window.location.pathname.split("/");
+    for(var i=0; i<urlPieces.length; i++) {
+        if(urlPieces[i] == "testngreports"){
+            data.currentBuild = urlPieces[i-1];
+        }
+    }
+
+    http://localhost:8080/jenkins/job/test_job_freestyle_project/79/testngreports/com.inin.hackathon.tests1/Tests1/random2/
+
     var currentBuildIndex = 0;
     for(var i=0; i<data.buildNum.length; i++){
         if(data.buildNum[i] == data.currentBuild){

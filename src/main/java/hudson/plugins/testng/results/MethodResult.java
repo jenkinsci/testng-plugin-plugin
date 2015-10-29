@@ -260,7 +260,6 @@ public class MethodResult extends BaseResult {
                 buildNum.add(Integer.toString(build.getNumber()));
             }
         }
-        jsonObject.put("currentBuild",getOwner().getNumber());
         jsonObject.put("status", status);
         jsonObject.put("duration", time);
         jsonObject.put("buildNum", buildNum);
