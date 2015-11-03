@@ -34,9 +34,15 @@ div(id: "report") {
     def failString = "FAIL"
 
     if (my.s3LogUrl != "") {
-        a(href: "${my.s3LogUrl}", id: "S3Logs") {
-            text("S3 link to logs for test method")
+        text("S3 link to logs for test method [")
+        a(href: "${my.s3LogUrl}&type=info", id: "S3InfoLogs") {
+            text("INFO")
         }
+        text(" | ")
+        a(href: "${my.s3LogUrl}&type=debug", id: "S3DebugLogs") {
+            text("DEBUG")
+        }
+        text("]")
     } else {
         text("Jenkins job name does not match naming convention, so we cannot determine the environment.")
     }

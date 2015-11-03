@@ -361,7 +361,10 @@ public class MethodResult extends BaseResult {
     public boolean hasChildren() {
         return false;
     }
-    
+    /**
+     * ININ-SPECIFIC - Provides base link for retrieving test logs from S3
+     * @return
+     */
     public String getS3LogUrl() {
     	String url;
         String environment = "";
@@ -396,11 +399,6 @@ public class MethodResult extends BaseResult {
         
         return url;
     	
-    }
-    
-    public String getFilePath() {
-    	FilePath testngDir = Publisher.getTestNGReport(getOwner());
-    	return testngDir.toString();
     }
     
     /**
