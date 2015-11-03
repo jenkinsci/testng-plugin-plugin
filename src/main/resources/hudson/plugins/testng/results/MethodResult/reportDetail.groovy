@@ -32,6 +32,16 @@ div(id: "report") {
     }
 
     def failString = "FAIL"
+
+    if (my.s3LogUrl != "") {
+        a(href: "${my.s3LogUrl}", id: "S3Logs") {
+            text("S3 link to logs for test method")
+        }
+    } else {
+        text("Jenkins job name does not match naming convention, so we cannot determine the environment.")
+    }
+
+    raw("<br/><br/>")
     if (my.status == failString) {
         text("Consecutive Failures: ${my.failureAge}")
     }

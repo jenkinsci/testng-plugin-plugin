@@ -2,12 +2,13 @@ package hudson.plugins.testng.results;
 
 import java.util.*;
 
+import hudson.FilePath;
 import hudson.model.AbstractBuild;
+import hudson.plugins.testng.Publisher;
 import hudson.plugins.testng.TestNGTestResultBuildAction;
 import hudson.tasks.test.TestResult;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
-import net.sf.json.JSONString;
 import org.kohsuke.stapler.export.Exported;
 
 /**
@@ -359,6 +360,47 @@ public class MethodResult extends BaseResult {
     @Override
     public boolean hasChildren() {
         return false;
+    }
+    
+    public String getS3LogUrl() {
+    	String url;
+        String environment = "";
+        String jobName = getOwner().getProject().getDisplayName();
+        if(jobName.toLowerCase().contains("-dca")) {
+            environment = "dca";
+        } else if(jobName.toLowerCase().contains("-tca")) {
+            environment = "tca";
+        } else if(jobName.toLowerCase().contains("-sca")) {
+            environment = "sca";
+        } else if(jobName.toLowerCase().contains("-prod_anz")) {
+            environment = "prod_anz";
+        } else if(jobName.toLowerCase().contains("-prod_ie")) {
+            environment = "prod_anz";
+        } else if(jobName.toLowerCase().contains("-prod")) {
+            environment = "prod";
+        } else if(jobName.toLowerCase().contains("-dev")) {
+            environment = "dca";
+        } else if(jobName.toLowerCase().contains("-stage")) {
+            environment = "sca";
+        } else if(jobName.toLowerCase().matches("/-test[^s]/")) {
+            environment = "tca";
+        }
+        
+        if (environment == "") {
+        	url = environment;
+        } else {
+        	String buildNum = Integer.toString(getOwner().getNumber());
+            String methodName = getName();
+            url = "http://10.10.1.146:5000/api/RedirectToS3?env=" + environment + "&build=" + buildNum + "&method=" + methodName + "&project=" + jobName;
+        }
+        
+        return url;
+    	
+    }
+    
+    public String getFilePath() {
+    	FilePath testngDir = Publisher.getTestNGReport(getOwner());
+    	return testngDir.toString();
     }
     
     /**
