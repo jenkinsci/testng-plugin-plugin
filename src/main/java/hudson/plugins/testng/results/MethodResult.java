@@ -386,7 +386,7 @@ public class MethodResult extends BaseResult {
             environment = "dca";
         } else if(jobName.toLowerCase().contains("-stage")) {
             environment = "sca";
-        } else if(Pattern.compile("(\\b|-|_)test(\\b|-|_)").matcher(jobName.toLowerCase()).find()) {
+        } else if(Pattern.compile("(-|_)test(\\b|-|_)").matcher(jobName.toLowerCase()).find()) {
             environment = "tca";
         }
         
