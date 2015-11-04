@@ -1,6 +1,7 @@
 package hudson.plugins.testng.results;
 
 import java.util.*;
+import java.util.regex.Pattern;
 
 import hudson.model.AbstractBuild;
 import hudson.plugins.testng.TestNGTestResultBuildAction;
@@ -8,6 +9,8 @@ import hudson.tasks.test.TestResult;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import org.kohsuke.stapler.export.Exported;
+
+import com.google.inject.matcher.Matcher;
 
 /**
  * Handles result pertaining to a single test method
@@ -373,17 +376,17 @@ public class MethodResult extends BaseResult {
             environment = "tca";
         } else if(jobName.toLowerCase().contains("-sca")) {
             environment = "sca";
-        } else if(jobName.toLowerCase().contains("-prod_anz")) {
+        } else if(jobName.toLowerCase().contains("-prod_anz") || jobName.toLowerCase().contains("-prod_apse2")) {
             environment = "prod_anz";
-        } else if(jobName.toLowerCase().contains("-prod_ie")) {
-            environment = "prod_anz";
+        } else if(jobName.toLowerCase().contains("-prod_ie") || jobName.toLowerCase().contains("-prod_euw1")) {
+            environment = "prod_ie";
         } else if(jobName.toLowerCase().contains("-prod")) {
             environment = "prod";
         } else if(jobName.toLowerCase().contains("-dev")) {
             environment = "dca";
         } else if(jobName.toLowerCase().contains("-stage")) {
             environment = "sca";
-        } else if(jobName.toLowerCase().matches("/-test[^s]/")) {
+        } else if(Pattern.compile("(\\b|-|_)test(\\b|-|_)").matcher(jobName.toLowerCase()).find()) {
             environment = "tca";
         }
         

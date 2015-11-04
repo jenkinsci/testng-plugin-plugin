@@ -34,7 +34,13 @@ div(id: "report") {
     def failString = "FAIL"
 
     if (my.s3LogUrl != "") {
-        text("S3 link to logs for test method [")
+        raw("<pre>  ______          __     __ </pre>")               
+        raw("<pre> /_  __/__  _____/ /_   / /   ____  ____ ______</pre>")
+        raw("<pre>  / / / _ \\/ ___/ __/  / /   / __ \\/ __ `/ ___/</pre>")
+        raw("<pre> / / /  __(__  ) /_   / /___/ /_/ / /_/ (__  ) </pre>")
+        raw("<pre>/_/  \\___/____/\\__/  /_____/\\____/\\__, /____/  </pre>")
+        raw("<pre>                                 /____/       </pre><br>")
+        raw("S3 link to logs for test method [")
         a(href: "${my.s3LogUrl}&type=info", id: "S3InfoLogs") {
             text("INFO")
         }
