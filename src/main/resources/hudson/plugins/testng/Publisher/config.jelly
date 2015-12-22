@@ -19,5 +19,8 @@
       <f:entry title="Mark build as failure on failed configuration?" field="failureOnFailedTestConfig">
          <f:checkbox name="testng.failureOnFailedTestConfig" default="false" />
       </f:entry>
+      <f:entry title="Ignore test failure if test passes once?" field="ignoreTestFailureIfTestPassesOnce">
+         <f:checkbox name="testng.ignoreTestFailureIfTestPassesOnce" default="false" />
+      </f:entry>
    </f:advanced>
 </j:jelly>
