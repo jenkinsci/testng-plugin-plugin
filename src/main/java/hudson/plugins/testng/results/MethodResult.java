@@ -394,6 +394,30 @@ public class MethodResult extends BaseResult {
             environment = "prod_apne1";
         } else if(jobName.toLowerCase().contains("-prod-apne1")) {
             environment = "prod-apne1";
+        } else if(jobName.toLowerCase().contains("-prod_usw1")) {
+            environment = "prod_usw1";
+        } else if(jobName.toLowerCase().contains("-prod-usw1")) {
+            environment = "prod-usw1";
+        } else if(jobName.toLowerCase().contains("-prod_usw2")) {
+            environment = "prod_usw2";
+        } else if(jobName.toLowerCase().contains("-prod-usw2")) {
+            environment = "prod-usw2";
+        } else if(jobName.toLowerCase().contains("-prod_euc1")) {
+            environment = "prod_euc1";
+        } else if(jobName.toLowerCase().contains("-prod-euc1")) {
+            environment = "prod-euc1";
+        } else if(jobName.toLowerCase().contains("-prod_apse1")) {
+            environment = "prod_apse1";
+        } else if(jobName.toLowerCase().contains("-prod-apse1")) {
+            environment = "prod-apse1";
+        } else if(jobName.toLowerCase().contains("-prod_apne2")) {
+            environment = "prod_apne2";
+        } else if(jobName.toLowerCase().contains("-prod-apne2")) {
+            environment = "prod-apne2";
+        } else if(jobName.toLowerCase().contains("-prod_sae1")) {
+            environment = "prod_sae1";
+        } else if(jobName.toLowerCase().contains("-prod-sae1")) {
+            environment = "prod-sae1";
         } else if(jobName.toLowerCase().contains("-prod")) {
             environment = "prod";
         } else if(jobName.toLowerCase().contains("-dev")) {
