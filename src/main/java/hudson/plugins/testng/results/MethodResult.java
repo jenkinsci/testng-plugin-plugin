@@ -376,18 +376,32 @@ public class MethodResult extends BaseResult {
             environment = "tca";
         } else if(jobName.toLowerCase().contains("-sca")) {
             environment = "sca";
-        } else if(jobName.toLowerCase().contains("-prod_anz") || jobName.toLowerCase().contains("-prod_apse2")) {
+        } else if(jobName.toLowerCase().contains("-prod_anz")) {
             environment = "prod_anz";
-        } else if(jobName.toLowerCase().contains("-prod_ie") || jobName.toLowerCase().contains("-prod_euw1")) {
+        } else if(jobName.toLowerCase().contains("-prod_apse2")) {
+            environment = "prod_apse2";
+        }  else if(jobName.toLowerCase().contains("-prod-apse2")) {
+            environment = "prod-apse2";
+        } else if(jobName.toLowerCase().contains("-prod_ie")) {
             environment = "prod_ie";
+        } else if(jobName.toLowerCase().contains("-prod_euw1")) {
+            environment = "prod_euw1";
+        } else if(jobName.toLowerCase().contains("-prod-euw1")) {
+            environment = "prod-euw1";
+        } else if(jobName.toLowerCase().contains("-prod_tyo")) {
+            environment = "prod_tyo";
+        } else if(jobName.toLowerCase().contains("-prod_apne1")) {
+            environment = "prod_apne1";
+        } else if(jobName.toLowerCase().contains("-prod-apne1")) {
+            environment = "prod-apne1";
         } else if(jobName.toLowerCase().contains("-prod")) {
             environment = "prod";
         } else if(jobName.toLowerCase().contains("-dev")) {
-            environment = "dca";
+            environment = "dev";
         } else if(jobName.toLowerCase().contains("-stage")) {
-            environment = "sca";
+            environment = "stage";
         } else if(Pattern.compile("(-|_)test(\\b|-|_)").matcher(jobName.toLowerCase()).find()) {
-            environment = "tca";
+            environment = "test";
         }
         
         if (environment == "") {

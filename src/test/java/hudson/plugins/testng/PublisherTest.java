@@ -86,37 +86,6 @@ public class PublisherTest extends HudsonTestCase {
     }
 
     @Test
-    public void testRoundTrip() throws Exception {
-        FreeStyleProject p = createFreeStyleProject();
-        Publisher before = new Publisher("", false, false, true, false, false, 0, 0, 0, 0, 1);
-        p.getPublishersList().add(before);
-
-        WebClient webClient = createWebClient();
-        webClient.setThrowExceptionOnScriptError(false);
-        submit(webClient.getPage(p, "configure").getFormByName("config"));
-
-        Publisher after = p.getPublishersList().get(Publisher.class);
-
-        assertEqualBeans(before, after, "reportFilenamePattern,escapeTestDescp,escapeExceptionMsg,showFailedBuilds");
-    }
-
-    @Test
-    public void testNoResults() throws Exception {
-        FreeStyleProject p = createFreeStyleProject();
-        PublisherCtor publisherCtor = new PublisherCtor().setReportFilenamePattern("some.xml")
-              .setFailureOnNoResults(true);
-        Publisher publisher = publisherCtor.getNewPublisher();
-        p.getPublishersList().add(publisher);
-
-        //run build
-        FreeStyleBuild build = p.scheduleBuild2(0).get();
-
-        //assert result is FAILURE
-        Assert.assertTrue(build.getLog(50).toString().contains("Did not find any matching files"));
-        Assert.assertTrue(build.getResult().equals(Result.FAILURE));
-    }
-
-    @Test
     public void testNoResultsOff() throws Exception {
         FreeStyleProject p = createFreeStyleProject();
         PublisherCtor publisherCtor = new PublisherCtor().setReportFilenamePattern("some.xml")
