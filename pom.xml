@@ -53,8 +53,8 @@
             <plugin>
                 <groupId>org.jenkins-ci.tools</groupId>
                 <artifactId>maven-hpi-plugin</artifactId>
-                <version>1.98</version>
                 <configuration>
+                    <!--<compatibleSinceVersion>1.11</compatibleSinceVersion>-->
                     <loggers>
                         <hudson.plugins.testng>FINER</hudson.plugins.testng>
                     </loggers>

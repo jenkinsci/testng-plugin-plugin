@@ -6,18 +6,43 @@
    <f:advanced>
       <f:entry title="Escape Test description string?" field="escapeTestDescp">
          <f:checkbox name="testng.escapeTestDescp" default="true" />
-	  </f:entry>
-	  <f:entry title="Escape exception messages?" field="escapeExceptionMsg">
+	   </f:entry>
+	   <f:entry title="Escape exception messages?" field="escapeExceptionMsg">
          <f:checkbox name="testng.escapeExceptionMsg" default="true" />
       </f:entry>
       <f:entry title="Show failed builds in trend graph?" field="showFailedBuilds">
          <f:checkbox name="testng.showFailedBuilds" default="false" />
       </f:entry>
-      <f:entry title="Mark build as unstable on skipped tests?" field="unstableOnSkippedTests">
-         <f:checkbox name="testng.unstableOnSkippedTests" default="false" />
-      </f:entry>
       <f:entry title="Mark build as failure on failed configuration?" field="failureOnFailedTestConfig">
          <f:checkbox name="testng.failureOnFailedTestConfig" default="false" />
       </f:entry>
+      <f:section title="Thresholds to mark build Unstable">
+      <f:entry title="Skipped Tests" field="unstableSkips">
+         <f:textbox default="100"/>
+      </f:entry>
+      <f:entry title="Failed Tests" field="unstableFails">
+         <f:textbox default="0"/>
+      </f:entry>
+      </f:section>
+
+      <f:section title="Threshold to mark build Failed">
+      <f:entry title="Skipped Tests" field="failedSkips">
+         <f:textbox default="100"/>
+      </f:entry>
+      <f:entry title="Failed Tests" field="failedFails">
+         <f:textbox default="100"/>
+      </f:entry>
+      </f:section>
+
+      <f:entry field="thresholdMode" title="${%Choose your threshold mode:}">
+			<f:radio name="thresholdMode"
+				value="1"
+				checked="${instance.thresholdMode==1}"/>
+			<label class="attach-previous">Number of tests</label>
+			<br/>
+			<f:radio name="thresholdMode" value="2" checked="${instance.thresholdMode==2 or h.defaultToTrue(instance.thresholdMode)}"/>
+			<label class="attach-previous">Percentage of tests</label>
+	  </f:entry>
+
    </f:advanced>
 </j:jelly>
