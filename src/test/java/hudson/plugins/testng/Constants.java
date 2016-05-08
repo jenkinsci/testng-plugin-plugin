@@ -52,6 +52,11 @@ public class Constants {
      * Contains 1 passed and 1 skipped test
      */
     public static final String TESTNG_SKIPPED_TEST = "testng-skipped-tests.xml";
+    
+    /**
+     * Contains 1 passed and 1 failed test
+     */
+    public static final String TESTNG_FAILED_TEST = "testng-failed-tests.xml";
     /**
      * Contains 1 failed config and 1 skipped test
      */
