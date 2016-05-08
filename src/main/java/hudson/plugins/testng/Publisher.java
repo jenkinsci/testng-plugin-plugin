@@ -41,22 +41,27 @@ public class Publisher extends Recorder {
    public final boolean failureOnFailedTestConfig;
    //should failed builds be included in graphs or not
    public final boolean showFailedBuilds;
+   //v1.11 - marked transient and here just for backward compatibility
+   @Deprecated
+   public transient boolean unstableOnSkippedTests;
    //number of skips that will trigger "Unstable"
-   public final int unstableSkips;
+   public Integer unstableSkips;
    //number of fails that will trigger "Unstable"
-   public final int unstableFails;
+   public Integer unstableFails;
    //number of skips that will trigger "Failed"
-   public final int failedSkips;
+   public Integer failedSkips;
    //number of fails that will trigger "Failed"
-   public final int failedFails;
-   public final int thresholdMode;
+   public Integer failedFails;
+   public Integer thresholdMode;
 
 
    @Extension
    public static final DescriptorImpl DESCRIPTOR = new DescriptorImpl();
 
    @DataBoundConstructor
-   public Publisher(String reportFilenamePattern, boolean escapeTestDescp, boolean escapeExceptionMsg, boolean showFailedBuilds, boolean failureOnFailedTestConfig, int unstableSkips, int unstableFails, int failedSkips, int failedFails, int thresholdMode) {
+   public Publisher(String reportFilenamePattern, boolean escapeTestDescp, boolean escapeExceptionMsg,
+                    boolean showFailedBuilds, boolean failureOnFailedTestConfig,
+                    int unstableSkips, int unstableFails, int failedSkips, int failedFails, int thresholdMode) {
       this.reportFilenamePattern = reportFilenamePattern;
       this.escapeTestDescp = escapeTestDescp;
       this.escapeExceptionMsg = escapeExceptionMsg;
@@ -151,32 +156,40 @@ public class Publisher extends Recorder {
          } else {
         	 if (thresholdMode == 1) { //number of tests
         		 if (results.getFailCount() > failedFails)  {
-        			 logger.println(String.format("%d tests failed, which exceeded threshold of %d. Marking build as FAILURE", results.getFailCount(), failedFails)); 
+        			 logger.println(String.format("%d tests failed, which exceeded threshold of %d. Marking build as FAILURE",
+                             results.getFailCount(), failedFails));
         			 build.setResult(Result.FAILURE);
         		 } else if (results.getSkipCount() > failedSkips) {
-        			 logger.println(String.format("%d tests were skipped, which exceeded threshold of %d. Marking build as FAILURE", results.getSkipCount(), failedSkips)); 
+        			 logger.println(String.format("%d tests were skipped, which exceeded threshold of %d. Marking build as FAILURE",
+                             results.getSkipCount(), failedSkips));
         			 build.setResult(Result.FAILURE);
         		 } else if (results.getFailCount() > unstableFails) {
-        			 logger.println(String.format("%d tests failed, which exceeded threshold of %d. Marking build as UNSTABLE", results.getFailCount(), unstableFails)); 
+        			 logger.println(String.format("%d tests failed, which exceeded threshold of %d. Marking build as UNSTABLE",
+                             results.getFailCount(), unstableFails));
         			 build.setResult(Result.UNSTABLE);
         		 } else if (results.getSkipCount() > unstableSkips) {
-        			 logger.println(String.format("%d tests were skipped, which exceeded threshold of %d. Marking build as UNSTABLE", results.getSkipCount(), unstableSkips)); 
+        			 logger.println(String.format("%d tests were skipped, which exceeded threshold of %d. Marking build as UNSTABLE",
+                             results.getSkipCount(), unstableSkips));
         			 build.setResult(Result.UNSTABLE);
         		 }
         	 } else if (thresholdMode == 2) { //percentage of tests
         		 float failedPercent = 100 * results.getFailCount() / (float) results.getTotalCount();
         		 float skipPercent = 100 * results.getSkipCount() / (float) results.getTotalCount();
         		 if (failedPercent > failedFails) {
-        			 logger.println(String.format("%f%% of tests failed, which exceeded threshold of %d%%. Marking build as FAILURE", failedPercent, failedFails)); 
+        			 logger.println(String.format("%f%% of tests failed, which exceeded threshold of %d%%. Marking build as FAILURE",
+                             failedPercent, failedFails));
         			 build.setResult(Result.FAILURE);
         		 } else if (skipPercent > failedSkips) {
-        			 logger.println(String.format("%f%% of tests were skipped, which exceeded threshold of %d%%. Marking build as FAILURE", skipPercent, failedSkips)); 
+        			 logger.println(String.format("%f%% of tests were skipped, which exceeded threshold of %d%%. Marking build as FAILURE",
+                             skipPercent, failedSkips));
         			 build.setResult(Result.FAILURE);
         		 } else if (failedPercent > unstableFails) {
-        			 logger.println(String.format("%f%% of tests failed, which exceeded threshold of %d%%. Marking build as UNSTABLE", failedPercent, unstableFails)); 
+        			 logger.println(String.format("%f%% of tests failed, which exceeded threshold of %d%%. Marking build as UNSTABLE",
+                             failedPercent, unstableFails));
         			 build.setResult(Result.UNSTABLE);
         		 } else if (skipPercent > unstableSkips) {
-        			 logger.println(String.format("%f%% of tests were skipped, which exceeded threshold of %d%%. Marking build as UNSTABLE", skipPercent, unstableSkips)); 
+        			 logger.println(String.format("%f%% of tests were skipped, which exceeded threshold of %d%%. Marking build as UNSTABLE",
+                             skipPercent, unstableSkips));
         			 build.setResult(Result.UNSTABLE);
         		 }
         	 } else {
@@ -190,6 +203,27 @@ public class Publisher extends Recorder {
       }
       logger.println("TestNG Reports Processing: FINISH");
       return true;
+   }
+
+   /**
+    * Helps resolve XML configs for versions before 1.11 when these new config options were introduced.
+    * See https://wiki.jenkins-ci.org/display/JENKINS/Hint+on+retaining+backward+compatibility
+    * @return resolved object
+     */
+   protected Object readResolve() {
+      if (unstableSkips == null) {
+         unstableSkips = unstableOnSkippedTests ? 0 : 100;
+      }
+      if (failedFails == null) {
+         failedFails = 100;
+      }
+      if (failedSkips == null) {
+         failedSkips = 100;
+      }
+      if (thresholdMode == null) {
+         thresholdMode = 2;
+      }
+      return this;
    }
 
    /**
