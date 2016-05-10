@@ -214,6 +214,9 @@ public class Publisher extends Recorder {
       if (unstableSkips == null) {
          unstableSkips = unstableOnSkippedTests ? 0 : 100;
       }
+      if (unstableFails == null) {
+         unstableFails = 100;
+      }
       if (failedFails == null) {
          failedFails = 100;
       }

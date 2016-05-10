@@ -15,6 +15,10 @@ graph and all details about which tests that failed are also presented.
 
 Release Notes
 -------
+
+### 1.12
+* Fixed: JENKINS-34711 - NullPointerException after Update to 1.11 of plugin
+
 ### 1.11
 * Added: Add ability to configure failed/skipped test thresholds (ChrisEverling) (see JENKINS-20985)
 
