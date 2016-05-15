@@ -8,7 +8,7 @@
     </parent>
 
     <artifactId>testng-plugin</artifactId>
-    <version>1.13-SNAPSHOT</version>
+    <version>1.13</version>
     <packaging>hpi</packaging>
     <name>TestNG Results Plugin</name>
 
@@ -46,7 +46,7 @@
         <connection>scm:git:https://github.com/jenkinsci/testng-plugin-plugin.git</connection>
         <developerConnection>scm:git:ssh://git@github.com/jenkinsci/testng-plugin-plugin.git</developerConnection>
         <url>https://github.com/jenkinsci/testng-plugin-plugin</url>
-        <tag>HEAD</tag>
+        <tag>testng-plugin-1.13</tag>
     </scm>
     <build>
         <plugins>
