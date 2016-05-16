@@ -45,14 +45,14 @@ public class Publisher extends Recorder {
    @Deprecated
    public transient boolean unstableOnSkippedTests;
    //number of skips that will trigger "Unstable"
-   public Integer unstableSkips;
+   private Integer unstableSkips;
    //number of fails that will trigger "Unstable"
-   public Integer unstableFails;
+   private Integer unstableFails;
    //number of skips that will trigger "Failed"
-   public Integer failedSkips;
+   private Integer failedSkips;
    //number of fails that will trigger "Failed"
-   public Integer failedFails;
-   public Integer thresholdMode;
+   private Integer failedFails;
+   private Integer thresholdMode;
 
 
    @Extension
