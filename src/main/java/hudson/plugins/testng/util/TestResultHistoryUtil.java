@@ -95,7 +95,7 @@ public class TestResultHistoryUtil {
       </OL>
    */
    private static String printTestsUrls(AbstractBuild<?,?> owner, List<MethodResult> methodResults) {
-      StringBuffer htmlStr = new StringBuffer();
+       StringBuilder htmlStr = new StringBuilder();
       htmlStr.append("<OL>");
       if (methodResults != null && methodResults.size() > 0) {
          for (MethodResult methodResult : methodResults) {
