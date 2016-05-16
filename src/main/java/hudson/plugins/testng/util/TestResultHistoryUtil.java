@@ -14,6 +14,8 @@ import hudson.plugins.testng.results.TestNGResult;
  * @author nullin
  */
 public class TestResultHistoryUtil {
+    
+    private TestResultHistoryUtil() {}
 
    /**
     * Gets the latest build before this one and returns it's test result.

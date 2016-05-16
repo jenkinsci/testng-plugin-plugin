@@ -13,6 +13,8 @@ public class FormatUtil {
     public static final String MORE_THAN_24HRS = "> 24hrs";
     private static final long HOUR_IN_SEC = 60 * 60;
     private static final long MIN_IN_SEC = 60;
+    
+    private FormatUtil() {}
 
    /**
     * Formats the time into a human readable format
