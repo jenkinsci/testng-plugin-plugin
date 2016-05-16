@@ -45,7 +45,7 @@ public class MethodResultException implements Serializable {
      }
 
      stackTrace = tmpStackTrace.trim();
-     int index = -1;
+     int index;
 
      if (message == null) {
        //no message means first line will only show exception class name

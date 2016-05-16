@@ -251,7 +251,7 @@ public class Publisher extends Recorder {
 
       // If it fails, do a legacy search
       List<FilePath> files = new ArrayList<FilePath>();
-      String parts[] = filenamePattern.split("\\s*[;:,]+\\s*");
+      String[] parts = filenamePattern.split("\\s*[;:,]+\\s*");
       for (String path : parts) {
          FilePath src = workspace.child(path);
          if (src.exists()) {

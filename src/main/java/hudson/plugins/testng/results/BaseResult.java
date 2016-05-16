@@ -91,9 +91,9 @@ public abstract class BaseResult extends TabulatedResult implements ModelObject,
      */
     @Override
     public AbstractTestResultAction getTestResultAction() {
-        AbstractBuild<?, ?> owner = getOwner();
-        if (owner != null) {
-            return owner.getAction(TestNGTestResultBuildAction.class);
+        AbstractBuild<?, ?> own = getOwner();
+        if (own != null) {
+            return own.getAction(TestNGTestResultBuildAction.class);
         }
         return null;
     }
