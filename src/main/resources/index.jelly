@@ -1,3 +1,4 @@
+<?jelly escape-by-default='true'?>
 <div>
    This plugin integrates
    <a href="http://testng.org/doc/documentation-main.html#logging-xml-reports">TestNG test reports</a>
