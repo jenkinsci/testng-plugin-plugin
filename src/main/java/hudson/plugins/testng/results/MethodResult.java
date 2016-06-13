@@ -102,7 +102,7 @@ public class MethodResult extends BaseResult {
     }
 
     /**
-     * @return name of the <test> tag that this method is part of
+     * @return name of the {@code <test>} tag that this method is part of
      */
     public String getParentTestName() {
         return parentTestName;

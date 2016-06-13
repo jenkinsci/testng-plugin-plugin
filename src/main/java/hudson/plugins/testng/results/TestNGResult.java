@@ -134,7 +134,7 @@ public class TestNGResult extends BaseResult implements Serializable {
     }
 
     /**
-     * Adds only the <test>s that already aren't part of the list
+     * Adds only the {@code <test>}s that already aren't part of the list.
      *
      * @param testList
      */
