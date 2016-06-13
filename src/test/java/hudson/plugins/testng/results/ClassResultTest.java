@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.gargoylesoftware.htmlunit.html.DomNodeUtil;
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import hudson.Launcher;
@@ -75,7 +76,7 @@ public class ClassResultTest extends HudsonTestCase {
         String urlPrefix = build.getUrl() + PluginImpl.URL;
         HtmlPage page = createWebClient().goTo(urlPrefix + "/precheckins/LegacyOps/");
 
-        List<HtmlElement> elements = page.selectNodes("//div[starts-with(@id, 'run-')]/span[@id='run-info']");
+        List<HtmlElement> elements = DomNodeUtil.selectNodes(page, "//div[starts-with(@id, 'run-')]/span[@id='run-info']");
 
         assertEquals(testRunMap.values().size(), elements.size());
 
@@ -99,10 +100,10 @@ public class ClassResultTest extends HudsonTestCase {
             values.add(suiteName + "|" +  testName);
         }
 
-        elements = page.selectNodes("//div[starts-with(@id, 'run-')]/table/*/tr");
+        elements = DomNodeUtil.selectNodes(page, "//div[starts-with(@id, 'run-')]/table/*/tr");
         assertEquals(6 * (2 + 7), elements.size()); //total number of rows in all tables
 
-        elements = page.selectNodes("//div[starts-with(@id, 'run-')]/table/*/tr/td");
+        elements = DomNodeUtil.selectNodes(page, "//div[starts-with(@id, 'run-')]/table/*/tr/td");
         int failCount = 0;
         int skipCount = 0;
         for (HtmlElement element : elements) {
@@ -123,7 +124,7 @@ public class ClassResultTest extends HudsonTestCase {
         assertEquals(testRunMap.values().size(), values.size());
 
         //verify all links
-        elements = page.selectNodes("//div[starts-with(@id, 'run-')]/table/*/tr/td/a");
+        elements = DomNodeUtil.selectNodes(page, "//div[starts-with(@id, 'run-')]/table/*/tr/td/a");
         List<String> linksInPage = new ArrayList<String>();
         for (HtmlElement element : elements) {
             linksInPage.add(element.getAttribute("href"));
@@ -177,16 +178,16 @@ public class ClassResultTest extends HudsonTestCase {
         String urlPrefix = build.getUrl() + PluginImpl.URL;
         HtmlPage page = createWebClient().goTo(urlPrefix + "/test/CommandLineTest");
 
-        List<HtmlElement> elements = page.selectNodes("//div[starts-with(@id, 'run-')]/table[@id='config']");
+        List<HtmlElement> elements = DomNodeUtil.selectNodes(page, "//div[starts-with(@id, 'run-')]/table[@id='config']");
         // there are no configuration methods
         assertEquals(0, elements.size());
         assertStringContains(page.getElementById("run-0").getTextContent(), "No Configuration method was found in this class");
 
         //use first test with show more section
-        elements = page.selectNodes("//div[starts-with(@id, 'run-')]/table[@id='test']/tbody/tr/td/div[@id='junitParsing_1']");
+        elements = DomNodeUtil.selectNodes(page, "//div[starts-with(@id, 'run-')]/table[@id='test']/tbody/tr/td/div[@id='junitParsing_1']");
         assertEquals(1, elements.size());
         HtmlElement showMore = elements.get(0);
-        elements = page.selectNodes("//div[starts-with(@id, 'run-')]/table[@id='test']/tbody/tr/td/div[@id='junitParsing_2']");
+        elements = DomNodeUtil.selectNodes(page, "//div[starts-with(@id, 'run-')]/table[@id='test']/tbody/tr/td/div[@id='junitParsing_2']");
         assertEquals(1, elements.size());
         HtmlElement moreSection = elements.get(0);
 

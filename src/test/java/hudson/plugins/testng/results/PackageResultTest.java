@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import com.gargoylesoftware.htmlunit.html.DomNodeUtil;
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import hudson.Launcher;
@@ -69,7 +70,7 @@ public class PackageResultTest extends HudsonTestCase {
         String urlPrefix = build.getUrl() + PluginImpl.URL;
         HtmlPage page = createWebClient().goTo(urlPrefix + "/precheckins");
 
-        List<HtmlElement> elements = page.selectNodes("//table[@id='allClasses']/tbody/tr/td/a");
+        List<HtmlElement> elements = DomNodeUtil.selectNodes(page, "//table[@id='allClasses']/tbody/tr/td/a");
 
         //ensure correct number of classes is displayed
         assertEquals(pkgResult.getChildren().size(), elements.size());
@@ -92,24 +93,24 @@ public class PackageResultTest extends HudsonTestCase {
         assertEquals(linksFromResult, linksInPage);
 
         //verify that all cells have a value (are not empty)
-        elements = page.selectNodes("//table[@id='allClasses']/tbody/tr/td");
+        elements = DomNodeUtil.selectNodes(page, "//table[@id='allClasses']/tbody/tr/td");
         for (HtmlElement element : elements) {
             assertNotSame("", element.getTextContent());
         }
 
         //verify only first 25 methods are shown
-        HtmlElement divShowAllLink = page.getElementById("showAllLink");
+        HtmlElement divShowAllLink = page.getElementById("showAllLink", true);
         assertNotNull(divShowAllLink);
         assertEquals("Showing only first " + pkgResult.MAX_EXEC_MTHD_LIST_SIZE + " test methods. Click to see all",
                      divShowAllLink.getTextContent());
 
-        elements = page.selectNodes("//tbody[@id='sortedMethods']/tr");
+        elements = DomNodeUtil.selectNodes(page, "//tbody[@id='sortedMethods']/tr");
         assertEquals(pkgResult.MAX_EXEC_MTHD_LIST_SIZE, elements.size());
 
         //verify clicking on link gets all methods back
         divShowAllLink.getElementsByTagName("a").get(0).click(); //click to get all test methods
 
-        elements = page.selectNodes("//tbody[@id='sortedMethods']/tr/td/a");
+        elements = DomNodeUtil.selectNodes(page, "//tbody[@id='sortedMethods']/tr/td/a");
         assertEquals(pkgResult.getSortedTestMethodsByStartTime().size(), elements.size());
 
         //verify links for test methods
@@ -133,11 +134,11 @@ public class PackageResultTest extends HudsonTestCase {
         assertStringContains(divShowAllLink.getAttribute("style"), "none");
 
         //verify bar
-        HtmlElement element = page.getElementById("fail-skip");
+        HtmlElement element = page.getElementById("fail-skip", true);
         assertStringContains(element.getTextContent(), "1 failure");
         assertFalse(element.getTextContent().contains("failures"));
         assertStringContains(element.getTextContent(), "1 skipped");
-        element = page.getElementById("pass");
+        element = page.getElementById("pass", true);
         assertStringContains(element.getTextContent(), "38 tests");
     }
 
@@ -174,14 +175,14 @@ public class PackageResultTest extends HudsonTestCase {
         HtmlPage page = createWebClient().goTo(urlPrefix + "/my.package");
 
         //verify only first 25 methods are shown
-        HtmlElement divShowAllLink = page.getElementById("showAllLink");
+        HtmlElement divShowAllLink = page.getElementById("showAllLink", true);
         assertNull(divShowAllLink);
 
         //verify bar
-        HtmlElement element = page.getElementById("fail-skip");
+        HtmlElement element = page.getElementById("fail-skip", true);
         assertStringContains(element.getTextContent(), "0 failures");
         assertFalse(element.getTextContent().contains("skipped"));
-        element = page.getElementById("pass");
+        element = page.getElementById("pass", true);
         assertStringContains(element.getTextContent(), "1 test");
         assertFalse(element.getTextContent().contains("tests"));
     }

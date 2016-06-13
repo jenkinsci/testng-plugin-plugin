@@ -55,7 +55,7 @@ public class MethodResultTest extends HudsonTestCase {
         //Compare output
         String methodUrl = build.getUrl() + PluginImpl.URL + "/gov.nasa.jpl/FoobarTests/b";
         HtmlPage page = createWebClient().goTo(methodUrl);
-        HtmlElement expMsg = page.getElementById("exp-msg");
+        HtmlElement expMsg = page.getElementById("exp-msg", true);
         String contents = expMsg.getTextContent();
         assertStringContains(contents, "</a>"); //escaped HTML so it shows up as string
     }
@@ -84,7 +84,7 @@ public class MethodResultTest extends HudsonTestCase {
         //Compare output
         String methodUrl = build.getUrl() + PluginImpl.URL + "/gov.nasa.jpl/FoobarTests/b";
         HtmlPage page = createWebClient().goTo(methodUrl);
-        HtmlElement expMsg = page.getElementById("exp-msg");
+        HtmlElement expMsg = page.getElementById("exp-msg", true);
         String contents = expMsg.getTextContent();
         assertFalse(contents.contains("</a>")); //non-escaped HTML so it shouldn't show up as text
     }
@@ -113,7 +113,7 @@ public class MethodResultTest extends HudsonTestCase {
         //Compare output
         String methodUrl = build.getUrl() + PluginImpl.URL + "/com.test/UploadTest/uploadFile";
         HtmlPage page = createWebClient().goTo(methodUrl);
-        HtmlElement description = page.getElementById("description");
+        HtmlElement description = page.getElementById("description", true);
         String contents = description.getTextContent();
         assertFalse(contents.contains("</a>")); //non-escaped HTML so it doesn't show up as text
         assertFalse(contents.contains("<a href=\"")); //non-escaped HTML
@@ -143,7 +143,7 @@ public class MethodResultTest extends HudsonTestCase {
         //Compare output
         String methodUrl = build.getUrl() + PluginImpl.URL + "/com.test/UploadTest/uploadFile";
         HtmlPage page = createWebClient().goTo(methodUrl);
-        HtmlElement description = page.getElementById("description");
+        HtmlElement description = page.getElementById("description", true);
         String contents = description.getTextContent();
         assertStringContains(contents, "</a>"); //escaped HTML so it shows up as text
     }
@@ -181,10 +181,10 @@ public class MethodResultTest extends HudsonTestCase {
         //Compare output
         String methodUrl = build.getUrl() + PluginImpl.URL + "/com.fakepkg.test/FoobarTests/test";
         HtmlPage page = createWebClient().goTo(methodUrl);
-        HtmlElement description = page.getElementById("description");
+        HtmlElement description = page.getElementById("description", true);
         assertEquals(2, description.getElementsByTagName("br").size());
 
-        HtmlElement exp = page.getElementById("exp-msg");
+        HtmlElement exp = page.getElementById("exp-msg", true);
         assertEquals(2, exp.getElementsByTagName("br").size());
 
     }
@@ -213,7 +213,7 @@ public class MethodResultTest extends HudsonTestCase {
         String methodUrl = build.getUrl() + PluginImpl.URL
                 + "/org.example.test/ExampleIntegrationTest/FirstTest";
         HtmlPage page = createWebClient().goTo(methodUrl);
-        HtmlElement reporterOutput = page.getElementById("reporter-output");
+        HtmlElement reporterOutput = page.getElementById("reporter-output", true);
         String contents = reporterOutput.getTextContent();
         assertStringContains(contents, "Some Reporter.log() statement");
         assertStringContains(contents, "Another Reporter.log() statement");
@@ -250,7 +250,7 @@ public class MethodResultTest extends HudsonTestCase {
         //Compare output for a method
         String urlPrefix = build.getUrl() + PluginImpl.URL;
         HtmlPage page = createWebClient().goTo(urlPrefix + "/test/Test1/includedGroups_1/");
-        HtmlElement element = page.getElementById("parent");
+        HtmlElement element = page.getElementById("parent", true);
         String contents = element.getTextContent();
         //information about class and time taken
         assertStringContains(contents, "test.Test1");
@@ -260,16 +260,16 @@ public class MethodResultTest extends HudsonTestCase {
         assertStringContains(page.getElementById("report").getTextContent(), methodResult.getDurationString());
 
         //header containing method name
-        element = page.getElementsByTagName("h1").get(0);
+        element = (HtmlElement) page.getElementsByTagName("h1").get(0);
         assertEquals("includedGroups", element.getTextContent());
 
         //method status information
-        element = page.getElementById("status");
+        element = (HtmlElement) page.getElementById("status");
         assertEquals("result-passed", element.getAttribute("class"));
         assertEquals("PASS", element.getTextContent());
 
         //this method has single group
-        element = page.getElementById("groups");
+        element = (HtmlElement) page.getElementById("groups");
         assertEquals(element.getTextContent(), "Group(s): current");
 
         //should have an img
@@ -289,7 +289,7 @@ public class MethodResultTest extends HudsonTestCase {
         //method run using two parameters
         page = createWebClient().goTo(urlPrefix
                 + "/test.dataprovider/Sample1Test/verifyNames_1/");
-        element = page.getElementById("params");
+        element = (HtmlElement) page.getElementById("params");
         contents = element.getTextContent();
         //information about class and time taken
         assertStringContains(contents, "Parameter #1");
@@ -328,12 +328,12 @@ public class MethodResultTest extends HudsonTestCase {
         HtmlPage page = wc.goTo(urlPrefix + "/org.jenkins/TestDataProvider/test/");
 
         //method status information
-        HtmlElement element = page.getElementById("status");
+        HtmlElement element = page.getElementById("status", true);
         assertEquals("result-failed", element.getAttribute("class"));
         assertEquals("FAIL", element.getTextContent());
 
         //this method has single parameter
-        element = page.getElementById("params");
+        element = page.getElementById("params", true);
         String contents = element.getTextContent();
         assertStringContains(contents, "Parameter #1");
         assertStringContains(contents, "Value");
@@ -344,11 +344,11 @@ public class MethodResultTest extends HudsonTestCase {
         assertNull(page.getElementById("reporter-output"));
 
         //this method has exception with no message
-        element = page.getElementsByTagName("h3").get(0);
+        element = (HtmlElement) page.getElementsByTagName("h3").get(0);
         assertEquals("Exception java.lang.AssertionError", element.getTextContent());
-        element = page.getElementById("exp-msg");
+        element = page.getElementById("exp-msg", true);
         assertStringContains(element.getTextContent(), "(none)");
-        element = page.getElementById("exp-st");
+        element = page.getElementById("exp-st", true);
         assertStringContains(element.getTextContent(),
                              "org.jenkins.TestDataProvider.test(TestDataProvider.java:15)");
 
@@ -356,12 +356,12 @@ public class MethodResultTest extends HudsonTestCase {
         page = wc.goTo(urlPrefix + "/org.jenkins/TestDataProvider/test_2/");
 
         //method status information
-        element = page.getElementById("status");
+        element = page.getElementById("status", true);
         assertEquals("result-passed", element.getAttribute("class"));
         assertEquals("PASS", element.getTextContent());
 
         //this method has single parameter
-        element = page.getElementById("params");
+        element = page.getElementById("params", true);
         contents = element.getTextContent();
         assertStringContains(contents, "Parameter #1");
         assertStringContains(contents, "2");
@@ -405,7 +405,7 @@ public class MethodResultTest extends HudsonTestCase {
         HtmlPage page = wc.goTo(urlPrefix + "/testng.instancename/MyITestFactoryTest/factoryTest1/");
 
         //method instance name information
-        HtmlElement element = page.getElementById("inst-name");
+        HtmlElement element = page.getElementById("inst-name", true);
         assertStringContains(element.getTextContent(), "FACTORY_VMFS");
     }
 }

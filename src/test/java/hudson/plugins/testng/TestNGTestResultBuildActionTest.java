@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import com.gargoylesoftware.htmlunit.html.DomNodeUtil;
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import hudson.Launcher;
@@ -61,14 +62,14 @@ public class TestNGTestResultBuildActionTest extends HudsonTestCase {
         HtmlPage page = createWebClient().goTo(build.getUrl() + PluginImpl.URL);
 
         //make sure no cell is empty
-        List<HtmlElement> elements = page.selectNodes("//table[substring(@id, string-length(@id)- string-length('-tbl') +1)]/*/tr/td");
+        List<HtmlElement> elements = DomNodeUtil.selectNodes(page, "//table[substring(@id, string-length(@id)- string-length('-tbl') +1)]/*/tr/td");
         for (HtmlElement element : elements) {
             assertTrue(!element.getTextContent().isEmpty());
         }
 
         //ensure only one failed test
         //there are three links in the cell, we pick the one without any id attr
-        elements = page.selectNodes("//table[@id='fail-tbl']/tbody/tr/td/a[not(@id)]");
+        elements = DomNodeUtil.selectNodes(page, "//table[@id='fail-tbl']/tbody/tr/td/a[not(@id)]");
         assertEquals(1, elements.size());
         MethodResult mr = testngResult.getFailedTests().get(0);
         assertEquals(super.getURL() + mr.getOwner().getUrl() + mr.getId(),
@@ -77,7 +78,7 @@ public class TestNGTestResultBuildActionTest extends HudsonTestCase {
                 elements.get(0).getTextContent());
 
         //ensure only one failed config method
-        elements = page.selectNodes("//table[@id='fail-config-tbl']/tbody/tr/td/a");
+        elements = DomNodeUtil.selectNodes(page, "//table[@id='fail-config-tbl']/tbody/tr/td/a");
         //asserting to 3, because a link for >>>, one for <<< and another for the method itself
         assertEquals(3, elements.size());
         mr = testngResult.getFailedConfigs().get(0);
@@ -87,7 +88,7 @@ public class TestNGTestResultBuildActionTest extends HudsonTestCase {
                 elements.get(2).getTextContent());
 
         //ensure only one skipped test method
-        elements = page.selectNodes("//table[@id='skip-tbl']/tbody/tr/td/a");
+        elements = DomNodeUtil.selectNodes(page, "//table[@id='skip-tbl']/tbody/tr/td/a");
         assertEquals(1, elements.size());
         mr = testngResult.getSkippedTests().get(0);
         assertEquals(super.getURL() + mr.getOwner().getUrl() + mr.getId(),
@@ -96,11 +97,11 @@ public class TestNGTestResultBuildActionTest extends HudsonTestCase {
                 elements.get(0).getTextContent());
 
         //ensure no skipped config
-        elements = page.selectNodes("//table[@id='skip-config-tbl']");
+        elements = DomNodeUtil.selectNodes(page, "//table[@id='skip-config-tbl']");
         assertEquals(0, elements.size());
 
         //check list of packages and links
-        elements = page.selectNodes("//table[@id='all-tbl']/tbody/tr/td/a");
+        elements = DomNodeUtil.selectNodes(page, "//table[@id='all-tbl']/tbody/tr/td/a");
         Map<String, PackageResult> pkgMap = testngResult.getPackageMap();
         assertEquals(pkgMap.keySet().size(), elements.size());
 
@@ -119,11 +120,11 @@ public class TestNGTestResultBuildActionTest extends HudsonTestCase {
         assertEquals(linksFromResult, linksInPage);
 
         //verify bar
-        HtmlElement element = page.getElementById("fail-skip");
+        HtmlElement element = page.getElementById("fail-skip", true);
         assertStringContains(element.getTextContent(), "1 failure");
         assertFalse(element.getTextContent().contains("failures"));
         assertStringContains(element.getTextContent(), "1 skipped");
-        element = page.getElementById("pass");
+        element = page.getElementById("pass", true);
         assertStringContains(element.getTextContent(), "38 tests");
     }
 
@@ -157,29 +158,29 @@ public class TestNGTestResultBuildActionTest extends HudsonTestCase {
         HtmlPage page = createWebClient().goTo(build.getUrl() + PluginImpl.URL);
 
         //make sure no cell is empty
-        List<HtmlElement> elements = page.selectNodes("//table[substring(@id, string-length(@id)- string-length('-tbl') +1)]/*/tr/td");
+        List<HtmlElement> elements = DomNodeUtil.selectNodes(page, "//table[substring(@id, string-length(@id)- string-length('-tbl') +1)]/*/tr/td");
         for (HtmlElement element : elements) {
             assertTrue(!element.getTextContent().isEmpty());
         }
 
         //ensure only one failed test
-        elements = page.selectNodes("//table[@id='fail-tbl']");
+        elements = DomNodeUtil.selectNodes(page, "//table[@id='fail-tbl']");
         assertEquals(0, elements.size());
 
         //ensure only one failed config method
-        elements = page.selectNodes("//table[@id='fail-config-tbl']");
+        elements = DomNodeUtil.selectNodes(page, "//table[@id='fail-config-tbl']");
         assertEquals(0, elements.size());
 
         //ensure only one skipped test method
-        elements = page.selectNodes("//table[@id='skip-tbl']");
+        elements = DomNodeUtil.selectNodes(page, "//table[@id='skip-tbl']");
         assertEquals(0, elements.size());
 
         //ensure no skipped config
-        elements = page.selectNodes("//table[@id='skip-config-tbl']");
+        elements = DomNodeUtil.selectNodes(page, "//table[@id='skip-config-tbl']");
         assertEquals(0, elements.size());
 
         //check list of packages and links
-        elements = page.selectNodes("//table[@id='all-tbl']/tbody/tr/td/a");
+        elements = DomNodeUtil.selectNodes(page, "//table[@id='all-tbl']/tbody/tr/td/a");
         Map<String, PackageResult> pkgMap = testngResult.getPackageMap();
         assertEquals(pkgMap.keySet().size(), elements.size());
 
@@ -200,10 +201,10 @@ public class TestNGTestResultBuildActionTest extends HudsonTestCase {
         assertTrue(linksInPage.contains("No Package"));
 
         //verify bar
-        HtmlElement element = page.getElementById("fail-skip");
+        HtmlElement element = page.getElementById("fail-skip", true);
         assertStringContains(element.getTextContent(), "0 failures");
         assertFalse(element.getTextContent().contains("skipped"));
-        element = page.getElementById("pass");
+        element = page.getElementById("pass", true);
         assertStringContains(element.getTextContent(), "526 tests");
     }
 
