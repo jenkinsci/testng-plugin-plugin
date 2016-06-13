@@ -17,9 +17,10 @@ import hudson.plugins.testng.Publisher;
 import hudson.plugins.testng.PublisherCtor;
 import hudson.tasks.test.AbstractTestResultAction;
 import hudson.tasks.test.TestResult;
-import junit.framework.Assert;
+import static org.junit.Assert.*;
+import org.junit.Rule;
 import org.junit.Test;
-import org.jvnet.hudson.test.HudsonTestCase;
+import org.jvnet.hudson.test.JenkinsRule;
 import org.jvnet.hudson.test.TestBuilder;
 
 /**
@@ -27,11 +28,14 @@ import org.jvnet.hudson.test.TestBuilder;
  *
  * @author nullin
  */
-public class MethodResultTest extends HudsonTestCase {
+public class MethodResultTest {
+
+    @Rule
+    public JenkinsRule r = new JenkinsRule();
 
     @Test
     public void testEscapeExceptionMessageTrue() throws Exception {
-        FreeStyleProject p = createFreeStyleProject();
+        FreeStyleProject p = r.createFreeStyleProject();
         PublisherCtor publisherCtor = new PublisherCtor().setReportFilenamePattern("testng.xml")
                         .setEscapeTestDescp(false).setEscapeExceptionMsg(true);
         publisherCtor.setFailedFails(100); //this prevents default fail thresholds from determining result
@@ -40,6 +44,7 @@ public class MethodResultTest extends HudsonTestCase {
         p.onCreatedFromScratch(); //to setup project action
 
         p.getBuildersList().add(new TestBuilder() {
+            @Override
             public boolean perform(AbstractBuild<?, ?> build, Launcher launcher,
                 BuildListener listener) throws InterruptedException, IOException {
                 String contents = CommonUtil.getContents(Constants.TESTNG_XML_EXP_MSG_XML);
@@ -50,19 +55,19 @@ public class MethodResultTest extends HudsonTestCase {
 
         //run build
         FreeStyleBuild build = p.scheduleBuild2(0).get();
-        Assert.assertEquals(Result.UNSTABLE, build.getResult());
+        assertEquals(Result.UNSTABLE, build.getResult());
 
         //Compare output
         String methodUrl = build.getUrl() + PluginImpl.URL + "/gov.nasa.jpl/FoobarTests/b";
-        HtmlPage page = createWebClient().goTo(methodUrl);
+        HtmlPage page = r.createWebClient().goTo(methodUrl);
         HtmlElement expMsg = page.getElementById("exp-msg", true);
         String contents = expMsg.getTextContent();
-        assertStringContains(contents, "</a>"); //escaped HTML so it shows up as string
+        r.assertStringContains(contents, "</a>"); //escaped HTML so it shows up as string
     }
 
     @Test
     public void testEscapeExceptionMessageFalse() throws Exception {
-        FreeStyleProject p = createFreeStyleProject();
+        FreeStyleProject p = r.createFreeStyleProject();
         PublisherCtor publisherCtor = new PublisherCtor().setReportFilenamePattern("testng.xml")
                         .setEscapeTestDescp(false).setEscapeExceptionMsg(false);
         Publisher publisher = publisherCtor.getNewPublisher();
@@ -70,6 +75,7 @@ public class MethodResultTest extends HudsonTestCase {
         p.onCreatedFromScratch(); //to setup project action
 
         p.getBuildersList().add(new TestBuilder() {
+            @Override
             public boolean perform(AbstractBuild<?, ?> build, Launcher launcher,
                 BuildListener listener) throws InterruptedException, IOException {
                 String contents = CommonUtil.getContents(Constants.TESTNG_XML_EXP_MSG_XML);
@@ -83,7 +89,7 @@ public class MethodResultTest extends HudsonTestCase {
 
         //Compare output
         String methodUrl = build.getUrl() + PluginImpl.URL + "/gov.nasa.jpl/FoobarTests/b";
-        HtmlPage page = createWebClient().goTo(methodUrl);
+        HtmlPage page = r.createWebClient().goTo(methodUrl);
         HtmlElement expMsg = page.getElementById("exp-msg", true);
         String contents = expMsg.getTextContent();
         assertFalse(contents.contains("</a>")); //non-escaped HTML so it shouldn't show up as text
@@ -91,7 +97,7 @@ public class MethodResultTest extends HudsonTestCase {
 
     @Test
     public void testEscapeDescriptionFalse() throws Exception {
-        FreeStyleProject p = createFreeStyleProject();
+        FreeStyleProject p = r.createFreeStyleProject();
         PublisherCtor publisherCtor = new PublisherCtor().setReportFilenamePattern("testng.xml")
                         .setEscapeTestDescp(false).setEscapeExceptionMsg(false);
         Publisher publisher = publisherCtor.getNewPublisher();
@@ -99,6 +105,7 @@ public class MethodResultTest extends HudsonTestCase {
         p.onCreatedFromScratch(); //to setup project action
 
         p.getBuildersList().add(new TestBuilder() {
+            @Override
             public boolean perform(AbstractBuild<?, ?> build, Launcher launcher,
                 BuildListener listener) throws InterruptedException, IOException {
                 String contents = CommonUtil.getContents(Constants.TESTNG_DESCRIPTION_HTML);
@@ -112,7 +119,7 @@ public class MethodResultTest extends HudsonTestCase {
 
         //Compare output
         String methodUrl = build.getUrl() + PluginImpl.URL + "/com.test/UploadTest/uploadFile";
-        HtmlPage page = createWebClient().goTo(methodUrl);
+        HtmlPage page = r.createWebClient().goTo(methodUrl);
         HtmlElement description = page.getElementById("description", true);
         String contents = description.getTextContent();
         assertFalse(contents.contains("</a>")); //non-escaped HTML so it doesn't show up as text
@@ -121,7 +128,7 @@ public class MethodResultTest extends HudsonTestCase {
 
     @Test
     public void testEscapeDescriptionTrue() throws Exception {
-        FreeStyleProject p = createFreeStyleProject();
+        FreeStyleProject p = r.createFreeStyleProject();
         PublisherCtor publisherCtor = new PublisherCtor().setReportFilenamePattern("testng.xml")
                         .setEscapeTestDescp(true).setEscapeExceptionMsg(false);
         Publisher publisher = publisherCtor.getNewPublisher();
@@ -129,6 +136,7 @@ public class MethodResultTest extends HudsonTestCase {
         p.onCreatedFromScratch(); //to setup project action
 
         p.getBuildersList().add(new TestBuilder() {
+            @Override
             public boolean perform(AbstractBuild<?, ?> build, Launcher launcher,
                 BuildListener listener) throws InterruptedException, IOException {
                 String contents = CommonUtil.getContents(Constants.TESTNG_DESCRIPTION_HTML);
@@ -142,10 +150,10 @@ public class MethodResultTest extends HudsonTestCase {
 
         //Compare output
         String methodUrl = build.getUrl() + PluginImpl.URL + "/com.test/UploadTest/uploadFile";
-        HtmlPage page = createWebClient().goTo(methodUrl);
+        HtmlPage page = r.createWebClient().goTo(methodUrl);
         HtmlElement description = page.getElementById("description", true);
         String contents = description.getTextContent();
-        assertStringContains(contents, "</a>"); //escaped HTML so it shows up as text
+        r.assertStringContains(contents, "</a>"); //escaped HTML so it shows up as text
     }
 
     /**
@@ -159,7 +167,7 @@ public class MethodResultTest extends HudsonTestCase {
      */
     @Test
     public void testMultilineDescriptionAndExceptionMessage() throws Exception {
-        FreeStyleProject p = createFreeStyleProject();
+        FreeStyleProject p = r.createFreeStyleProject();
         PublisherCtor publisherCtor = new PublisherCtor().setReportFilenamePattern("testng.xml")
                         .setEscapeTestDescp(false).setEscapeExceptionMsg(false);
         Publisher publisher = publisherCtor.getNewPublisher();
@@ -167,6 +175,7 @@ public class MethodResultTest extends HudsonTestCase {
         p.onCreatedFromScratch(); //to setup project action
 
         p.getBuildersList().add(new TestBuilder() {
+            @Override
             public boolean perform(AbstractBuild<?, ?> build, Launcher launcher,
                 BuildListener listener) throws InterruptedException, IOException {
                 String contents = CommonUtil.getContents(Constants.TESTNG_MULTILINE_EXCEPTION_AND_DESCRIPTION);
@@ -180,7 +189,7 @@ public class MethodResultTest extends HudsonTestCase {
 
         //Compare output
         String methodUrl = build.getUrl() + PluginImpl.URL + "/com.fakepkg.test/FoobarTests/test";
-        HtmlPage page = createWebClient().goTo(methodUrl);
+        HtmlPage page = r.createWebClient().goTo(methodUrl);
         HtmlElement description = page.getElementById("description", true);
         assertEquals(2, description.getElementsByTagName("br").size());
 
@@ -191,13 +200,14 @@ public class MethodResultTest extends HudsonTestCase {
 
     @Test
     public void testReporterLogOutput() throws Exception {
-        FreeStyleProject p = createFreeStyleProject();
+        FreeStyleProject p = r.createFreeStyleProject();
         PublisherCtor publisherCtor = new PublisherCtor().setReportFilenamePattern("testng.xml");
         Publisher publisher = publisherCtor.getNewPublisher();
         p.getPublishersList().add(publisher);
         p.onCreatedFromScratch(); //to setup project action
 
         p.getBuildersList().add(new TestBuilder() {
+            @Override
             public boolean perform(AbstractBuild<?, ?> build, Launcher launcher,
                 BuildListener listener) throws InterruptedException, IOException {
                 String contents = CommonUtil.getContents(Constants.TESTNG_XML_REPORTER_LOG_OUTPUT);
@@ -212,11 +222,11 @@ public class MethodResultTest extends HudsonTestCase {
         //Compare output
         String methodUrl = build.getUrl() + PluginImpl.URL
                 + "/org.example.test/ExampleIntegrationTest/FirstTest";
-        HtmlPage page = createWebClient().goTo(methodUrl);
+        HtmlPage page = r.createWebClient().goTo(methodUrl);
         HtmlElement reporterOutput = page.getElementById("reporter-output", true);
         String contents = reporterOutput.getTextContent();
-        assertStringContains(contents, "Some Reporter.log() statement");
-        assertStringContains(contents, "Another Reporter.log() statement");
+        r.assertStringContains(contents, "Some Reporter.log() statement");
+        r.assertStringContains(contents, "Another Reporter.log() statement");
     }
 
     /**
@@ -226,13 +236,14 @@ public class MethodResultTest extends HudsonTestCase {
      */
     @Test
     public void testMethodResults1() throws Exception {
-        FreeStyleProject p = createFreeStyleProject();
+        FreeStyleProject p = r.createFreeStyleProject();
         PublisherCtor publisherCtor = new PublisherCtor().setReportFilenamePattern("testng.xml");
         Publisher publisher = publisherCtor.getNewPublisher();
         p.getPublishersList().add(publisher);
         p.onCreatedFromScratch(); //to setup project action
 
         p.getBuildersList().add(new TestBuilder() {
+            @Override
             public boolean perform(AbstractBuild<?, ?> build, Launcher launcher,
                 BuildListener listener) throws InterruptedException, IOException {
                 String contents = CommonUtil.getContents(Constants.TESTNG_XML_TESTNG);
@@ -249,15 +260,15 @@ public class MethodResultTest extends HudsonTestCase {
 
         //Compare output for a method
         String urlPrefix = build.getUrl() + PluginImpl.URL;
-        HtmlPage page = createWebClient().goTo(urlPrefix + "/test/Test1/includedGroups_1/");
+        HtmlPage page = r.createWebClient().goTo(urlPrefix + "/test/Test1/includedGroups_1/");
         HtmlElement element = page.getElementById("parent", true);
         String contents = element.getTextContent();
         //information about class and time taken
-        assertStringContains(contents, "test.Test1");
+        r.assertStringContains(contents, "test.Test1");
         assertTrue(element.getAttribute("href").endsWith(urlPrefix + "/test/Test1"));
 
         //duration string
-        assertStringContains(page.getElementById("report").getTextContent(), methodResult.getDurationString());
+        r.assertStringContains(page.getElementById("report").getTextContent(), methodResult.getDurationString());
 
         //header containing method name
         element = (HtmlElement) page.getElementsByTagName("h1").get(0);
@@ -287,15 +298,15 @@ public class MethodResultTest extends HudsonTestCase {
         assertNull(page.getElementById("exp-msg"));
 
         //method run using two parameters
-        page = createWebClient().goTo(urlPrefix
+        page = r.createWebClient().goTo(urlPrefix
                 + "/test.dataprovider/Sample1Test/verifyNames_1/");
         element = (HtmlElement) page.getElementById("params");
         contents = element.getTextContent();
         //information about class and time taken
-        assertStringContains(contents, "Parameter #1");
-        assertStringContains(contents, "Parameter #2");
-        assertStringContains(contents, "Anne Marie");
-        assertStringContains(contents, "37");
+        r.assertStringContains(contents, "Parameter #1");
+        r.assertStringContains(contents, "Parameter #2");
+        r.assertStringContains(contents, "Anne Marie");
+        r.assertStringContains(contents, "37");
     }
 
     /**
@@ -304,13 +315,14 @@ public class MethodResultTest extends HudsonTestCase {
      */
     @Test
     public void testMethodResults_dataProviderTests() throws Exception {
-        FreeStyleProject p = createFreeStyleProject();
+        FreeStyleProject p = r.createFreeStyleProject();
         PublisherCtor publisherCtor = new PublisherCtor().setReportFilenamePattern("testng.xml");
         Publisher publisher = publisherCtor.getNewPublisher();
         p.getPublishersList().add(publisher);
         p.onCreatedFromScratch(); //to setup project action
 
         p.getBuildersList().add(new TestBuilder() {
+            @Override
             public boolean perform(AbstractBuild<?, ?> build, Launcher launcher,
                 BuildListener listener) throws InterruptedException, IOException {
                 String contents = CommonUtil.getContents(Constants.TESTNG_XML_DATAPROVIDER);
@@ -324,7 +336,7 @@ public class MethodResultTest extends HudsonTestCase {
 
         //Compare output for a dp method that failed
         String urlPrefix = build.getUrl() + PluginImpl.URL;
-        WebClient wc = createWebClient();
+        JenkinsRule.WebClient wc = r.createWebClient();
         HtmlPage page = wc.goTo(urlPrefix + "/org.jenkins/TestDataProvider/test/");
 
         //method status information
@@ -335,8 +347,8 @@ public class MethodResultTest extends HudsonTestCase {
         //this method has single parameter
         element = page.getElementById("params", true);
         String contents = element.getTextContent();
-        assertStringContains(contents, "Parameter #1");
-        assertStringContains(contents, "Value");
+        r.assertStringContains(contents, "Parameter #1");
+        r.assertStringContains(contents, "Value");
         assertFalse(contents.contains("Parameter #2"));
 
         //this method has no groups or reporter output
@@ -347,9 +359,9 @@ public class MethodResultTest extends HudsonTestCase {
         element = (HtmlElement) page.getElementsByTagName("h3").get(0);
         assertEquals("Exception java.lang.AssertionError", element.getTextContent());
         element = page.getElementById("exp-msg", true);
-        assertStringContains(element.getTextContent(), "(none)");
+        r.assertStringContains(element.getTextContent(), "(none)");
         element = page.getElementById("exp-st", true);
-        assertStringContains(element.getTextContent(),
+        r.assertStringContains(element.getTextContent(),
                              "org.jenkins.TestDataProvider.test(TestDataProvider.java:15)");
 
         //compare output for a dp method that passed
@@ -363,8 +375,8 @@ public class MethodResultTest extends HudsonTestCase {
         //this method has single parameter
         element = page.getElementById("params", true);
         contents = element.getTextContent();
-        assertStringContains(contents, "Parameter #1");
-        assertStringContains(contents, "2");
+        r.assertStringContains(contents, "Parameter #1");
+        r.assertStringContains(contents, "2");
         assertFalse(contents.contains("Parameter #2"));
 
         assertNull(page.getElementById("inst-name"));
@@ -381,13 +393,14 @@ public class MethodResultTest extends HudsonTestCase {
      */
     @Test
     public void testMethodResults_testInstanceNames() throws Exception {
-        FreeStyleProject p = createFreeStyleProject();
+        FreeStyleProject p = r.createFreeStyleProject();
         PublisherCtor publisherCtor = new PublisherCtor().setReportFilenamePattern("testng.xml");
         Publisher publisher = publisherCtor.getNewPublisher();
         p.getPublishersList().add(publisher);
         p.onCreatedFromScratch(); //to setup project action
 
         p.getBuildersList().add(new TestBuilder() {
+            @Override
             public boolean perform(AbstractBuild<?, ?> build, Launcher launcher,
                 BuildListener listener) throws InterruptedException, IOException {
                 String contents = CommonUtil.getContents(Constants.TESTNG_XML_INSTANCE_NAME);
@@ -401,11 +414,11 @@ public class MethodResultTest extends HudsonTestCase {
 
         //Compare output for a dp method that failed
         String urlPrefix = build.getUrl() + PluginImpl.URL;
-        WebClient wc = createWebClient();
+        JenkinsRule.WebClient wc = r.createWebClient();
         HtmlPage page = wc.goTo(urlPrefix + "/testng.instancename/MyITestFactoryTest/factoryTest1/");
 
         //method instance name information
         HtmlElement element = page.getElementById("inst-name", true);
-        assertStringContains(element.getTextContent(), "FACTORY_VMFS");
+        r.assertStringContains(element.getTextContent(), "FACTORY_VMFS");
     }
 }

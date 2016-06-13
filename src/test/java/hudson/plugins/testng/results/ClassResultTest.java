@@ -23,8 +23,10 @@ import hudson.plugins.testng.Publisher;
 import hudson.plugins.testng.PublisherCtor;
 import hudson.tasks.test.AbstractTestResultAction;
 import hudson.tasks.test.TestResult;
+import static org.junit.Assert.*;
+import org.junit.Rule;
 import org.junit.Test;
-import org.jvnet.hudson.test.HudsonTestCase;
+import org.jvnet.hudson.test.JenkinsRule;
 import org.jvnet.hudson.test.TestBuilder;
 
 /**
@@ -34,7 +36,10 @@ import org.jvnet.hudson.test.TestBuilder;
  *
  * @author nullin
  */
-public class ClassResultTest extends HudsonTestCase {
+public class ClassResultTest {
+
+    @Rule
+    public JenkinsRule r = new JenkinsRule();
 
     /**
      * Test using precheckins.legacyops
@@ -50,7 +55,7 @@ public class ClassResultTest extends HudsonTestCase {
      */
     @Test
     public void testPrecheckinLegacyOpsClassResults() throws Exception {
-        FreeStyleProject p = createFreeStyleProject();
+        FreeStyleProject p = r.createFreeStyleProject();
         PublisherCtor publisherCtor = new PublisherCtor().setReportFilenamePattern("testng.xml")
                 .setEscapeTestDescp(false).setEscapeExceptionMsg(false);
         Publisher publisher = publisherCtor.getNewPublisher();
@@ -58,6 +63,7 @@ public class ClassResultTest extends HudsonTestCase {
         p.onCreatedFromScratch(); //to setup project action
 
         p.getBuildersList().add(new TestBuilder() {
+            @Override
             public boolean perform(AbstractBuild<?, ?> build, Launcher launcher,
                 BuildListener listener) throws InterruptedException, IOException {
                 String contents = CommonUtil.getContents(Constants.TESTNG_XML_PRECHECKINS);
@@ -74,7 +80,7 @@ public class ClassResultTest extends HudsonTestCase {
 
         //Get page
         String urlPrefix = build.getUrl() + PluginImpl.URL;
-        HtmlPage page = createWebClient().goTo(urlPrefix + "/precheckins/LegacyOps/");
+        HtmlPage page = r.createWebClient().goTo(urlPrefix + "/precheckins/LegacyOps/");
 
         List<HtmlElement> elements = DomNodeUtil.selectNodes(page, "//div[starts-with(@id, 'run-')]/span[@id='run-info']");
 
@@ -135,7 +141,7 @@ public class ClassResultTest extends HudsonTestCase {
         for (MethodResult mr : ((ClassResult) classResult).getChildren()) {
             //would have used mr.getUpUrl() but for some reason
             //as part of test, Jenkins.instance.rootUrl() returns 'null'
-            linksFromResult.add(super.getURL() + mr.getOwner().getUrl() + mr.getId());
+            linksFromResult.add(r.getURL() + mr.getOwner().getUrl() + mr.getId());
         }
         Collections.sort(linksFromResult);
 
@@ -152,7 +158,7 @@ public class ClassResultTest extends HudsonTestCase {
      */
     @Test
     public void testClassResults() throws Exception {
-        FreeStyleProject p = createFreeStyleProject();
+        FreeStyleProject p = r.createFreeStyleProject();
         PublisherCtor publisherCtor = new PublisherCtor().setReportFilenamePattern("testng.xml")
                         .setEscapeTestDescp(false).setEscapeExceptionMsg(false);
         Publisher publisher = publisherCtor.getNewPublisher();
@@ -160,6 +166,7 @@ public class ClassResultTest extends HudsonTestCase {
         p.onCreatedFromScratch(); //to setup project action
 
         p.getBuildersList().add(new TestBuilder() {
+            @Override
             public boolean perform(AbstractBuild<?, ?> build, Launcher launcher,
                 BuildListener listener) throws InterruptedException, IOException {
                 String contents = CommonUtil.getContents(Constants.TESTNG_XML_TESTNG);
@@ -176,12 +183,12 @@ public class ClassResultTest extends HudsonTestCase {
 
         //Get page
         String urlPrefix = build.getUrl() + PluginImpl.URL;
-        HtmlPage page = createWebClient().goTo(urlPrefix + "/test/CommandLineTest");
+        HtmlPage page = r.createWebClient().goTo(urlPrefix + "/test/CommandLineTest");
 
         List<HtmlElement> elements = DomNodeUtil.selectNodes(page, "//div[starts-with(@id, 'run-')]/table[@id='config']");
         // there are no configuration methods
         assertEquals(0, elements.size());
-        assertStringContains(page.getElementById("run-0").getTextContent(), "No Configuration method was found in this class");
+        r.assertStringContains(page.getElementById("run-0").getTextContent(), "No Configuration method was found in this class");
 
         //use first test with show more section
         elements = DomNodeUtil.selectNodes(page, "//div[starts-with(@id, 'run-')]/table[@id='test']/tbody/tr/td/div[@id='junitParsing_1']");
@@ -191,12 +198,12 @@ public class ClassResultTest extends HudsonTestCase {
         assertEquals(1, elements.size());
         HtmlElement moreSection = elements.get(0);
 
-        assertStringContains(moreSection.getTextContent(), "current"); //group name
+        r.assertStringContains(moreSection.getTextContent(), "current"); //group name
 
         //click the link
         showMore.getElementsByTagName("a").get(0).click();
 
-        assertStringContains(showMore.getAttribute("style"), "none");
+        r.assertStringContains(showMore.getAttribute("style"), "none");
         assertEquals("", moreSection.getAttribute("style"));
     }
 }

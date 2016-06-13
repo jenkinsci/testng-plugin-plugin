@@ -19,8 +19,10 @@ import hudson.plugins.testng.PluginImpl;
 import hudson.plugins.testng.Publisher;
 import hudson.plugins.testng.PublisherCtor;
 import hudson.tasks.test.AbstractTestResultAction;
+import static org.junit.Assert.*;
+import org.junit.Rule;
 import org.junit.Test;
-import org.jvnet.hudson.test.HudsonTestCase;
+import org.jvnet.hudson.test.JenkinsRule;
 import org.jvnet.hudson.test.TestBuilder;
 
 /**
@@ -30,7 +32,10 @@ import org.jvnet.hudson.test.TestBuilder;
  *
  * @author nullin
  */
-public class PackageResultTest extends HudsonTestCase {
+public class PackageResultTest {
+
+    @Rule
+    public JenkinsRule r = new JenkinsRule();
 
     /**
      * Test using precheckins
@@ -46,13 +51,14 @@ public class PackageResultTest extends HudsonTestCase {
      */
     @Test
     public void testPrecheckinPackageResults() throws Exception {
-        FreeStyleProject p = createFreeStyleProject();
+        FreeStyleProject p = r.createFreeStyleProject();
         PublisherCtor publisherCtor = new PublisherCtor().setReportFilenamePattern("testng.xml");
         Publisher publisher = publisherCtor.getNewPublisher();
         p.getPublishersList().add(publisher);
         p.onCreatedFromScratch(); //to setup project action
 
         p.getBuildersList().add(new TestBuilder() {
+            @Override
             public boolean perform(AbstractBuild<?, ?> build, Launcher launcher,
                 BuildListener listener) throws InterruptedException, IOException {
                 String contents = CommonUtil.getContents(Constants.TESTNG_XML_PRECHECKINS);
@@ -68,7 +74,7 @@ public class PackageResultTest extends HudsonTestCase {
 
         //Get page
         String urlPrefix = build.getUrl() + PluginImpl.URL;
-        HtmlPage page = createWebClient().goTo(urlPrefix + "/precheckins");
+        HtmlPage page = r.createWebClient().goTo(urlPrefix + "/precheckins");
 
         List<HtmlElement> elements = DomNodeUtil.selectNodes(page, "//table[@id='allClasses']/tbody/tr/td/a");
 
@@ -86,7 +92,7 @@ public class PackageResultTest extends HudsonTestCase {
         for (ClassResult cr : pkgResult.getChildren()) {
             //would have used cr.getUpUrl() but for some reason
             //as part of test, Jenkins.instance.rootUrl() returns 'null'
-            linksFromResult.add(super.getURL() + cr.getOwner().getUrl() + cr.getId());
+            linksFromResult.add(r.getURL() + cr.getOwner().getUrl() + cr.getId());
         }
         Collections.sort(linksFromResult);
 
@@ -101,11 +107,11 @@ public class PackageResultTest extends HudsonTestCase {
         //verify only first 25 methods are shown
         HtmlElement divShowAllLink = page.getElementById("showAllLink", true);
         assertNotNull(divShowAllLink);
-        assertEquals("Showing only first " + pkgResult.MAX_EXEC_MTHD_LIST_SIZE + " test methods. Click to see all",
+        assertEquals("Showing only first " + PackageResult.MAX_EXEC_MTHD_LIST_SIZE + " test methods. Click to see all",
                      divShowAllLink.getTextContent());
 
         elements = DomNodeUtil.selectNodes(page, "//tbody[@id='sortedMethods']/tr");
-        assertEquals(pkgResult.MAX_EXEC_MTHD_LIST_SIZE, elements.size());
+        assertEquals(PackageResult.MAX_EXEC_MTHD_LIST_SIZE, elements.size());
 
         //verify clicking on link gets all methods back
         divShowAllLink.getElementsByTagName("a").get(0).click(); //click to get all test methods
@@ -124,22 +130,22 @@ public class PackageResultTest extends HudsonTestCase {
         for (MethodResult mr : pkgResult.getSortedTestMethodsByStartTime()) {
             //would have used mr.getUpUrl() but for some reason
             //as part of test, Jenkins.instance.rootUrl() returns 'null'
-            linksFromResult.add(super.getURL() + mr.getOwner().getUrl() + mr.getId());
+            linksFromResult.add(r.getURL() + mr.getOwner().getUrl() + mr.getId());
         }
         Collections.sort(linksFromResult);
 
         assertEquals(linksFromResult, linksInPage);
 
         //assert that link to get all methods is no longer visible
-        assertStringContains(divShowAllLink.getAttribute("style"), "none");
+        r.assertStringContains(divShowAllLink.getAttribute("style"), "none");
 
         //verify bar
         HtmlElement element = page.getElementById("fail-skip", true);
-        assertStringContains(element.getTextContent(), "1 failure");
+        r.assertStringContains(element.getTextContent(), "1 failure");
         assertFalse(element.getTextContent().contains("failures"));
-        assertStringContains(element.getTextContent(), "1 skipped");
+        r.assertStringContains(element.getTextContent(), "1 skipped");
         element = page.getElementById("pass", true);
-        assertStringContains(element.getTextContent(), "38 tests");
+        r.assertStringContains(element.getTextContent(), "38 tests");
     }
 
     /**
@@ -152,13 +158,14 @@ public class PackageResultTest extends HudsonTestCase {
      */
     @Test
     public void testMyPackagePackageResults() throws Exception {
-        FreeStyleProject p = createFreeStyleProject();
+        FreeStyleProject p = r.createFreeStyleProject();
         PublisherCtor publisherCtor = new PublisherCtor().setReportFilenamePattern("testng.xml");
         Publisher publisher = publisherCtor.getNewPublisher();
         p.getPublishersList().add(publisher);
         p.onCreatedFromScratch(); //to setup project action
 
         p.getBuildersList().add(new TestBuilder() {
+            @Override
             public boolean perform(AbstractBuild<?, ?> build, Launcher launcher,
                 BuildListener listener) throws InterruptedException, IOException {
                 String contents = CommonUtil.getContents(Constants.TESTNG_XML_EMPTY_EXCEPTION);
@@ -172,17 +179,17 @@ public class PackageResultTest extends HudsonTestCase {
 
         //Get page
         String urlPrefix = build.getUrl() + PluginImpl.URL;
-        HtmlPage page = createWebClient().goTo(urlPrefix + "/my.package");
+        HtmlPage page = r.createWebClient().goTo(urlPrefix + "/my.package");
 
         //verify only first 25 methods are shown
         assertNull(page.getElementById("showAllLink"));
 
         //verify bar
         HtmlElement element = page.getElementById("fail-skip", true);
-        assertStringContains(element.getTextContent(), "0 failures");
+        r.assertStringContains(element.getTextContent(), "0 failures");
         assertFalse(element.getTextContent().contains("skipped"));
         element = page.getElementById("pass", true);
-        assertStringContains(element.getTextContent(), "1 test");
+        r.assertStringContains(element.getTextContent(), "1 test");
         assertFalse(element.getTextContent().contains("tests"));
     }
 }
