@@ -175,8 +175,7 @@ public class PackageResultTest extends HudsonTestCase {
         HtmlPage page = createWebClient().goTo(urlPrefix + "/my.package");
 
         //verify only first 25 methods are shown
-        HtmlElement divShowAllLink = page.getElementById("showAllLink", true);
-        assertNull(divShowAllLink);
+        assertNull(page.getElementById("showAllLink"));
 
         //verify bar
         HtmlElement element = page.getElementById("fail-skip", true);
