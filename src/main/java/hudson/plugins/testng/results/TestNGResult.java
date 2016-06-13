@@ -1,5 +1,6 @@
 package hudson.plugins.testng.results;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.io.Serializable;
 import java.util.*;
 
@@ -14,6 +15,7 @@ import org.kohsuke.stapler.export.Exported;
  * @author nullin
  * @author farshidce
  */
+@SuppressFBWarnings(value="SE_BAD_FIELD", justification="ArrayList is Serializable")
 public class TestNGResult extends BaseResult implements Serializable {
 
     private static final long serialVersionUID = -3491974223665601995L;

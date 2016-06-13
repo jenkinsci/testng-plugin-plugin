@@ -1,5 +1,6 @@
 package hudson.plugins.testng.util;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.awt.*;
 import java.io.IOException;
 import java.text.DecimalFormat;
@@ -34,6 +35,7 @@ import org.kohsuke.stapler.StaplerResponse;
  * Helper class for trend graph generation
  *
  */
+@SuppressFBWarnings(value="EQ_DOESNT_OVERRIDE_EQUALS", justification="BarRenderer subclasses do not seem to need to override it")
 public class GraphHelper {
 
    /**

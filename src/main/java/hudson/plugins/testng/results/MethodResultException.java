@@ -1,7 +1,9 @@
 package hudson.plugins.testng.results;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.io.Serializable;
 
+@SuppressFBWarnings(value="NM_CLASS_NOT_EXCEPTION", justification="?")
 @SuppressWarnings("serial")
 public class MethodResultException implements Serializable {
 
