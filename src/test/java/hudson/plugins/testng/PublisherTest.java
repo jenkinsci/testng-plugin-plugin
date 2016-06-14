@@ -15,6 +15,7 @@ import org.junit.Test;
 import org.junit.Rule;
 import org.junit.rules.TemporaryFolder;
 import org.jvnet.hudson.test.JenkinsRule;
+import org.jvnet.hudson.test.WithoutJenkins;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -31,6 +32,7 @@ public class PublisherTest {
     @Rule
     public TemporaryFolder tmp = new TemporaryFolder();
 
+    @WithoutJenkins
     @Test
     public void testLocateReports() throws Exception {
         // Create a temporary workspace in the system
@@ -71,6 +73,7 @@ public class PublisherTest {
         local.deleteRecursive();
     }
 
+    @WithoutJenkins
     @Test
     public void testBuildAborted() throws Exception {
         PublisherCtor publisherCtor = new PublisherCtor().setReportFilenamePattern("testng.xml")
