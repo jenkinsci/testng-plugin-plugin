@@ -2,8 +2,8 @@ package hudson.plugins.testng.results;
 
 import java.io.Serializable;
 
-import hudson.model.AbstractBuild;
 import hudson.model.ModelObject;
+import hudson.model.Run;
 import hudson.plugins.testng.TestNGTestResultBuildAction;
 import hudson.tasks.test.AbstractTestResultAction;
 import hudson.tasks.test.TabulatedResult;
@@ -23,7 +23,7 @@ import org.kohsuke.stapler.export.ExportedBean;
 public abstract class BaseResult extends TabulatedResult implements ModelObject, Serializable {
 
     //owner of this build
-    protected AbstractBuild<?, ?> owner;
+    protected Run<?, ?> run;
     //name of this result
     protected final String name;
     //parent result for this result
@@ -49,12 +49,12 @@ public abstract class BaseResult extends TabulatedResult implements ModelObject,
     }
 
     @Override
-    public AbstractBuild<?, ?> getOwner() {
-        return owner;
+    public Run<?, ?> getRun() {
+        return run;
     }
 
-    public void setOwner(AbstractBuild<?, ?> owner) {
-        this.owner = owner;
+    public void setRun(Run<?, ?> run) {
+        this.run = run;
     }
 
     @Override
@@ -68,7 +68,7 @@ public abstract class BaseResult extends TabulatedResult implements ModelObject,
 
     //TODO: @see https://wiki.jenkins-ci.org/display/JENKINS/Hyperlinks+in+HTML and fix
     public String getUpUrl() {
-        return Jenkins.getInstance().getRootUrl() + owner.getUrl() + getId();
+        return Jenkins.getInstance().getRootUrl() + run.getUrl() + getId();
     }
 
     @Override
@@ -91,9 +91,9 @@ public abstract class BaseResult extends TabulatedResult implements ModelObject,
      */
     @Override
     public AbstractTestResultAction getTestResultAction() {
-        AbstractBuild<?, ?> owner = getOwner();
-        if (owner != null) {
-            return owner.getAction(TestNGTestResultBuildAction.class);
+        Run<?, ?> run = getRun();
+        if (run != null) {
+            return run.getAction(TestNGTestResultBuildAction.class);
         }
         return null;
     }

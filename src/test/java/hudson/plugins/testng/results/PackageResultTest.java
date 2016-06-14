@@ -92,7 +92,7 @@ public class PackageResultTest {
         for (ClassResult cr : pkgResult.getChildren()) {
             //would have used cr.getUpUrl() but for some reason
             //as part of test, Jenkins.instance.rootUrl() returns 'null'
-            linksFromResult.add(r.getURL() + cr.getOwner().getUrl() + cr.getId());
+            linksFromResult.add(r.getURL() + cr.getRun().getUrl() + cr.getId());
         }
         Collections.sort(linksFromResult);
 
@@ -130,7 +130,7 @@ public class PackageResultTest {
         for (MethodResult mr : pkgResult.getSortedTestMethodsByStartTime()) {
             //would have used mr.getUpUrl() but for some reason
             //as part of test, Jenkins.instance.rootUrl() returns 'null'
-            linksFromResult.add(r.getURL() + mr.getOwner().getUrl() + mr.getId());
+            linksFromResult.add(r.getURL() + mr.getRun().getUrl() + mr.getId());
         }
         Collections.sort(linksFromResult);
 

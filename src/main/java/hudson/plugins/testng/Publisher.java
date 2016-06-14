@@ -15,12 +15,14 @@ import hudson.Launcher;
 import hudson.model.AbstractBuild;
 import hudson.model.AbstractProject;
 import hudson.model.Action;
-import hudson.model.BuildListener;
 import hudson.model.Result;
+import hudson.model.Run;
+import hudson.model.TaskListener;
 import hudson.plugins.testng.results.TestNGResult;
 import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.BuildStepMonitor;
 import hudson.tasks.Recorder;
+import jenkins.tasks.SimpleBuildStep;
 import net.sf.json.JSONObject;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.StaplerRequest;
@@ -29,7 +31,7 @@ import org.kohsuke.stapler.StaplerRequest;
  * This class defines a @Publisher and @Extension
  *
  */
-public class Publisher extends Recorder {
+public class Publisher extends Recorder implements SimpleBuildStep {
 
    //ant style regex pattern to find report files
    public final String reportFilenamePattern;
@@ -90,7 +92,7 @@ public class Publisher extends Recorder {
     * {@inheritDoc}
     */
    @Override
-   public Collection<? extends Action> getProjectActions(AbstractProject<?, ?> project) {
+   public Collection<? extends Action> getProjectActions(AbstractProject<?, ?> project) { // TODO replace with LastBuildAction
       Collection<Action> actions = new ArrayList<Action>();
       actions.add(new TestNGProjectAction(project, escapeTestDescp, escapeExceptionMsg, showFailedBuilds));
       return actions;
@@ -100,29 +102,34 @@ public class Publisher extends Recorder {
     * {@inheritDoc}
     */
    @Override
-   public boolean perform(AbstractBuild<?, ?> build, Launcher launcher, final BuildListener listener)
+   public void perform(Run<?, ?> build, FilePath workspace, Launcher launcher, final TaskListener listener)
          throws InterruptedException, IOException {
 
       PrintStream logger = listener.getLogger();
 
       if (Result.ABORTED.equals(build.getResult())) {
          logger.println("Build Aborted. Not looking for any TestNG results.");
-         return true;
+         return;
       }
 
-      // replace any variables in the user specified pattern
-      EnvVars env = build.getEnvironment(listener);
-      env.overrideAll(build.getBuildVariables());
-      String pathsPattern = env.expand(reportFilenamePattern);
+      String pathsPattern;
+      if (build instanceof AbstractBuild) {
+          // replace any variables in the user specified pattern
+          EnvVars env = build.getEnvironment(listener);
+          env.overrideAll(((AbstractBuild) build).getBuildVariables());
+          pathsPattern = env.expand(reportFilenamePattern);
+      } else {
+          pathsPattern = reportFilenamePattern;
+      }
 
       logger.println("TestNG Reports Processing: START");
       logger.println("Looking for TestNG results report in workspace using pattern: " + pathsPattern);
-      FilePath[] paths = locateReports(build.getWorkspace(), pathsPattern);
+      FilePath[] paths = locateReports(workspace, pathsPattern);
 
       if (paths.length == 0) {
          logger.println("Did not find any matching files.");
          //build can still continue
-         return true;
+         return;
       }
 
       /*
@@ -132,8 +139,9 @@ public class Publisher extends Recorder {
 
       boolean filesSaved = saveReports(getTestNGReport(build), paths, logger);
       if (!filesSaved) {
+         // TODO consider throwing AbortException instead
          logger.println("Failed to save TestNG XML reports");
-         return true;
+         return;
       }
 
       TestNGResult results = new TestNGResult();
@@ -199,10 +207,10 @@ public class Publisher extends Recorder {
          }
       } else {
          logger.println("Found matching files but did not find any TestNG results.");
-         return true;
+         return;
       }
       logger.println("TestNG Reports Processing: FINISH");
-      return true;
+      return;
    }
 
    /**
@@ -268,11 +276,11 @@ public class Publisher extends Recorder {
    /**
     * Gets the directory to store report files
     */
-   static FilePath getTestNGReport(AbstractBuild<?,?> build) {
+   static FilePath getTestNGReport(Run<?,?> build) {
        return new FilePath(new File(build.getRootDir(), "testng"));
    }
 
-   static FilePath[] checkReports(AbstractBuild<?,?> build, FilePath[] paths,
+   static FilePath[] checkReports(Run<?,?> build, FilePath[] paths,
             PrintStream logger)
    {
       List<FilePath> filePathList = new ArrayList<FilePath>(paths.length);

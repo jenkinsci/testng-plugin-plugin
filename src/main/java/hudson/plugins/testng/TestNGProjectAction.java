@@ -7,6 +7,7 @@ import hudson.model.AbstractBuild;
 import hudson.model.AbstractProject;
 import hudson.model.ProminentProjectAction;
 import hudson.model.Result;
+import hudson.model.Run;
 import hudson.plugins.testng.util.GraphHelper;
 import hudson.tasks.test.TestResultProjectAction;
 import hudson.util.ChartUtil;
@@ -186,7 +187,7 @@ public class TestNGProjectAction extends TestResultProjectAction implements Prom
       Set<Integer> loadedBuilds = getProject()._getRuns().getLoadedBuilds().keySet(); // cf. AbstractTestResultAction.getPreviousResult(Class, false)
       for (AbstractBuild<?, ?> build = getProject().getLastBuild();
          build != null; build = loadedBuilds.contains(build.number - 1) ? build.getPreviousCompletedBuild() : null) {
-         ChartUtil.NumberOnlyBuildLabel label = new ChartUtil.NumberOnlyBuildLabel(build);
+         ChartUtil.NumberOnlyBuildLabel label = new ChartUtil.NumberOnlyBuildLabel((Run) build);
          TestNGTestResultBuildAction action = build.getAction(getBuildActionClass());
 
          Result result = build.getResult();

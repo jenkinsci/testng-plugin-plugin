@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import hudson.model.AbstractBuild;
+import hudson.model.Run;
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
 import org.kohsuke.stapler.export.Exported;
@@ -82,10 +82,10 @@ public class ClassResult extends BaseResult {
     }
 
     @Override
-    public void setOwner(AbstractBuild<?, ?> owner) {
-        super.setOwner(owner);
+    public void setRun(Run<?, ?> run) {
+        super.setRun(run);
         for (MethodResult _m : this.testMethodList) {
-            _m.setOwner(owner);
+            _m.setRun(run);
         }
     }
 

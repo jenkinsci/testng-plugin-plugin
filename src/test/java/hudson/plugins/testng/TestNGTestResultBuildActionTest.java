@@ -20,9 +20,15 @@ import hudson.plugins.testng.results.MethodResult;
 import hudson.plugins.testng.results.PackageResult;
 import hudson.plugins.testng.results.TestNGResult;
 import hudson.tasks.test.AbstractTestResultAction;
+import org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition;
+import org.jenkinsci.plugins.workflow.job.WorkflowJob;
+import org.jenkinsci.plugins.workflow.job.WorkflowRun;
 import static org.junit.Assert.*;
+import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
+import org.jvnet.hudson.test.BuildWatcher;
+import org.jvnet.hudson.test.Issue;
 import org.jvnet.hudson.test.JenkinsRule;
 import org.jvnet.hudson.test.TestBuilder;
 
@@ -32,6 +38,9 @@ import org.jvnet.hudson.test.TestBuilder;
  * @author nullin
  */
 public class TestNGTestResultBuildActionTest {
+
+    @ClassRule
+    public static BuildWatcher buildWatcher = new BuildWatcher();
 
     @Rule
     public JenkinsRule r = new JenkinsRule();
@@ -77,7 +86,7 @@ public class TestNGTestResultBuildActionTest {
         elements = DomNodeUtil.selectNodes(page, "//table[@id='fail-tbl']/tbody/tr/td/a[not(@id)]");
         assertEquals(1, elements.size());
         MethodResult mr = testngResult.getFailedTests().get(0);
-        assertEquals(r.getURL() + mr.getOwner().getUrl() + mr.getId(),
+        assertEquals(r.getURL() + mr.getRun().getUrl() + mr.getId(),
                 elements.get(0).getAttribute("href"));
         assertEquals(((ClassResult)mr.getParent()).getCanonicalName() + "." + mr.getName(),
                 elements.get(0).getTextContent());
@@ -87,7 +96,7 @@ public class TestNGTestResultBuildActionTest {
         //asserting to 3, because a link for >>>, one for <<< and another for the method itself
         assertEquals(3, elements.size());
         mr = testngResult.getFailedConfigs().get(0);
-        assertEquals(r.getURL() + mr.getOwner().getUrl() + mr.getId(),
+        assertEquals(r.getURL() + mr.getRun().getUrl() + mr.getId(),
                 elements.get(2).getAttribute("href"));
         assertEquals(((ClassResult)mr.getParent()).getCanonicalName() + "." + mr.getName(),
                 elements.get(2).getTextContent());
@@ -96,7 +105,7 @@ public class TestNGTestResultBuildActionTest {
         elements = DomNodeUtil.selectNodes(page, "//table[@id='skip-tbl']/tbody/tr/td/a");
         assertEquals(1, elements.size());
         mr = testngResult.getSkippedTests().get(0);
-        assertEquals(r.getURL() + mr.getOwner().getUrl() + mr.getId(),
+        assertEquals(r.getURL() + mr.getRun().getUrl() + mr.getId(),
                 elements.get(0).getAttribute("href"));
         assertEquals(((ClassResult)mr.getParent()).getCanonicalName() + "." + mr.getName(),
                 elements.get(0).getTextContent());
@@ -357,7 +366,23 @@ public class TestNGTestResultBuildActionTest {
       FreeStyleBuild build = p.scheduleBuild2(0).get();
       assertSame(Result.UNSTABLE, build.getResult());
    }
-   
+
+   @Issue("JENKINS-27121")
+   @Test
+   public void test_threshold_for_fails_default_pipeline() throws Exception {
+      WorkflowJob p = r.jenkins.createProject(WorkflowJob.class, "p");
+      String contents = CommonUtil.getContents(Constants.TESTNG_FAILED_TEST);
+      r.jenkins.getWorkspaceFor(p).child("testng.xml").write(contents, "UTF-8");
+      p.setDefinition(new CpsFlowDefinition("node {step([$class: 'Publisher', reportFilenamePattern: 'testng.xml', escapeTestDescp: true, escapeExceptionMsg: true, showFailedBuilds: false, failureOnFailedTestConfig: false, unstableSkips: 100, unstableFails: 0, failedSkips: 100, failedFails: 100, thresholdMode: 2])}", true));
+      WorkflowRun build = p.scheduleBuild2(0).get();
+      r.assertBuildStatus(Result.UNSTABLE, build);
+      TestNGTestResultBuildAction action = build.getAction(TestNGTestResultBuildAction.class);
+      assertNotNull(action);
+      TestNGResult result = action.getResult();
+      assertEquals("checking result details", "TestNGResult {totalTests=2, failedTests=1, skippedTests=0, failedConfigs=0, skippedConfigs=0}", result.toString());
+      r.assertLogContains("tests failed, which exceeded threshold of 0%. Marking build as UNSTABLE", build);
+   }
+
   @Test
   public void test_threshold_for_fails_failure() throws Exception {
      FreeStyleProject p = r.createFreeStyleProject();

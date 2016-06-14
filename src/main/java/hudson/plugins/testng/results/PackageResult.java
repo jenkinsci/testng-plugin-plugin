@@ -9,7 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import hudson.model.AbstractBuild;
+import hudson.model.Run;
 import hudson.plugins.testng.util.FormatUtil;
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
@@ -46,10 +46,10 @@ public class PackageResult extends BaseResult {
     }
 
     @Override
-    public void setOwner(AbstractBuild<?, ?> owner) {
-        super.setOwner(owner);
+    public void setRun(Run<?, ?> run) {
+        super.setRun(run);
         for (ClassResult _class : classList) {
-            _class.setOwner(owner);
+            _class.setRun(run);
         }
     }
 

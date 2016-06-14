@@ -11,8 +11,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import hudson.FilePath;
-import hudson.model.AbstractBuild;
 import hudson.model.Api;
+import hudson.model.Run;
 import hudson.plugins.testng.parser.ResultsParser;
 import hudson.plugins.testng.results.MethodResult;
 import hudson.plugins.testng.results.TestNGResult;
@@ -87,10 +87,10 @@ public class TestNGTestResultBuildAction extends AbstractTestResultAction implem
 
     @Override
     public TestNGResult getResult() {
-        return getResult(super.owner);
+        return getResult(super.run);
     }
 
-    public TestNGResult getResult(AbstractBuild build) {
+    public TestNGResult getResult(Run build) {
         TestNGResult tr = testngResultRef != null ? testngResultRef.get() : null;
         if (tr == null) {
             tr = loadResults(build, null);
@@ -100,7 +100,7 @@ public class TestNGTestResultBuildAction extends AbstractTestResultAction implem
         return tr;
     }
 
-    static TestNGResult loadResults(AbstractBuild<?, ?> owner, PrintStream logger) {
+    static TestNGResult loadResults(Run<?, ?> owner, PrintStream logger) {
         LOGGER.log(Level.FINE, "loading results for {0}", owner);
         FilePath testngDir = Publisher.getTestNGReport(owner);
         FilePath[] paths = null;
@@ -112,13 +112,13 @@ public class TestNGTestResultBuildAction extends AbstractTestResultAction implem
 
         if (paths == null) {
             TestNGResult tr = new TestNGResult();
-            tr.setOwner(owner);
+            tr.setRun(owner);
             return tr;
         }
 
         ResultsParser parser = new ResultsParser(logger);
         TestNGResult result = parser.parse(paths);
-        result.setOwner(owner);
+        result.setRun(owner);
         return result;
     }
 
