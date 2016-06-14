@@ -53,8 +53,8 @@ public class TestNGTestResultBuildActionTest {
     @Test
     public void testBuildAction_1() throws Exception {
         FreeStyleProject p = r.createFreeStyleProject();
-        PublisherCtor publisherCtor = new PublisherCtor().setReportFilenamePattern("testng.xml");
-        Publisher publisher = publisherCtor.getNewPublisher();
+        Publisher publisher = new Publisher();
+        publisher.setReportFilenamePattern("testng.xml");
         p.getPublishersList().add(publisher);
         p.onCreatedFromScratch(); //to setup project action
 
@@ -150,8 +150,8 @@ public class TestNGTestResultBuildActionTest {
     @Test
     public void testBuildAction_2() throws Exception {
         FreeStyleProject p = r.createFreeStyleProject();
-        PublisherCtor publisherCtor = new PublisherCtor().setReportFilenamePattern("testng.xml");
-        Publisher publisher = publisherCtor.getNewPublisher();
+        Publisher publisher = new Publisher();
+        publisher.setReportFilenamePattern("testng.xml");
         p.getPublishersList().add(publisher);
         p.onCreatedFromScratch(); //to setup project action
 
@@ -226,10 +226,10 @@ public class TestNGTestResultBuildActionTest {
     @Test
     public void test_failed_config_default_setting() throws Exception {
         FreeStyleProject p = r.createFreeStyleProject();
-        PublisherCtor publisherCtor = new PublisherCtor().setReportFilenamePattern("testng.xml");
-        publisherCtor.setFailedSkips(100); //these prevent the skip that results from config failure from determining result
-        publisherCtor.setUnstableSkips(100);
-        Publisher publisher = publisherCtor.getNewPublisher();
+        Publisher publisher = new Publisher();
+        publisher.setReportFilenamePattern("testng.xml");
+        publisher.setFailedSkips(100); //these prevent the skip that results from config failure from determining result
+        publisher.setUnstableSkips(100);
         p.getPublishersList().add(publisher);
         p.onCreatedFromScratch(); //to setup project action
 
@@ -251,11 +251,11 @@ public class TestNGTestResultBuildActionTest {
     @Test
     public void test_failed_config_enabled_failedbuild() throws Exception {
         FreeStyleProject p = r.createFreeStyleProject();
-        PublisherCtor publisherCtor = new PublisherCtor().setReportFilenamePattern("testng.xml")
-                .setFailureOnFailedTestConfig(true);
-        publisherCtor.setFailedSkips(10); //these prevent the skip that results from config failure from determining result
-        publisherCtor.setUnstableSkips(10);
-        Publisher publisher = publisherCtor.getNewPublisher();
+        Publisher publisher = new Publisher();
+        publisher.setReportFilenamePattern("testng.xml");
+        publisher.setFailureOnFailedTestConfig(true);
+        publisher.setFailedSkips(10); //these prevent the skip that results from config failure from determining result
+        publisher.setUnstableSkips(10);
         p.getPublishersList().add(publisher);
         p.onCreatedFromScratch(); //to setup project action
 
@@ -276,8 +276,8 @@ public class TestNGTestResultBuildActionTest {
     @Test
     public void test_threshold_for_skips_default() throws Exception {
        FreeStyleProject p = r.createFreeStyleProject();
-       PublisherCtor publisherCtor = new PublisherCtor().setReportFilenamePattern("testng.xml");
-       Publisher publisher = publisherCtor.getNewPublisher();
+       Publisher publisher = new Publisher();
+       publisher.setReportFilenamePattern("testng.xml");
        p.getPublishersList().add(publisher);
        p.onCreatedFromScratch(); //to setup project action
 
@@ -299,9 +299,10 @@ public class TestNGTestResultBuildActionTest {
    @Test
    public void test_threshold_for_skips_failure() throws Exception {
       FreeStyleProject p = r.createFreeStyleProject();
-      PublisherCtor publisherCtor = new PublisherCtor().setReportFilenamePattern("testng.xml")
-            .setFailedSkips(100).setUnstableSkips(100);
-      Publisher publisher = publisherCtor.getNewPublisher();
+      Publisher publisher = new Publisher();
+      publisher.setReportFilenamePattern("testng.xml");
+      publisher.setFailedSkips(100);
+      publisher.setUnstableSkips(100);
       p.getPublishersList().add(publisher);
       p.onCreatedFromScratch(); //to setup project action
 
@@ -323,9 +324,10 @@ public class TestNGTestResultBuildActionTest {
    @Test
    public void test_threshold_for_skips_unstable() throws Exception {
       FreeStyleProject p = r.createFreeStyleProject();
-      PublisherCtor publisherCtor = new PublisherCtor().setReportFilenamePattern("testng.xml")
-            .setUnstableSkips(0).setFailedSkips(100);
-      Publisher publisher = publisherCtor.getNewPublisher();
+      Publisher publisher = new Publisher();
+      publisher.setReportFilenamePattern("testng.xml");
+      publisher.setUnstableSkips(0);
+      publisher.setFailedSkips(100);
       p.getPublishersList().add(publisher);
       p.onCreatedFromScratch(); //to setup project action
 
@@ -347,8 +349,8 @@ public class TestNGTestResultBuildActionTest {
    @Test
    public void test_threshold_for_fails_default() throws Exception {
       FreeStyleProject p = r.createFreeStyleProject();
-      PublisherCtor publisherCtor = new PublisherCtor().setReportFilenamePattern("testng.xml");
-      Publisher publisher = publisherCtor.getNewPublisher();
+      Publisher publisher = new Publisher();
+      publisher.setReportFilenamePattern("testng.xml");
       p.getPublishersList().add(publisher);
       p.onCreatedFromScratch(); //to setup project action
 
@@ -372,8 +374,8 @@ public class TestNGTestResultBuildActionTest {
    public void test_threshold_for_fails_default_pipeline() throws Exception {
       WorkflowJob p = r.jenkins.createProject(WorkflowJob.class, "p");
       String contents = CommonUtil.getContents(Constants.TESTNG_FAILED_TEST);
-      r.jenkins.getWorkspaceFor(p).child("testng.xml").write(contents, "UTF-8");
-      p.setDefinition(new CpsFlowDefinition("node {step([$class: 'Publisher', reportFilenamePattern: 'testng.xml', escapeTestDescp: true, escapeExceptionMsg: true, showFailedBuilds: false, failureOnFailedTestConfig: false, unstableSkips: 100, unstableFails: 0, failedSkips: 100, failedFails: 100, thresholdMode: 2])}", true));
+      r.jenkins.getWorkspaceFor(p).child("testng-results.xml").write(contents, "UTF-8");
+      p.setDefinition(new CpsFlowDefinition("node {step([$class: 'Publisher'])}", true));
       WorkflowRun build = p.scheduleBuild2(0).get();
       r.assertBuildStatus(Result.UNSTABLE, build);
       TestNGTestResultBuildAction action = build.getAction(TestNGTestResultBuildAction.class);
@@ -386,9 +388,10 @@ public class TestNGTestResultBuildActionTest {
   @Test
   public void test_threshold_for_fails_failure() throws Exception {
      FreeStyleProject p = r.createFreeStyleProject();
-     PublisherCtor publisherCtor = new PublisherCtor().setReportFilenamePattern("testng.xml")
-           .setFailedFails(100).setUnstableFails(100);
-     Publisher publisher = publisherCtor.getNewPublisher();
+     Publisher publisher = new Publisher();
+     publisher.setReportFilenamePattern("testng.xml");
+     publisher.setFailedFails(100);
+     publisher.setUnstableFails(100);
      p.getPublishersList().add(publisher);
      p.onCreatedFromScratch(); //to setup project action
 
@@ -410,9 +413,9 @@ public class TestNGTestResultBuildActionTest {
   @Test
   public void test_threshold_for_fails_unstable() throws Exception {
      FreeStyleProject p = r.createFreeStyleProject();
-     PublisherCtor publisherCtor = new PublisherCtor().setReportFilenamePattern("testng.xml")
-           .setFailedFails(100);
-     Publisher publisher = publisherCtor.getNewPublisher();
+     Publisher publisher = new Publisher();
+     publisher.setReportFilenamePattern("testng.xml");
+     publisher.setFailedFails(100);
      p.getPublishersList().add(publisher);
      p.onCreatedFromScratch(); //to setup project action
 

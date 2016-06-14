@@ -14,7 +14,6 @@ import hudson.plugins.testng.CommonUtil;
 import hudson.plugins.testng.Constants;
 import hudson.plugins.testng.PluginImpl;
 import hudson.plugins.testng.Publisher;
-import hudson.plugins.testng.PublisherCtor;
 import hudson.tasks.test.AbstractTestResultAction;
 import hudson.tasks.test.TestResult;
 import static org.junit.Assert.*;
@@ -36,10 +35,11 @@ public class MethodResultTest {
     @Test
     public void testEscapeExceptionMessageTrue() throws Exception {
         FreeStyleProject p = r.createFreeStyleProject();
-        PublisherCtor publisherCtor = new PublisherCtor().setReportFilenamePattern("testng.xml")
-                        .setEscapeTestDescp(false).setEscapeExceptionMsg(true);
-        publisherCtor.setFailedFails(100); //this prevents default fail thresholds from determining result
-        Publisher publisher = publisherCtor.getNewPublisher();
+        Publisher publisher = new Publisher();
+        publisher.setReportFilenamePattern("testng.xml");
+        publisher.setEscapeTestDescp(false);
+        publisher.setEscapeExceptionMsg(true);
+        publisher.setFailedFails(100); //this prevents default fail thresholds from determining result
         p.getPublishersList().add(publisher);
         p.onCreatedFromScratch(); //to setup project action
 
@@ -68,9 +68,10 @@ public class MethodResultTest {
     @Test
     public void testEscapeExceptionMessageFalse() throws Exception {
         FreeStyleProject p = r.createFreeStyleProject();
-        PublisherCtor publisherCtor = new PublisherCtor().setReportFilenamePattern("testng.xml")
-                        .setEscapeTestDescp(false).setEscapeExceptionMsg(false);
-        Publisher publisher = publisherCtor.getNewPublisher();
+        Publisher publisher = new Publisher();
+        publisher.setReportFilenamePattern("testng.xml");
+        publisher.setEscapeTestDescp(false);
+        publisher.setEscapeExceptionMsg(false);
         p.getPublishersList().add(publisher);
         p.onCreatedFromScratch(); //to setup project action
 
@@ -98,9 +99,10 @@ public class MethodResultTest {
     @Test
     public void testEscapeDescriptionFalse() throws Exception {
         FreeStyleProject p = r.createFreeStyleProject();
-        PublisherCtor publisherCtor = new PublisherCtor().setReportFilenamePattern("testng.xml")
-                        .setEscapeTestDescp(false).setEscapeExceptionMsg(false);
-        Publisher publisher = publisherCtor.getNewPublisher();
+        Publisher publisher = new Publisher();
+        publisher.setReportFilenamePattern("testng.xml");
+        publisher.setEscapeTestDescp(false);
+        publisher.setEscapeExceptionMsg(false);
         p.getPublishersList().add(publisher);
         p.onCreatedFromScratch(); //to setup project action
 
@@ -129,9 +131,10 @@ public class MethodResultTest {
     @Test
     public void testEscapeDescriptionTrue() throws Exception {
         FreeStyleProject p = r.createFreeStyleProject();
-        PublisherCtor publisherCtor = new PublisherCtor().setReportFilenamePattern("testng.xml")
-                        .setEscapeTestDescp(true).setEscapeExceptionMsg(false);
-        Publisher publisher = publisherCtor.getNewPublisher();
+        Publisher publisher = new Publisher();
+        publisher.setReportFilenamePattern("testng.xml");
+        publisher.setEscapeTestDescp(true);
+        publisher.setEscapeExceptionMsg(false);
         p.getPublishersList().add(publisher);
         p.onCreatedFromScratch(); //to setup project action
 
@@ -168,9 +171,10 @@ public class MethodResultTest {
     @Test
     public void testMultilineDescriptionAndExceptionMessage() throws Exception {
         FreeStyleProject p = r.createFreeStyleProject();
-        PublisherCtor publisherCtor = new PublisherCtor().setReportFilenamePattern("testng.xml")
-                        .setEscapeTestDescp(false).setEscapeExceptionMsg(false);
-        Publisher publisher = publisherCtor.getNewPublisher();
+        Publisher publisher = new Publisher();
+        publisher.setReportFilenamePattern("testng.xml");
+        publisher.setEscapeTestDescp(false);
+        publisher.setEscapeExceptionMsg(false);
         p.getPublishersList().add(publisher);
         p.onCreatedFromScratch(); //to setup project action
 
@@ -201,8 +205,8 @@ public class MethodResultTest {
     @Test
     public void testReporterLogOutput() throws Exception {
         FreeStyleProject p = r.createFreeStyleProject();
-        PublisherCtor publisherCtor = new PublisherCtor().setReportFilenamePattern("testng.xml");
-        Publisher publisher = publisherCtor.getNewPublisher();
+        Publisher publisher = new Publisher();
+        publisher.setReportFilenamePattern("testng.xml");
         p.getPublishersList().add(publisher);
         p.onCreatedFromScratch(); //to setup project action
 
@@ -237,8 +241,8 @@ public class MethodResultTest {
     @Test
     public void testMethodResults1() throws Exception {
         FreeStyleProject p = r.createFreeStyleProject();
-        PublisherCtor publisherCtor = new PublisherCtor().setReportFilenamePattern("testng.xml");
-        Publisher publisher = publisherCtor.getNewPublisher();
+        Publisher publisher = new Publisher();
+        publisher.setReportFilenamePattern("testng.xml");
         p.getPublishersList().add(publisher);
         p.onCreatedFromScratch(); //to setup project action
 
@@ -316,8 +320,8 @@ public class MethodResultTest {
     @Test
     public void testMethodResults_dataProviderTests() throws Exception {
         FreeStyleProject p = r.createFreeStyleProject();
-        PublisherCtor publisherCtor = new PublisherCtor().setReportFilenamePattern("testng.xml");
-        Publisher publisher = publisherCtor.getNewPublisher();
+        Publisher publisher = new Publisher();
+        publisher.setReportFilenamePattern("testng.xml");
         p.getPublishersList().add(publisher);
         p.onCreatedFromScratch(); //to setup project action
 
@@ -394,8 +398,8 @@ public class MethodResultTest {
     @Test
     public void testMethodResults_testInstanceNames() throws Exception {
         FreeStyleProject p = r.createFreeStyleProject();
-        PublisherCtor publisherCtor = new PublisherCtor().setReportFilenamePattern("testng.xml");
-        Publisher publisher = publisherCtor.getNewPublisher();
+        Publisher publisher = new Publisher();
+        publisher.setReportFilenamePattern("testng.xml");
         p.getPublishersList().add(publisher);
         p.onCreatedFromScratch(); //to setup project action
 

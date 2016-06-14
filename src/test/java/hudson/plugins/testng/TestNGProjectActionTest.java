@@ -41,9 +41,10 @@ public class TestNGProjectActionTest {
     @Test
     public void testSettings() throws Exception {
         FreeStyleProject p = r.createFreeStyleProject();
-        PublisherCtor publisherCtor = new PublisherCtor().setReportFilenamePattern("some.xml")
-                        .setEscapeTestDescp(false).setEscapeExceptionMsg(true);
-        Publisher publisher = publisherCtor.getNewPublisher();
+        Publisher publisher = new Publisher();
+        publisher.setReportFilenamePattern("some.xml");
+        publisher.setEscapeTestDescp(false);
+        publisher.setEscapeExceptionMsg(true);
         p.getPublishersList().add(publisher);
         p.onCreatedFromScratch(); //to setup project action
 

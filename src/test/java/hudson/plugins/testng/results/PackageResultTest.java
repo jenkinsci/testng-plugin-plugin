@@ -17,7 +17,6 @@ import hudson.plugins.testng.CommonUtil;
 import hudson.plugins.testng.Constants;
 import hudson.plugins.testng.PluginImpl;
 import hudson.plugins.testng.Publisher;
-import hudson.plugins.testng.PublisherCtor;
 import hudson.tasks.test.AbstractTestResultAction;
 import static org.junit.Assert.*;
 import org.junit.Rule;
@@ -52,8 +51,8 @@ public class PackageResultTest {
     @Test
     public void testPrecheckinPackageResults() throws Exception {
         FreeStyleProject p = r.createFreeStyleProject();
-        PublisherCtor publisherCtor = new PublisherCtor().setReportFilenamePattern("testng.xml");
-        Publisher publisher = publisherCtor.getNewPublisher();
+        Publisher publisher = new Publisher();
+        publisher.setReportFilenamePattern("testng.xml");
         p.getPublishersList().add(publisher);
         p.onCreatedFromScratch(); //to setup project action
 
@@ -159,8 +158,8 @@ public class PackageResultTest {
     @Test
     public void testMyPackagePackageResults() throws Exception {
         FreeStyleProject p = r.createFreeStyleProject();
-        PublisherCtor publisherCtor = new PublisherCtor().setReportFilenamePattern("testng.xml");
-        Publisher publisher = publisherCtor.getNewPublisher();
+        Publisher publisher = new Publisher();
+        publisher.setReportFilenamePattern("testng.xml");
         p.getPublishersList().add(publisher);
         p.onCreatedFromScratch(); //to setup project action
 

@@ -20,7 +20,6 @@ import hudson.plugins.testng.CommonUtil;
 import hudson.plugins.testng.Constants;
 import hudson.plugins.testng.PluginImpl;
 import hudson.plugins.testng.Publisher;
-import hudson.plugins.testng.PublisherCtor;
 import hudson.tasks.test.AbstractTestResultAction;
 import hudson.tasks.test.TestResult;
 import static org.junit.Assert.*;
@@ -56,9 +55,10 @@ public class ClassResultTest {
     @Test
     public void testPrecheckinLegacyOpsClassResults() throws Exception {
         FreeStyleProject p = r.createFreeStyleProject();
-        PublisherCtor publisherCtor = new PublisherCtor().setReportFilenamePattern("testng.xml")
-                .setEscapeTestDescp(false).setEscapeExceptionMsg(false);
-        Publisher publisher = publisherCtor.getNewPublisher();
+        Publisher publisher = new Publisher();
+        publisher.setReportFilenamePattern("testng.xml");
+        publisher.setEscapeTestDescp(false);
+        publisher.setEscapeExceptionMsg(false);
         p.getPublishersList().add(publisher);
         p.onCreatedFromScratch(); //to setup project action
 
@@ -159,9 +159,10 @@ public class ClassResultTest {
     @Test
     public void testClassResults() throws Exception {
         FreeStyleProject p = r.createFreeStyleProject();
-        PublisherCtor publisherCtor = new PublisherCtor().setReportFilenamePattern("testng.xml")
-                        .setEscapeTestDescp(false).setEscapeExceptionMsg(false);
-        Publisher publisher = publisherCtor.getNewPublisher();
+        Publisher publisher = new Publisher();
+        publisher.setReportFilenamePattern("testng.xml");
+        publisher.setEscapeTestDescp(false);
+        publisher.setEscapeExceptionMsg(false);
         p.getPublishersList().add(publisher);
         p.onCreatedFromScratch(); //to setup project action
 
