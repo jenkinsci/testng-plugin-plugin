@@ -11,6 +11,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import hudson.FilePath;
+import hudson.model.Action;
 import hudson.model.Api;
 import hudson.model.Run;
 import hudson.plugins.testng.parser.ResultsParser;
@@ -18,6 +19,9 @@ import hudson.plugins.testng.results.MethodResult;
 import hudson.plugins.testng.results.TestNGResult;
 import hudson.tasks.junit.CaseResult;
 import hudson.tasks.test.AbstractTestResultAction;
+import java.util.Collection;
+import java.util.Collections;
+import jenkins.tasks.SimpleBuildStep;
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
 
@@ -27,7 +31,7 @@ import org.kohsuke.stapler.StaplerResponse;
  * @author nullin
  * @since v1.0
  */
-public class TestNGTestResultBuildAction extends AbstractTestResultAction implements Serializable {
+public class TestNGTestResultBuildAction extends AbstractTestResultAction implements Serializable, SimpleBuildStep.LastBuildAction {
 
     private static final Logger LOGGER = Logger.getLogger(TestNGTestResultBuildAction.class.getName());
 
@@ -48,14 +52,20 @@ public class TestNGTestResultBuildAction extends AbstractTestResultAction implem
     protected Integer passCount; // null if uncomputed
     protected int failCount;
     protected int skipCount;
+    private final boolean escapeTestDescp;
+    private final boolean escapeExceptionMsg;
+    private final boolean showFailedBuilds;
 
-    public TestNGTestResultBuildAction(TestNGResult testngResults) {
+    public TestNGTestResultBuildAction(TestNGResult testngResults, boolean escapeTestDescp, boolean escapeExceptionMsg, boolean showFailedBuilds) {
         if (testngResults != null) {
             this.testngResultRef = new WeakReference<TestNGResult>(testngResults);
 
             //initialize the cached values when TestNGBuildAction is instantiated
             count(testngResults);
         }
+        this.escapeTestDescp = escapeTestDescp;
+        this.escapeExceptionMsg = escapeExceptionMsg;
+        this.showFailedBuilds = showFailedBuilds;
     }
 
     private void count(TestNGResult testngResults) {
@@ -210,4 +220,10 @@ public class TestNGTestResultBuildAction extends AbstractTestResultAction implem
 
         return results;
     }
+
+    @Override
+    public Collection<? extends Action> getProjectActions() {
+        return Collections.singleton(new TestNGProjectAction(run.getParent(), escapeTestDescp, escapeExceptionMsg, showFailedBuilds));
+    }
+
 }
