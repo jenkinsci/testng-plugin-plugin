@@ -86,7 +86,7 @@ public class PublisherTest {
         when(buildMock.getResult()).thenReturn(Result.ABORTED);
         when(listenerMock.getLogger()).thenReturn(ps);
 
-        Assert.assertTrue(publisher.perform(buildMock, launcherMock, listenerMock));
+        publisher.perform(buildMock, buildMock.getWorkspace(), launcherMock, listenerMock);
 
         String str = os.toString();
         Assert.assertTrue(str.contains("Build Aborted"));
