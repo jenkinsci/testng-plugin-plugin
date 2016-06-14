@@ -68,7 +68,8 @@ public abstract class BaseResult extends TabulatedResult implements ModelObject,
 
     //TODO: @see https://wiki.jenkins-ci.org/display/JENKINS/Hyperlinks+in+HTML and fix
     public String getUpUrl() {
-        return Jenkins.getInstance().getRootUrl() + run.getUrl() + getId();
+        Jenkins j = Jenkins.getInstance();
+        return j != null ? j.getRootUrl() + run.getUrl() + getId() : "";
     }
 
     @Override
