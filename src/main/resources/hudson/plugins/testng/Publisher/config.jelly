@@ -1,6 +1,8 @@
 <?jelly escape-by-default='true'?>
 <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout"
          xmlns:t="/lib/hudson" xmlns:f="/lib/form" xmlns:bh="/lib/health">
+   <!-- TODO delete superfluous name attributes (implied by field) -->
+   <!-- TODO share defaults with Publisher field initializers via static fields in DescriptorImpl ~ ${descriptor} -->
    <f:entry title="TestNG XML report pattern" field="reportFilenamePattern">
       <f:textbox name="testng.reportFilenamePattern" value="${instance.reportFilenamePattern}" default="**/testng-results.xml"/>
    </f:entry>

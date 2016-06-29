@@ -6,7 +6,7 @@ t = namespace("/lib/hudson")
 st = namespace("jelly:stapler")
 
 l.layout(title: "Test Packages") {
-    st.include(page: "sidepanel.jelly", it: my.owner)
+    st.include(page: "sidepanel.jelly", it: my.run)
     l.main_panel() {
 
         h1("Package ${my.displayName}")
