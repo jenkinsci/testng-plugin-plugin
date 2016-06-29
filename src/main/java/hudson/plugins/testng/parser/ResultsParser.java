@@ -209,7 +209,7 @@ public class ResultsParser {
                            currentCDATAParent = TAGS.FULL_STACKTRACE;
                            break;
                         default:
-                            // TODO do we wish to log information about other tags, or silently ignore them?
+                           log("Encountered unknown tag: '" + tag + "'");
                      }
                      break;
                   // all closing tags
@@ -253,7 +253,7 @@ public class ResultsParser {
                            currentCDATAParent = TAGS.UNKNOWN;
                            break;
                         default:
-                            // TODO ditto
+                           log("Encountered unknown tag: '" + tag + "'");
                      }
                      break;
                   // all cdata reading
