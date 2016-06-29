@@ -1,5 +1,6 @@
 package hudson.plugins.testng.results;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -13,6 +14,7 @@ import org.kohsuke.stapler.export.Exported;
 /**
  * Handle results related to a single test class
  */
+@SuppressFBWarnings(value="SE_NO_SERIALVERSIONID", justification="XStream does not care")
 @SuppressWarnings("serial")
 public class ClassResult extends BaseResult {
 
@@ -20,6 +22,7 @@ public class ClassResult extends BaseResult {
     private List<MethodResult> testMethodList = new ArrayList<MethodResult>();
 
     //cache
+    @SuppressFBWarnings(value="SE_BAD_FIELD", justification="HashMap is Serializable")
     private Map<String, GroupedTestRun> testRunMap = null;
 
     //cached values, updated via tally

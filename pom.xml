@@ -4,7 +4,7 @@
     <parent>
         <groupId>org.jenkins-ci.plugins</groupId>
         <artifactId>plugin</artifactId>
-        <version>1.554.3</version><!-- 1.545+ for JENKINS-18410 -->
+        <version>2.9</version>
     </parent>
 
     <artifactId>testng-plugin</artifactId>
@@ -26,6 +26,12 @@
             <artifactId>mockito-core</artifactId>
             <version>1.8.5</version>
             <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.hamcrest</groupId>
+                    <artifactId>hamcrest-core</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
     </dependencies>
 
@@ -63,9 +69,8 @@
         </plugins>
     </build>
     <properties>
-        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <project.build.outputEncoding>UTF-8</project.build.outputEncoding>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <jenkins.version>1.554.3</jenkins.version><!-- 1.545+ for JENKINS-18410 -->
+        <java.level>6</java.level>
     </properties>
     <repositories>
         <repository>

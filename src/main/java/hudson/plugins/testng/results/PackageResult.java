@@ -1,5 +1,6 @@
 package hudson.plugins.testng.results;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -18,6 +19,7 @@ import org.kohsuke.stapler.export.Exported;
 /**
  * Handles package level results
  */
+@SuppressFBWarnings(value="SE_NO_SERIALVERSIONID", justification="XStream does not care")
 @SuppressWarnings("serial")
 public class PackageResult extends BaseResult {
 
@@ -37,7 +39,7 @@ public class PackageResult extends BaseResult {
     private transient int pass;
 
     // Maximum size of methods in the method execution list
-    public final int MAX_EXEC_MTHD_LIST_SIZE = 25;
+    public static final int MAX_EXEC_MTHD_LIST_SIZE = 25;
 
     public PackageResult(String name) {
         super(name);

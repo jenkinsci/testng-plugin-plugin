@@ -10,10 +10,12 @@ import hudson.model.AbstractBuild;
 import hudson.model.BuildListener;
 import hudson.model.FreeStyleProject;
 import hudson.model.Result;
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.junit.Test;
-import org.jvnet.hudson.test.HudsonTestCase;
-import hudson.plugins.testng.PublisherCtor;
+import org.junit.Rule;
+import org.junit.rules.TemporaryFolder;
+import org.jvnet.hudson.test.JenkinsRule;
+import org.jvnet.hudson.test.WithoutJenkins;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -23,15 +25,18 @@ import static org.mockito.Mockito.when;
  *
  * @author nullin
  */
-public class PublisherTest extends HudsonTestCase {
+public class PublisherTest {
 
+    @Rule
+    public JenkinsRule r = new JenkinsRule();
+    @Rule
+    public TemporaryFolder tmp = new TemporaryFolder();
+
+    @WithoutJenkins
     @Test
     public void testLocateReports() throws Exception {
         // Create a temporary workspace in the system
-        File w = File.createTempFile("workspace", ".test");
-        w.delete();
-        w.mkdir();
-        w.deleteOnExit();
+        File w = tmp.newFolder();
         FilePath workspace = new FilePath(w);
         // Create 4 files in the workspace
         File f1 = File.createTempFile("testng-results", ".xml", w);
@@ -68,13 +73,14 @@ public class PublisherTest extends HudsonTestCase {
         local.deleteRecursive();
     }
 
+    @WithoutJenkins
     @Test
     public void testBuildAborted() throws Exception {
         PublisherCtor publisherCtor = new PublisherCtor().setReportFilenamePattern("testng.xml")
                         .setEscapeTestDescp(false).setEscapeExceptionMsg(false).setShowFailedBuilds(false);
         Publisher publisher = publisherCtor.getNewPublisher();
         Launcher launcherMock = mock(Launcher.class);
-        AbstractBuild buildMock = mock(AbstractBuild.class);
+        AbstractBuild<?,?> buildMock = mock(AbstractBuild.class);
         BuildListener listenerMock = mock(BuildListener.class);
 
         ByteArrayOutputStream os = new ByteArrayOutputStream();
@@ -91,15 +97,15 @@ public class PublisherTest extends HudsonTestCase {
 
     @Test
     public void testRoundTrip() throws Exception {
-        FreeStyleProject p = createFreeStyleProject();
+        FreeStyleProject p = r.createFreeStyleProject();
         Publisher before = new Publisher("", false, false, true, false, 0, 0, 0, 0, 1);
         p.getPublishersList().add(before);
 
-        submit(createWebClient().getPage(p,"configure").getFormByName("config"));
+        r.submit(r.createWebClient().getPage(p,"configure").getFormByName("config"));
 
         Publisher after = p.getPublishersList().get(Publisher.class);
 
-        assertEqualBeans(before, after, "reportFilenamePattern,escapeTestDescp,escapeExceptionMsg,showFailedBuilds");
+        r.assertEqualBeans(before, after, "reportFilenamePattern,escapeTestDescp,escapeExceptionMsg,showFailedBuilds");
     }
 
 }

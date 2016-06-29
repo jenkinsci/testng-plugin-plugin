@@ -54,10 +54,11 @@ public class FormatUtil {
       }
    }
 
+   // TODO try replacing with Util.escape
    /**
-    * Replaces newline characters in string with <code>&lt;br/&gt;</code> to retain
-    * the newlines when the string is displayed in HTML
-    * It also replaces < , > , & and " characters with their corresponding html code
+    * Replaces newline characters in string with {@code <br/>} to retain
+    * the newlines when the string is displayed in HTML.
+    * It also replaces {@code <}, {@code >}, {@code &}, and {@code "} characters with their corresponding html code.
     * ref : http://www.theukwebdesigncompany.com/articles/entity-escape-characters.php
     *
     * @param str a string

@@ -105,7 +105,7 @@ public class Publisher extends Recorder {
 
       PrintStream logger = listener.getLogger();
 
-      if (build.getResult().equals(Result.ABORTED)) {
+      if (Result.ABORTED.equals(build.getResult())) {
          logger.println("Build Aborted. Not looking for any TestNG results.");
          return true;
       }

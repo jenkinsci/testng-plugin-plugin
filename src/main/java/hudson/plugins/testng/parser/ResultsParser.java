@@ -46,7 +46,7 @@ public class ResultsParser {
    /** Prints the logs to the web server's console / log files */
    private static final Logger log = Logger.getLogger(ResultsParser.class.getName());
    public static final String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss";
-   public static XmlPullParserFactory PARSER_FACTORY;
+   public static final XmlPullParserFactory PARSER_FACTORY = createParserFactory();
    private final DateFormat dateFormat;
 
    /** Build's logger to print logs as part of build's console output */
@@ -100,13 +100,15 @@ public class ResultsParser {
       }
    }
 
-   static {
+   private static XmlPullParserFactory createParserFactory() {
       try {
-         PARSER_FACTORY = XmlPullParserFactory.newInstance();
-         PARSER_FACTORY.setNamespaceAware(true);
-         PARSER_FACTORY.setValidating(false);
+         XmlPullParserFactory f = XmlPullParserFactory.newInstance();
+         f.setNamespaceAware(true);
+         f.setValidating(false);
+         return f;
       } catch (XmlPullParserException e) {
          log.severe(e.toString());
+         return null;
       }
    }
 
@@ -206,6 +208,8 @@ public class ResultsParser {
                         case FULL_STACKTRACE:
                            currentCDATAParent = TAGS.FULL_STACKTRACE;
                            break;
+                        default:
+                           log("Encountered unknown tag: '" + tag + "'");
                      }
                      break;
                   // all closing tags
@@ -248,12 +252,16 @@ public class ResultsParser {
                         case FULL_STACKTRACE:
                            currentCDATAParent = TAGS.UNKNOWN;
                            break;
+                        default:
+                           log("Encountered unknown tag: '" + tag + "'");
                      }
                      break;
                   // all cdata reading
                   case XmlPullParser.CDSECT:
                      handleCDATA();
                      break;
+                  default:
+                      // ignore others
                }
             }
             finalResults.addUniqueTests(testList);

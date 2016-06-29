@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * Represents a single TestNG XML <test> tag
+ * Represents a single TestNG XML {@code <test>} tag.
  *
  * @author nullin
  */
