@@ -526,9 +526,9 @@ public class ResultsParser {
       if (PARSER_FACTORY == null) {
          throw new XmlPullParserException("XML Parser Factory has not been initialized properly");
       }
-      XmlPullParser xmlPullParser = PARSER_FACTORY.newPullParser();
-      xmlPullParser.setInput(bufferedInputStream, null);
-      return xmlPullParser;
+      XmlPullParser parser = PARSER_FACTORY.newPullParser();
+      parser.setInput(bufferedInputStream, null);
+      return parser;
    }
 
    private void log(String str) {
