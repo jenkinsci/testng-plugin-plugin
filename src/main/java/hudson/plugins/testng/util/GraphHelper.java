@@ -1,6 +1,9 @@
 package hudson.plugins.testng.util;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import hudson.Functions;
+import hudson.model.AbstractBuild;
+import hudson.model.Run;
 import java.awt.*;
 import java.io.IOException;
 import java.text.DecimalFormat;
@@ -28,6 +31,7 @@ import org.jfree.chart.urls.CategoryURLGenerator;
 import org.jfree.data.category.CategoryDataset;
 import org.jfree.ui.RectangleEdge;
 import org.jfree.ui.RectangleInsets;
+import org.kohsuke.stapler.Stapler;
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
 
@@ -90,13 +94,13 @@ public class GraphHelper {
           public String generateURL(CategoryDataset dataset, int row, int column) {
               NumberOnlyBuildLabel label = (NumberOnlyBuildLabel) dataset.getColumnKey(column);
               String path = req.getParameter("rel");
-              return  (path == null ? "" : path) + label.build.getNumber() + "/" + PluginImpl.URL + "/";
+              return  (path == null ? "" : path) + label.getRun().getNumber() + "/" + PluginImpl.URL + "/";
           }
 
           @Override
           public String generateToolTip(CategoryDataset dataset, int row, int column) {
               NumberOnlyBuildLabel label = (NumberOnlyBuildLabel) dataset.getColumnKey(column);
-              TestNGTestResultBuildAction report = label.build.getAction(TestNGTestResultBuildAction.class);
+              TestNGTestResultBuildAction report = label.getRun().getAction(TestNGTestResultBuildAction.class);
               if (report == null) {
                  //there are no testng results associated with this build
                  return "";
@@ -226,7 +230,7 @@ public class GraphHelper {
                //no link when method result doesn't exist
                return null;
             }
-            return label.build.getUpUrl() + label.build.getNumber() + methodUrl;
+            return getUpUrl(label.getRun()) + label.getRun().getNumber() + methodUrl;
          }
       });
 
@@ -240,5 +244,10 @@ public class GraphHelper {
       plot.setInsets(new RectangleInsets(0, 0, 0, 5.0));
       return chart;
   }
+
+   /** cf. {@link AbstractBuild#getUpUrl} */
+   private static String getUpUrl(Run<?,?> run) {
+       return Functions.getNearestAncestorUrl(Stapler.getCurrentRequest(), run.getParent()) + '/';
+   }
 
 }
