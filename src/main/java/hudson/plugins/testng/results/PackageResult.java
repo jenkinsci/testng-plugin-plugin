@@ -142,7 +142,7 @@ public class PackageResult extends BaseResult {
      * @return table row representation
      */
     private String getMethodExecutionTableContent(List<MethodResult> mrList) {
-        StringBuffer sb = new StringBuffer(mrList.size() * 100);
+        StringBuilder sb = new StringBuilder(mrList.size() * 100);
 
         for (MethodResult mr : mrList) {
             sb.append("<tr><td align=\"left\">");
