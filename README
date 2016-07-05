@@ -19,6 +19,7 @@ Release Notes
 ### Upcoming
 * Added: Update to new parent POM (jglick)
 * Added: JENKINS-27121 - Pipeline compatibility (jglick)
+* Fixed: General code quality fixes (faisal-hameed)
 
 ### 1.13
 * Fixed: JENKINS-34822 - TestNG plugin has incorrect default threshold values
