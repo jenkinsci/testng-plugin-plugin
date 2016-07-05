@@ -82,7 +82,7 @@ public class MethodResultException implements Serializable {
    }
 
    public String toString() {
-      StringBuffer str = new StringBuffer();
+      StringBuilder str = new StringBuilder();
       str.append(exceptionName).append(": ");
       if (message != null) {
          str.append(message);
