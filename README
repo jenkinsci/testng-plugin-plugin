@@ -16,10 +16,11 @@ graph and all details about which tests that failed are also presented.
 Release Notes
 -------
 
-### Upcoming
+### 1.14
 * Added: Update to new parent POM (jglick)
 * Added: JENKINS-27121 - Pipeline compatibility (jglick)
 * Fixed: General code quality fixes (faisal-hameed)
+* Added: Added some basic form validation
 
 ### 1.13
 * Fixed: JENKINS-34822 - TestNG plugin has incorrect default threshold values

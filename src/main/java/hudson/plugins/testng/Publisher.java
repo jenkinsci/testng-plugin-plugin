@@ -20,11 +20,10 @@ import hudson.plugins.testng.results.TestNGResult;
 import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.BuildStepMonitor;
 import hudson.tasks.Recorder;
+import hudson.util.FormValidation;
 import jenkins.tasks.SimpleBuildStep;
 import net.sf.json.JSONObject;
-import org.kohsuke.stapler.DataBoundConstructor;
-import org.kohsuke.stapler.DataBoundSetter;
-import org.kohsuke.stapler.StaplerRequest;
+import org.kohsuke.stapler.*;
 
 /**
  * This class defines a @Publisher and @Extension
@@ -424,6 +423,38 @@ public class Publisher extends Recorder implements SimpleBuildStep {
 
       public boolean isApplicable(Class<? extends AbstractProject> aClass) {
          return true;
+      }
+
+      private FormValidation validate(String value) {
+         try {
+            int val = Integer.valueOf(value);
+            if (val < 0) {
+               return FormValidation.error("Value should be greater than 0");
+            }
+            if (val > 100) {
+               return FormValidation.ok("NOTE: value greater than 100 only make sense when Threshold Mode " +
+                       "is set to 'Number of Tests'");
+            }
+            return FormValidation.ok();
+         } catch(NumberFormatException ex) {
+            return FormValidation.error("value should be an integer");
+         }
+      }
+
+      public FormValidation doCheckUnstableSkips(@QueryParameter String value) {
+         return validate(value);
+      }
+
+      public FormValidation doCheckUnstableFails(@QueryParameter String value) {
+         return validate(value);
+      }
+
+      public FormValidation doCheckFailedSkips(@QueryParameter String value) {
+         return validate(value);
+      }
+
+      public FormValidation doCheckFailedFails(@QueryParameter String value) {
+         return validate(value);
       }
    }
 
