@@ -427,7 +427,7 @@ public class Publisher extends Recorder implements SimpleBuildStep {
 
       private FormValidation validate(String value) {
          try {
-            int val = Integer.valueOf(value);
+            int val = Integer.parseInt(value);
             if (val < 0) {
                return FormValidation.error("Value should be greater than 0");
             }
