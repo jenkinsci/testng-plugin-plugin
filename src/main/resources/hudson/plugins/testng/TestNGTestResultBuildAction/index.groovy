@@ -5,8 +5,8 @@ l = namespace(lib.LayoutTagLib)
 t = namespace("/lib/hudson")
 st = namespace("jelly:stapler")
 
-l.layout(title: "TestNG Report for Build #${my.owner.number}") {
-    st.include(page: "sidepanel.jelly", it: my.owner)
+l.layout(title: "TestNG Report for Build #${my.run.number}") {
+    st.include(page: "sidepanel.jelly", it: my.run)
     l.main_panel() {
 
         h1("${my.displayName}")

@@ -4,11 +4,11 @@
     <parent>
         <groupId>org.jenkins-ci.plugins</groupId>
         <artifactId>plugin</artifactId>
-        <version>1.554.3</version><!-- 1.545+ for JENKINS-18410 -->
+        <version>2.9</version>
     </parent>
 
     <artifactId>testng-plugin</artifactId>
-    <version>1.11-SNAPSHOT</version>
+    <version>1.15-SNAPSHOT</version>
     <packaging>hpi</packaging>
     <name>TestNG Results Plugin</name>
 
@@ -22,9 +22,44 @@
 
     <dependencies>
         <dependency>
+            <groupId>org.jenkins-ci.plugins</groupId>
+            <artifactId>junit</artifactId>
+            <version>1.2</version>
+        </dependency>
+        <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
             <version>1.8.5</version>
+            <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.hamcrest</groupId>
+                    <artifactId>hamcrest-core</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.jenkins-ci.plugins.workflow</groupId>
+            <artifactId>workflow-job</artifactId>
+            <version>1.4.3</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jenkins-ci.plugins.workflow</groupId>
+            <artifactId>workflow-cps</artifactId>
+            <version>1.4.3</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jenkins-ci.plugins.workflow</groupId>
+            <artifactId>workflow-basic-steps</artifactId>
+            <version>1.4.3</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jenkins-ci.plugins</groupId>
+            <artifactId>structs</artifactId>
+            <version>1.1</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -53,8 +88,8 @@
             <plugin>
                 <groupId>org.jenkins-ci.tools</groupId>
                 <artifactId>maven-hpi-plugin</artifactId>
-                <version>1.98</version>
                 <configuration>
+                    <!--<compatibleSinceVersion>1.11</compatibleSinceVersion>-->
                     <loggers>
                         <hudson.plugins.testng>FINER</hudson.plugins.testng>
                     </loggers>
@@ -63,9 +98,20 @@
         </plugins>
     </build>
     <properties>
-        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <project.build.outputEncoding>UTF-8</project.build.outputEncoding>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <jenkins.version>1.580.1</jenkins.version>
+        <java.level>6</java.level>
     </properties>
+    <repositories>
+        <repository>
+            <id>repo.jenkins-ci.org</id>
+            <url>http://repo.jenkins-ci.org/public/</url>
+        </repository>
+    </repositories>
+    <pluginRepositories>
+        <pluginRepository>
+            <id>repo.jenkins-ci.org</id>
+            <url>http://repo.jenkins-ci.org/public/</url>
+        </pluginRepository>
+    </pluginRepositories>
 
 </project>

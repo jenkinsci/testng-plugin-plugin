@@ -1,5 +1,6 @@
 package hudson.plugins.testng.results;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -8,7 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import hudson.model.AbstractBuild;
+import hudson.model.Run;
 import hudson.plugins.testng.util.FormatUtil;
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
@@ -18,6 +19,7 @@ import org.kohsuke.stapler.export.Exported;
 /**
  * Handles package level results
  */
+@SuppressFBWarnings(value="SE_NO_SERIALVERSIONID", justification="XStream does not care")
 @SuppressWarnings("serial")
 public class PackageResult extends BaseResult {
 
@@ -37,17 +39,17 @@ public class PackageResult extends BaseResult {
     private transient int pass;
 
     // Maximum size of methods in the method execution list
-    public final int MAX_EXEC_MTHD_LIST_SIZE = 25;
+    public static final int MAX_EXEC_MTHD_LIST_SIZE = 25;
 
     public PackageResult(String name) {
         super(name);
     }
 
     @Override
-    public void setOwner(AbstractBuild<?, ?> owner) {
-        super.setOwner(owner);
+    public void setRun(Run<?, ?> run) {
+        super.setRun(run);
         for (ClassResult _class : classList) {
-            _class.setOwner(owner);
+            _class.setRun(run);
         }
     }
 
@@ -140,7 +142,7 @@ public class PackageResult extends BaseResult {
      * @return table row representation
      */
     private String getMethodExecutionTableContent(List<MethodResult> mrList) {
-        StringBuffer sb = new StringBuffer(mrList.size() * 100);
+        StringBuilder sb = new StringBuilder(mrList.size() * 100);
 
         for (MethodResult mr : mrList) {
             sb.append("<tr><td align=\"left\">");

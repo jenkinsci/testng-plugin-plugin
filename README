@@ -16,6 +16,21 @@ graph and all details about which tests that failed are also presented.
 Release Notes
 -------
 
+### 1.14
+* Added: Update to new parent POM (jglick)
+* Added: JENKINS-27121 - Pipeline compatibility (jglick)
+* Fixed: General code quality fixes (faisal-hameed)
+* Added: Added some basic form validation
+
+### 1.13
+* Fixed: JENKINS-34822 - TestNG plugin has incorrect default threshold values
+
+### 1.12
+* Fixed: JENKINS-34711 - NullPointerException after Update to 1.11 of plugin
+
+### 1.11
+* Added: Add ability to configure failed/skipped test thresholds (ChrisEverling) (see JENKINS-20985)
+
 ### 1.10
 * Upped compatible Jenkins version to v1.554.3
 * Added: MIT license

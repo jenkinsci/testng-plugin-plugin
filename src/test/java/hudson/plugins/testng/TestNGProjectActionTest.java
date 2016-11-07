@@ -10,9 +10,10 @@ import hudson.model.FreeStyleProject;
 import hudson.plugins.testng.util.TestResultHistoryUtil;
 import hudson.tasks.test.AbstractTestResultAction;
 import hudson.tasks.test.TestResult;
-import junit.framework.Assert;
+import org.junit.Assert;
+import org.junit.Rule;
 import org.junit.Test;
-import org.jvnet.hudson.test.HudsonTestCase;
+import org.jvnet.hudson.test.JenkinsRule;
 import org.jvnet.hudson.test.TestBuilder;
 
 /**
@@ -20,7 +21,10 @@ import org.jvnet.hudson.test.TestBuilder;
  *
  * @author nullin
  */
-public class TestNGProjectActionTest extends HudsonTestCase {
+public class TestNGProjectActionTest {
+
+    @Rule
+    public JenkinsRule r = new JenkinsRule();
 
     /**
      * Test:
@@ -36,14 +40,16 @@ public class TestNGProjectActionTest extends HudsonTestCase {
      */
     @Test
     public void testSettings() throws Exception {
-        FreeStyleProject p = createFreeStyleProject();
-        PublisherCtor publisherCtor = new PublisherCtor().setReportFilenamePattern("some.xml")
-                        .setEscapeTestDescp(false).setEscapeExceptionMsg(true);
-        Publisher publisher = publisherCtor.getNewPublisher();
+        FreeStyleProject p = r.createFreeStyleProject();
+        Publisher publisher = new Publisher();
+        publisher.setReportFilenamePattern("some.xml");
+        publisher.setEscapeTestDescp(false);
+        publisher.setEscapeExceptionMsg(true);
         p.getPublishersList().add(publisher);
         p.onCreatedFromScratch(); //to setup project action
 
         p.getBuildersList().add(new TestBuilder() {
+            @Override
             public boolean perform(AbstractBuild<?, ?> build, Launcher launcher,
                 BuildListener listener) throws InterruptedException, IOException {
                 //any testng xml will do

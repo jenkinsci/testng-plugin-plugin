@@ -3,7 +3,7 @@ package hudson.plugins.testng.results;
 import java.io.IOException;
 import java.util.*;
 
-import hudson.model.AbstractBuild;
+import hudson.model.Run;
 import hudson.plugins.testng.TestNGTestResultBuildAction;
 import hudson.plugins.testng.util.GraphHelper;
 import hudson.tasks.test.TestResult;
@@ -102,7 +102,7 @@ public class MethodResult extends BaseResult {
     }
 
     /**
-     * @return name of the <test> tag that this method is part of
+     * @return name of the {@code <test>} tag that this method is part of
      */
     public String getParentTestName() {
         return parentTestName;
@@ -276,7 +276,7 @@ public class MethodResult extends BaseResult {
      * @return a graph
      */
     private hudson.util.Graph getGraph(final StaplerRequest req, StaplerResponse rsp) {
-        Calendar t = getOwner().getProject().getLastCompletedBuild().getTimestamp();
+        Calendar t = getRun().getParent().getLastCompletedBuild().getTimestamp();
         if (req.checkIfModified(t, rsp)) {
             return null;
         }
@@ -309,10 +309,10 @@ public class MethodResult extends BaseResult {
             DataSetBuilder<String, ChartUtil.NumberOnlyBuildLabel> dataSetBuilder,
             Map<ChartUtil.NumberOnlyBuildLabel, String> statusMap) {
         int count = 0;
-        for (AbstractBuild<?, ?> build = getOwner(); build != null; build = build.getNextBuild()) {
+        for (Run<?, ?> build = getRun(); build != null; build = build.getNextBuild()) {
             addData(dataSetBuilder, statusMap, build);
         }
-        for (AbstractBuild<?, ?> build = getOwner();
+        for (Run<?, ?> build = getRun();
              build != null && count++ < 10;
              //getting running builds as well (will deal accordingly)
              build = build.getPreviousBuild()) {
@@ -322,7 +322,7 @@ public class MethodResult extends BaseResult {
 
     private void addData(DataSetBuilder<String, ChartUtil.NumberOnlyBuildLabel> dataSetBuilder,
                          Map<ChartUtil.NumberOnlyBuildLabel, String> statusMap,
-                         AbstractBuild<?, ?> build) {
+                         Run<?, ?> build) {
         ChartUtil.NumberOnlyBuildLabel label = new ChartUtil.NumberOnlyBuildLabel(build);
         TestNGTestResultBuildAction action = build.getAction(TestNGTestResultBuildAction.class);
         TestNGResult results;
