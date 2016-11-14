@@ -433,7 +433,7 @@ public class MethodResult extends BaseResult {
         } else {
         	String buildNum = Integer.toString(getOwner().getNumber());
             String methodName = getName();
-            url = "http://10.10.1.146:8080/api/RedirectToJenkinsTestLog?environment=" + environment + "&build=" + buildNum + "&method=" + methodName + "&project=" + jobName;
+            url = "http://qf-dresden:8080/api/RedirectToJenkinsTestLog?environment=" + environment + "&build=" + buildNum + "&method=" + methodName + "&project=" + jobName;
         }
         
         return url;
