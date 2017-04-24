@@ -10,6 +10,8 @@ import hudson.model.FreeStyleProject;
 import hudson.plugins.testng.util.TestResultHistoryUtil;
 import hudson.tasks.test.AbstractTestResultAction;
 import hudson.tasks.test.TestResult;
+import hudson.util.ChartUtil;
+import hudson.util.DataSetBuilder;
 import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
@@ -77,5 +79,52 @@ public class TestNGProjectActionTest {
 
         String summary = TestResultHistoryUtil.toSummary(projAction.getLastCompletedBuildAction());
         Assert.assertTrue(summary.contains("gov.nasa.jpl.FoobarTests.b"));
+    }
+
+    @Test
+    // For JENKINS-32746: TestNG Results Trend graph doesn't show all build results
+    public void testHistoryRemoval() throws Exception {
+        FreeStyleProject p = r.createFreeStyleProject();
+        Publisher publisher = new Publisher();
+        publisher.setReportFilenamePattern("some.xml");
+        publisher.setEscapeTestDescp(false);
+        publisher.setEscapeExceptionMsg(true);
+        p.getPublishersList().add(publisher);
+        p.onCreatedFromScratch(); //to setup project action
+
+        p.getBuildersList().add(new TestBuilder() {
+            @Override
+            public boolean perform(AbstractBuild<?, ?> build, Launcher launcher,
+                BuildListener listener) throws InterruptedException, IOException {
+                //any testng xml will do
+                String contents = CommonUtil.getContents(Constants.TESTNG_XML_EXP_MSG_XML);
+                build.getWorkspace().child("some.xml").write(contents,"UTF-8");
+                return true;
+            }
+        });
+
+        //run build
+        int buildNumber = 5;
+        FreeStyleBuild[] builds = new FreeStyleBuild[buildNumber];
+        for (int i = 0; i < buildNumber; i++) {
+            builds[i] = p.scheduleBuild2(0).get();
+        }
+
+        TestNGProjectAction action = p.getAction(TestNGProjectAction.class);
+
+        DataSetBuilder<String, ChartUtil.NumberOnlyBuildLabel> dataSetBuilder = new DataSetBuilder<String, ChartUtil.NumberOnlyBuildLabel>();
+        action.populateDataSetBuilder(dataSetBuilder);
+
+        Assert.assertEquals(buildNumber, dataSetBuilder.build().getColumnCount());
+
+        int[] buildsToRemove = { 2, 3 };
+        for (int buildToRemove : buildsToRemove) {
+            builds[buildToRemove].delete();
+        }
+
+        dataSetBuilder = new DataSetBuilder<String, ChartUtil.NumberOnlyBuildLabel>();
+        action.populateDataSetBuilder(dataSetBuilder);
+
+        Assert.assertEquals((buildNumber - buildsToRemove.length), dataSetBuilder.build().getColumnCount());
     }
 }
