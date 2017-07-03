@@ -204,12 +204,20 @@ public class TestNGTestResultBuildAction extends AbstractTestResultAction implem
                 return methodResult.getClassName();
             }
 
+            public String getPackageName() {
+                return methodResult.getPackageName();
+            }
+
             public String getDisplayName() {
                 return methodResult.getDisplayName();
             }
 
             public String getErrorDetails() {
                 return methodResult.getErrorDetails();
+            }
+
+            public int getAge() {
+                return (int) methodResult.getFailAge();
             }
         }
 
