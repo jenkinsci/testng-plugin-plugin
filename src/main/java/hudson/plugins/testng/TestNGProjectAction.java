@@ -13,8 +13,9 @@ import hudson.plugins.testng.util.GraphHelper;
 import hudson.tasks.test.TestResultProjectAction;
 import hudson.util.ChartUtil;
 import hudson.util.DataSetBuilder;
-import java.util.Set;
+import java.util.SortedMap;
 import jenkins.model.lazy.LazyBuildMixIn;
+import jenkins.model.lazy.LazyBuildMixIn.LazyLoadingJob;
 import org.jfree.chart.JFreeChart;
 import org.kohsuke.stapler.Stapler;
 import org.kohsuke.stapler.StaplerRequest;
@@ -195,9 +196,10 @@ public class TestNGProjectAction extends TestResultProjectAction implements Prom
       if (!(job instanceof LazyBuildMixIn.LazyLoadingJob)) {
          return;
       }
-      Set<Integer> loadedBuilds = ((LazyBuildMixIn.LazyLoadingJob<?,?>) job).getLazyBuildMixIn()._getRuns().getLoadedBuilds().keySet(); // cf. AbstractTestResultAction.getPreviousResult(Class, false)
-      for (Run<?, ?> build = getProject().getLastBuild();
-         build != null; build = loadedBuilds.contains(build.number - 1) ? build.getPreviousCompletedBuild() : null) {
+
+      // cf. AbstractTestResultAction.getPreviousResult(Class, false)
+      SortedMap<Integer, Run<?, ?>> loadedBuilds = (SortedMap<Integer, Run<?, ?>>) ((LazyLoadingJob<?,?>) job).getLazyBuildMixIn()._getRuns().getLoadedBuilds();
+      for (Run<?, ?> build : loadedBuilds.values()) {
          ChartUtil.NumberOnlyBuildLabel label = new ChartUtil.NumberOnlyBuildLabel(build);
          TestNGTestResultBuildAction action = build.getAction(getBuildActionClass());
 
