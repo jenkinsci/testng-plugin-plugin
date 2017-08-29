@@ -9,7 +9,10 @@ import net.sf.json.JSONObject;
 
 import hudson.Functions;
 import hudson.model.AbstractBuild;
+
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 import java.util.SortedMap;
 
 import org.kohsuke.stapler.Stapler;
@@ -100,20 +103,6 @@ public class TestNGProjectAction extends TestResultProjectAction implements Prom
         return Functions.getNearestAncestorUrl(Stapler.getCurrentRequest(), job) + '/';
     }
 
-    /**
-    * If the last build is the same,
-    * no need to regenerate the graph. Browser should reuse it's cached image
-    *
-    * @param req request
-    * @param rsp response
-    * @return true, if new image does NOT need to be generated, false otherwise
-    */
-   private boolean newGraphNotNeeded(final StaplerRequest req,
-         StaplerResponse rsp) {
-      Calendar t = getProject().getLastCompletedBuild().getTimestamp();
-      return req.checkIfModified(t, rsp);
-   }
-
    /**
     * Returns <code>true</code> if there is a graph to plot.
     *
@@ -158,9 +147,14 @@ public class TestNGProjectAction extends TestResultProjectAction implements Prom
       int count = 0;
 
       SortedMap<Integer, Run<?, ?>> loadedBuilds = (SortedMap<Integer, Run<?, ?>>) ((LazyBuildMixIn.LazyLoadingJob<?,?>) job).getLazyBuildMixIn()._getRuns().getLoadedBuilds();
+      List<Run<?, ?>> buildList = new ArrayList(loadedBuilds.values());
       Run<?, ?> build;
-      for (int i = 0; i < loadedBuilds.size() && count++ < 25; i++) {
-         build = loadedBuilds.get(i);
+      for (int i = 0; i < buildList.size() && count++ < 25; i++) {
+         build = buildList.get(i);
+         if (build == null) {
+             //Non-existent build! Skip.
+             continue;
+         }
          TestNGTestResultBuildAction action = build.getAction(getBuildActionClass());
 
          if (build.getResult() == null || build.getResult().isWorseThan(Result.FAILURE)) {
