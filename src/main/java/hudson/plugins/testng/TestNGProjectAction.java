@@ -11,13 +11,10 @@ import hudson.Functions;
 import hudson.model.AbstractBuild;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 import java.util.SortedMap;
 
 import org.kohsuke.stapler.Stapler;
-import org.kohsuke.stapler.StaplerRequest;
-import org.kohsuke.stapler.StaplerResponse;
 
 /**
  * Action to associate the TestNG reports with the project
@@ -135,7 +132,7 @@ public class TestNGProjectAction extends TestResultProjectAction implements Prom
       return null;
    }
 
-   public String getChartJson() {
+   public JSONObject getChartData() {
       JSONObject jsonObject = new JSONObject();
       JSONArray passes = new JSONArray();
       JSONArray fails = new JSONArray();
@@ -177,6 +174,10 @@ public class TestNGProjectAction extends TestResultProjectAction implements Prom
       jsonObject.put("buildNum", buildNum);
       jsonObject.put("duration", durations);
       jsonObject.put("buildStatus", buildStatus);
-      return jsonObject.toString();
+      return jsonObject;
+   }
+   
+   public String getChartJson() {
+       return getChartData().toString();
    }
 }

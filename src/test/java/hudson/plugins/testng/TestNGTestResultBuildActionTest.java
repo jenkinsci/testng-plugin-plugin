@@ -73,7 +73,9 @@ public class TestNGTestResultBuildActionTest {
         TestNGResult testngResult = (TestNGResult) build.getAction(AbstractTestResultAction.class).getResult();
 
         //Get page
-        HtmlPage page = r.createWebClient().goTo(build.getUrl() + PluginImpl.URL);
+        JenkinsRule.WebClient wc = r.createWebClient();
+        wc.getOptions().setThrowExceptionOnScriptError(false);
+        HtmlPage page = wc.goTo(build.getUrl() + PluginImpl.URL);
 
         //make sure no cell is empty
         List<HtmlElement> elements = DomNodeUtil.selectNodes(page, "//table[substring(@id, string-length(@id)- string-length('-tbl') +1)]/*/tr/td");
@@ -172,7 +174,9 @@ public class TestNGTestResultBuildActionTest {
         TestNGResult testngResult = (TestNGResult) build.getAction(AbstractTestResultAction.class).getResult();
 
         //Get page
-        HtmlPage page = r.createWebClient().goTo(build.getUrl() + PluginImpl.URL);
+        JenkinsRule.WebClient wc = r.createWebClient();
+        wc.getOptions().setThrowExceptionOnScriptError(false);
+        HtmlPage page = wc.goTo(build.getUrl() + PluginImpl.URL);
 
         //make sure no cell is empty
         List<HtmlElement> elements = DomNodeUtil.selectNodes(page, "//table[substring(@id, string-length(@id)- string-length('-tbl') +1)]/*/tr/td");

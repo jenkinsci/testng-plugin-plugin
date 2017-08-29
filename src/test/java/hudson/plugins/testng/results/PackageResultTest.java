@@ -74,7 +74,9 @@ public class PackageResultTest {
         //Get page
         String urlPrefix = build.getUrl() + PluginImpl.URL;
 
-        HtmlPage page = r.createWebClient().goTo(urlPrefix + "/precheckins");
+        JenkinsRule.WebClient wc = r.createWebClient();
+        wc.getOptions().setThrowExceptionOnScriptError(false);
+        HtmlPage page = wc.goTo(urlPrefix + "/precheckins");
 
         List<HtmlElement> elements = DomNodeUtil.selectNodes(page, "//table[@id='allClasses']/tbody/tr/td/a");
 
@@ -180,7 +182,9 @@ public class PackageResultTest {
 
         //Get page
         String urlPrefix = build.getUrl() + PluginImpl.URL;
-        HtmlPage page = r.createWebClient().goTo(urlPrefix + "/my.package");
+        JenkinsRule.WebClient wc = r.createWebClient();
+        wc.getOptions().setThrowExceptionOnScriptError(false);
+        HtmlPage page = wc.goTo(urlPrefix + "/my.package");
 
         //verify only first 25 methods are shown
         assertNull(page.getElementById("showAllLink"));

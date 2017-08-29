@@ -12,6 +12,8 @@ import hudson.tasks.test.AbstractTestResultAction;
 import hudson.tasks.test.TestResult;
 import hudson.util.ChartUtil;
 import hudson.util.DataSetBuilder;
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
 import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
@@ -112,20 +114,15 @@ public class TestNGProjectActionTest {
 
         TestNGProjectAction action = p.getAction(TestNGProjectAction.class);
 
-        //TODO test for JS charts
-//        DataSetBuilder<String, ChartUtil.NumberOnlyBuildLabel> dataSetBuilder = new DataSetBuilder<String, ChartUtil.NumberOnlyBuildLabel>();
-//        action.populateDataSetBuilder(dataSetBuilder);
-//
-//        Assert.assertEquals(buildNumber, dataSetBuilder.build().getColumnCount());
-//
-//        int[] buildsToRemove = { 2, 3 };
-//        for (int buildToRemove : buildsToRemove) {
-//            builds[buildToRemove].delete();
-//        }
-//
-//        dataSetBuilder = new DataSetBuilder<String, ChartUtil.NumberOnlyBuildLabel>();
-//        action.populateDataSetBuilder(dataSetBuilder);
-//
-//        Assert.assertEquals((buildNumber - buildsToRemove.length), dataSetBuilder.build().getColumnCount());
+        JSONObject chartJson = action.getChartData();
+        Assert.assertEquals(buildNumber, ((JSONArray) chartJson.get("buildNum")).size());
+
+        int[] buildsToRemove = { 2, 3 };
+        for (int buildToRemove : buildsToRemove) {
+            builds[buildToRemove].delete();
+        }
+    
+        chartJson = action.getChartData();
+        Assert.assertEquals((buildNumber - buildsToRemove.length), ((JSONArray) chartJson.get("buildNum")).size());
     }
 }
