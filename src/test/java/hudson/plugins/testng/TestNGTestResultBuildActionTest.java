@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import com.gargoylesoftware.htmlunit.html.DomNodeUtil;
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import hudson.Launcher;
@@ -19,9 +20,16 @@ import hudson.plugins.testng.results.MethodResult;
 import hudson.plugins.testng.results.PackageResult;
 import hudson.plugins.testng.results.TestNGResult;
 import hudson.tasks.test.AbstractTestResultAction;
-import junit.framework.Assert;
+import org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition;
+import org.jenkinsci.plugins.workflow.job.WorkflowJob;
+import org.jenkinsci.plugins.workflow.job.WorkflowRun;
+import static org.junit.Assert.*;
+import org.junit.ClassRule;
+import org.junit.Rule;
 import org.junit.Test;
-import org.jvnet.hudson.test.HudsonTestCase;
+import org.jvnet.hudson.test.BuildWatcher;
+import org.jvnet.hudson.test.Issue;
+import org.jvnet.hudson.test.JenkinsRule;
 import org.jvnet.hudson.test.TestBuilder;
 
 /**
@@ -29,7 +37,13 @@ import org.jvnet.hudson.test.TestBuilder;
  *
  * @author nullin
  */
-public class TestNGTestResultBuildActionTest extends HudsonTestCase {
+public class TestNGTestResultBuildActionTest {
+
+    @ClassRule
+    public static BuildWatcher buildWatcher = new BuildWatcher();
+
+    @Rule
+    public JenkinsRule r = new JenkinsRule();
 
     /**
      * Test using precheckins xml
@@ -38,13 +52,14 @@ public class TestNGTestResultBuildActionTest extends HudsonTestCase {
      */
     @Test
     public void testBuildAction_1() throws Exception {
-        FreeStyleProject p = createFreeStyleProject();
-        PublisherCtor publisherCtor = new PublisherCtor().setReportFilenamePattern("testng.xml");
-        Publisher publisher = publisherCtor.getNewPublisher();
+        FreeStyleProject p = r.createFreeStyleProject();
+        Publisher publisher = new Publisher();
+        publisher.setReportFilenamePattern("testng.xml");
         p.getPublishersList().add(publisher);
         p.onCreatedFromScratch(); //to setup project action
 
         p.getBuildersList().add(new TestBuilder() {
+            @Override
             public boolean perform(AbstractBuild<?, ?> build, Launcher launcher,
                 BuildListener listener) throws InterruptedException, IOException {
                 String contents = CommonUtil.getContents(Constants.TESTNG_XML_PRECHECKINS);
@@ -58,51 +73,50 @@ public class TestNGTestResultBuildActionTest extends HudsonTestCase {
         TestNGResult testngResult = (TestNGResult) build.getAction(AbstractTestResultAction.class).getResult();
 
         //Get page
-        WebClient webClient = createWebClient();
-        webClient.setThrowExceptionOnScriptError(false);
-        HtmlPage page = webClient.goTo(build.getUrl() + PluginImpl.URL);
+        HtmlPage page = r.createWebClient().goTo(build.getUrl() + PluginImpl.URL);
 
         //make sure no cell is empty
-        List<HtmlElement> elements = page.selectNodes("//table[substring(@id, string-length(@id)- string-length('-tbl') +1)]/*/tr/td");
+        List<HtmlElement> elements = DomNodeUtil.selectNodes(page, "//table[substring(@id, string-length(@id)- string-length('-tbl') +1)]/*/tr/td");
         for (HtmlElement element : elements) {
             assertTrue(!element.getTextContent().isEmpty());
         }
 
         //ensure only one failed test
         //there are three links in the cell, we pick the one without any id attr
-        elements = page.selectNodes("//table[@id='fail-tbl']/tbody/tr/td/a[not(@id)]");
+        elements = DomNodeUtil.selectNodes(page, "//table[@id='fail-tbl']/tbody/tr/td/a[not(@id)]");
         assertEquals(2, elements.size());
+
         MethodResult mr = testngResult.getFailedTests().get(0);
-        assertEquals(super.getURL() + mr.getOwner().getUrl() + mr.getId(),
+        assertEquals(r.getURL() + mr.getRun().getUrl() + mr.getId(),
                 elements.get(0).getAttribute("href"));
         assertEquals(((ClassResult)mr.getParent()).getCanonicalName() + "." + mr.getName(),
                 elements.get(0).getTextContent());
 
         //ensure only one failed config method
-        elements = page.selectNodes("//table[@id='fail-config-tbl']/tbody/tr/td/a");
+        elements = DomNodeUtil.selectNodes(page, "//table[@id='fail-config-tbl']/tbody/tr/td/a");
         //asserting to 3, because a link for >>>, one for <<< and another for the method itself
         assertEquals(3, elements.size());
         mr = testngResult.getFailedConfigs().get(0);
-        assertEquals(super.getURL() + mr.getOwner().getUrl() + mr.getId(),
+        assertEquals(r.getURL() + mr.getRun().getUrl() + mr.getId(),
                 elements.get(2).getAttribute("href"));
         assertEquals(((ClassResult)mr.getParent()).getCanonicalName() + "." + mr.getName(),
                 elements.get(2).getTextContent());
 
         //ensure only one skipped test method
-        elements = page.selectNodes("//table[@id='skip-tbl']/tbody/tr/td/a");
+        elements = DomNodeUtil.selectNodes(page, "//table[@id='skip-tbl']/tbody/tr/td/a");
         assertEquals(1, elements.size());
         mr = testngResult.getSkippedTests().get(0);
-        assertEquals(super.getURL() + mr.getOwner().getUrl() + mr.getId(),
+        assertEquals(r.getURL() + mr.getRun().getUrl() + mr.getId(),
                 elements.get(0).getAttribute("href"));
         assertEquals(((ClassResult)mr.getParent()).getCanonicalName() + "." + mr.getName(),
                 elements.get(0).getTextContent());
 
         //ensure no skipped config
-        elements = page.selectNodes("//table[@id='skip-config-tbl']");
+        elements = DomNodeUtil.selectNodes(page, "//table[@id='skip-config-tbl']");
         assertEquals(0, elements.size());
 
         //check list of packages and links
-        elements = page.selectNodes("//table[@id='all-tbl']/tbody/tr/td/a");
+        elements = DomNodeUtil.selectNodes(page, "//table[@id='all-tbl']/tbody/tr/td/a");
         Map<String, PackageResult> pkgMap = testngResult.getPackageMap();
         assertEquals(pkgMap.keySet().size(), elements.size());
 
@@ -119,14 +133,15 @@ public class TestNGTestResultBuildActionTest extends HudsonTestCase {
         }
         Collections.sort(linksFromResult);
         assertEquals(linksFromResult, linksInPage);
-
+        
         //verify pie
-        HtmlElement element = page.getElementById("fail-skip");
-        assertStringContains(element.getTextContent(), "1 failure");
+        HtmlElement element = page.getElementById("fail-skip", true);
+        r.assertStringContains(element.getTextContent(), "1 failure");
+
         assertFalse(element.getTextContent().contains("failures"));
-        assertStringContains(element.getTextContent(), "1 skipped");
-        element = page.getElementById("pass");
-        assertStringContains(element.getTextContent(), "38 tests");
+        r.assertStringContains(element.getTextContent(), "1 skipped");
+        element = page.getElementById("pass", true);
+        r.assertStringContains(element.getTextContent(), "38 tests");
     }
 
     /**
@@ -136,13 +151,14 @@ public class TestNGTestResultBuildActionTest extends HudsonTestCase {
      */
     @Test
     public void testBuildAction_2() throws Exception {
-        FreeStyleProject p = createFreeStyleProject();
-        PublisherCtor publisherCtor = new PublisherCtor().setReportFilenamePattern("testng.xml");
-        Publisher publisher = publisherCtor.getNewPublisher();
+        FreeStyleProject p = r.createFreeStyleProject();
+        Publisher publisher = new Publisher();
+        publisher.setReportFilenamePattern("testng.xml");
         p.getPublishersList().add(publisher);
         p.onCreatedFromScratch(); //to setup project action
 
         p.getBuildersList().add(new TestBuilder() {
+            @Override
             public boolean perform(AbstractBuild<?, ?> build, Launcher launcher,
                 BuildListener listener) throws InterruptedException, IOException {
                 String contents = CommonUtil.getContents(Constants.TESTNG_XML_TESTNG);
@@ -156,34 +172,32 @@ public class TestNGTestResultBuildActionTest extends HudsonTestCase {
         TestNGResult testngResult = (TestNGResult) build.getAction(AbstractTestResultAction.class).getResult();
 
         //Get page
-        WebClient webClient = createWebClient();
-        webClient.setThrowExceptionOnScriptError(false);
-        HtmlPage page = webClient.goTo(build.getUrl() + PluginImpl.URL);
+        HtmlPage page = r.createWebClient().goTo(build.getUrl() + PluginImpl.URL);
 
         //make sure no cell is empty
-        List<HtmlElement> elements = page.selectNodes("//table[substring(@id, string-length(@id)- string-length('-tbl') +1)]/*/tr/td");
+        List<HtmlElement> elements = DomNodeUtil.selectNodes(page, "//table[substring(@id, string-length(@id)- string-length('-tbl') +1)]/*/tr/td");
         for (HtmlElement element : elements) {
             assertTrue(!element.getTextContent().isEmpty());
         }
 
         //ensure only one failed test
-        elements = page.selectNodes("//table[@id='fail-tbl']");
+        elements = DomNodeUtil.selectNodes(page, "//table[@id='fail-tbl']");
         assertEquals(0, elements.size());
 
         //ensure only one failed config method
-        elements = page.selectNodes("//table[@id='fail-config-tbl']");
+        elements = DomNodeUtil.selectNodes(page, "//table[@id='fail-config-tbl']");
         assertEquals(0, elements.size());
 
         //ensure only one skipped test method
-        elements = page.selectNodes("//table[@id='skip-tbl']");
+        elements = DomNodeUtil.selectNodes(page, "//table[@id='skip-tbl']");
         assertEquals(0, elements.size());
 
         //ensure no skipped config
-        elements = page.selectNodes("//table[@id='skip-config-tbl']");
+        elements = DomNodeUtil.selectNodes(page, "//table[@id='skip-config-tbl']");
         assertEquals(0, elements.size());
 
         //check list of packages and links
-        elements = page.selectNodes("//table[@id='all-tbl']/tbody/tr/td/a");
+        elements = DomNodeUtil.selectNodes(page, "//table[@id='all-tbl']/tbody/tr/td/a");
         Map<String, PackageResult> pkgMap = testngResult.getPackageMap();
         assertEquals(pkgMap.keySet().size(), elements.size());
 
@@ -202,26 +216,28 @@ public class TestNGTestResultBuildActionTest extends HudsonTestCase {
         Collections.sort(linksFromResult);
         assertEquals(linksFromResult, linksInPage);
         assertTrue(linksInPage.contains("No Package"));
-
+        
         //verify pie
-        HtmlElement element = page.getElementById("fail-skip");
-        assertStringContains(element.getTextContent(), "0 failures");
+        HtmlElement element = page.getElementById("fail-skip", true);
+        r.assertStringContains(element.getTextContent(), "0 failures");
+
         assertFalse(element.getTextContent().contains("skipped"));
-        element = page.getElementById("pass");
-        assertStringContains(element.getTextContent(), "526 tests");
+        element = page.getElementById("pass", true);
+        r.assertStringContains(element.getTextContent(), "526 tests");
     }
 
     @Test
     public void test_failed_config_default_setting() throws Exception {
-        FreeStyleProject p = createFreeStyleProject();
-        PublisherCtor publisherCtor = new PublisherCtor().setReportFilenamePattern("testng.xml");
-        publisherCtor.setFailedSkips(100); //these prevent the skip that results from config failure from determining result
-        publisherCtor.setUnstableSkips(100);
-        Publisher publisher = publisherCtor.getNewPublisher();
+        FreeStyleProject p = r.createFreeStyleProject();
+        Publisher publisher = new Publisher();
+        publisher.setReportFilenamePattern("testng.xml");
+        publisher.setFailedSkips(100); //these prevent the skip that results from config failure from determining result
+        publisher.setUnstableSkips(100);
         p.getPublishersList().add(publisher);
         p.onCreatedFromScratch(); //to setup project action
 
         p.getBuildersList().add(new TestBuilder() {
+            @Override
             public boolean perform(AbstractBuild<?, ?> build, Launcher launcher,
                                    BuildListener listener) throws InterruptedException, IOException {
                 String contents = CommonUtil.getContents(Constants.TESTNG_FAILED_TEST_CONFIG);
@@ -232,21 +248,22 @@ public class TestNGTestResultBuildActionTest extends HudsonTestCase {
 
         //run build
         FreeStyleBuild build = p.scheduleBuild2(0).get();
-        Assert.assertSame(Result.SUCCESS, build.getResult());
+        assertSame(Result.SUCCESS, build.getResult());
     }
 
     @Test
     public void test_failed_config_enabled_failedbuild() throws Exception {
-        FreeStyleProject p = createFreeStyleProject();
-        PublisherCtor publisherCtor = new PublisherCtor().setReportFilenamePattern("testng.xml")
-                .setFailureOnFailedTestConfig(true);
-        publisherCtor.setFailedSkips(10); //these prevent the skip that results from config failure from determining result
-        publisherCtor.setUnstableSkips(10);
-        Publisher publisher = publisherCtor.getNewPublisher();
+        FreeStyleProject p = r.createFreeStyleProject();
+        Publisher publisher = new Publisher();
+        publisher.setReportFilenamePattern("testng.xml");
+        publisher.setFailureOnFailedTestConfig(true);
+        publisher.setFailedSkips(10); //these prevent the skip that results from config failure from determining result
+        publisher.setUnstableSkips(10);
         p.getPublishersList().add(publisher);
         p.onCreatedFromScratch(); //to setup project action
 
         p.getBuildersList().add(new TestBuilder() {
+            @Override
             public boolean perform(AbstractBuild<?, ?> build, Launcher launcher,
                                    BuildListener listener) throws InterruptedException, IOException {
                 String contents = CommonUtil.getContents(Constants.TESTNG_FAILED_TEST_CONFIG);
@@ -257,17 +274,18 @@ public class TestNGTestResultBuildActionTest extends HudsonTestCase {
 
         //run build
         FreeStyleBuild build = p.scheduleBuild2(0).get();
-        Assert.assertSame(Result.FAILURE, build.getResult());
+        assertSame(Result.FAILURE, build.getResult());
     }
     @Test
     public void test_threshold_for_skips_default() throws Exception {
-       FreeStyleProject p = createFreeStyleProject();
-       PublisherCtor publisherCtor = new PublisherCtor().setReportFilenamePattern("testng.xml");
-       Publisher publisher = publisherCtor.getNewPublisher();
+       FreeStyleProject p = r.createFreeStyleProject();
+       Publisher publisher = new Publisher();
+       publisher.setReportFilenamePattern("testng.xml");
        p.getPublishersList().add(publisher);
        p.onCreatedFromScratch(); //to setup project action
 
        p.getBuildersList().add(new TestBuilder() {
+          @Override
           public boolean perform(AbstractBuild<?, ?> build, Launcher launcher,
                                  BuildListener listener) throws InterruptedException, IOException {
              String contents = CommonUtil.getContents(Constants.TESTNG_SKIPPED_TEST);
@@ -278,19 +296,21 @@ public class TestNGTestResultBuildActionTest extends HudsonTestCase {
 
        //run build
        FreeStyleBuild build = p.scheduleBuild2(0).get();
-       Assert.assertSame(Result.SUCCESS, build.getResult());
+       assertSame(Result.SUCCESS, build.getResult());
     }
     
    @Test
    public void test_threshold_for_skips_failure() throws Exception {
-      FreeStyleProject p = createFreeStyleProject();
-      PublisherCtor publisherCtor = new PublisherCtor().setReportFilenamePattern("testng.xml")
-            .setFailedSkips(100).setUnstableSkips(100);
-      Publisher publisher = publisherCtor.getNewPublisher();
+      FreeStyleProject p = r.createFreeStyleProject();
+      Publisher publisher = new Publisher();
+      publisher.setReportFilenamePattern("testng.xml");
+      publisher.setFailedSkips(100);
+      publisher.setUnstableSkips(100);
       p.getPublishersList().add(publisher);
       p.onCreatedFromScratch(); //to setup project action
 
       p.getBuildersList().add(new TestBuilder() {
+         @Override
          public boolean perform(AbstractBuild<?, ?> build, Launcher launcher,
                                 BuildListener listener) throws InterruptedException, IOException {
             String contents = CommonUtil.getContents(Constants.TESTNG_SKIPPED_TEST);
@@ -301,19 +321,21 @@ public class TestNGTestResultBuildActionTest extends HudsonTestCase {
 
       //run build
       FreeStyleBuild build = p.scheduleBuild2(0).get();
-      Assert.assertSame(Result.SUCCESS, build.getResult());
+      assertSame(Result.SUCCESS, build.getResult());
    }
 
    @Test
    public void test_threshold_for_skips_unstable() throws Exception {
-      FreeStyleProject p = createFreeStyleProject();
-      PublisherCtor publisherCtor = new PublisherCtor().setReportFilenamePattern("testng.xml")
-            .setUnstableSkips(0).setFailedSkips(100);
-      Publisher publisher = publisherCtor.getNewPublisher();
+      FreeStyleProject p = r.createFreeStyleProject();
+      Publisher publisher = new Publisher();
+      publisher.setReportFilenamePattern("testng.xml");
+      publisher.setUnstableSkips(0);
+      publisher.setFailedSkips(100);
       p.getPublishersList().add(publisher);
       p.onCreatedFromScratch(); //to setup project action
 
       p.getBuildersList().add(new TestBuilder() {
+         @Override
          public boolean perform(AbstractBuild<?, ?> build, Launcher launcher,
                                 BuildListener listener) throws InterruptedException, IOException {
             String contents = CommonUtil.getContents(Constants.TESTNG_SKIPPED_TEST);
@@ -324,18 +346,19 @@ public class TestNGTestResultBuildActionTest extends HudsonTestCase {
 
       //run build
       FreeStyleBuild build = p.scheduleBuild2(0).get();
-      Assert.assertSame(Result.UNSTABLE, build.getResult());
+      assertSame(Result.UNSTABLE, build.getResult());
    }
    
    @Test
    public void test_threshold_for_fails_default() throws Exception {
-      FreeStyleProject p = createFreeStyleProject();
-      PublisherCtor publisherCtor = new PublisherCtor().setReportFilenamePattern("testng.xml");
-      Publisher publisher = publisherCtor.getNewPublisher();
+      FreeStyleProject p = r.createFreeStyleProject();
+      Publisher publisher = new Publisher();
+      publisher.setReportFilenamePattern("testng.xml");
       p.getPublishersList().add(publisher);
       p.onCreatedFromScratch(); //to setup project action
 
       p.getBuildersList().add(new TestBuilder() {
+         @Override
          public boolean perform(AbstractBuild<?, ?> build, Launcher launcher,
                                 BuildListener listener) throws InterruptedException, IOException {
             String contents = CommonUtil.getContents(Constants.TESTNG_FAILED_TEST);
@@ -346,19 +369,37 @@ public class TestNGTestResultBuildActionTest extends HudsonTestCase {
 
       //run build
       FreeStyleBuild build = p.scheduleBuild2(0).get();
-      Assert.assertSame(Result.UNSTABLE, build.getResult());
+      assertSame(Result.UNSTABLE, build.getResult());
    }
-   
+
+   @Issue("JENKINS-27121")
+   @Test
+   public void test_threshold_for_fails_default_pipeline() throws Exception {
+      WorkflowJob p = r.jenkins.createProject(WorkflowJob.class, "p");
+      String contents = CommonUtil.getContents(Constants.TESTNG_FAILED_TEST);
+      r.jenkins.getWorkspaceFor(p).child("testng-results.xml").write(contents, "UTF-8");
+      p.setDefinition(new CpsFlowDefinition("node {step([$class: 'Publisher'])}", true));
+      WorkflowRun build = p.scheduleBuild2(0).get();
+      r.assertBuildStatus(Result.UNSTABLE, build);
+      TestNGTestResultBuildAction action = build.getAction(TestNGTestResultBuildAction.class);
+      assertNotNull(action);
+      TestNGResult result = action.getResult();
+      assertEquals("checking result details", "TestNGResult {totalTests=2, failedTests=1, skippedTests=0, failedConfigs=0, skippedConfigs=0}", result.toString());
+      r.assertLogContains("tests failed, which exceeded threshold of 0%. Marking build as UNSTABLE", build);
+   }
+
   @Test
   public void test_threshold_for_fails_failure() throws Exception {
-     FreeStyleProject p = createFreeStyleProject();
-     PublisherCtor publisherCtor = new PublisherCtor().setReportFilenamePattern("testng.xml")
-           .setFailedFails(100).setUnstableFails(100);
-     Publisher publisher = publisherCtor.getNewPublisher();
+     FreeStyleProject p = r.createFreeStyleProject();
+     Publisher publisher = new Publisher();
+     publisher.setReportFilenamePattern("testng.xml");
+     publisher.setFailedFails(100);
+     publisher.setUnstableFails(100);
      p.getPublishersList().add(publisher);
      p.onCreatedFromScratch(); //to setup project action
 
      p.getBuildersList().add(new TestBuilder() {
+        @Override
         public boolean perform(AbstractBuild<?, ?> build, Launcher launcher,
                                BuildListener listener) throws InterruptedException, IOException {
            String contents = CommonUtil.getContents(Constants.TESTNG_FAILED_TEST);
@@ -369,19 +410,20 @@ public class TestNGTestResultBuildActionTest extends HudsonTestCase {
 
      //run build
      FreeStyleBuild build = p.scheduleBuild2(0).get();
-     Assert.assertSame(Result.SUCCESS, build.getResult());
+     assertSame(Result.SUCCESS, build.getResult());
   }
 
   @Test
   public void test_threshold_for_fails_unstable() throws Exception {
-     FreeStyleProject p = createFreeStyleProject();
-     PublisherCtor publisherCtor = new PublisherCtor().setReportFilenamePattern("testng.xml")
-           .setFailedFails(100);
-     Publisher publisher = publisherCtor.getNewPublisher();
+     FreeStyleProject p = r.createFreeStyleProject();
+     Publisher publisher = new Publisher();
+     publisher.setReportFilenamePattern("testng.xml");
+     publisher.setFailedFails(100);
      p.getPublishersList().add(publisher);
      p.onCreatedFromScratch(); //to setup project action
 
      p.getBuildersList().add(new TestBuilder() {
+        @Override
         public boolean perform(AbstractBuild<?, ?> build, Launcher launcher,
                                BuildListener listener) throws InterruptedException, IOException {
            String contents = CommonUtil.getContents(Constants.TESTNG_FAILED_TEST);
@@ -392,6 +434,6 @@ public class TestNGTestResultBuildActionTest extends HudsonTestCase {
 
      //run build
      FreeStyleBuild build = p.scheduleBuild2(0).get();
-     Assert.assertSame(Result.UNSTABLE, build.getResult());
+     assertSame(Result.UNSTABLE, build.getResult());
   }
 }

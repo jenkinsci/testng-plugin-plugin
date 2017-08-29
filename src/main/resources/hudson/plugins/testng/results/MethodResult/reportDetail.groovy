@@ -12,12 +12,11 @@ st = namespace("jelly:stapler")
 link(rel: "stylesheet", href:"${app.rootUrl}/plugin/testng-plugin/css/c3.min.css")
 link(rel: "stylesheet", href:"${app.rootUrl}/plugin/testng-plugin/css/style.css")
 
-
 script(src:"${app.rootUrl}/plugin/testng-plugin/js/d3.min.js")
 script(src:"${app.rootUrl}/plugin/testng-plugin/js/c3.min.js")
 script(src:"${app.rootUrl}/plugin/testng-plugin/js/draw_methodResult.js")
 
-def testngProjAction = my.owner.project.getAction(TestNGProjectAction.class)
+def testngProjAction = my.run.project.getAction(TestNGProjectAction.class)
 
 div(id: "report") {
     h1("${my.name}")
@@ -32,26 +31,6 @@ div(id: "report") {
     }
 
     def failString = "FAIL"
-
-    if (my.s3LogUrl != "") {
-        raw("<pre>  ______          __     __ </pre>")               
-        raw("<pre> /_  __/__  _____/ /_   / /   ____  ____ ______</pre>")
-        raw("<pre>  / / / _ \\/ ___/ __/  / /   / __ \\/ __ `/ ___/</pre>")
-        raw("<pre> / / /  __(__  ) /_   / /___/ /_/ / /_/ (__  ) </pre>")
-        raw("<pre>/_/  \\___/____/\\__/  /_____/\\____/\\__, /____/  </pre>")
-        raw("<pre>                                 /____/       </pre><br>")
-        raw("S3 link to logs for test method [")
-        a(href: "${my.s3LogUrl}&type=info", id: "S3InfoLogs") {
-            text("INFO")
-        }
-        text(" | ")
-        a(href: "${my.s3LogUrl}&type=debug", id: "S3DebugLogs") {
-            text("DEBUG")
-        }
-        text("]")
-    } else {
-        text("Jenkins job name does not match naming convention, so we cannot determine the environment.")
-    }
 
     raw("<br/><br/>")
     if (my.status == failString) {

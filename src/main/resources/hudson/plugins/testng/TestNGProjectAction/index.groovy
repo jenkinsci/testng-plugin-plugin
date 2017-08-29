@@ -30,7 +30,7 @@ l.layout(title: "TestNG Results Trend") {
         def buildNumber = my.project.lastCompletedBuild.number
         h2() {
             text("Latest Test Results (")
-            a(href: "${my.project.lastCompletedBuild.upUrl}${buildNumber}/${my.urlName}") {
+            a(href: "${my.upUrl}${buildNumber}/${my.urlName}") {
                 text("build #${buildNumber}")
             }
             text(")")

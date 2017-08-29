@@ -1,9 +1,10 @@
 package hudson.plugins.testng.results;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.io.Serializable;
 import java.util.*;
 
-import hudson.model.AbstractBuild;
+import hudson.model.Run;
 import hudson.plugins.testng.PluginImpl;
 import org.kohsuke.stapler.export.Exported;
 
@@ -14,6 +15,7 @@ import org.kohsuke.stapler.export.Exported;
  * @author nullin
  * @author farshidce
  */
+@SuppressFBWarnings(value="SE_BAD_FIELD", justification="ArrayList is Serializable")
 public class TestNGResult extends BaseResult implements Serializable {
 
     private static final long serialVersionUID = -3491974223665601995L;
@@ -134,7 +136,7 @@ public class TestNGResult extends BaseResult implements Serializable {
     }
 
     /**
-     * Adds only the <test>s that already aren't part of the list
+     * Adds only the {@code <test>}s that already aren't part of the list.
      *
      * @param testList
      */
@@ -145,10 +147,10 @@ public class TestNGResult extends BaseResult implements Serializable {
         this.testList = new ArrayList<TestNGTestResult>(tmpSet);
     }
 
-    public void setOwner(AbstractBuild<?, ?> owner) {
-        this.owner = owner;
+    public void setRun(Run<?, ?> run) {
+        this.run = run;
         for (PackageResult pkg : packageMap.values()) {
-            pkg.setOwner(owner);
+            pkg.setRun(run);
         }
     }
 
@@ -161,14 +163,14 @@ public class TestNGResult extends BaseResult implements Serializable {
             return false;
         }
         TestNGResult testngResult = (TestNGResult) o;
-        return owner == null ? testngResult.owner == null
-                : owner.equals(testngResult.owner);
+        return run == null ? testngResult.run == null
+                : run.equals(testngResult.run);
     }
 
     @Override
     public int hashCode() {
         int result;
-        result = (owner != null ? owner.hashCode() : 0);
+        result = (run != null ? run.hashCode() : 0);
         return result;
     }
 

@@ -1,16 +1,20 @@
 package hudson.plugins.testng;
 
-import hudson.model.AbstractBuild;
-import hudson.model.AbstractProject;
-import hudson.model.ProminentProjectAction;
-import hudson.model.Result;
+import hudson.model.*;
 import hudson.tasks.test.TestResultProjectAction;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import jenkins.model.lazy.LazyBuildMixIn;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
+
+import hudson.Functions;
+import hudson.model.AbstractBuild;
+import java.util.Calendar;
+import java.util.SortedMap;
+
+import org.kohsuke.stapler.Stapler;
+import org.kohsuke.stapler.StaplerRequest;
+import org.kohsuke.stapler.StaplerResponse;
 
 /**
  * Action to associate the TestNG reports with the project
@@ -19,87 +23,95 @@ import net.sf.json.JSONObject;
  */
 public class TestNGProjectAction extends TestResultProjectAction implements ProminentProjectAction {
 
-   private transient boolean escapeTestDescp;
-   private transient boolean escapeExceptionMsg;
-   private transient boolean showFailedBuilds;
+    private transient boolean escapeTestDescp;
+    private transient boolean escapeExceptionMsg;
+    private transient boolean showFailedBuilds;
 
-   public TestNGProjectAction(AbstractProject<?, ?> project,
-         boolean escapeTestDescp, boolean escapeExceptionMsg, boolean showFailedBuilds) {
-      super(project);
-      this.escapeExceptionMsg = escapeExceptionMsg;
-      this.escapeTestDescp = escapeTestDescp;
-      this.showFailedBuilds = showFailedBuilds;
-   }
+    public TestNGProjectAction(Job<?, ?> project,
+          boolean escapeTestDescp, boolean escapeExceptionMsg, boolean showFailedBuilds) {
+       super(project);
+       this.escapeExceptionMsg = escapeExceptionMsg;
+       this.escapeTestDescp = escapeTestDescp;
+       this.showFailedBuilds = showFailedBuilds;
+    }
 
-   protected Class<TestNGTestResultBuildAction> getBuildActionClass() {
-      return TestNGTestResultBuildAction.class;
-   }
+    protected Class<TestNGTestResultBuildAction> getBuildActionClass() {
+       return TestNGTestResultBuildAction.class;
+    }
 
-   public boolean getEscapeTestDescp()
-   {
-      return escapeTestDescp;
-   }
+    public boolean getEscapeTestDescp()
+    {
+       return escapeTestDescp;
+    }
 
-   public boolean getEscapeExceptionMsg()
-   {
-      return escapeExceptionMsg;
-   }
+    public boolean getEscapeExceptionMsg()
+    {
+       return escapeExceptionMsg;
+    }
 
-   /**
-    * Getter for property 'project'.
-    *
-    * @return Value for property 'project'.
-    */
-   public AbstractProject<?, ?> getProject() {
-      return super.project;
-   }
+    /**
+     * Getter for property 'project'.
+     *
+     * @return Value for property 'project'.
+     */
+    public Job<?, ?> getProject() {
+       return super.job;
+    }
 
-   /**
-    * {@inheritDoc}
-    */
-   public String getIconFileName() {
-      return PluginImpl.ICON_FILE_NAME;
-   }
+    /**
+     * {@inheritDoc}
+     */
+    public String getIconFileName() {
+       return PluginImpl.ICON_FILE_NAME;
+    }
 
-   /**
-    * {@inheritDoc}
-    */
-   public String getDisplayName() {
-      return PluginImpl.DISPLAY_NAME;
-   }
+    /**
+     * {@inheritDoc}
+     */
+    public String getDisplayName() {
+       return PluginImpl.DISPLAY_NAME;
+    }
 
-   /**
-    * Getter for property 'graphName'.
-    *
-    * @return Value for property 'graphName'.
-    */
-   public String getGraphName() {
-      return PluginImpl.GRAPH_NAME;
-   }
+    /**
+     * Getter for property 'graphName'.
+     *
+     * @return Value for property 'graphName'.
+     */
+    public String getGraphName() {
+       return PluginImpl.GRAPH_NAME;
+    }
 
-   /**
-    * {@inheritDoc}
-    */
-   public String getUrlName() {
+    /**
+     * {@inheritDoc}
+     */
+    public String getUrlName() {
+       return PluginImpl.URL;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public String getSearchUrl() {
       return PluginImpl.URL;
    }
 
-   /**
-    * {@inheritDoc}
-    */
-   public String getSearchUrl() {
-      return PluginImpl.URL;
-   }
+    /** Generalizes {@link AbstractBuild#getUpUrl} to {@link Run}. */
+    public String getUpUrl() {
+        return Functions.getNearestAncestorUrl(Stapler.getCurrentRequest(), job) + '/';
+    }
 
-   public TestNGTestResultBuildAction getLastCompletedBuildAction() {
-      for (AbstractBuild<?, ?> build = getProject().getLastCompletedBuild();
-               build != null; build = build.getPreviousCompletedBuild()) {
-         final TestNGTestResultBuildAction action = build.getAction(getBuildActionClass());
-         if (action != null) {
-            return action;
-         }
-      }
-      return null;
+    /**
+    * If the last build is the same,
+    * no need to regenerate the graph. Browser should reuse it's cached image
+    *
+    * @param req request
+    * @param rsp response
+    * @return true, if new image does NOT need to be generated, false otherwise
+    */
+   private boolean newGraphNotNeeded(final StaplerRequest req,
+         StaplerResponse rsp) {
+      Calendar t = getProject().getLastCompletedBuild().getTimestamp();
+      return req.checkIfModified(t, rsp);
    }
 
    /**
@@ -108,7 +120,7 @@ public class TestNGProjectAction extends TestResultProjectAction implements Prom
     * @return Value for property 'graphAvailable'.
     */
    public boolean isGraphActive() {
-      AbstractBuild<?, ?> build = getProject().getLastBuild();
+      Run<?, ?> build = getProject().getLastBuild();
       // in order to have a graph, we must have at least two points.
       int numPoints = 0;
       while (numPoints < 2) {
@@ -123,11 +135,17 @@ public class TestNGProjectAction extends TestResultProjectAction implements Prom
       return true;
    }
 
-   /**
-    * Returns json for charting
-    *
-    * @return a json for a chart
-    */
+   public TestNGTestResultBuildAction getLastCompletedBuildAction() {
+      for (Run<?, ?> build = getProject().getLastCompletedBuild();
+           build != null; build = build.getPreviousCompletedBuild()) {
+         final TestNGTestResultBuildAction action = build.getAction(getBuildActionClass());
+         if (action != null) {
+            return action;
+         }
+      }
+      return null;
+   }
+
    public String getChartJson() {
       JSONObject jsonObject = new JSONObject();
       JSONArray passes = new JSONArray();
@@ -139,8 +157,8 @@ public class TestNGProjectAction extends TestResultProjectAction implements Prom
 
       int count = 0;
 
-      List<? extends AbstractBuild<?, ?>> loadedBuilds = new ArrayList<AbstractBuild<?, ?>>(getProject()._getRuns().getLoadedBuilds().values());
-      AbstractBuild<?, ?> build;
+      SortedMap<Integer, Run<?, ?>> loadedBuilds = (SortedMap<Integer, Run<?, ?>>) ((LazyBuildMixIn.LazyLoadingJob<?,?>) job).getLazyBuildMixIn()._getRuns().getLoadedBuilds();
+      Run<?, ?> build;
       for (int i = 0; i < loadedBuilds.size() && count++ < 25; i++) {
          build = loadedBuilds.get(i);
          TestNGTestResultBuildAction action = build.getAction(getBuildActionClass());

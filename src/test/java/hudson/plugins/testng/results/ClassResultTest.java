@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.gargoylesoftware.htmlunit.html.DomNodeUtil;
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import hudson.Launcher;
@@ -19,11 +20,12 @@ import hudson.plugins.testng.CommonUtil;
 import hudson.plugins.testng.Constants;
 import hudson.plugins.testng.PluginImpl;
 import hudson.plugins.testng.Publisher;
-import hudson.plugins.testng.PublisherCtor;
 import hudson.tasks.test.AbstractTestResultAction;
 import hudson.tasks.test.TestResult;
+import static org.junit.Assert.*;
+import org.junit.Rule;
 import org.junit.Test;
-import org.jvnet.hudson.test.HudsonTestCase;
+import org.jvnet.hudson.test.JenkinsRule;
 import org.jvnet.hudson.test.TestBuilder;
 
 /**
@@ -33,7 +35,10 @@ import org.jvnet.hudson.test.TestBuilder;
  *
  * @author nullin
  */
-public class ClassResultTest extends HudsonTestCase {
+public class ClassResultTest {
+
+    @Rule
+    public JenkinsRule r = new JenkinsRule();
 
     /**
      * Test using precheckins.legacyops
@@ -49,14 +54,16 @@ public class ClassResultTest extends HudsonTestCase {
      */
     @Test
     public void testPrecheckinLegacyOpsClassResults() throws Exception {
-        FreeStyleProject p = createFreeStyleProject();
-        PublisherCtor publisherCtor = new PublisherCtor().setReportFilenamePattern("testng.xml")
-                .setEscapeTestDescp(false).setEscapeExceptionMsg(false);
-        Publisher publisher = publisherCtor.getNewPublisher();
+        FreeStyleProject p = r.createFreeStyleProject();
+        Publisher publisher = new Publisher();
+        publisher.setReportFilenamePattern("testng.xml");
+        publisher.setEscapeTestDescp(false);
+        publisher.setEscapeExceptionMsg(false);
         p.getPublishersList().add(publisher);
         p.onCreatedFromScratch(); //to setup project action
 
         p.getBuildersList().add(new TestBuilder() {
+            @Override
             public boolean perform(AbstractBuild<?, ?> build, Launcher launcher,
                 BuildListener listener) throws InterruptedException, IOException {
                 String contents = CommonUtil.getContents(Constants.TESTNG_XML_PRECHECKINS);
@@ -73,11 +80,9 @@ public class ClassResultTest extends HudsonTestCase {
 
         //Get page
         String urlPrefix = build.getUrl() + PluginImpl.URL;
-        WebClient webClient = createWebClient();
-        webClient.setThrowExceptionOnScriptError(false);
-        HtmlPage page = webClient.goTo(urlPrefix + "/precheckins/LegacyOps/");
+        HtmlPage page = r.createWebClient().goTo(urlPrefix + "/precheckins/LegacyOps/");
 
-        List<HtmlElement> elements = page.selectNodes("//div[starts-with(@id, 'run-')]/span[@id='run-info']");
+        List<HtmlElement> elements = DomNodeUtil.selectNodes(page, "//div[starts-with(@id, 'run-')]/span[@id='run-info']");
 
         assertEquals(testRunMap.values().size(), elements.size());
 
@@ -101,10 +106,10 @@ public class ClassResultTest extends HudsonTestCase {
             values.add(suiteName + "|" +  testName);
         }
 
-        elements = page.selectNodes("//div[starts-with(@id, 'run-')]/table/*/tr");
+        elements = DomNodeUtil.selectNodes(page, "//div[starts-with(@id, 'run-')]/table/*/tr");
         assertEquals(6 * (2 + 7), elements.size()); //total number of rows in all tables
 
-        elements = page.selectNodes("//div[starts-with(@id, 'run-')]/table/*/tr/td");
+        elements = DomNodeUtil.selectNodes(page, "//div[starts-with(@id, 'run-')]/table/*/tr/td");
         int failCount = 0;
         int skipCount = 0;
         for (HtmlElement element : elements) {
@@ -125,7 +130,7 @@ public class ClassResultTest extends HudsonTestCase {
         assertEquals(testRunMap.values().size(), values.size());
 
         //verify all links
-        elements = page.selectNodes("//div[starts-with(@id, 'run-')]/table/*/tr/td/a");
+        elements = DomNodeUtil.selectNodes(page, "//div[starts-with(@id, 'run-')]/table/*/tr/td/a");
         List<String> linksInPage = new ArrayList<String>();
         for (HtmlElement element : elements) {
             linksInPage.add(element.getAttribute("href"));
@@ -136,7 +141,7 @@ public class ClassResultTest extends HudsonTestCase {
         for (MethodResult mr : ((ClassResult) classResult).getChildren()) {
             //would have used mr.getUpUrl() but for some reason
             //as part of test, Jenkins.instance.rootUrl() returns 'null'
-            linksFromResult.add(super.getURL() + mr.getOwner().getUrl() + mr.getId());
+            linksFromResult.add(r.getURL() + mr.getRun().getUrl() + mr.getId());
         }
         Collections.sort(linksFromResult);
 
@@ -153,14 +158,16 @@ public class ClassResultTest extends HudsonTestCase {
      */
     @Test
     public void testClassResults() throws Exception {
-        FreeStyleProject p = createFreeStyleProject();
-        PublisherCtor publisherCtor = new PublisherCtor().setReportFilenamePattern("testng.xml")
-                        .setEscapeTestDescp(false).setEscapeExceptionMsg(false);
-        Publisher publisher = publisherCtor.getNewPublisher();
+        FreeStyleProject p = r.createFreeStyleProject();
+        Publisher publisher = new Publisher();
+        publisher.setReportFilenamePattern("testng.xml");
+        publisher.setEscapeTestDescp(false);
+        publisher.setEscapeExceptionMsg(false);
         p.getPublishersList().add(publisher);
         p.onCreatedFromScratch(); //to setup project action
 
         p.getBuildersList().add(new TestBuilder() {
+            @Override
             public boolean perform(AbstractBuild<?, ?> build, Launcher launcher,
                 BuildListener listener) throws InterruptedException, IOException {
                 String contents = CommonUtil.getContents(Constants.TESTNG_XML_TESTNG);
@@ -177,29 +184,27 @@ public class ClassResultTest extends HudsonTestCase {
 
         //Get page
         String urlPrefix = build.getUrl() + PluginImpl.URL;
-        WebClient webClient = createWebClient();
-        webClient.setThrowExceptionOnScriptError(false);
-        HtmlPage page = webClient.goTo(urlPrefix + "/test/CommandLineTest");
+        HtmlPage page = r.createWebClient().goTo(urlPrefix + "/test/CommandLineTest");
 
-        List<HtmlElement> elements = page.selectNodes("//div[starts-with(@id, 'run-')]/table[@id='config']");
+        List<HtmlElement> elements = DomNodeUtil.selectNodes(page, "//div[starts-with(@id, 'run-')]/table[@id='config']");
         // there are no configuration methods
         assertEquals(0, elements.size());
-        assertStringContains(page.getElementById("run-0").getTextContent(), "No Configuration method was found in this class");
+        r.assertStringContains(page.getElementById("run-0").getTextContent(), "No Configuration method was found in this class");
 
         //use first test with show more section
-        elements = page.selectNodes("//div[starts-with(@id, 'run-')]/table[@id='test']/tbody/tr/td/div[@id='junitParsing_1']");
+        elements = DomNodeUtil.selectNodes(page, "//div[starts-with(@id, 'run-')]/table[@id='test']/tbody/tr/td/div[@id='junitParsing_1']");
         assertEquals(1, elements.size());
         HtmlElement showMore = elements.get(0);
-        elements = page.selectNodes("//div[starts-with(@id, 'run-')]/table[@id='test']/tbody/tr/td/div[@id='junitParsing_2']");
+        elements = DomNodeUtil.selectNodes(page, "//div[starts-with(@id, 'run-')]/table[@id='test']/tbody/tr/td/div[@id='junitParsing_2']");
         assertEquals(1, elements.size());
         HtmlElement moreSection = elements.get(0);
 
-        assertStringContains(moreSection.getTextContent(), "current"); //group name
+        r.assertStringContains(moreSection.getTextContent(), "current"); //group name
 
         //click the link
         showMore.getElementsByTagName("a").get(0).click();
 
-        assertStringContains(showMore.getAttribute("style"), "none");
+        r.assertStringContains(showMore.getAttribute("style"), "none");
         assertEquals("", moreSection.getAttribute("style"));
     }
 }
