@@ -7,6 +7,7 @@ import hudson.plugins.testng.TestNGTestResultBuildAction;
 import hudson.tasks.test.TestResult;
 import hudson.util.ChartUtil;
 import hudson.util.DataSetBuilder;
+import jenkins.model.lazy.LazyBuildMixIn;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import org.kohsuke.stapler.export.Exported;
@@ -242,80 +243,50 @@ public class MethodResult extends BaseResult {
      * @return a json for a chart
      */
     public String getChartJson() {
-        int count = 0;
         JSONObject jsonObject = new JSONObject();
         JSONArray status = new JSONArray();
         JSONArray time = new JSONArray();
         JSONArray buildNum = new JSONArray();
+    
+        SortedMap<Integer, MethodResult> loadedBuilds = new TreeMap<Integer, MethodResult>();
+        Run<?, ?> selectedBuild = getRun();
 
+        //Get up to 10 builds in each direction
         MethodResult methodResult = null;
-        for (Run<?, ?> build = getRun(); build != null; build = build.getNextBuild()) {
-            methodResult = getMethodResultFromBuild(build);
-            if(methodResult != null) {
-                status.add(methodResult.getStatus());
-                time.add(methodResult.getDuration());
-                buildNum.add(Integer.toString(build.getNumber()));
-            }
-        }
+        int count = 0;
         for (Run<?, ?> build = getRun();
              build != null && count++ < 10;
-            //getting running builds as well (will deal accordingly)
+             build = build.getNextBuild()) {
+            methodResult = getMethodResultFromBuild(build);
+            if(methodResult != null) {
+                loadedBuilds.put(build.getNumber(), methodResult);
+            }
+        }
+        count = 0;
+        for (Run<?, ?> build = selectedBuild.getPreviousBuild();
+             build != null && count++ < 10;
+             //getting running builds as well (will deal accordingly)
              build = build.getPreviousBuild()) {
             methodResult = getMethodResultFromBuild(build);
             if(methodResult != null) {
-                status.add(methodResult.getStatus());
-                time.add(methodResult.getDuration());
-                buildNum.add(Integer.toString(build.getNumber()));
+                loadedBuilds.put(build.getNumber(), methodResult);
             }
         }
+        
+        //Combine builds in ordered list
+        List<Map.Entry<Integer, MethodResult>> buildList = new ArrayList<Map.Entry<Integer, MethodResult>>(loadedBuilds.entrySet());
+        Collections.reverse(buildList);
+        for(Map.Entry<Integer, MethodResult> methRes : buildList) {
+            status.add(methRes.getValue().getStatus());
+            time.add(methRes.getValue().getDuration());
+            buildNum.add(methRes.getKey());
+        }
+        
 
         jsonObject.put("status", status);
         jsonObject.put("duration", time);
         jsonObject.put("buildNum", buildNum);
         return jsonObject.toString();
-    }
-
-    //TODO remove
-    private void populateDataSetBuilder(
-          DataSetBuilder<String, ChartUtil.NumberOnlyBuildLabel> dataSetBuilder,
-          Map<ChartUtil.NumberOnlyBuildLabel, String> statusMap) {
-        int count = 0;
-        for (Run<?, ?> build = getRun(); build != null; build = build.getNextBuild()) {
-            addData(dataSetBuilder, statusMap, build);
-        }
-        for (Run<?, ?> build = getRun();
-             build != null && count++ < 10;
-            //getting running builds as well (will deal accordingly)
-             build = build.getPreviousBuild()) {
-            addData(dataSetBuilder, statusMap, build);
-        }
-    }
-
-    //TODO remove
-    private void addData(DataSetBuilder<String, ChartUtil.NumberOnlyBuildLabel> dataSetBuilder,
-                         Map<ChartUtil.NumberOnlyBuildLabel, String> statusMap,
-                         Run<?, ?> build) {
-        ChartUtil.NumberOnlyBuildLabel label = new ChartUtil.NumberOnlyBuildLabel(build);
-        TestNGTestResultBuildAction action = build.getAction(TestNGTestResultBuildAction.class);
-        TestNGResult results;
-        MethodResult methodResult = null;
-        if (action != null && (results = action.getResult()) != null) {
-            methodResult = getMethodResult(results);
-        }
-
-        if (methodResult == null) {
-            dataSetBuilder.add(0, "resultRow", label);
-            //deal with builds still running
-            if (build.isBuilding()) {
-                statusMap.put(label, "BUILD IN PROGRESS");
-            } else {
-                statusMap.put(label, "UNKNOWN");
-            }
-        } else {
-            //status is PASS, FAIL or SKIP
-            dataSetBuilder.add(methodResult.getDuration(), "resultRow", label);
-            statusMap.put(label, methodResult.getStatus());
-        }
     }
 
     private MethodResult getMethodResultFromBuild(Run<?, ?> build) {
