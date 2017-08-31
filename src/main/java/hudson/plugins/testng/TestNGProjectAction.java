@@ -1,18 +1,23 @@
 package hudson.plugins.testng;
 
+import hudson.Functions;
+import hudson.model.AbstractBuild;
 import java.io.IOException;
 import java.util.Calendar;
 
-import hudson.model.AbstractBuild;
-import hudson.model.AbstractProject;
+import hudson.model.Job;
 import hudson.model.ProminentProjectAction;
 import hudson.model.Result;
+import hudson.model.Run;
 import hudson.plugins.testng.util.GraphHelper;
 import hudson.tasks.test.TestResultProjectAction;
 import hudson.util.ChartUtil;
 import hudson.util.DataSetBuilder;
-import java.util.Set;
+import java.util.SortedMap;
+import jenkins.model.lazy.LazyBuildMixIn;
+import jenkins.model.lazy.LazyBuildMixIn.LazyLoadingJob;
 import org.jfree.chart.JFreeChart;
+import org.kohsuke.stapler.Stapler;
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
 
@@ -27,7 +32,7 @@ public class TestNGProjectAction extends TestResultProjectAction implements Prom
    private transient boolean escapeExceptionMsg;
    private transient boolean showFailedBuilds;
 
-   public TestNGProjectAction(AbstractProject<?, ?> project,
+   public TestNGProjectAction(Job<?, ?> project,
          boolean escapeTestDescp, boolean escapeExceptionMsg, boolean showFailedBuilds) {
       super(project);
       this.escapeExceptionMsg = escapeExceptionMsg;
@@ -54,8 +59,8 @@ public class TestNGProjectAction extends TestResultProjectAction implements Prom
     *
     * @return Value for property 'project'.
     */
-   public AbstractProject<?, ?> getProject() {
-      return super.project;
+   public Job<?, ?> getProject() {
+      return super.job;
    }
 
    /**
@@ -118,7 +123,12 @@ public class TestNGProjectAction extends TestResultProjectAction implements Prom
       }.doPng(req,rsp);
    }
 
-   /**
+    /** Generalizes {@link AbstractBuild#getUpUrl} to {@link Run}. */
+    public String getUpUrl() {
+        return Functions.getNearestAncestorUrl(Stapler.getCurrentRequest(), job) + '/';
+    }
+
+    /**
     * If the last build is the same,
     * no need to regenerate the graph. Browser should reuse it's cached image
     *
@@ -156,7 +166,7 @@ public class TestNGProjectAction extends TestResultProjectAction implements Prom
     * @return Value for property 'graphAvailable'.
     */
    public boolean isGraphActive() {
-      AbstractBuild<?, ?> build = getProject().getLastBuild();
+      Run<?, ?> build = getProject().getLastBuild();
       // in order to have a graph, we must have at least two points.
       int numPoints = 0;
       while (numPoints < 2) {
@@ -172,7 +182,7 @@ public class TestNGProjectAction extends TestResultProjectAction implements Prom
    }
 
    public TestNGTestResultBuildAction getLastCompletedBuildAction() {
-      for (AbstractBuild<?, ?> build = getProject().getLastCompletedBuild();
+      for (Run<?, ?> build = getProject().getLastCompletedBuild();
                build != null; build = build.getPreviousCompletedBuild()) {
          final TestNGTestResultBuildAction action = build.getAction(getBuildActionClass());
          if (action != null) {
@@ -183,18 +193,23 @@ public class TestNGProjectAction extends TestResultProjectAction implements Prom
    }
 
    protected void populateDataSetBuilder(DataSetBuilder<String, ChartUtil.NumberOnlyBuildLabel> dataset) {
-      Set<Integer> loadedBuilds = getProject()._getRuns().getLoadedBuilds().keySet(); // cf. AbstractTestResultAction.getPreviousResult(Class, false)
-      for (AbstractBuild<?, ?> build = getProject().getLastBuild();
-         build != null; build = loadedBuilds.contains(build.number - 1) ? build.getPreviousCompletedBuild() : null) {
+      if (!(job instanceof LazyBuildMixIn.LazyLoadingJob)) {
+         return;
+      }
+
+      // cf. AbstractTestResultAction.getPreviousResult(Class, false)
+      SortedMap<Integer, Run<?, ?>> loadedBuilds = (SortedMap<Integer, Run<?, ?>>) ((LazyLoadingJob<?,?>) job).getLazyBuildMixIn()._getRuns().getLoadedBuilds();
+      for (Run<?, ?> build : loadedBuilds.values()) {
          ChartUtil.NumberOnlyBuildLabel label = new ChartUtil.NumberOnlyBuildLabel(build);
          TestNGTestResultBuildAction action = build.getAction(getBuildActionClass());
 
-         if (build.getResult() == null || build.getResult().isWorseThan(Result.FAILURE)) {
+         Result result = build.getResult();
+         if (result == null || result.isWorseThan(Result.FAILURE)) {
             //We don't want to add aborted or builds with no results into the graph
             continue;
          }
 
-         if (!showFailedBuilds && build.getResult().equals(Result.FAILURE)) {
+         if (!showFailedBuilds && result.equals(Result.FAILURE)) {
             //failed build and configuration states that we should skip this build
             continue;
          }

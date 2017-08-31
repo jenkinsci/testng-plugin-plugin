@@ -1,7 +1,10 @@
 package hudson.plugins.testng.results;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.io.Serializable;
 
+@SuppressFBWarnings(value="NM_CLASS_NOT_EXCEPTION",
+        justification="Not an exception, but represents one associated with a test result parsed by this plugin")
 @SuppressWarnings("serial")
 public class MethodResultException implements Serializable {
 
@@ -45,7 +48,7 @@ public class MethodResultException implements Serializable {
      }
 
      stackTrace = tmpStackTrace.trim();
-     int index = -1;
+     int index;
 
      if (message == null) {
        //no message means first line will only show exception class name
@@ -79,7 +82,7 @@ public class MethodResultException implements Serializable {
    }
 
    public String toString() {
-      StringBuffer str = new StringBuffer();
+      StringBuilder str = new StringBuilder();
       str.append(exceptionName).append(": ");
       if (message != null) {
          str.append(message);

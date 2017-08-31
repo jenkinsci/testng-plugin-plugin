@@ -2,7 +2,7 @@ package hudson.plugins.testng.util;
 
 import java.util.List;
 
-import hudson.model.AbstractBuild;
+import hudson.model.Run;
 import hudson.plugins.testng.TestNGTestResultBuildAction;
 import hudson.plugins.testng.results.ClassResult;
 import hudson.plugins.testng.results.MethodResult;
@@ -14,6 +14,8 @@ import hudson.plugins.testng.results.TestNGResult;
  * @author nullin
  */
 public class TestResultHistoryUtil {
+    
+    private TestResultHistoryUtil() {}
 
    /**
     * Gets the latest build before this one and returns it's test result.
@@ -26,10 +28,10 @@ public class TestResultHistoryUtil {
     *       otherwise returns an empty {@link hudson.plugins.testng.results.TestNGResult}
     *       object. <b>Never returns {@code null}.</b>
     */
-   public static TestNGResult getPreviousBuildTestResults(AbstractBuild<?, ?> owner) {
+   public static TestNGResult getPreviousBuildTestResults(Run<?, ?> owner) {
       // Doesn't make sense to return a build that is still running.
       // We can compare results with a previous build that completed
-      AbstractBuild<?, ?> previousBuild = owner.getPreviousCompletedBuild();
+      Run<?, ?> previousBuild = owner.getPreviousCompletedBuild();
       if (previousBuild != null
                && previousBuild.getAction(TestNGTestResultBuildAction.class) != null) {
          return previousBuild.getAction(TestNGTestResultBuildAction.class).getResult();
@@ -55,9 +57,9 @@ public class TestResultHistoryUtil {
       int prevSkippedConfigurationCount;
       int prevTotalTestCount;
 
-      AbstractBuild<?,?> owner = action.owner;
+      Run<?,?> run = action.run;
       TestNGResult previousResult =
-            TestResultHistoryUtil.getPreviousBuildTestResults(owner);
+            TestResultHistoryUtil.getPreviousBuildTestResults(run);
 
       prevFailedTestCount = previousResult.getFailCount();
       prevSkippedTestCount = previousResult.getSkipCount();
@@ -69,13 +71,13 @@ public class TestResultHistoryUtil {
 
       return "<ul>" + diff(prevTotalTestCount, tr.getTotalCount(), "Total Tests")
             + diff(prevFailedTestCount, tr.getFailCount(), "Failed Tests")
-            + printTestsUrls(owner, tr.getFailedTests())
+            + printTestsUrls(tr.getFailedTests())
             + diff(prevSkippedTestCount, tr.getSkipCount(), "Skipped Tests")
-            + printTestsUrls(owner, tr.getSkippedTests())
+            + printTestsUrls(tr.getSkippedTests())
             + diff(prevFailedConfigurationCount, tr.getFailedConfigCount(), "Failed Configurations")
-            + printTestsUrls(owner, tr.getFailedConfigs())
+            + printTestsUrls(tr.getFailedConfigs())
             + diff(prevSkippedConfigurationCount, tr.getSkippedConfigCount(), "Skipped Configurations")
-            + printTestsUrls(owner, tr.getSkippedConfigs())
+            + printTestsUrls(tr.getSkippedConfigs())
             + "</ul>";
    }
 
@@ -94,8 +96,8 @@ public class TestResultHistoryUtil {
          <LI><a href="url">test_full_name</a></LI>
       </OL>
    */
-   private static String printTestsUrls(AbstractBuild<?,?> owner, List<MethodResult> methodResults) {
-      StringBuffer htmlStr = new StringBuffer();
+   private static String printTestsUrls(List<MethodResult> methodResults) {
+      StringBuilder htmlStr = new StringBuilder();
       htmlStr.append("<OL>");
       if (methodResults != null && methodResults.size() > 0) {
          for (MethodResult methodResult : methodResults) {

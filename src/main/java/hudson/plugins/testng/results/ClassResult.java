@@ -1,11 +1,12 @@
 package hudson.plugins.testng.results;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import hudson.model.AbstractBuild;
+import hudson.model.Run;
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
 import org.kohsuke.stapler.export.Exported;
@@ -13,6 +14,7 @@ import org.kohsuke.stapler.export.Exported;
 /**
  * Handle results related to a single test class
  */
+@SuppressFBWarnings(value="SE_NO_SERIALVERSIONID", justification="XStream does not care")
 @SuppressWarnings("serial")
 public class ClassResult extends BaseResult {
 
@@ -20,6 +22,7 @@ public class ClassResult extends BaseResult {
     private List<MethodResult> testMethodList = new ArrayList<MethodResult>();
 
     //cache
+    @SuppressFBWarnings(value="SE_BAD_FIELD", justification="HashMap is Serializable")
     private Map<String, GroupedTestRun> testRunMap = null;
 
     //cached values, updated via tally
@@ -79,10 +82,10 @@ public class ClassResult extends BaseResult {
     }
 
     @Override
-    public void setOwner(AbstractBuild<?, ?> owner) {
-        super.setOwner(owner);
+    public void setRun(Run<?, ?> run) {
+        super.setRun(run);
         for (MethodResult _m : this.testMethodList) {
-            _m.setOwner(owner);
+            _m.setRun(run);
         }
     }
 

@@ -10,9 +10,16 @@ import hudson.model.AbstractBuild;
 import hudson.model.BuildListener;
 import hudson.model.FreeStyleProject;
 import hudson.model.Result;
-import junit.framework.Assert;
+import java.util.Map;
+import java.util.TreeMap;
+import org.jenkinsci.plugins.structs.describable.DescribableModel;
+import org.junit.Assert;
 import org.junit.Test;
-import org.jvnet.hudson.test.HudsonTestCase;
+import org.junit.Rule;
+import org.junit.rules.TemporaryFolder;
+import org.jvnet.hudson.test.Issue;
+import org.jvnet.hudson.test.JenkinsRule;
+import org.jvnet.hudson.test.WithoutJenkins;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -22,15 +29,18 @@ import static org.mockito.Mockito.when;
  *
  * @author nullin
  */
-public class PublisherTest extends HudsonTestCase {
+public class PublisherTest {
 
+    @Rule
+    public JenkinsRule r = new JenkinsRule();
+    @Rule
+    public TemporaryFolder tmp = new TemporaryFolder();
+
+    @WithoutJenkins
     @Test
     public void testLocateReports() throws Exception {
         // Create a temporary workspace in the system
-        File w = File.createTempFile("workspace", ".test");
-        w.delete();
-        w.mkdir();
-        w.deleteOnExit();
+        File w = tmp.newFolder();
         FilePath workspace = new FilePath(w);
         // Create 4 files in the workspace
         File f1 = File.createTempFile("testng-results", ".xml", w);
@@ -67,13 +77,16 @@ public class PublisherTest extends HudsonTestCase {
         local.deleteRecursive();
     }
 
+    @WithoutJenkins
     @Test
     public void testBuildAborted() throws Exception {
-        PublisherCtor publisherCtor = new PublisherCtor().setReportFilenamePattern("testng.xml")
-                        .setEscapeTestDescp(false).setEscapeExceptionMsg(false).setShowFailedBuilds(false);
-        Publisher publisher = publisherCtor.getNewPublisher();
+        Publisher publisher = new Publisher();
+        publisher.setReportFilenamePattern("testng.xml");
+        publisher.setEscapeTestDescp(false);
+        publisher.setEscapeExceptionMsg(false);
+        publisher.setShowFailedBuilds(false);
         Launcher launcherMock = mock(Launcher.class);
-        AbstractBuild buildMock = mock(AbstractBuild.class);
+        AbstractBuild<?,?> buildMock = mock(AbstractBuild.class);
         BuildListener listenerMock = mock(BuildListener.class);
 
         ByteArrayOutputStream os = new ByteArrayOutputStream();
@@ -82,7 +95,7 @@ public class PublisherTest extends HudsonTestCase {
         when(buildMock.getResult()).thenReturn(Result.ABORTED);
         when(listenerMock.getLogger()).thenReturn(ps);
 
-        Assert.assertTrue(publisher.perform(buildMock, launcherMock, listenerMock));
+        publisher.perform(buildMock, buildMock.getWorkspace(), launcherMock, listenerMock);
 
         String str = os.toString();
         Assert.assertTrue(str.contains("Build Aborted"));
@@ -90,15 +103,44 @@ public class PublisherTest extends HudsonTestCase {
 
     @Test
     public void testRoundTrip() throws Exception {
-        FreeStyleProject p = createFreeStyleProject();
-        Publisher before = new Publisher("", false, false, true, true, true);
+        FreeStyleProject p = r.createFreeStyleProject();
+        Publisher before = new Publisher();
+        before.setReportFilenamePattern("");
+        before.setEscapeTestDescp(false);
+        before.setEscapeExceptionMsg(false);
+        before.setShowFailedBuilds(true);
+        before.setFailureOnFailedTestConfig(false);
+        before.setUnstableSkips(0);
+        before.setUnstableFails(0);
+        before.setFailedSkips(0);
+        before.setFailedFails(0);
+        before.setThresholdMode(1);
+
         p.getPublishersList().add(before);
 
-        submit(createWebClient().getPage(p,"configure").getFormByName("config"));
+        r.submit(r.createWebClient().getPage(p,"configure").getFormByName("config"));
 
         Publisher after = p.getPublishersList().get(Publisher.class);
 
-        assertEqualBeans(before, after, "reportFilenamePattern,escapeTestDescp,escapeExceptionMsg,showFailedBuilds");
+        r.assertEqualBeans(before, after, "reportFilenamePattern,escapeTestDescp,escapeExceptionMsg,showFailedBuilds");
+    }
+
+    @Issue("JENKINS-27121")
+    @WithoutJenkins
+    @Test
+    public void testDefaultFields() throws Exception {
+        DescribableModel<Publisher> model = new DescribableModel<Publisher>(Publisher.class);
+        Map<String,Object> args = new TreeMap<String,Object>();
+        Publisher p = model.instantiate(args);
+        Assert.assertEquals("**/testng-results.xml", p.getReportFilenamePattern());
+        Assert.assertTrue(p.getEscapeExceptionMsg());
+        Assert.assertFalse(p.getShowFailedBuilds());
+        Assert.assertEquals(args, model.uninstantiate(model.instantiate(args)));
+        args.put("reportFilenamePattern", "results.xml");
+        Assert.assertEquals(args, model.uninstantiate(model.instantiate(args)));
+        args.put("escapeExceptionMsg", false);
+        args.put("showFailedBuilds", true);
+        Assert.assertEquals(args, model.uninstantiate(model.instantiate(args)));
     }
 
 }

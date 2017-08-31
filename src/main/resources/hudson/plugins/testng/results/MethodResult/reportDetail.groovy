@@ -9,7 +9,7 @@ l = namespace(lib.LayoutTagLib)
 t = namespace("/lib/hudson")
 st = namespace("jelly:stapler")
 
-def testngProjAction = my.owner.project.getAction(TestNGProjectAction.class)
+def testngProjAction = my.run.project.getAction(TestNGProjectAction.class)
 
 div(id: "report") {
     h1("${my.name}")
