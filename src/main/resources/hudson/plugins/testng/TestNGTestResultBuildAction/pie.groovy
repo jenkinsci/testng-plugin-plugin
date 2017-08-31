@@ -8,7 +8,7 @@ l = namespace(lib.LayoutTagLib)
 t = namespace("/lib/hudson")
 st = namespace("jelly:stapler")
 
-def prevResult = TestResultHistoryUtil.getPreviousBuildTestResults(my.owner)
+def prevResult = TestResultHistoryUtil.getPreviousBuildTestResults(my.run)
 
 div() {
     if (my.result.totalCount == 0) {

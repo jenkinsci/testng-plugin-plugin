@@ -1,16 +1,15 @@
 package hudson.plugins.testng.results;
 
 import java.util.*;
-import java.util.regex.Pattern;
 
-import hudson.model.AbstractBuild;
+import hudson.model.Run;
 import hudson.plugins.testng.TestNGTestResultBuildAction;
 import hudson.tasks.test.TestResult;
+import hudson.util.ChartUtil;
+import hudson.util.DataSetBuilder;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import org.kohsuke.stapler.export.Exported;
-
-import com.google.inject.matcher.Matcher;
 
 /**
  * Handles result pertaining to a single test method
@@ -99,7 +98,7 @@ public class MethodResult extends BaseResult {
     }
 
     /**
-     * @return name of the <test> tag that this method is part of
+     * @return name of the {@code <test>} tag that this method is part of
      */
     public String getParentTestName() {
         return parentTestName;
@@ -250,8 +249,15 @@ public class MethodResult extends BaseResult {
         JSONArray buildNum = new JSONArray();
 
         MethodResult methodResult = null;
-        int latestBuildNumber = getOwner().getProject().getLastBuild().getNumber();
-        for (AbstractBuild<?, ?> build = getOwner().getProject().getNearestBuild(getOwner().getNumber() + 5 < latestBuildNumber ? getOwner().getNumber() + 5 : latestBuildNumber);
+        for (Run<?, ?> build = getRun(); build != null; build = build.getNextBuild()) {
+            methodResult = getMethodResultFromBuild(build);
+            if(methodResult != null) {
+                status.add(methodResult.getStatus());
+                time.add(methodResult.getDuration());
+                buildNum.add(Integer.toString(build.getNumber()));
+            }
+        }
+        for (Run<?, ?> build = getRun();
              build != null && count++ < 10;
             //getting running builds as well (will deal accordingly)
              build = build.getPreviousBuild()) {
@@ -262,13 +268,57 @@ public class MethodResult extends BaseResult {
                 buildNum.add(Integer.toString(build.getNumber()));
             }
         }
+
         jsonObject.put("status", status);
         jsonObject.put("duration", time);
         jsonObject.put("buildNum", buildNum);
         return jsonObject.toString();
     }
 
-    private MethodResult getMethodResultFromBuild(AbstractBuild<?, ?> build) {
+    //TODO remove
+    private void populateDataSetBuilder(
+          DataSetBuilder<String, ChartUtil.NumberOnlyBuildLabel> dataSetBuilder,
+          Map<ChartUtil.NumberOnlyBuildLabel, String> statusMap) {
+        int count = 0;
+        for (Run<?, ?> build = getRun(); build != null; build = build.getNextBuild()) {
+            addData(dataSetBuilder, statusMap, build);
+        }
+        for (Run<?, ?> build = getRun();
+             build != null && count++ < 10;
+            //getting running builds as well (will deal accordingly)
+             build = build.getPreviousBuild()) {
+            addData(dataSetBuilder, statusMap, build);
+        }
+    }
+
+    //TODO remove
+    private void addData(DataSetBuilder<String, ChartUtil.NumberOnlyBuildLabel> dataSetBuilder,
+                         Map<ChartUtil.NumberOnlyBuildLabel, String> statusMap,
+                         Run<?, ?> build) {
+        ChartUtil.NumberOnlyBuildLabel label = new ChartUtil.NumberOnlyBuildLabel(build);
+        TestNGTestResultBuildAction action = build.getAction(TestNGTestResultBuildAction.class);
+        TestNGResult results;
+        MethodResult methodResult = null;
+        if (action != null && (results = action.getResult()) != null) {
+            methodResult = getMethodResult(results);
+        }
+
+        if (methodResult == null) {
+            dataSetBuilder.add(0, "resultRow", label);
+            //deal with builds still running
+            if (build.isBuilding()) {
+                statusMap.put(label, "BUILD IN PROGRESS");
+            } else {
+                statusMap.put(label, "UNKNOWN");
+            }
+        } else {
+            //status is PASS, FAIL or SKIP
+            dataSetBuilder.add(methodResult.getDuration(), "resultRow", label);
+            statusMap.put(label, methodResult.getStatus());
+        }
+    }
+
+    private MethodResult getMethodResultFromBuild(Run<?, ?> build) {
         TestNGTestResultBuildAction action = build.getAction(TestNGTestResultBuildAction.class);
         TestNGResult results;
         MethodResult methodResult = null;
@@ -361,83 +411,6 @@ public class MethodResult extends BaseResult {
     @Override
     public boolean hasChildren() {
         return false;
-    }
-    /**
-     * ININ-SPECIFIC - Provides base link for retrieving test logs from S3
-     * @return
-     */
-    public String getS3LogUrl() {
-    	String url;
-        String environment = "";
-        String jobName = getOwner().getProject().getDisplayName();
-        if(jobName.toLowerCase().contains("-dca")) {
-            environment = "dca";
-        } else if(jobName.toLowerCase().contains("-tca")) {
-            environment = "tca";
-        } else if(jobName.toLowerCase().contains("-sca")) {
-            environment = "sca";
-        } else if(jobName.toLowerCase().contains("-prod_anz")) {
-            environment = "prod_anz";
-        } else if(jobName.toLowerCase().contains("-prod_apse2")) {
-            environment = "prod_apse2";
-        }  else if(jobName.toLowerCase().contains("-prod-apse2")) {
-            environment = "prod-apse2";
-        } else if(jobName.toLowerCase().contains("-prod_ie")) {
-            environment = "prod_ie";
-        } else if(jobName.toLowerCase().contains("-prod_euw1")) {
-            environment = "prod_euw1";
-        } else if(jobName.toLowerCase().contains("-prod-euw1")) {
-            environment = "prod-euw1";
-        } else if(jobName.toLowerCase().contains("-prod_tyo")) {
-            environment = "prod_tyo";
-        } else if(jobName.toLowerCase().contains("-prod_apne1")) {
-            environment = "prod_apne1";
-        } else if(jobName.toLowerCase().contains("-prod-apne1")) {
-            environment = "prod-apne1";
-        } else if(jobName.toLowerCase().contains("-prod_usw1")) {
-            environment = "prod_usw1";
-        } else if(jobName.toLowerCase().contains("-prod-usw1")) {
-            environment = "prod-usw1";
-        } else if(jobName.toLowerCase().contains("-prod_usw2")) {
-            environment = "prod_usw2";
-        } else if(jobName.toLowerCase().contains("-prod-usw2")) {
-            environment = "prod-usw2";
-        } else if(jobName.toLowerCase().contains("-prod_euc1")) {
-            environment = "prod_euc1";
-        } else if(jobName.toLowerCase().contains("-prod-euc1")) {
-            environment = "prod-euc1";
-        } else if(jobName.toLowerCase().contains("-prod_apse1")) {
-            environment = "prod_apse1";
-        } else if(jobName.toLowerCase().contains("-prod-apse1")) {
-            environment = "prod-apse1";
-        } else if(jobName.toLowerCase().contains("-prod_apne2")) {
-            environment = "prod_apne2";
-        } else if(jobName.toLowerCase().contains("-prod-apne2")) {
-            environment = "prod-apne2";
-        } else if(jobName.toLowerCase().contains("-prod_sae1")) {
-            environment = "prod_sae1";
-        } else if(jobName.toLowerCase().contains("-prod-sae1")) {
-            environment = "prod-sae1";
-        } else if(jobName.toLowerCase().contains("-prod")) {
-            environment = "prod";
-        } else if(jobName.toLowerCase().contains("-dev")) {
-            environment = "dev";
-        } else if(jobName.toLowerCase().contains("-stage")) {
-            environment = "stage";
-        } else if(Pattern.compile("(-|_)test(\\b|-|_)").matcher(jobName.toLowerCase()).find()) {
-            environment = "test";
-        }
-        
-        if (environment == "") {
-        	url = environment;
-        } else {
-        	String buildNum = Integer.toString(getOwner().getNumber());
-            String methodName = getName();
-            url = "http://qf-dresden:8080/api/RedirectToJenkinsTestLog?environment=" + environment + "&build=" + buildNum + "&method=" + methodName + "&project=" + jobName;
-        }
-        
-        return url;
-    	
     }
     
     /**

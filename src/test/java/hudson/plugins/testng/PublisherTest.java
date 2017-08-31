@@ -3,13 +3,24 @@ package hudson.plugins.testng;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.PrintStream;
+import java.util.Map;
+import java.util.TreeMap;
 
 import hudson.FilePath;
 import hudson.Launcher;
-import hudson.model.*;
-import junit.framework.Assert;
+import hudson.model.AbstractBuild;
+import hudson.model.BuildListener;
+import hudson.model.FreeStyleBuild;
+import hudson.model.FreeStyleProject;
+import hudson.model.Result;
+import org.jenkinsci.plugins.structs.describable.DescribableModel;
+import org.junit.Assert;
+import org.junit.Rule;
 import org.junit.Test;
-import org.jvnet.hudson.test.HudsonTestCase;
+import org.junit.rules.TemporaryFolder;
+import org.jvnet.hudson.test.Issue;
+import org.jvnet.hudson.test.JenkinsRule;
+import org.jvnet.hudson.test.WithoutJenkins;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -19,15 +30,18 @@ import static org.mockito.Mockito.when;
  *
  * @author nullin
  */
-public class PublisherTest extends HudsonTestCase {
+public class PublisherTest {
 
+    @Rule
+    public JenkinsRule r = new JenkinsRule();
+    @Rule
+    public TemporaryFolder tmp = new TemporaryFolder();
+
+    @WithoutJenkins
     @Test
     public void testLocateReports() throws Exception {
         // Create a temporary workspace in the system
-        File w = File.createTempFile("workspace", ".test");
-        w.delete();
-        w.mkdir();
-        w.deleteOnExit();
+        File w = tmp.newFolder();
         FilePath workspace = new FilePath(w);
         // Create 4 files in the workspace
         File f1 = File.createTempFile("testng-results", ".xml", w);
@@ -64,13 +78,16 @@ public class PublisherTest extends HudsonTestCase {
         local.deleteRecursive();
     }
 
+    @WithoutJenkins
     @Test
     public void testBuildAborted() throws Exception {
-        PublisherCtor publisherCtor = new PublisherCtor().setReportFilenamePattern("testng.xml")
-                        .setEscapeTestDescp(false).setEscapeExceptionMsg(false).setShowFailedBuilds(false);
-        Publisher publisher = publisherCtor.getNewPublisher();
+        Publisher publisher = new Publisher();
+        publisher.setReportFilenamePattern("testng.xml");
+        publisher.setEscapeTestDescp(false);
+        publisher.setEscapeExceptionMsg(false);
+        publisher.setShowFailedBuilds(false);
         Launcher launcherMock = mock(Launcher.class);
-        AbstractBuild buildMock = mock(AbstractBuild.class);
+        AbstractBuild<?,?> buildMock = mock(AbstractBuild.class);
         BuildListener listenerMock = mock(BuildListener.class);
 
         ByteArrayOutputStream os = new ByteArrayOutputStream();
@@ -79,26 +96,67 @@ public class PublisherTest extends HudsonTestCase {
         when(buildMock.getResult()).thenReturn(Result.ABORTED);
         when(listenerMock.getLogger()).thenReturn(ps);
 
-        Assert.assertTrue(publisher.perform(buildMock, launcherMock, listenerMock));
+        publisher.perform(buildMock, buildMock.getWorkspace(), launcherMock, listenerMock);
 
         String str = os.toString();
         Assert.assertTrue(str.contains("Build Aborted"));
     }
-
+    
     @Test
     public void testNoResultsOff() throws Exception {
-        FreeStyleProject p = createFreeStyleProject();
-        PublisherCtor publisherCtor = new PublisherCtor().setReportFilenamePattern("some.xml")
-              .setFailureOnNoResults(false);
-        Publisher publisher = publisherCtor.getNewPublisher();
-        p.getPublishersList().add(publisher);
-
+        FreeStyleProject p = r.createFreeStyleProject();
+        Publisher before = new Publisher();
+        before.setReportFilenamePattern("some.xml");
+        before.setFailureOnNoResults(false);
+        p.getPublishersList().add(before);
+        
         //run build
         FreeStyleBuild build = p.scheduleBuild2(0).get();
-
+        
         //assert result is not FAILURE
         Assert.assertTrue(build.getLog(50).toString().contains("Did not find any matching files"));
         Assert.assertFalse(build.getResult().equals(Result.FAILURE));
+    }
+    
+    @Test
+    public void testRoundTrip() throws Exception {
+        FreeStyleProject p = r.createFreeStyleProject();
+        Publisher before = new Publisher();
+        before.setReportFilenamePattern("");
+        before.setEscapeTestDescp(false);
+        before.setEscapeExceptionMsg(false);
+        before.setShowFailedBuilds(true);
+        before.setFailureOnFailedTestConfig(false);
+        before.setUnstableSkips(0);
+        before.setUnstableFails(0);
+        before.setFailedSkips(0);
+        before.setFailedFails(0);
+        before.setThresholdMode(1);
+        p.getPublishersList().add(before);
+        
+        r.submit(r.createWebClient().getPage(p,"configure").getFormByName("config"));
+        
+        Publisher after = p.getPublishersList().get(Publisher.class);
+        
+        r.assertEqualBeans(before, after, "reportFilenamePattern,escapeTestDescp,escapeExceptionMsg,showFailedBuilds");
+    }
+
+    @Issue("JENKINS-27121")
+    @WithoutJenkins
+    @Test
+    public void testDefaultFields() throws Exception {
+        DescribableModel<Publisher> model = new DescribableModel<Publisher>(Publisher.class);
+        Map<String,Object> args = new TreeMap<String,Object>();
+        Publisher p = model.instantiate(args);
+        Assert.assertEquals("**/testng-results.xml", p.getReportFilenamePattern());
+        Assert.assertTrue(p.getEscapeExceptionMsg());
+        Assert.assertFalse(p.getShowFailedBuilds());
+        Assert.assertEquals(args, model.uninstantiate(model.instantiate(args)));
+        args.put("reportFilenamePattern", "results.xml");
+        Assert.assertEquals(args, model.uninstantiate(model.instantiate(args)));
+        args.put("escapeExceptionMsg", false);
+        args.put("showFailedBuilds", true);
+        Assert.assertEquals(args, model.uninstantiate(model.instantiate(args)));
     }
 
 }
