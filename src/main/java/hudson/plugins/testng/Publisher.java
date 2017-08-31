@@ -57,98 +57,98 @@ public class Publisher extends Recorder implements SimpleBuildStep {
 
    @Extension
    public static final DescriptorImpl DESCRIPTOR = new DescriptorImpl();
-   
+
    @DataBoundConstructor
    public Publisher() {}
-   
+
    public String getReportFilenamePattern() {
-      return reportFilenamePattern;
+       return reportFilenamePattern;
    }
-   
+
    @DataBoundSetter
    public void setReportFilenamePattern(String reportFilenamePattern) {
-      this.reportFilenamePattern = reportFilenamePattern;
+       this.reportFilenamePattern = reportFilenamePattern;
    }
-   
+
    public boolean getEscapeTestDescp() {
-      return escapeTestDescp;
+       return escapeTestDescp;
    }
-   
+
    @DataBoundSetter
    public void setEscapeTestDescp(boolean escapeTestDescp) {
-      this.escapeTestDescp = escapeTestDescp;
+       this.escapeTestDescp = escapeTestDescp;
    }
-   
+
    public boolean getEscapeExceptionMsg() {
-      return escapeExceptionMsg;
+       return escapeExceptionMsg;
    }
-   
+
    @DataBoundSetter
    public void setEscapeExceptionMsg(boolean escapeExceptionMsg) {
-      this.escapeExceptionMsg = escapeExceptionMsg;
+       this.escapeExceptionMsg = escapeExceptionMsg;
    }
-   
+
    public boolean getFailureOnFailedTestConfig() {
-      return failureOnFailedTestConfig;
+       return failureOnFailedTestConfig;
    }
-   
+
    @DataBoundSetter
    public void setFailureOnFailedTestConfig(boolean failureOnFailedTestConfig) {
-      this.failureOnFailedTestConfig = failureOnFailedTestConfig;
+       this.failureOnFailedTestConfig = failureOnFailedTestConfig;
    }
-   
+
    public boolean getShowFailedBuilds() {
-      return showFailedBuilds;
+       return showFailedBuilds;
    }
-   
+
    @DataBoundSetter
    public void setShowFailedBuilds(boolean showFailedBuilds) {
-      this.showFailedBuilds = showFailedBuilds;
+       this.showFailedBuilds = showFailedBuilds;
    }
-   
+
    public Integer getUnstableSkips() {
-      return unstableSkips;
+       return unstableSkips;
    }
-   
+
    @DataBoundSetter
    public void setUnstableSkips(Integer unstableSkips) {
-      this.unstableSkips = unstableSkips;
+       this.unstableSkips = unstableSkips;
    }
-   
+
    public Integer getUnstableFails() {
-      return unstableFails;
+       return unstableFails;
    }
-   
+
    @DataBoundSetter
    public void setUnstableFails(Integer unstableFails) {
-      this.unstableFails = unstableFails;
+       this.unstableFails = unstableFails;
    }
-   
+
    public Integer getFailedSkips() {
-      return failedSkips;
+       return failedSkips;
    }
-   
+
    @DataBoundSetter
    public void setFailedSkips(Integer failedSkips) {
-      this.failedSkips = failedSkips;
+       this.failedSkips = failedSkips;
    }
-   
+
    public Integer getFailedFails() {
-      return failedFails;
+       return failedFails;
    }
-   
+
    @DataBoundSetter
    public void setFailedFails(Integer failedFails) {
-      this.failedFails = failedFails;
+       this.failedFails = failedFails;
    }
-   
+
    public Integer getThresholdMode() {
-      return thresholdMode;
+       return thresholdMode;
    }
-   
+
    @DataBoundSetter
    public void setThresholdMode(Integer thresholdMode) {
-      this.thresholdMode = thresholdMode;
+       this.thresholdMode = thresholdMode;
    }
 
    public BuildStepMonitor getRequiredMonitorService() {
