@@ -13,16 +13,6 @@
          <f:checkbox default="true" />
       </f:entry>
       <f:entry title="Show failed builds in trend graph?" field="showFailedBuilds">
-<<<<<<< HEAD
-         <f:checkbox name="testng.showFailedBuilds" default="false" />
-      </f:entry>
-      <f:entry title="Mark build as unstable on skipped tests?" field="unstableOnSkippedTests">
-         <f:checkbox name="testng.unstableOnSkippedTests" default="false" />
-      </f:entry>
-      <f:entry title="Mark build as failure on failed configuration?" field="failureOnFailedTestConfig">
-         <f:checkbox name="testng.failureOnFailedTestConfig" default="false" />
-      </f:entry>
-=======
          <f:checkbox default="false" />
       </f:entry>
       <f:entry title="Mark build as failure on failed configuration?" field="failureOnFailedTestConfig">
@@ -53,6 +43,5 @@
 			<f:radio value="2" checked="${instance.thresholdMode==2 or h.defaultToTrue(instance.thresholdMode)}"/>
 			<label class="attach-previous">Percentage of tests</label>
 	  </f:entry>
->>>>>>> master
    </f:advanced>
 </j:jelly>
