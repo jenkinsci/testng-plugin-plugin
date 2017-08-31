@@ -115,7 +115,6 @@ public class PublisherTest {
         before.setFailedSkips(0);
         before.setFailedFails(0);
         before.setThresholdMode(1);
-
         p.getPublishersList().add(before);
 
         r.submit(r.createWebClient().getPage(p,"configure").getFormByName("config"));
