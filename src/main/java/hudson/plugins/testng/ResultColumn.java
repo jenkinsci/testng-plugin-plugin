@@ -31,6 +31,7 @@ public class ResultColumn extends ListViewColumn {
        return b != null ? b.getAction(AbstractTestResultAction.class) : null;
    }
 
+   @Extension
    public static class TestResultDescriptor extends ListViewColumnDescriptor {
 
       @Override
@@ -48,13 +49,5 @@ public class ResultColumn extends ListViewColumn {
       public String getDisplayName() {
          return "Latest TestNG Results";
       }
-   }
-
-   @Extension
-   public static final Descriptor<ListViewColumn> DESCRIPTOR = new TestResultDescriptor();
-
-   @Override
-   public Descriptor<ListViewColumn> getDescriptor() {
-      return DESCRIPTOR;
    }
 }
