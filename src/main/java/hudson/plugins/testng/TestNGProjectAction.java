@@ -49,6 +49,11 @@ public class TestNGProjectAction extends TestResultProjectAction implements Prom
        return escapeExceptionMsg;
     }
 
+    public boolean getShowFailedBuilds()
+    {
+        return showFailedBuilds;
+    }
+
     /**
      * Getter for property 'project'.
      *
@@ -148,16 +153,12 @@ public class TestNGProjectAction extends TestResultProjectAction implements Prom
       Run<?, ?> build;
       for (int i = 0; i < buildList.size() && count++ < 25; i++) {
          build = buildList.get(i);
-         if (build == null) {
+         if (build == null || build.getResult() == null || build.getResult().isWorseThan(Result.FAILURE)) {
              //Non-existent build! Skip.
+             //Also, we don't want to add aborted or builds with no results into the graph
              continue;
          }
          TestNGTestResultBuildAction action = build.getAction(getBuildActionClass());
-
-         if (build.getResult() == null || build.getResult().isWorseThan(Result.FAILURE)) {
-            //We don't want to add aborted or builds with no results into the graph
-            continue;
-         }
 
          if (action != null) {
             passes.add(action.getTotalCount() - action.getFailCount() - action.getSkipCount());
