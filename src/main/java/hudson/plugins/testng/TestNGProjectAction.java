@@ -153,20 +153,21 @@ public class TestNGProjectAction extends TestResultProjectAction implements Prom
       Run<?, ?> build;
       for (int i = 0; i < buildList.size() && count++ < 25; i++) {
          build = buildList.get(i);
-         if (build == null || build.getResult() == null || build.getResult().isWorseThan(Result.FAILURE)) {
+         if (build == null) {
              //Non-existent build! Skip.
-             //Also, we don't want to add aborted or builds with no results into the graph
              continue;
          }
+         Result result = build.getResult();
          TestNGTestResultBuildAction action = build.getAction(getBuildActionClass());
 
-         if (action != null) {
+         if (action != null && result != null && !result.isWorseThan(Result.FAILURE)) {
+             //we don't want to add aborted or builds with no results into the graph
             passes.add(action.getTotalCount() - action.getFailCount() - action.getSkipCount());
             fails.add(action.getFailCount());
             skips.add(action.getSkipCount());
             buildNum.add(Integer.toString(build.getNumber()));
             durations.add(build.getDuration());
-            buildStatus.add(build.getResult().color);
+            buildStatus.add(result.color);
          }
       }
       jsonObject.put("pass", passes);
