@@ -17,7 +17,7 @@ public class ResultColumn extends ListViewColumn {
       String resultString = "No tests run";
       if(tests != null && tests.getTotalCount() > 0) {
          resultString = tests.getFailCount() + "";
-         if(!tests.getFailureDiffString().contains("±0")) {
+         if(!tests.getFailureDiffString().equals("")) {
             resultString = resultString + "(" + tests.getFailureDiffString().replace(" / ", "") + ") ";
          }
          resultString = resultString + " failed/" + tests.getTotalCount() + " total";
@@ -31,6 +31,7 @@ public class ResultColumn extends ListViewColumn {
        return b != null ? b.getAction(AbstractTestResultAction.class) : null;
    }
 
+   @Extension
    public static class TestResultDescriptor extends ListViewColumnDescriptor {
 
       @Override
@@ -48,13 +49,5 @@ public class ResultColumn extends ListViewColumn {
       public String getDisplayName() {
          return "Latest TestNG Results";
       }
-   }
-
-   @Extension
-   public static final Descriptor<ListViewColumn> DESCRIPTOR = new TestResultDescriptor();
-
-   @Override
-   public Descriptor<ListViewColumn> getDescriptor() {
-      return DESCRIPTOR;
    }
 }
