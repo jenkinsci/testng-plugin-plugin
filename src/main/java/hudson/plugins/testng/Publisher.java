@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import hudson.EnvVars;
@@ -13,6 +15,7 @@ import hudson.FilePath;
 import hudson.Launcher;
 import hudson.model.AbstractBuild;
 import hudson.model.AbstractProject;
+import hudson.model.Action;
 import hudson.model.Result;
 import hudson.model.Run;
 import hudson.model.TaskListener;
@@ -163,6 +166,13 @@ public class Publisher extends Recorder implements SimpleBuildStep {
       return DESCRIPTOR;
    }
 
+   @Override
+   public Collection<? extends Action> getProjectActions(AbstractProject<?, ?> project) { // TODO replace with LastBuildAction
+      Collection<Action> actions = new ArrayList<Action>();
+      actions.add(new TestNGProjectAction(project, escapeTestDescp, escapeExceptionMsg, showFailedBuilds));
+      return actions;
+   }
+
    /**
     * {@inheritDoc}
     */
@@ -222,7 +232,7 @@ public class Publisher extends Recorder implements SimpleBuildStep {
 
       if (results.getTestList().size() > 0) {
          //create an individual report for all of the results and add it to the build
-         build.addAction(new TestNGTestResultBuildAction(results, escapeTestDescp, escapeExceptionMsg, showFailedBuilds));
+         build.addAction(new TestNGTestResultBuildAction(results));
          if (failureOnFailedTestConfig && results.getFailedConfigCount() > 0) {
             logger.println("Failed configuration methods found. Marking build as FAILURE.");
             build.setResult(Result.FAILURE);

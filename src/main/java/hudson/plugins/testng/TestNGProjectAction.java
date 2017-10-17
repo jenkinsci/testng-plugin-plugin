@@ -5,6 +5,7 @@ import hudson.model.AbstractBuild;
 import java.io.IOException;
 import java.util.Calendar;
 
+import hudson.model.Action;
 import hudson.model.Job;
 import hudson.model.ProminentProjectAction;
 import hudson.model.Result;
@@ -13,6 +14,7 @@ import hudson.plugins.testng.util.GraphHelper;
 import hudson.tasks.test.TestResultProjectAction;
 import hudson.util.ChartUtil;
 import hudson.util.DataSetBuilder;
+
 import java.util.SortedMap;
 import jenkins.model.lazy.LazyBuildMixIn;
 import jenkins.model.lazy.LazyBuildMixIn.LazyLoadingJob;
@@ -50,6 +52,11 @@ public class TestNGProjectAction extends TestResultProjectAction implements Prom
    }
 
    public boolean getEscapeExceptionMsg()
+   {
+      return escapeExceptionMsg;
+   }
+
+   public boolean getShowFailedBuilds()
    {
       return escapeExceptionMsg;
    }
