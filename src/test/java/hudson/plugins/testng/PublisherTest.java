@@ -134,7 +134,9 @@ public class PublisherTest {
         before.setThresholdMode(1);
         p.getPublishersList().add(before);
         
-        r.submit(r.createWebClient().getPage(p,"configure").getFormByName("config"));
+        JenkinsRule.WebClient wc = r.createWebClient();
+        wc.getOptions().setThrowExceptionOnScriptError(false);
+        r.submit(wc.getPage(p,"configure").getFormByName("config"));
         
         Publisher after = p.getPublishersList().get(Publisher.class);
         
