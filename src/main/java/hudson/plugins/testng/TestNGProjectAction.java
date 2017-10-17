@@ -1,6 +1,5 @@
 package hudson.plugins.testng;
 
-import hudson.model.*;
 import hudson.tasks.test.TestResultProjectAction;
 
 import jenkins.model.lazy.LazyBuildMixIn;
@@ -12,6 +11,12 @@ import hudson.model.AbstractBuild;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import hudson.model.Job;
+import hudson.model.ProminentProjectAction;
+import hudson.model.Result;
+import hudson.model.Run;
+
 import java.util.SortedMap;
 
 import org.kohsuke.stapler.Stapler;
