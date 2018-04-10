@@ -39,6 +39,8 @@ public class Publisher extends Recorder implements SimpleBuildStep {
    private boolean escapeExceptionMsg = true;
    //failed config mark build as failure
    private boolean failureOnFailedTestConfig = false;
+   //look for results even when build is aborted
+   private boolean resultsWhenAborted = false;
    //should failed builds be included in graphs or not
    private boolean showFailedBuilds = false;
    //v1.11 - marked transient and here just for backward compatibility
@@ -95,6 +97,15 @@ public class Publisher extends Recorder implements SimpleBuildStep {
    @DataBoundSetter
    public void setFailureOnFailedTestConfig(boolean failureOnFailedTestConfig) {
        this.failureOnFailedTestConfig = failureOnFailedTestConfig;
+   }
+
+   public boolean getResultsWhenAborted() {
+       return resultsWhenAborted;
+   }
+
+   @DataBoundSetter
+   public void setResultsWhenAborted(boolean resultsWhenAborted) {
+       this.resultsWhenAborted = resultsWhenAborted;
    }
 
    public boolean getShowFailedBuilds() {
@@ -172,7 +183,7 @@ public class Publisher extends Recorder implements SimpleBuildStep {
 
       PrintStream logger = listener.getLogger();
 
-      if (Result.ABORTED.equals(build.getResult())) {
+      if (Result.ABORTED.equals(build.getResult()) && !resultsWhenAborted) {
          logger.println("Build Aborted. Not looking for any TestNG results.");
          return;
       }
@@ -222,7 +233,7 @@ public class Publisher extends Recorder implements SimpleBuildStep {
 
       if (results.getTestList().size() > 0) {
          //create an individual report for all of the results and add it to the build
-         build.addAction(new TestNGTestResultBuildAction(results, escapeTestDescp, escapeExceptionMsg, showFailedBuilds));
+         build.addAction(new TestNGTestResultBuildAction(results, escapeTestDescp, escapeExceptionMsg, showFailedBuilds, resultsWhenAborted));
          if (failureOnFailedTestConfig && results.getFailedConfigCount() > 0) {
             logger.println("Failed configuration methods found. Marking build as FAILURE.");
             build.setResult(Result.FAILURE);

@@ -55,8 +55,9 @@ public class TestNGTestResultBuildAction extends AbstractTestResultAction implem
     private final boolean escapeTestDescp;
     private final boolean escapeExceptionMsg;
     private final boolean showFailedBuilds;
+    private final boolean resultsWhenAborted;
 
-    public TestNGTestResultBuildAction(TestNGResult testngResults, boolean escapeTestDescp, boolean escapeExceptionMsg, boolean showFailedBuilds) {
+    public TestNGTestResultBuildAction(TestNGResult testngResults, boolean escapeTestDescp, boolean escapeExceptionMsg, boolean showFailedBuilds, boolean resultsWhenAborted) {
         if (testngResults != null) {
             this.testngResultRef = new WeakReference<TestNGResult>(testngResults);
 
@@ -66,6 +67,7 @@ public class TestNGTestResultBuildAction extends AbstractTestResultAction implem
         this.escapeTestDescp = escapeTestDescp;
         this.escapeExceptionMsg = escapeExceptionMsg;
         this.showFailedBuilds = showFailedBuilds;
+        this.resultsWhenAborted = resultsWhenAborted;
     }
 
     private void count(TestNGResult testngResults) {
