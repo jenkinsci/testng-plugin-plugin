@@ -70,12 +70,12 @@ public class TestResultHistoryUtil {
       TestNGResult tr = action.getResult();
 
       return "<ul>" + diff(prevTotalTestCount, tr.getTotalCount(), "Total Tests")
+            + diff(prevFailedConfigurationCount, tr.getFailedConfigCount(), "Failed Configurations")
+            + printTestsUrls(tr.getFailedConfigs())
             + diff(prevFailedTestCount, tr.getFailCount(), "Failed Tests")
             + printTestsUrls(tr.getFailedTests())
             + diff(prevSkippedTestCount, tr.getSkipCount(), "Skipped Tests")
             + printTestsUrls(tr.getSkippedTests())
-            + diff(prevFailedConfigurationCount, tr.getFailedConfigCount(), "Failed Configurations")
-            + printTestsUrls(tr.getFailedConfigs())
             + diff(prevSkippedConfigurationCount, tr.getSkippedConfigCount(), "Skipped Configurations")
             + printTestsUrls(tr.getSkippedConfigs())
             + "</ul>";
