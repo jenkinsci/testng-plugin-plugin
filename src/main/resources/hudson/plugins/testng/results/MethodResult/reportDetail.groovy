@@ -37,6 +37,18 @@ div(id: "report") {
         }
     }
 
+    if (my.parentTestName) {
+        div(id: "parent-test-name") {
+            text("Test Name: ${my.parentTestName}")
+        }
+    }
+
+    if (my.parentSuiteName) {
+        div(id: "parent-suite-name") {
+            text("Suite Name: ${my.parentSuiteName}")
+        }
+    }
+
     if (my.groups) {
         div(id: "groups") {
             p("Group(s): ${StringUtils.join(my.groups, ", ")}")
@@ -98,7 +110,7 @@ div(id: "report") {
         if (my.exception.stackTrace) {
             b("Stacktrace:")
             p(id:"exp-st") {
-                raw("${FormatUtil.formatStackTraceForHTML(my.exception.stackTrace)}")
+                pre(my.exception.stackTrace)
             }
         }
     }
