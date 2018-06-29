@@ -109,9 +109,9 @@ div(id: "report") {
         }
         if (my.exception.stackTrace) {
             b("Stacktrace:")
-            p(id:"exp-st") {
-                pre(my.exception.stackTrace)
-            }
+            br()
+            br()
+            pre(id:"exp-st", my.exception.stackTrace)
         }
     }
 }
