@@ -17,7 +17,9 @@ Release Notes
 -------
 
 ### Upcoming
-* Fixed: JENKINS-32746 - Change loop determination condition in order to check all loaded builds
+* Fixed: JENKINS-32746 - Change loop determination condition in order to check all loaded builds (Julien Herr)
+* Fixed: JENKINS-26971 - Looking at failed TestNG result causes an exception (Vladimir Sitnikov)
+* Show "failed configurations" earlier than "failed tests" (Vladimir Sitnikov)
 
 ### 1.14
 * Added: Update to new parent POM (jglick)
