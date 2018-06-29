@@ -113,7 +113,7 @@ public class TestResultHistoryUtil {
                firstGroup = false;
                testName = methodResult.getParentTestName();
                suiteName = methodResult.getParentSuiteName();
-               htmlStr.append("<LI style=\"list-style-type:none\"><b>").append(testName).append(" / ").append(suiteName).append("</b>");
+               htmlStr.append("<LI style=\"list-style-type:none\"><b>").append(suiteName).append(" / ").append(testName).append("</b>");
                htmlStr.append("<OL start=\"").append(testIndex).append("\">");
             }
             htmlStr.append("<LI>");
