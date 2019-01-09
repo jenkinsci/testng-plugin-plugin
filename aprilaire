@@ -1,0 +1,131 @@
+package Aprilaire.April;
+
+
+
+import java.util.concurrent.TimeUnit;
+
+import org.apache.commons.io.FileUtils;
+import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.OutputType;
+import org.openqa.selenium.TakesScreenshot;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.support.ui.FluentWait;
+import org.openqa.selenium.support.ui.Wait;
+import org.testng.annotations.AfterTest;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.BeforeTest;
+import org.testng.annotations.Test;
+
+import com.google.common.base.Function;
+import com.thoughtworks.selenium.webdriven.Timer;
+
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.PrintWriter;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.NoSuchElementException;
+//import java.util.Timer;
+//import java.util.TimerTask;
+
+public class Data {
+	static String driverPath = "E:\\selenium\\chromedriver.exe";
+	public static WebDriver driver;
+	 
+  @Test
+public void browser() {
+	  System.setProperty("webdriver.chrome.driver", driverPath);
+	  driver = new ChromeDriver();
+	  driver.manage().window().maximize(); 
+  }
+  
+  @Test (dependsOnMethods = { "browser" })
+public void BaseUrl() {
+	  String url="https://web.aprilairestat.com/";
+	  driver.get(url);
+	  ImplicitWait();
+  }
+   
+  
+public void ImplicitWait() {
+	  driver.manage().timeouts().implicitlyWait(30,TimeUnit.SECONDS);
+	 }
+  
+  @Test (dependsOnMethods = { "BaseUrl" })
+public void Login() {
+	  driver.findElement(By.id("txtloginEmail")).sendKeys("moumita.sikdar@lnttechservices.com");
+	  driver.findElement(By.id("txtloginPassword")).sendKeys("1234");
+	  driver.findElement(By.id("ViewNotificationId")).click();
+	  ImplicitWait();
+	  driver.findElement(By.xpath("//a[contains(text(),'Admin')]")).click();;
+	  ImplicitWait();
+	  driver.findElement(By.id("DeviceStatusId")).click();
+	  ImplicitWait();
+	  try {
+		takeSnapShot();
+	} catch (Exception e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
+	  
+  }
+  
+  public static void takeSnapShot() throws Exception{
+
+      //Convert web driver object to TakeScreenshot
+
+      TakesScreenshot scrShot =((TakesScreenshot)driver);
+
+      //Call getScreenshotAs method to create image file
+
+              File SrcFile=scrShot.getScreenshotAs(OutputType.FILE);
+
+          //Move image file to new destination
+
+              File DestFile=new File("E:/seleniumTest/ "+System.currentTimeMillis()+".png");
+
+              //Copy file at destination
+              
+
+         	 WebElement ele = driver.findElement(By.xpath("//td[contains(text(),'Percentage of users experiencing disconnections at this time')]/following-sibling::td"));
+         	 
+              
+              String getTextOnPage = ele.getText();
+              FileUtils.copyFile(SrcFile, DestFile);
+              
+              String TestFile = "E:\\seleniumTest\\data.txt";
+              File file = new File(TestFile);
+              
+              if (!file.exists()) {
+                  file.createNewFile();
+              }              
+              
+              FileWriter fr=new FileWriter(file.getAbsoluteFile());
+              BufferedWriter BW=new BufferedWriter(fr);
+             // BW.write("This Is First Line.");
+              
+             // Create object of SimpleDateFormat class and decide the format
+                DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+               
+                 Date date = new Date();
+      		
+      		    String systemdateandtime= dateFormat.format(date);
+      		    BW.write(systemdateandtime);
+      	    	BW.newLine();
+      		 
+              BW.write("Percentage of users experiencing disconnections at this time = " + getTextOnPage);
+              BW.newLine();
+              BW.close();
+              
+              driver.close();
+
+  }
+
+  
+}
