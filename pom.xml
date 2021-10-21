@@ -103,6 +103,10 @@
         <gitHubRepo>jenkinsci/testng-plugin-plugin</gitHubRepo>
         <jenkins.version>2.289.1</jenkins.version>
         <java.level>8</java.level>
+        <spotbugs.effort>Max</spotbugs.effort>
+        <spotbugs.failOnError>true</spotbugs.failOnError>
+        <!-- Not yet ready for Low threshold, too many warnings to resolve -->
+        <spotbugs.threshold>Medium</spotbugs.threshold>
     </properties>
     <repositories>
         <repository>
