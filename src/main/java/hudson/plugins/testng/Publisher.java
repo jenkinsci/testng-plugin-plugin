@@ -25,6 +25,8 @@ import jenkins.tasks.SimpleBuildStep;
 import net.sf.json.JSONObject;
 import org.kohsuke.stapler.*;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
+
 /**
  * This class defines a @Publisher and @Extension
  *
@@ -417,7 +419,7 @@ public class Publisher extends Recorder implements SimpleBuildStep {
       }
 
       @Override
-      public hudson.tasks.Publisher newInstance(StaplerRequest req, JSONObject formData) throws FormException {
+      public hudson.tasks.Publisher newInstance(@NonNull StaplerRequest req, JSONObject formData) throws FormException {
          return req.bindJSON(Publisher.class, formData);
       }
 

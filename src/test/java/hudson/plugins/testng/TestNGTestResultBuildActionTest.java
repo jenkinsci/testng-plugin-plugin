@@ -134,11 +134,11 @@ public class TestNGTestResultBuildActionTest {
         assertEquals(linksFromResult, linksInPage);
 
         //verify bar
-        HtmlElement element = page.getElementById("fail-skip", true);
+        HtmlElement element = page.getHtmlElementById("fail-skip");
         r.assertStringContains(element.getTextContent(), "1 failure");
         assertFalse(element.getTextContent().contains("failures"));
         r.assertStringContains(element.getTextContent(), "1 skipped");
-        element = page.getElementById("pass", true);
+        element = page.getHtmlElementById("pass");
         r.assertStringContains(element.getTextContent(), "38 tests");
     }
 
@@ -216,10 +216,10 @@ public class TestNGTestResultBuildActionTest {
         assertTrue(linksInPage.contains("No Package"));
 
         //verify bar
-        HtmlElement element = page.getElementById("fail-skip", true);
+        HtmlElement element = page.getHtmlElementById("fail-skip");
         r.assertStringContains(element.getTextContent(), "0 failures");
         assertFalse(element.getTextContent().contains("skipped"));
-        element = page.getElementById("pass", true);
+        element = page.getHtmlElementById("pass");
         r.assertStringContains(element.getTextContent(), "526 tests");
     }
 

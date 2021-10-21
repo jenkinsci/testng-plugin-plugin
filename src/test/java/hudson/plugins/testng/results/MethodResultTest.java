@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
+import static com.gargoylesoftware.htmlunit.WebAssert.*;
 import hudson.Launcher;
 import hudson.model.AbstractBuild;
 import hudson.model.BuildListener;
@@ -60,7 +61,7 @@ public class MethodResultTest {
         //Compare output
         String methodUrl = build.getUrl() + PluginImpl.URL + "/gov.nasa.jpl/FoobarTests/b";
         HtmlPage page = r.createWebClient().goTo(methodUrl);
-        HtmlElement expMsg = page.getElementById("exp-msg", true);
+        HtmlElement expMsg = page.getHtmlElementById("exp-msg");
         String contents = expMsg.getTextContent();
         r.assertStringContains(contents, "</a>"); //escaped HTML so it shows up as string
     }
@@ -91,7 +92,7 @@ public class MethodResultTest {
         //Compare output
         String methodUrl = build.getUrl() + PluginImpl.URL + "/gov.nasa.jpl/FoobarTests/b";
         HtmlPage page = r.createWebClient().goTo(methodUrl);
-        HtmlElement expMsg = page.getElementById("exp-msg", true);
+        HtmlElement expMsg = page.getHtmlElementById("exp-msg");
         String contents = expMsg.getTextContent();
         assertFalse(contents.contains("</a>")); //non-escaped HTML so it shouldn't show up as text
     }
@@ -122,7 +123,7 @@ public class MethodResultTest {
         //Compare output
         String methodUrl = build.getUrl() + PluginImpl.URL + "/com.test/UploadTest/uploadFile";
         HtmlPage page = r.createWebClient().goTo(methodUrl);
-        HtmlElement description = page.getElementById("description", true);
+        HtmlElement description = page.getHtmlElementById("description");
         String contents = description.getTextContent();
         assertFalse(contents.contains("</a>")); //non-escaped HTML so it doesn't show up as text
         assertFalse(contents.contains("<a href=\"")); //non-escaped HTML
@@ -154,7 +155,7 @@ public class MethodResultTest {
         //Compare output
         String methodUrl = build.getUrl() + PluginImpl.URL + "/com.test/UploadTest/uploadFile";
         HtmlPage page = r.createWebClient().goTo(methodUrl);
-        HtmlElement description = page.getElementById("description", true);
+        HtmlElement description = page.getHtmlElementById("description");
         String contents = description.getTextContent();
         r.assertStringContains(contents, "</a>"); //escaped HTML so it shows up as text
     }
@@ -194,11 +195,11 @@ public class MethodResultTest {
         //Compare output
         String methodUrl = build.getUrl() + PluginImpl.URL + "/com.fakepkg.test/FoobarTests/test";
         HtmlPage page = r.createWebClient().goTo(methodUrl);
-        HtmlElement description = page.getElementById("description", true);
+        HtmlElement description = page.getHtmlElementById("description");
         assertEquals(2, description.getElementsByTagName("br").size());
 
-        HtmlElement exp = page.getElementById("exp-msg", true);
-        assertEquals(2, exp.getElementsByTagName("br").size());
+        HtmlElement exp = page.getHtmlElementById("exp-msg");
+        assertEquals(4, exp.getElementsByTagName("br").size());
 
     }
 
@@ -227,7 +228,7 @@ public class MethodResultTest {
         String methodUrl = build.getUrl() + PluginImpl.URL
                 + "/org.example.test/ExampleIntegrationTest/FirstTest";
         HtmlPage page = r.createWebClient().goTo(methodUrl);
-        HtmlElement reporterOutput = page.getElementById("reporter-output", true);
+        HtmlElement reporterOutput = page.getHtmlElementById("reporter-output");
         String contents = reporterOutput.getTextContent();
         r.assertStringContains(contents, "Some Reporter.log() statement");
         r.assertStringContains(contents, "Another Reporter.log() statement");
@@ -265,30 +266,30 @@ public class MethodResultTest {
         //Compare output for a method
         String urlPrefix = build.getUrl() + PluginImpl.URL;
         HtmlPage page = r.createWebClient().goTo(urlPrefix + "/test/Test1/includedGroups_1/");
-        HtmlElement element = page.getElementById("parent", true);
+        HtmlElement element = page.getHtmlElementById("parent");
         String contents = element.getTextContent();
         //information about class and time taken
         r.assertStringContains(contents, "test.Test1");
         assertTrue(element.getAttribute("href").endsWith(urlPrefix + "/test/Test1"));
 
         //duration string
-        r.assertStringContains(page.getElementById("report").getTextContent(), methodResult.getDurationString());
+        r.assertStringContains(page.getHtmlElementById("report").getTextContent(), methodResult.getDurationString());
 
         //header containing method name
         element = (HtmlElement) page.getElementsByTagName("h1").get(0);
         assertEquals("includedGroups", element.getTextContent());
 
         //method status information
-        element = (HtmlElement) page.getElementById("status");
+        element = (HtmlElement) page.getHtmlElementById("status");
         assertEquals("result-passed", element.getAttribute("class"));
         assertEquals("PASS", element.getTextContent());
 
         //this method has single group
-        element = (HtmlElement) page.getElementById("groups");
+        element = (HtmlElement) page.getHtmlElementById("groups");
         assertEquals(element.getTextContent(), "Group(s): current");
 
         //should have an img
-        element = page.getElementById("report").getElementsByTagName("img").get(0);
+        element = page.getHtmlElementById("report").getElementsByTagName("img").get(0);
         assertNotNull(element);
         assertEquals("trend", element.getAttribute("id"));
         assertEquals("graph", element.getAttribute("src"));
@@ -296,15 +297,15 @@ public class MethodResultTest {
         assertEquals("[Method Execution Trend Chart]", element.getAttribute("alt"));
 
         //following shouldn't be present on page
-        assertNull(page.getElementById("inst-name"));
-        assertNull(page.getElementById("params"));
-        assertNull(page.getElementById("reporter-output"));
-        assertNull(page.getElementById("exp-msg"));
+        assertElementNotPresent(page, "inst-name");
+        assertElementNotPresent(page, "params");
+        assertElementNotPresent(page, "reporter-output");
+        assertElementNotPresent(page, "exp-msg");
 
         //method run using two parameters
         page = r.createWebClient().goTo(urlPrefix
                 + "/test.dataprovider/Sample1Test/verifyNames_1/");
-        element = (HtmlElement) page.getElementById("params");
+        element = (HtmlElement) page.getHtmlElementById("params");
         contents = element.getTextContent();
         //information about class and time taken
         r.assertStringContains(contents, "Parameter #1");
@@ -344,27 +345,27 @@ public class MethodResultTest {
         HtmlPage page = wc.goTo(urlPrefix + "/org.jenkins/TestDataProvider/test/");
 
         //method status information
-        HtmlElement element = page.getElementById("status", true);
+        HtmlElement element = page.getHtmlElementById("status");
         assertEquals("result-failed", element.getAttribute("class"));
         assertEquals("FAIL", element.getTextContent());
 
         //this method has single parameter
-        element = page.getElementById("params", true);
+        element = page.getHtmlElementById("params");
         String contents = element.getTextContent();
         r.assertStringContains(contents, "Parameter #1");
         r.assertStringContains(contents, "Value");
         assertFalse(contents.contains("Parameter #2"));
 
         //this method has no groups or reporter output
-        assertNull(page.getElementById("groups"));
-        assertNull(page.getElementById("reporter-output"));
+        assertElementNotPresent(page, "groups");
+        assertElementNotPresent(page, "reporter-output");
 
         //this method has exception with no message
         element = (HtmlElement) page.getElementsByTagName("h3").get(0);
         assertEquals("Exception java.lang.AssertionError", element.getTextContent());
-        element = page.getElementById("exp-msg", true);
+        element = page.getHtmlElementById("exp-msg");
         r.assertStringContains(element.getTextContent(), "(none)");
-        element = page.getElementById("exp-st", true);
+        element = page.getHtmlElementById("exp-st");
         r.assertStringContains(element.getTextContent(),
                              "org.jenkins.TestDataProvider.test(TestDataProvider.java:15)");
 
@@ -372,22 +373,22 @@ public class MethodResultTest {
         page = wc.goTo(urlPrefix + "/org.jenkins/TestDataProvider/test_2/");
 
         //method status information
-        element = page.getElementById("status", true);
+        element = page.getHtmlElementById("status");
         assertEquals("result-passed", element.getAttribute("class"));
         assertEquals("PASS", element.getTextContent());
 
         //this method has single parameter
-        element = page.getElementById("params", true);
+        element = page.getHtmlElementById("params");
         contents = element.getTextContent();
         r.assertStringContains(contents, "Parameter #1");
         r.assertStringContains(contents, "2");
         assertFalse(contents.contains("Parameter #2"));
 
-        assertNull(page.getElementById("inst-name"));
-        assertNull(page.getElementById("groups"));
-        assertNull(page.getElementById("reporter-output"));
-        assertNull(page.getElementById("exp-msg"));
-        assertNull(page.getElementById("exp-st"));
+        assertElementNotPresent(page, "inst-name");
+        assertElementNotPresent(page, "groups");
+        assertElementNotPresent(page, "reporter-output");
+        assertElementNotPresent(page, "exp-msg");
+        assertElementNotPresent(page, "exp-st");
     }
 
 
@@ -422,7 +423,7 @@ public class MethodResultTest {
         HtmlPage page = wc.goTo(urlPrefix + "/testng.instancename/MyITestFactoryTest/factoryTest1/");
 
         //method instance name information
-        HtmlElement element = page.getElementById("inst-name", true);
+        HtmlElement element = page.getHtmlElementById("inst-name");
         r.assertStringContains(element.getTextContent(), "FACTORY_VMFS");
     }
 }
