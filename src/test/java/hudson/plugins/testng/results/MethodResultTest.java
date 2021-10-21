@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
+import static com.gargoylesoftware.htmlunit.WebAssert.*;
 import hudson.Launcher;
 import hudson.model.AbstractBuild;
 import hudson.model.BuildListener;
@@ -296,10 +297,10 @@ public class MethodResultTest {
         assertEquals("[Method Execution Trend Chart]", element.getAttribute("alt"));
 
         //following shouldn't be present on page
-        assertNull(page.getElementById("inst-name"));
-        assertNull(page.getElementById("params"));
-        assertNull(page.getElementById("reporter-output"));
-        assertNull(page.getElementById("exp-msg"));
+        assertElementNotPresent(page, "inst-name");
+        assertElementNotPresent(page, "params");
+        assertElementNotPresent(page, "reporter-output");
+        assertElementNotPresent(page, "exp-msg");
 
         //method run using two parameters
         page = r.createWebClient().goTo(urlPrefix
@@ -383,11 +384,11 @@ public class MethodResultTest {
         r.assertStringContains(contents, "2");
         assertFalse(contents.contains("Parameter #2"));
 
-        assertNull(page.getElementById("inst-name"));
-        assertNull(page.getElementById("groups"));
-        assertNull(page.getElementById("reporter-output"));
-        assertNull(page.getElementById("exp-msg"));
-        assertNull(page.getElementById("exp-st"));
+        assertElementNotPresent(page, "inst-name");
+        assertElementNotPresent(page, "groups");
+        assertElementNotPresent(page, "reporter-output");
+        assertElementNotPresent(page, "exp-msg");
+        assertElementNotPresent(page, "exp-st");
     }
 
 
