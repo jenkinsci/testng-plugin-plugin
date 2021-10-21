@@ -197,8 +197,8 @@ public class MethodResultTest {
         HtmlElement description = page.getHtmlElementById("description");
         assertEquals(2, description.getElementsByTagName("br").size());
 
-        HtmlElement exp = page.getElementById("exp-msg", true);
-        assertEquals(2, exp.getElementsByTagName("br").size());
+        HtmlElement exp = page.getHtmlElementById("exp-msg");
+        assertEquals(4, exp.getElementsByTagName("br").size());
 
     }
 
