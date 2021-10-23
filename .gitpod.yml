@@ -8,6 +8,7 @@ vscode:
   extensions:
     - bierner.markdown-preview-github-styles
     - github.vscode-pull-request-github
+    - redhat.fabric8-analytics
     - redhat.java
     - redhat.vscode-commons
     - redhat.vscode-xml
