@@ -1,7 +1,7 @@
 tasks:
   - name: Update settings.xml
     before: |
-      cp .mvn/settings.xml ~/.m2/settings.xml
+      cp .mvn/gitpod-mvn-settings.xml ~/.m2/settings.xml
       cd $GITPOD_REPO_ROOT
   - name: sdkman auto answer
     before: |
@@ -16,7 +16,6 @@ vscode:
   extensions:
     - bierner.markdown-preview-github-styles
     - github.vscode-pull-request-github
-    - github.vscode-codeql
     - redhat.fabric8-analytics
     - redhat.java
     - redhat.vscode-commons
@@ -26,5 +25,3 @@ vscode:
     - vscjava.vscode-java-dependency
     - vscjava.vscode-java-pack
     - vscjava.vscode-java-test
-    - hbenl.test-adapter-converter
-    - hbenl.vscode-test-explorer
