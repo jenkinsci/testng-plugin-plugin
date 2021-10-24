@@ -1,13 +1,23 @@
 tasks:
   - name: Update settings.xml
     before: |
-      cd ~/.m2/
-      wget -O settings.xml https://www.planetpope.com/jenkins-mvn/settings.xml
+      cp .mvn/settings.xml ~/.m2/settings.xml
       cd $GITPOD_REPO_ROOT
+  - name: sdkman auto answer
+    before: |
+      sed -i 's/sdkman_auto_answer=false/sdkman_auto_answer=true/' $HOME/.sdkman/etc/config
+  - name: SDKMAN
+    before: |
+      sdk selfupdate
+      sdk update
+      sdk install maven 3.8.3
+      sdk use maven 3.8.3
 vscode:
   extensions:
     - bierner.markdown-preview-github-styles
     - github.vscode-pull-request-github
+    - github.vscode-codeql
+    - redhat.fabric8-analytics
     - redhat.java
     - redhat.vscode-commons
     - redhat.vscode-xml
@@ -16,3 +26,5 @@ vscode:
     - vscjava.vscode-java-dependency
     - vscjava.vscode-java-pack
     - vscjava.vscode-java-test
+    - hbenl.test-adapter-converter
+    - hbenl.vscode-test-explorer
