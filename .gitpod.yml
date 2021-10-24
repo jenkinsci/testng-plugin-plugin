@@ -25,3 +25,5 @@ vscode:
     - vscjava.vscode-java-dependency
     - vscjava.vscode-java-pack
     - vscjava.vscode-java-test
+    - hbenl.vscode-test-explorer
+    - hbenl.test-adapter-converter
