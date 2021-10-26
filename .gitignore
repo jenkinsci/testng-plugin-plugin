@@ -8,5 +8,5 @@ nbactions-jenkins.xml
 /.apt_generated/
 /.factorypath
 /.idea
-/schedule-build.iml
+/*.iml
 /nbproject/
