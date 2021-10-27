@@ -12,6 +12,9 @@ tasks:
       sdk update
       sdk install maven 3.8.3
       sdk use maven 3.8.3
+  - name: install gh
+    before: |
+      brew install gh
 vscode:
   extensions:
     - bierner.markdown-preview-github-styles
