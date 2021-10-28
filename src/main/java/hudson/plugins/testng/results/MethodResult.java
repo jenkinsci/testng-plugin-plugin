@@ -10,10 +10,12 @@ import hudson.tasks.test.TestResult;
 import hudson.util.ChartUtil;
 import hudson.util.DataSetBuilder;
 import hudson.util.Graph;
+
 import org.jfree.chart.JFreeChart;
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
 import org.kohsuke.stapler.export.Exported;
+import org.kohsuke.stapler.verb.POST;
 
 /**
  * Handles result pertaining to a single test method
@@ -247,7 +249,12 @@ public class MethodResult extends BaseResult {
      * @param rsp response
      * @throws IOException on IO error
      */
+    @POST
     public void doGraph(final StaplerRequest req, StaplerResponse rsp) throws IOException {
+        // Test result graphs should be visible to any user
+        // with READ permission. Declaring a checkPermission 
+        // would be redundant.
+        // Jenkins.get().checkPermission(Jenkins.READ);
         Graph g = getGraph(req, rsp);
         if (g != null) {
             g.doPng(req, rsp);
@@ -261,6 +268,7 @@ public class MethodResult extends BaseResult {
      * @param rsp response
      * @throws IOException on IO error
      */
+    @POST
     public void doGraphMap(final StaplerRequest req, StaplerResponse rsp) throws IOException {
         Graph g = getGraph(req, rsp);
         if (g != null) {
