@@ -8,6 +8,7 @@ import java.util.List;
 import com.gargoylesoftware.htmlunit.html.DomNodeUtil;
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
+import static com.gargoylesoftware.htmlunit.WebAssert.*;
 import hudson.Launcher;
 import hudson.model.AbstractBuild;
 import hudson.model.BuildListener;
@@ -104,7 +105,7 @@ public class PackageResultTest {
         }
 
         //verify only first 25 methods are shown
-        HtmlElement divShowAllLink = page.getElementById("showAllLink", true);
+        HtmlElement divShowAllLink = page.getHtmlElementById("showAllLink");
         assertNotNull(divShowAllLink);
         assertEquals("Showing only first " + PackageResult.MAX_EXEC_MTHD_LIST_SIZE + " test methods. Click to see all",
                      divShowAllLink.getTextContent());
@@ -139,11 +140,11 @@ public class PackageResultTest {
         r.assertStringContains(divShowAllLink.getAttribute("style"), "none");
 
         //verify bar
-        HtmlElement element = page.getElementById("fail-skip", true);
+        HtmlElement element = page.getHtmlElementById("fail-skip");
         r.assertStringContains(element.getTextContent(), "1 failure");
         assertFalse(element.getTextContent().contains("failures"));
         r.assertStringContains(element.getTextContent(), "1 skipped");
-        element = page.getElementById("pass", true);
+        element = page.getHtmlElementById("pass");
         r.assertStringContains(element.getTextContent(), "38 tests");
     }
 
@@ -181,13 +182,13 @@ public class PackageResultTest {
         HtmlPage page = r.createWebClient().goTo(urlPrefix + "/my.package");
 
         //verify only first 25 methods are shown
-        assertNull(page.getElementById("showAllLink"));
+        assertElementNotPresent(page, "showAllLink");
 
         //verify bar
-        HtmlElement element = page.getElementById("fail-skip", true);
+        HtmlElement element = page.getHtmlElementById("fail-skip");
         r.assertStringContains(element.getTextContent(), "0 failures");
         assertFalse(element.getTextContent().contains("skipped"));
-        element = page.getElementById("pass", true);
+        element = page.getHtmlElementById("pass");
         r.assertStringContains(element.getTextContent(), "1 test");
         assertFalse(element.getTextContent().contains("tests"));
     }

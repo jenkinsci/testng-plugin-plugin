@@ -1,0 +1,32 @@
+tasks:
+  - name: Update settings.xml
+    before: |
+      cp .mvn/gitpod-mvn-settings.xml ~/.m2/settings.xml
+      cd $GITPOD_REPO_ROOT
+  - name: sdkman auto answer
+    before: |
+      sed -i 's/sdkman_auto_answer=false/sdkman_auto_answer=true/' $HOME/.sdkman/etc/config
+  - name: SDKMAN
+    before: |
+      sdk selfupdate
+      sdk update
+      sdk install maven 3.8.3
+      sdk use maven 3.8.3
+  - name: install gh
+    before: |
+      brew install gh
+vscode:
+  extensions:
+    - bierner.markdown-preview-github-styles
+    - github.vscode-pull-request-github
+    - redhat.fabric8-analytics
+    - redhat.java
+    - redhat.vscode-commons
+    - redhat.vscode-xml
+    - vscjava.vscode-maven
+    - vscjava.vscode-java-debug
+    - vscjava.vscode-java-dependency
+    - vscjava.vscode-java-pack
+    - vscjava.vscode-java-test
+    - hbenl.vscode-test-explorer
+    - hbenl.test-adapter-converter

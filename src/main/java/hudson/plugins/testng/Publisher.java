@@ -24,6 +24,9 @@ import hudson.util.FormValidation;
 import jenkins.tasks.SimpleBuildStep;
 import net.sf.json.JSONObject;
 import org.kohsuke.stapler.*;
+import org.kohsuke.stapler.verb.POST;
+
+import edu.umd.cs.findbugs.annotations.NonNull;
 
 /**
  * This class defines a @Publisher and @Extension
@@ -417,7 +420,7 @@ public class Publisher extends Recorder implements SimpleBuildStep {
       }
 
       @Override
-      public hudson.tasks.Publisher newInstance(StaplerRequest req, JSONObject formData) throws FormException {
+      public hudson.tasks.Publisher newInstance(@NonNull StaplerRequest req, JSONObject formData) throws FormException {
          return req.bindJSON(Publisher.class, formData);
       }
 
@@ -441,18 +444,22 @@ public class Publisher extends Recorder implements SimpleBuildStep {
          }
       }
 
+      @POST
       public FormValidation doCheckUnstableSkips(@QueryParameter String value) {
          return validate(value);
       }
 
+      @POST
       public FormValidation doCheckUnstableFails(@QueryParameter String value) {
          return validate(value);
       }
 
+      @POST
       public FormValidation doCheckFailedSkips(@QueryParameter String value) {
          return validate(value);
       }
 
+      @POST
       public FormValidation doCheckFailedFails(@QueryParameter String value) {
          return validate(value);
       }

@@ -219,6 +219,16 @@ public class TestNGTestResultBuildAction extends AbstractTestResultAction implem
             public int getAge() {
                 return (int) methodResult.getFailAge();
             }
+
+            @Override
+            public boolean equals(Object obj) {
+                return this == obj;
+            }
+
+            @Override
+            public int hashCode() {
+                return System.identityHashCode(this);
+            }
         }
 
         List< CaseResult > results = new ArrayList<CaseResult>(getFailCount());
