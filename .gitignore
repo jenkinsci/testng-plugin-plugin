@@ -10,3 +10,4 @@ nbactions-jenkins.xml
 /.idea
 /*.iml
 /nbproject/
+.DS_Store
