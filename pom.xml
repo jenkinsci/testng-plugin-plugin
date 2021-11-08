@@ -8,7 +8,7 @@
     </parent>
 
     <artifactId>testng-plugin</artifactId>
-    <version>${revision}${changelist}</version>
+    <version>${changelist}</version>
     <packaging>hpi</packaging>
     <name>TestNG Results Plugin</name>
 
@@ -102,8 +102,7 @@
         </plugins>
     </build>
     <properties>
-        <revision>1.16</revision>
-        <changelist>-SNAPSHOT</changelist>
+        <changelist>999999-SNAPSHOT</changelist>
         <gitHubRepo>jenkinsci/testng-plugin-plugin</gitHubRepo>
         <jenkins.version>2.289.1</jenkins.version>
         <java.level>8</java.level>
