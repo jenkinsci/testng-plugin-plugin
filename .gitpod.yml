@@ -1,5 +1,5 @@
 tasks:
-  - name: Update settings.xml
+  - name: Setup for Jenkins development
     init: |
       sed -i 's/sdkman_auto_answer=false/sdkman_auto_answer=true/' $HOME/.sdkman/etc/config
       sdk selfupdate
