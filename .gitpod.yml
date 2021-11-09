@@ -1,20 +1,15 @@
 tasks:
   - name: Update settings.xml
-    before: |
-      cp .mvn/gitpod-mvn-settings.xml ~/.m2/settings.xml
-      cd $GITPOD_REPO_ROOT
-  - name: sdkman auto answer
-    before: |
+    init: |
       sed -i 's/sdkman_auto_answer=false/sdkman_auto_answer=true/' $HOME/.sdkman/etc/config
-  - name: SDKMAN
-    before: |
       sdk selfupdate
       sdk update
       sdk install maven 3.8.3
       sdk use maven 3.8.3
-  - name: install gh
-    before: |
       brew install gh
+    before: |
+      cp .mvn/gitpod-mvn-settings.xml ~/.m2/settings.xml
+
 vscode:
   extensions:
     - bierner.markdown-preview-github-styles
