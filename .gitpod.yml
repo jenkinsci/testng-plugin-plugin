@@ -7,8 +7,6 @@ tasks:
       sdk install maven 3.8.3
       sdk use maven 3.8.3
       brew install gh
-    before: |
-      cp .mvn/gitpod-mvn-settings.xml ~/.m2/settings.xml
 
 vscode:
   extensions:
