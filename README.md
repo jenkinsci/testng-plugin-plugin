@@ -1,9 +1,9 @@
 # TestNG Plugin
 
-This plugin allows you to publish TestNG results generated
+This plugin allows you to publish [TestNG](https://testng.org/doc/) test results generated
 using `org.testng.reporters.XMLReporter`. TestNG result xml file contains
 more information than the junit report xml file . This plugin exposes
-those extra information in graph and table reports.
+the extra information in graph and table reports.
 
 This plugin makes it possible to import TestNG XML reports from each
 build into Jenkins.
@@ -16,10 +16,10 @@ presented.
 ## Features
 
 The page layouts are intentionally designed to look very similar to
-Jenkins's JUnit plugin.
+the JUnit plugin.
 
 -   In the project/build page you can see a summary of passed/fail tests
-    as well as passed/fail configuration methods. It also enlists the
+    as well as passed/fail configuration methods. It also lists the
     failed test cases with a direct link to view the test failure.
 
 ![](docs/images/test-summary.png)
