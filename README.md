@@ -64,12 +64,12 @@ Results**. This option allows you to configure the following properties:
     HTML tags to format the exception message e.g. embed links in the
     text. (*enabled by default*)
 -   **Show Failed Builds?**: If checked, the plug-in includes results
-    from failed builds in the trend graph. (Disabled by default). 
+    from failed builds in the trend graph. (Disabled by default).
     -   If this is a maven build, it is better to configure the build
         step with `-Dmaven.test.failure.ignore=true` option. This
         results in build with test failures being marked as Unstable,
         thus distinguishing it from build that failed because of non
-        test related issues 
+        test related issues
     -   Even when this option is selected, failed builds with no results
         and aborted builds will not be displayed in graphs
 -   **Mark build as unstable on Skipped config/test methods?**: Marks
