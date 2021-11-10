@@ -75,6 +75,16 @@
 
     <developers>
         <developer>
+            <id>darinpope</id>
+            <name>Darin Pope</name>
+            <email>darin@planetpope.com</email>
+        </developer>
+        <developer>
+            <id>MarkEWaite</id>
+            <name>Mark Waite</name>
+            <email>mark.earl.waite@gmail.com</email>
+        </developer>
+        <developer>
             <id>nullin</id>
             <name>Nalin Makar</name>
             <email>nullin@nullin.com</email>
