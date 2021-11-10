@@ -99,6 +99,13 @@
                     </loggers>
                 </configuration>
             </plugin>
+            <plugin>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <forkCount>0.8C</forkCount>
+                    <reuseForks>true</reuseForks>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
     <properties>
