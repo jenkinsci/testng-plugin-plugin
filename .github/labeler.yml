@@ -1,0 +1,13 @@
+chore:
+- .github/**/*
+- .gitignore
+- .mvn/*
+- .settings/*
+- .gitpod.yml
+- Jenkinsfile
+
+documentation:
+- CHANGELOG.md
+- CONTRIBUTING.md
+- README.md
+- docs/images/*
