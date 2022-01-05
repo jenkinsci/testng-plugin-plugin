@@ -24,6 +24,13 @@
         <dependency>
             <groupId>org.jenkins-ci.plugins</groupId>
             <artifactId>junit</artifactId>
+            <exclusions>
+                <exclusion>
+                    <!-- Temporary until removed from junit's plugin-util-api dependency -->
+                    <groupId>javax.annotation</groupId>
+                    <artifactId>javax.annotation-api</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.mockito</groupId>
@@ -55,13 +62,6 @@
             <groupId>org.jenkins-ci.plugins</groupId>
             <artifactId>structs</artifactId>
             <scope>test</scope>
-        </dependency>
-        <dependency>
-            <!-- Temporary until removed from plugin-util-api -->
-            <groupId>javax.annotation</groupId>
-            <artifactId>javax.annotation-api</artifactId>
-            <version>1.3.2</version>
-            <scope>provided</scope>
         </dependency>
     </dependencies>
     <dependencyManagement>
