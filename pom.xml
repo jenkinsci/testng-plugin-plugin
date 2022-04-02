@@ -70,7 +70,7 @@
     </dependencyManagement>
     <issueManagement>
         <system>JIRA</system>
-        <url>https://issues.jenkins-ci.org</url>
+        <url>https://issues.jenkins.io</url>
     </issueManagement>
 
     <developers>
