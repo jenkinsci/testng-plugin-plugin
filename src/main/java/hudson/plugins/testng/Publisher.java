@@ -283,7 +283,7 @@ public class Publisher extends Recorder implements SimpleBuildStep {
 
    /**
     * Helps resolve XML configs for versions before 1.11 when these new config options were introduced.
-    * See https://wiki.jenkins-ci.org/display/JENKINS/Hint+on+retaining+backward+compatibility
+    * See <a href="https://www.jenkins.io/doc/developer/persistence/backward-compatibility/">backwards compatibility with XStream</a>
     * @return resolved object
      */
    protected Object readResolve() {
