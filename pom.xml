@@ -61,7 +61,7 @@
         <dependencies>
             <dependency>
                 <groupId>io.jenkins.tools.bom</groupId>
-                <artifactId>bom-2.303.x</artifactId>
+                <artifactId>bom-2.319.x</artifactId>
                 <version>1210.vcd41f6657f03</version>
                 <scope>import</scope>
                 <type>pom</type>
@@ -70,7 +70,7 @@
     </dependencyManagement>
     <issueManagement>
         <system>JIRA</system>
-        <url>https://issues.jenkins-ci.org</url>
+        <url>https://issues.jenkins.io</url>
     </issueManagement>
 
     <developers>
@@ -135,19 +135,12 @@
                     </loggers>
                 </configuration>
             </plugin>
-            <plugin>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <configuration>
-                    <forkCount>0.8C</forkCount>
-                    <reuseForks>true</reuseForks>
-                </configuration>
-            </plugin>
         </plugins>
     </build>
     <properties>
         <changelist>999999-SNAPSHOT</changelist>
         <gitHubRepo>jenkinsci/testng-plugin-plugin</gitHubRepo>
-        <jenkins.version>2.303.3</jenkins.version>
+        <jenkins.version>2.319.3</jenkins.version>
         <java.level>8</java.level>
         <spotbugs.effort>Max</spotbugs.effort>
         <spotbugs.failOnError>true</spotbugs.failOnError>
