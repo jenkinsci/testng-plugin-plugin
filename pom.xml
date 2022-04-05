@@ -4,7 +4,7 @@
     <parent>
         <groupId>org.jenkins-ci.plugins</groupId>
         <artifactId>plugin</artifactId>
-        <version>4.39</version>
+        <version>4.40</version>
     </parent>
 
     <artifactId>testng-plugin</artifactId>
@@ -141,7 +141,6 @@
         <changelist>999999-SNAPSHOT</changelist>
         <gitHubRepo>jenkinsci/testng-plugin-plugin</gitHubRepo>
         <jenkins.version>2.319.3</jenkins.version>
-        <java.level>8</java.level>
         <spotbugs.effort>Max</spotbugs.effort>
         <spotbugs.failOnError>true</spotbugs.failOnError>
         <!-- Not yet ready for Low threshold, too many warnings to resolve -->
