@@ -390,8 +390,7 @@ public class TestNGTestResultBuildActionTest {
       }
       WorkflowJob p = r.jenkins.createProject(WorkflowJob.class, "p");
       String contents = CommonUtil.getContents(Constants.TESTNG_FAILED_TEST);
-      r.jenkins.getWorkspaceFor(p).child("testng-results.xml").write(contents, "UTF-8");
-      p.setDefinition(new CpsFlowDefinition("node {step([$class: 'Publisher'])}", true));
+      p.setDefinition(new CpsFlowDefinition("node {\n  writeFile(file: 'testng-results.xml', text: '''" + contents + "''')\n  step([$class: 'Publisher'])\n}\n", true));
       WorkflowRun build = p.scheduleBuild2(0).get();
       r.assertBuildStatus(Result.UNSTABLE, build);
       TestNGTestResultBuildAction action = build.getAction(TestNGTestResultBuildAction.class);

@@ -14,6 +14,7 @@ import java.util.Map;
 import java.util.TreeMap;
 import org.jenkinsci.plugins.structs.describable.DescribableModel;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.Rule;
 import org.junit.rules.TemporaryFolder;
@@ -35,6 +36,14 @@ public class PublisherTest {
     public JenkinsRule r = new JenkinsRule();
     @Rule
     public TemporaryFolder tmp = new TemporaryFolder();
+
+    /**
+     * Reset SECURITY-2788 escape hatch before each test.
+     */
+    @Before
+    public void disallowUnescapedHTML() {
+        Publisher.setAllowUnescapedHTML(false);
+    }
 
     @WithoutJenkins
     @Test
@@ -86,7 +95,7 @@ public class PublisherTest {
         publisher.setEscapeExceptionMsg(false);
         publisher.setShowFailedBuilds(false);
         Launcher launcherMock = mock(Launcher.class);
-        AbstractBuild<?,?> buildMock = mock(AbstractBuild.class);
+        AbstractBuild<?, ?> buildMock = mock(AbstractBuild.class);
         BuildListener listenerMock = mock(BuildListener.class);
 
         ByteArrayOutputStream os = new ByteArrayOutputStream();
@@ -117,9 +126,16 @@ public class PublisherTest {
         before.setThresholdMode(1);
         p.getPublishersList().add(before);
 
-        r.submit(r.createWebClient().getPage(p,"configure").getFormByName("config"));
+        /* Even though set to false by earlier calls to setters, setting is ignored */
+        Assert.assertTrue(before.getEscapeTestDescp()); // SECURITY-2788 - prevent XSS from test description
+        Assert.assertTrue(before.getEscapeExceptionMsg()); // SECURITY-2788 - prevent XSS from test exception
+
+        r.submit(r.createWebClient().getPage(p, "configure").getFormByName("config"));
 
         Publisher after = p.getPublishersList().get(Publisher.class);
+
+        Assert.assertTrue(after.getEscapeTestDescp()); // SECURITY-2788 - prevent XSS from test description
+        Assert.assertTrue(after.getEscapeExceptionMsg()); // SECURITY-2788 - prevent XSS from test exception
 
         r.assertEqualBeans(before, after, "reportFilenamePattern,escapeTestDescp,escapeExceptionMsg,showFailedBuilds");
     }
@@ -129,17 +145,43 @@ public class PublisherTest {
     @Test
     public void testDefaultFields() throws Exception {
         DescribableModel<Publisher> model = new DescribableModel<Publisher>(Publisher.class);
-        Map<String,Object> args = new TreeMap<String,Object>();
+        Map<String, Object> args = new TreeMap<String, Object>();
         Publisher p = model.instantiate(args);
         Assert.assertEquals("**/testng-results.xml", p.getReportFilenamePattern());
         Assert.assertTrue(p.getEscapeExceptionMsg());
+        Assert.assertTrue(p.getEscapeTestDescp());
         Assert.assertFalse(p.getShowFailedBuilds());
         Assert.assertEquals(args, model.uninstantiate(model.instantiate(args)));
         args.put("reportFilenamePattern", "results.xml");
         Assert.assertEquals(args, model.uninstantiate(model.instantiate(args)));
-        args.put("escapeExceptionMsg", false);
         args.put("showFailedBuilds", true);
         Assert.assertEquals(args, model.uninstantiate(model.instantiate(args)));
     }
 
+    @Issue("SECURITY-2788")
+    @WithoutJenkins
+    @Test
+    public void testUnescapedFields() throws Exception {
+        Publisher.setAllowUnescapedHTML(true);
+        DescribableModel<Publisher> model = new DescribableModel<>(Publisher.class);
+        Map<String, Object> args = new TreeMap<>();
+        Publisher p = model.instantiate(args);
+
+        Assert.assertTrue(p.getEscapeExceptionMsg());
+        p.setEscapeExceptionMsg(false);
+        Assert.assertFalse(p.getEscapeExceptionMsg());
+        p.setEscapeExceptionMsg(true);
+        Assert.assertTrue(p.getEscapeExceptionMsg());
+
+        Assert.assertTrue(p.getEscapeTestDescp());
+        p.setEscapeTestDescp(false);
+        Assert.assertFalse(p.getEscapeTestDescp());
+        p.setEscapeTestDescp(true);
+        Assert.assertTrue(p.getEscapeTestDescp());
+    }
+
+    /* Used by other tests to modify allowUnescapedHTML flag */
+    public static void setAllowUnescapedHTML(boolean value) {
+        Publisher.setAllowUnescapedHTML(value);
+    }
 }
