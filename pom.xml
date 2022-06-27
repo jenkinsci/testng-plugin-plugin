@@ -1,14 +1,14 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <url>http://wiki.jenkins-ci.org/display/JENKINS/testng-plugin</url>
+    <url>https://github.com/jenkinsci/testng-plugin-plugin</url>
     <parent>
         <groupId>org.jenkins-ci.plugins</groupId>
         <artifactId>plugin</artifactId>
-        <version>4.29</version>
+        <version>4.41</version>
     </parent>
 
     <artifactId>testng-plugin</artifactId>
-    <version>${revision}${changelist}</version>
+    <version>${changelist}</version>
     <packaging>hpi</packaging>
     <name>TestNG Results Plugin</name>
 
@@ -61,8 +61,8 @@
         <dependencies>
             <dependency>
                 <groupId>io.jenkins.tools.bom</groupId>
-                <artifactId>bom-2.289.x</artifactId>
-                <version>987.v4ade2e49fe70</version>
+                <artifactId>bom-2.319.x</artifactId>
+                <version>1451.v15f1fdb_772a_f</version>
                 <scope>import</scope>
                 <type>pom</type>
             </dependency>
@@ -70,10 +70,20 @@
     </dependencyManagement>
     <issueManagement>
         <system>JIRA</system>
-        <url>https://issues.jenkins-ci.org</url>
+        <url>https://issues.jenkins.io</url>
     </issueManagement>
 
     <developers>
+        <developer>
+            <id>darinpope</id>
+            <name>Darin Pope</name>
+            <email>darin@planetpope.com</email>
+        </developer>
+        <developer>
+            <id>MarkEWaite</id>
+            <name>Mark Waite</name>
+            <email>mark.earl.waite@gmail.com</email>
+        </developer>
         <developer>
             <id>nullin</id>
             <name>Nalin Makar</name>
@@ -88,6 +98,32 @@
         <tag>${scmTag}</tag>
     </scm>
     <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>com.diffplug.spotless</groupId>
+                    <artifactId>spotless-maven-plugin</artifactId>
+                    <version>2.22.8</version>
+                    <configuration>
+                        <!-- define a language-specific format -->
+                        <java>
+                            <!-- no need to specify files, inferred automatically -->
+                            <endWithNewline></endWithNewline>
+                            <removeUnusedImports></removeUnusedImports>
+                        </java>
+                    </configuration>
+                    <executions>
+                        <execution>
+                            <!-- Runs in verify phase by default -->
+                            <goals>
+                                <!-- Can be disabled using -Dspotless.check.skip -->
+                                <goal>check</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+            </plugins>
+        </pluginManagement>
         <plugins>
             <plugin>
                 <groupId>org.jenkins-ci.tools</groupId>
@@ -102,11 +138,9 @@
         </plugins>
     </build>
     <properties>
-        <revision>1.16</revision>
-        <changelist>-SNAPSHOT</changelist>
+        <changelist>999999-SNAPSHOT</changelist>
         <gitHubRepo>jenkinsci/testng-plugin-plugin</gitHubRepo>
-        <jenkins.version>2.289.1</jenkins.version>
-        <java.level>8</java.level>
+        <jenkins.version>2.319.3</jenkins.version>
         <spotbugs.effort>Max</spotbugs.effort>
         <spotbugs.failOnError>true</spotbugs.failOnError>
         <!-- Not yet ready for Low threshold, too many warnings to resolve -->

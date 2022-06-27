@@ -20,7 +20,6 @@ import org.jfree.chart.JFreeChart;
 import org.kohsuke.stapler.Stapler;
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
-import org.kohsuke.stapler.verb.POST;
 
 /**
  * Action to associate the TestNG reports with the project
@@ -107,7 +106,7 @@ public class TestNGProjectAction extends TestResultProjectAction implements Prom
     * @param rsp -
     * @throws IOException -
     */
-   @POST
+   // @org.kohsuke.stapler.verb.POST // POST blocks graph rendering in groovy web page
    public void doGraph(final StaplerRequest req,
                       StaplerResponse rsp) throws IOException {
       if (newGraphNotNeeded(req, rsp)) {
@@ -144,7 +143,7 @@ public class TestNGProjectAction extends TestResultProjectAction implements Prom
       return req.checkIfModified(t, rsp);
    }
 
-   @POST
+    // @org.kohsuke.stapler.verb.POST // POST blocks rendering in groovy defined web page
    public void doGraphMap(final StaplerRequest req,
            StaplerResponse rsp) throws IOException {
       if (newGraphNotNeeded(req, rsp)) {
