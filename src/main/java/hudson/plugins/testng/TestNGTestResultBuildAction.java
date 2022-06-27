@@ -213,6 +213,16 @@ public class TestNGTestResultBuildAction extends AbstractTestResultAction implem
             public String getErrorDetails() {
                 return methodResult.getErrorDetails();
             }
+
+            @Override
+            public boolean equals(Object obj) {
+                return this == obj;
+            }
+
+            @Override
+            public int hashCode() {
+                return System.identityHashCode(this);
+            }
         }
 
         List< CaseResult > results = new ArrayList<CaseResult>(getFailCount());

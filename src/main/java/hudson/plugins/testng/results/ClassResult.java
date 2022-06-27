@@ -50,9 +50,10 @@ public class ClassResult extends BaseResult {
     }
 
     /**
-     * Called only from jelly file
+     * Called only from jelly file.
+     * Returns test methods grouped by their test run.
      *
-     * @return
+     * @return test methods grouped by their test run.
      */
     public Map<String, GroupedTestRun> getTestRunMap() {
         if (testRunMap != null) {

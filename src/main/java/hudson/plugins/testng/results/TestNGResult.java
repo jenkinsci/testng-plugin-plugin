@@ -138,7 +138,7 @@ public class TestNGResult extends BaseResult implements Serializable {
     /**
      * Adds only the {@code <test>}s that already aren't part of the list.
      *
-     * @param testList
+     * @param testList tests to be added to the list without duplicating existing list content
      */
     //TODO: whats going on here? why unique?
     public void addUniqueTests(List<TestNGTestResult> testList) {

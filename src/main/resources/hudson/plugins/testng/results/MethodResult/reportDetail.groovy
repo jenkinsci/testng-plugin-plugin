@@ -27,13 +27,25 @@ div(id: "report") {
         //descriptions by default are escaped in testng result XML
         //if we are not dealing with HTML content, just replace \n by <br/> to make contents more readable
         if (my.description) {
-            raw("${testngProjAction.escapeTestDescp ? my.annotate(my.description) : my.description.replace("\n", "<br/>")}")
+            raw("${testngProjAction==null || testngProjAction.escapeTestDescp ? my.annotate(my.description) : my.description.replace("\n", "<br/>")}")
         }
     }
 
     if (my.testInstanceName) {
         div(id: "inst-name") {
             text("Instance Name: ${my.testInstanceName}")
+        }
+    }
+
+    if (my.parentTestName) {
+        div(id: "parent-test-name") {
+            text("Test Name: ${my.parentTestName}")
+        }
+    }
+
+    if (my.parentSuiteName) {
+        div(id: "parent-suite-name") {
+            text("Suite Name: ${my.parentSuiteName}")
         }
     }
 
@@ -90,16 +102,16 @@ div(id: "report") {
         p(id:"exp-msg") {
             b("Message: ")
             if (my.exception.message) {
-                raw("${testngProjAction.escapeExceptionMsg ? my.annotate(my.exception.message) : my.exception.message.replace("\n", "<br/>")}")
+                raw("${testngProjAction == null || testngProjAction.escapeExceptionMsg ? my.annotate(my.exception.message) : my.exception.message.replace("\n", "<br/>")}")
             } else {
                 text("(none)")
             }
         }
         if (my.exception.stackTrace) {
             b("Stacktrace:")
-            p(id:"exp-st") {
-                raw("${FormatUtil.formatStackTraceForHTML(my.exception.stackTrace)}")
-            }
+            br()
+            br()
+            pre(id:"exp-st", my.exception.stackTrace)
         }
     }
 }

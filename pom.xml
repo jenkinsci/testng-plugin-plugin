@@ -1,14 +1,14 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <url>http://wiki.jenkins-ci.org/display/JENKINS/testng-plugin</url>
+    <url>https://github.com/jenkinsci/testng-plugin-plugin</url>
     <parent>
         <groupId>org.jenkins-ci.plugins</groupId>
         <artifactId>plugin</artifactId>
-        <version>2.9</version>
+        <version>4.41</version>
     </parent>
 
     <artifactId>testng-plugin</artifactId>
-    <version>1.15-SNAPSHOT</version>
+    <version>${changelist}</version>
     <packaging>hpi</packaging>
     <name>TestNG Results Plugin</name>
 
@@ -24,12 +24,10 @@
         <dependency>
             <groupId>org.jenkins-ci.plugins</groupId>
             <artifactId>junit</artifactId>
-            <version>1.2</version>
         </dependency>
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
-            <version>1.8.5</version>
             <scope>test</scope>
             <exclusions>
                 <exclusion>
@@ -41,35 +39,51 @@
         <dependency>
             <groupId>org.jenkins-ci.plugins.workflow</groupId>
             <artifactId>workflow-job</artifactId>
-            <version>1.4.3</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.jenkins-ci.plugins.workflow</groupId>
             <artifactId>workflow-cps</artifactId>
-            <version>1.4.3</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.jenkins-ci.plugins.workflow</groupId>
             <artifactId>workflow-basic-steps</artifactId>
-            <version>1.4.3</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.jenkins-ci.plugins</groupId>
             <artifactId>structs</artifactId>
-            <version>1.1</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
-
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>io.jenkins.tools.bom</groupId>
+                <artifactId>bom-2.319.x</artifactId>
+                <version>1451.v15f1fdb_772a_f</version>
+                <scope>import</scope>
+                <type>pom</type>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
     <issueManagement>
         <system>JIRA</system>
-        <url>https://issues.jenkins-ci.org</url>
+        <url>https://issues.jenkins.io</url>
     </issueManagement>
 
     <developers>
+        <developer>
+            <id>darinpope</id>
+            <name>Darin Pope</name>
+            <email>darin@planetpope.com</email>
+        </developer>
+        <developer>
+            <id>MarkEWaite</id>
+            <name>Mark Waite</name>
+            <email>mark.earl.waite@gmail.com</email>
+        </developer>
         <developer>
             <id>nullin</id>
             <name>Nalin Makar</name>
@@ -78,12 +92,38 @@
     </developers>
 
     <scm>
-        <connection>scm:git:https://github.com/jenkinsci/testng-plugin-plugin.git</connection>
-        <developerConnection>scm:git:ssh://git@github.com/jenkinsci/testng-plugin-plugin.git</developerConnection>
-        <url>https://github.com/jenkinsci/testng-plugin-plugin</url>
-        <tag>HEAD</tag>
+        <connection>scm:git:https://github.com/${gitHubRepo}.git</connection>
+        <developerConnection>scm:git:ssh://git@github.com/${gitHubRepo}.git</developerConnection>
+        <url>https://github.com/${gitHubRepo}</url>
+        <tag>${scmTag}</tag>
     </scm>
     <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>com.diffplug.spotless</groupId>
+                    <artifactId>spotless-maven-plugin</artifactId>
+                    <version>2.22.8</version>
+                    <configuration>
+                        <!-- define a language-specific format -->
+                        <java>
+                            <!-- no need to specify files, inferred automatically -->
+                            <endWithNewline></endWithNewline>
+                            <removeUnusedImports></removeUnusedImports>
+                        </java>
+                    </configuration>
+                    <executions>
+                        <execution>
+                            <!-- Runs in verify phase by default -->
+                            <goals>
+                                <!-- Can be disabled using -Dspotless.check.skip -->
+                                <goal>check</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+            </plugins>
+        </pluginManagement>
         <plugins>
             <plugin>
                 <groupId>org.jenkins-ci.tools</groupId>
@@ -98,19 +138,24 @@
         </plugins>
     </build>
     <properties>
-        <jenkins.version>1.580.1</jenkins.version>
-        <java.level>6</java.level>
+        <changelist>999999-SNAPSHOT</changelist>
+        <gitHubRepo>jenkinsci/testng-plugin-plugin</gitHubRepo>
+        <jenkins.version>2.319.3</jenkins.version>
+        <spotbugs.effort>Max</spotbugs.effort>
+        <spotbugs.failOnError>true</spotbugs.failOnError>
+        <!-- Not yet ready for Low threshold, too many warnings to resolve -->
+        <spotbugs.threshold>Medium</spotbugs.threshold>
     </properties>
     <repositories>
         <repository>
             <id>repo.jenkins-ci.org</id>
-            <url>http://repo.jenkins-ci.org/public/</url>
+            <url>https://repo.jenkins-ci.org/public/</url>
         </repository>
     </repositories>
     <pluginRepositories>
         <pluginRepository>
             <id>repo.jenkins-ci.org</id>
-            <url>http://repo.jenkins-ci.org/public/</url>
+            <url>https://repo.jenkins-ci.org/public/</url>
         </pluginRepository>
     </pluginRepositories>
 

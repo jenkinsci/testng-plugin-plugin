@@ -70,12 +70,12 @@ public class TestResultHistoryUtil {
       TestNGResult tr = action.getResult();
 
       return "<ul>" + diff(prevTotalTestCount, tr.getTotalCount(), "Total Tests")
+            + diff(prevFailedConfigurationCount, tr.getFailedConfigCount(), "Failed Configurations")
+            + printTestsUrls(tr.getFailedConfigs())
             + diff(prevFailedTestCount, tr.getFailCount(), "Failed Tests")
             + printTestsUrls(tr.getFailedTests())
             + diff(prevSkippedTestCount, tr.getSkipCount(), "Skipped Tests")
             + printTestsUrls(tr.getSkippedTests())
-            + diff(prevFailedConfigurationCount, tr.getFailedConfigCount(), "Failed Configurations")
-            + printTestsUrls(tr.getFailedConfigs())
             + diff(prevSkippedConfigurationCount, tr.getSkippedConfigCount(), "Skipped Configurations")
             + printTestsUrls(tr.getSkippedConfigs())
             + "</ul>";
@@ -98,9 +98,24 @@ public class TestResultHistoryUtil {
    */
    private static String printTestsUrls(List<MethodResult> methodResults) {
       StringBuilder htmlStr = new StringBuilder();
-      htmlStr.append("<OL>");
+      htmlStr.append("<UL>");
+      boolean firstGroup = true;
+      String testName = "";
+      String suiteName = "";
+      int testIndex = 1;
       if (methodResults != null && methodResults.size() > 0) {
          for (MethodResult methodResult : methodResults) {
+            if (!testName.equals(methodResult.getParentTestName())
+                    || !suiteName.equals(methodResult.getParentSuiteName())) {
+               if (!firstGroup) {
+                  htmlStr.append("</OL></LI>");
+               }
+               firstGroup = false;
+               testName = methodResult.getParentTestName();
+               suiteName = methodResult.getParentSuiteName();
+               htmlStr.append("<LI style=\"list-style-type:none\"><b>").append(suiteName).append(" / ").append(testName).append("</b>");
+               htmlStr.append("<OL start=\"").append(testIndex).append("\">");
+            }
             htmlStr.append("<LI>");
             if (methodResult.getParent() instanceof ClassResult) {
                htmlStr.append("<a href=\"").append(methodResult.getUpUrl());
@@ -111,10 +126,14 @@ public class TestResultHistoryUtil {
                htmlStr.append(methodResult.getName());
             }
             htmlStr.append("</LI>");
+            testIndex++;
          }
 
       }
-      htmlStr.append("</OL>");
+      if (!firstGroup) {
+         htmlStr.append("</OL></LI>");
+      }
+      htmlStr.append("</UL>");
       return htmlStr.substring(0);
    }
 

@@ -106,6 +106,7 @@ public class TestNGProjectAction extends TestResultProjectAction implements Prom
     * @param rsp -
     * @throws IOException -
     */
+   // @org.kohsuke.stapler.verb.POST // POST blocks graph rendering in groovy web page
    public void doGraph(final StaplerRequest req,
                       StaplerResponse rsp) throws IOException {
       if (newGraphNotNeeded(req, rsp)) {
@@ -142,6 +143,7 @@ public class TestNGProjectAction extends TestResultProjectAction implements Prom
       return req.checkIfModified(t, rsp);
    }
 
+    // @org.kohsuke.stapler.verb.POST // POST blocks rendering in groovy defined web page
    public void doGraphMap(final StaplerRequest req,
            StaplerResponse rsp) throws IOException {
       if (newGraphNotNeeded(req, rsp)) {
