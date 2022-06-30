@@ -94,3 +94,15 @@ Results**. This option allows you to configure the following properties:
     }
   }
 ```
+
+### Properties
+
+Some TestNG plugin properties can only be controlled by command line properties set at Jenkins startup.
+
+#### Allow unescaped HTML
+
+[SECURITY-2788](insert-advisory-hyperlink-here) notes that test description and test exception messages allow unescaped HTML, leading to a cross-site scripting vulnerability.
+Current releases of the TestNG plugin always escape test description and test exception messages.
+If test description or test exceptions messages must not be escaped and administrators accept the risk of disabling this security safeguard, set the Java property
+`hudson.plugins.testng.Publisher.allowUnescapedHTML=true`
+from the command line that starts the Jenkins controller.

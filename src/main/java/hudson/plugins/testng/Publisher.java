@@ -6,6 +6,8 @@ import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import hudson.EnvVars;
 import hudson.Extension;
@@ -33,6 +35,7 @@ import edu.umd.cs.findbugs.annotations.NonNull;
  *
  */
 public class Publisher extends Recorder implements SimpleBuildStep {
+   private static final Logger LOGGER = Logger.getLogger(Publisher.class.getName());
 
    //ant style regex pattern to find report files
    private String reportFilenamePattern= "**/testng-results.xml";
@@ -57,6 +60,26 @@ public class Publisher extends Recorder implements SimpleBuildStep {
    private Integer failedFails = 100;
    private Integer thresholdMode = 2;
 
+   /** SECURITY-2788 - do not allow unescaped HTML in description or exception message */
+   /* Log a warning if the value is set to true */
+   private static final boolean ALLOW_UNESCAPED_HTML = Boolean.valueOf(System.getProperty("hudson.plugins.testng.Publisher.allowUnescapedHTML", "false"));
+   private static boolean allowUnescapedHTML = ALLOW_UNESCAPED_HTML;
+
+   /* Package protected for testability */
+   static void setAllowUnescapedHTML(boolean value) {
+      allowUnescapedHTML = value;
+   }
+
+   /* Package protected for testability */
+   static boolean getAllowUnescapedHTML() {
+      return allowUnescapedHTML;
+   }
+
+   static {
+      if(ALLOW_UNESCAPED_HTML) {
+         LOGGER.log(Level.WARNING, "You are vulnerable to a cross-site scripting attack through the TestNG plugin. Remove the system property hudson.plugins.testng.Publisher.allowUnescapedHTML from your Jenkins controller startup.");
+      }
+   }
 
    @Extension
    public static final DescriptorImpl DESCRIPTOR = new DescriptorImpl();
@@ -74,21 +97,37 @@ public class Publisher extends Recorder implements SimpleBuildStep {
    }
 
    public boolean getEscapeTestDescp() {
-       return escapeTestDescp;
+      if (allowUnescapedHTML) {
+         return escapeTestDescp;
+      } else {
+         return true;
+      }
    }
 
    @DataBoundSetter
    public void setEscapeTestDescp(boolean escapeTestDescp) {
-       this.escapeTestDescp = escapeTestDescp;
+      if (allowUnescapedHTML) {
+         this.escapeTestDescp = escapeTestDescp;
+      } else {
+         this.escapeTestDescp = true;
+      }
    }
 
    public boolean getEscapeExceptionMsg() {
-       return escapeExceptionMsg;
+      if (allowUnescapedHTML) {
+         return escapeExceptionMsg;
+      } else {
+         return true;
+      }
    }
 
    @DataBoundSetter
    public void setEscapeExceptionMsg(boolean escapeExceptionMsg) {
-       this.escapeExceptionMsg = escapeExceptionMsg;
+      if (allowUnescapedHTML) {
+         this.escapeExceptionMsg = escapeExceptionMsg;
+      } else {
+         this.escapeExceptionMsg = true;
+      }
    }
 
    public boolean getFailureOnFailedTestConfig() {

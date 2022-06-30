@@ -11,3 +11,4 @@ nbactions-jenkins.xml
 /*.iml
 /nbproject/
 .DS_Store
+.dccache

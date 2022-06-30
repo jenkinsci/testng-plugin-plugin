@@ -15,9 +15,12 @@ import hudson.plugins.testng.CommonUtil;
 import hudson.plugins.testng.Constants;
 import hudson.plugins.testng.PluginImpl;
 import hudson.plugins.testng.Publisher;
+import hudson.plugins.testng.PublisherTest; // Special case for SECURITY-2788 method
 import hudson.tasks.test.AbstractTestResultAction;
 import hudson.tasks.test.TestResult;
 import static org.junit.Assert.*;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.jvnet.hudson.test.JenkinsRule;
@@ -32,6 +35,18 @@ public class MethodResultTest {
 
     @Rule
     public JenkinsRule r = new JenkinsRule();
+
+    @Before
+    public void allowUnescapedHTML() {
+        /* Close the SECURITY-2788 escape hatch before starting a test */
+        PublisherTest.setAllowUnescapedHTML(false);
+    }
+
+    @After
+    public void disallowUnescapedHTML() {
+        /* Close the SECURITY-2788 escape hatch after ending a test */
+        PublisherTest.setAllowUnescapedHTML(false);
+    }
 
     @Test
     public void testEscapeExceptionMessageTrue() throws Exception {
@@ -68,6 +83,7 @@ public class MethodResultTest {
 
     @Test
     public void testEscapeExceptionMessageFalse() throws Exception {
+        PublisherTest.setAllowUnescapedHTML(true); // Open the SECURITY-2788 escape hatch for this test
         FreeStyleProject p = r.createFreeStyleProject();
         Publisher publisher = new Publisher();
         publisher.setReportFilenamePattern("testng.xml");
@@ -99,6 +115,7 @@ public class MethodResultTest {
 
     @Test
     public void testEscapeDescriptionFalse() throws Exception {
+        PublisherTest.setAllowUnescapedHTML(true); // Open the SECURITY-2788 escape hatch for this test
         FreeStyleProject p = r.createFreeStyleProject();
         Publisher publisher = new Publisher();
         publisher.setReportFilenamePattern("testng.xml");
@@ -171,6 +188,7 @@ public class MethodResultTest {
      */
     @Test
     public void testMultilineDescriptionAndExceptionMessage() throws Exception {
+        PublisherTest.setAllowUnescapedHTML(true); // Open the SECURITY-2788 escape hatch for this test
         FreeStyleProject p = r.createFreeStyleProject();
         Publisher publisher = new Publisher();
         publisher.setReportFilenamePattern("testng.xml");

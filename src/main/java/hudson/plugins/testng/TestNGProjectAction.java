@@ -35,8 +35,13 @@ public class TestNGProjectAction extends TestResultProjectAction implements Prom
    public TestNGProjectAction(Job<?, ?> project,
          boolean escapeTestDescp, boolean escapeExceptionMsg, boolean showFailedBuilds) {
       super(project);
-      this.escapeExceptionMsg = escapeExceptionMsg;
-      this.escapeTestDescp = escapeTestDescp;
+      if (Publisher.getAllowUnescapedHTML()) {
+          this.escapeExceptionMsg = escapeExceptionMsg;
+          this.escapeTestDescp = escapeTestDescp;
+      } else {
+          this.escapeExceptionMsg = true;
+          this.escapeTestDescp = true;
+      }
       this.showFailedBuilds = showFailedBuilds;
    }
 
@@ -46,12 +51,20 @@ public class TestNGProjectAction extends TestResultProjectAction implements Prom
 
    public boolean getEscapeTestDescp()
    {
-      return escapeTestDescp;
+      if (Publisher.getAllowUnescapedHTML()) {
+          return escapeTestDescp;
+      } else {
+          return true;
+      }
    }
 
    public boolean getEscapeExceptionMsg()
    {
-      return escapeExceptionMsg;
+      if (Publisher.getAllowUnescapedHTML()) {
+          return escapeExceptionMsg;
+      } else {
+          return true;
+      }
    }
 
    /**
