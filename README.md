@@ -101,7 +101,7 @@ Some TestNG plugin properties can only be controlled by command line properties 
 
 #### Allow unescaped HTML
 
-[SECURITY-2788](insert-advisory-hyperlink-here) notes that test description and test exception messages allow unescaped HTML, leading to a cross-site scripting vulnerability.
+[SECURITY-2788](https://www.jenkins.io/security/advisory/2022-06-30/#SECURITY-2788) notes that test description and test exception messages allow unescaped HTML, leading to a cross-site scripting vulnerability.
 Current releases of the TestNG plugin always escape test description and test exception messages.
 If test description or test exceptions messages must not be escaped and administrators accept the risk of disabling this security safeguard, set the Java property
 `hudson.plugins.testng.Publisher.allowUnescapedHTML=true`
