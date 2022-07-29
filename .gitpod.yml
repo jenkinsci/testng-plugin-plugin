@@ -1,42 +1,16 @@
+# Using an updated Gitpod docker image (when using a non default JDK or tools)
+image:
+  file: .gitpod.Dockerfile
+
 tasks:
-  - name: Setup for Jenkins development
-    init: |
-      sed -i 's/sdkman_auto_answer=false/sdkman_auto_answer=true/' $HOME/.sdkman/etc/config
-      sdk selfupdate
-      sdk update
-      sdk install maven 3.8.3
-      sdk use maven 3.8.3
-      brew install gh
+  - init: sdk default java  11.0.15-tem && mvn clean verify
 
 vscode:
   extensions:
     - bierner.markdown-preview-github-styles
-    - github.vscode-pull-request-github
-    - redhat.fabric8-analytics
+    - vscjava.vscode-java-pack
     - redhat.java
-    - redhat.vscode-commons
-    - redhat.vscode-xml
-    - vscjava.vscode-maven
     - vscjava.vscode-java-debug
     - vscjava.vscode-java-dependency
-    - vscjava.vscode-java-pack
     - vscjava.vscode-java-test
-    - hbenl.vscode-test-explorer
-    - hbenl.test-adapter-converter
-
-github:
-  prebuilds:
-    # enable for the default branch (defaults to true)
-    master: true
-    # enable for all branches in this repo (defaults to false)
-    branches: true
-    # enable for pull requests coming from this repo (defaults to true)
-    pullRequests: true
-    # enable for pull requests coming from forks (defaults to false)
-    pullRequestsFromForks: true
-    # add a check to pull requests (defaults to true)
-    addCheck: true
-    # add a "Review in Gitpod" button as a comment to pull requests (defaults to false)
-    addComment: true
-    # add a "Review in Gitpod" button to the pull request's description (defaults to false)
-    addBadge: false
+    - vscjava.vscode-maven
