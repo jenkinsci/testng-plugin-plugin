@@ -59,7 +59,7 @@ div(id: "report") {
         table(border: "1px", class: "pane", id: "params", style: "white-space:normal") {
             thead() {
                 tr() {
-                    th(class: "pane-header", style: "width:5em;")
+                    th(class: "pane-header", style: "width:6.5em;")
                     th(class: "pane-header", title: "parameter value") {
                         text("Value")
                     }
@@ -88,7 +88,7 @@ div(id: "report") {
     if (my.reporterOutput) {
         div(id: "reporter-output") {
             h3("Reporter Output")
-            code(style: "white-space:pre; margin-left:15px; display:block; border:1px black; background-color:#F0F0F0") {
+            code(style: "white-space:pre-wrap; margin-left:15px; display:block; border:1px black; background-color:#F0F0F0") {
                 raw("${my.reporterOutput}")
             }
         }

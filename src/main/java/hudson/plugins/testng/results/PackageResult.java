@@ -149,6 +149,8 @@ public class PackageResult extends BaseResult {
             sb.append("<a href=\"").append(mr.getUpUrl()).append("\">");
             sb.append(mr.getParent().getName()).append(".").append(mr.getName());
             sb.append("</a>");
+            sb.append("</td><td align=\"left\">");
+            sb.append(mr.getDescription());
             sb.append("</td><td align=\"center\">");
             sb.append(FormatUtil.formatTime(mr.getDuration()));
             sb.append("</td><td align=\"center\">");
