@@ -400,6 +400,29 @@ public class TestNGTestResultBuildActionTest {
       r.assertLogContains("tests failed, which exceeded threshold of 0%. Marking build as UNSTABLE", build);
    }
 
+   @Issue("JENKINS-27121")
+   @Test
+   public void test_threshold_for_fails_default_pipeline_using_symbol() throws Exception {
+      if (isWindows()) {
+          /* Fails to delete a file on Windows agents of ci.jenkins.io.
+           * Likely indicates a bug somewhere, but I'd rather have most
+           * of the tests passing on ci.jenkins.io Windows rather than
+           * blocking all Windows tests until this can be investigated.
+           */
+          return;
+      }
+      WorkflowJob p = r.jenkins.createProject(WorkflowJob.class, "p");
+      String contents = CommonUtil.getContents(Constants.TESTNG_FAILED_TEST);
+      p.setDefinition(new CpsFlowDefinition("node {\n  writeFile(file: 'testng-results.xml', text: '''" + contents + "''')\n  testNG()\n}\n", true));
+      WorkflowRun build = p.scheduleBuild2(0).get();
+      r.assertBuildStatus(Result.UNSTABLE, build);
+      TestNGTestResultBuildAction action = build.getAction(TestNGTestResultBuildAction.class);
+      assertNotNull(action);
+      TestNGResult result = action.getResult();
+      assertEquals("checking result details", "TestNGResult {totalTests=2, failedTests=1, skippedTests=0, failedConfigs=0, skippedConfigs=0}", result.toString());
+      r.assertLogContains("tests failed, which exceeded threshold of 0%. Marking build as UNSTABLE", build);
+   }
+
   @Test
   public void test_threshold_for_fails_failure() throws Exception {
      FreeStyleProject p = r.createFreeStyleProject();

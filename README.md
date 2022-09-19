@@ -87,12 +87,37 @@ Results**. This option allows you to configure the following properties:
 
 ### Pipeline in Jenkinsfile
 
+The link:https://www.jenkins.io/redirect/pipeline-snippet-generator[Pipeline Syntax Snippet Generator] guides the user to select TestNG report options.
+Add the `testNG` step to declarative Pipeline in a `post` section.
+
 ```
   post {
     always {
-      step([$class: 'Publisher', reportFilenamePattern: '**/testng-results.xml'])
+      testNG()
     }
   }
+```
+
+Additional options can be included in the testNG declarative Pipeline step like this:
+
+```
+  post {
+    always {
+      testNG(showFailedBuilds: true,
+             unstableFails: 5, unstableSkips: 25,
+             failedFails:  10, failedSkips:   50)
+    }
+  }
+```
+
+The `testNG` Pipeline step can be used in a scripted Pipeline like this:
+
+```
+node {
+  // Add steps that run TestNG tests
+  // Publish TestNG report with the `testNG()` step
+  testNG(reportFilenamePattern: '**/testng-many-results.xml')
+}
 ```
 
 ### Properties

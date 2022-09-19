@@ -25,6 +25,7 @@ import hudson.tasks.Recorder;
 import hudson.util.FormValidation;
 import jenkins.tasks.SimpleBuildStep;
 import net.sf.json.JSONObject;
+import org.jenkinsci.Symbol;
 import org.kohsuke.stapler.*;
 import org.kohsuke.stapler.verb.POST;
 
@@ -442,6 +443,7 @@ public class Publisher extends Recorder implements SimpleBuildStep {
       return true;
    }
 
+   @Symbol("testNG")
    public static final class DescriptorImpl extends BuildStepDescriptor<hudson.tasks.Publisher> {
 
       /**
