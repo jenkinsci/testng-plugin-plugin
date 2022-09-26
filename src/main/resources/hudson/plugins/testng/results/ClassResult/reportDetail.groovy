@@ -33,7 +33,7 @@ for (group in my.testRunMap.values()) {
                         th(class:"pane-header", style:"width:5em", title:"Duration") {
                             text("Duration")
                         }
-                        th(class:"pane-header", style:"width:5em", title:"Start time") {
+                        th(class:"pane-header", style:"width:15em", title:"Start time") {
                             text("Start Time")
                         }
                         th(class:"pane-header", style:"width:5em", title:"Status") {
@@ -104,7 +104,7 @@ for (group in my.testRunMap.values()) {
                         th(class:"pane-header", style:"width:5em", title:"Duration") {
                             text("Duration")
                         }
-                        th(class:"pane-header", style:"width:5em", title:"Start time") {
+                        th(class:"pane-header", style:"width:15em", title:"Start time") {
                             text("Start Time")
                         }
                         th(class:"pane-header", style:"width:5em", title:"Status") {
