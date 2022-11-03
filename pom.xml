@@ -61,8 +61,8 @@
         <dependencies>
             <dependency>
                 <groupId>io.jenkins.tools.bom</groupId>
-                <artifactId>bom-2.319.x</artifactId>
-                <version>1654.vcb_69d035fa_20</version>
+                <artifactId>bom-2.346.x</artifactId>
+                <version>1670.v7f165fc7a_079</version>
                 <scope>import</scope>
                 <type>pom</type>
             </dependency>
@@ -140,7 +140,7 @@
     <properties>
         <changelist>999999-SNAPSHOT</changelist>
         <gitHubRepo>jenkinsci/testng-plugin-plugin</gitHubRepo>
-        <jenkins.version>2.319.3</jenkins.version>
+        <jenkins.version>2.346.3</jenkins.version>
         <spotbugs.effort>Max</spotbugs.effort>
         <spotbugs.failOnError>true</spotbugs.failOnError>
         <!-- Not yet ready for Low threshold, too many warnings to resolve -->
