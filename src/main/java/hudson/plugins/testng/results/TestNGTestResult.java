@@ -12,10 +12,10 @@ import java.util.Set;
  */
 public class TestNGTestResult {
 
-    //list of test classes
+    // list of test classes
     private List<ClassResult> classList = new ArrayList<ClassResult>();
 
-    //<test name="####">
+    // <test name="####">
     private String name;
 
     public TestNGTestResult(String name) {
@@ -40,5 +40,4 @@ public class TestNGTestResult {
         tmpSet.addAll(classList);
         this.classList = new ArrayList<ClassResult>(tmpSet);
     }
-
 }

@@ -1,21 +1,20 @@
 package hudson.plugins.testng.results;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import java.io.Serializable;
-import java.util.*;
-
 import hudson.model.Run;
 import hudson.plugins.testng.PluginImpl;
+import java.io.Serializable;
+import java.util.*;
 import org.kohsuke.stapler.export.Exported;
 
 /**
- * Represents all the results gathered for a single build (or a single suite,
- * while parsing the test results)
+ * Represents all the results gathered for a single build (or a single suite, while parsing the test
+ * results)
  *
  * @author nullin
  * @author farshidce
  */
-@SuppressFBWarnings(value="SE_BAD_FIELD", justification="ArrayList is Serializable")
+@SuppressFBWarnings(value = "SE_BAD_FIELD", justification = "ArrayList is Serializable")
 public class TestNGResult extends BaseResult implements Serializable {
 
     private static final long serialVersionUID = -3491974223665601995L;
@@ -74,24 +73,18 @@ public class TestNGResult extends BaseResult implements Serializable {
         return skippedConfigurationMethods;
     }
 
-    /**
-     * Gets the total number of passed tests.
-     */
+    /** Gets the total number of passed tests. */
     public int getPassCount() {
         return passCount;
     }
 
-    /**
-     * Gets the total number of failed tests.
-     */
+    /** Gets the total number of failed tests. */
     @Exported
     public int getFailCount() {
         return failCount;
     }
 
-    /**
-     * Gets the total number of skipped tests.
-     */
+    /** Gets the total number of skipped tests. */
     @Exported
     public int getSkipCount() {
         return skipCount;
@@ -140,7 +133,7 @@ public class TestNGResult extends BaseResult implements Serializable {
      *
      * @param testList tests to be added to the list without duplicating existing list content
      */
-    //TODO: whats going on here? why unique?
+    // TODO: whats going on here? why unique?
     public void addUniqueTests(List<TestNGTestResult> testList) {
         Set<TestNGTestResult> tmpSet = new HashSet<TestNGTestResult>(this.testList);
         tmpSet.addAll(testList);
@@ -163,8 +156,7 @@ public class TestNGResult extends BaseResult implements Serializable {
             return false;
         }
         TestNGResult testngResult = (TestNGResult) o;
-        return run == null ? testngResult.run == null
-                : run.equals(testngResult.run);
+        return run == null ? testngResult.run == null : run.equals(testngResult.run);
     }
 
     @Override
@@ -176,18 +168,19 @@ public class TestNGResult extends BaseResult implements Serializable {
 
     @Override
     public String toString() {
-        return String.format("TestNGResult {" +
-                "totalTests=%d, " +
-                "failedTests=%d, skippedTests=%d, failedConfigs=%d, " +
-                "skippedConfigs=%d}", //name,
-                passCount + failCount + skipCount, failCount,
-                skipCount, failedConfigCount,
+        return String.format(
+                "TestNGResult {"
+                        + "totalTests=%d, "
+                        + "failedTests=%d, skippedTests=%d, failedConfigs=%d, "
+                        + "skippedConfigs=%d}", // name,
+                passCount + failCount + skipCount,
+                failCount,
+                skipCount,
+                failedConfigCount,
                 skippedConfigCount);
     }
 
-    /**
-     * Updates the calculated fields
-     */
+    /** Updates the calculated fields */
     @Override
     public void tally() {
         failedConfigCount = failedConfigurationMethods.size();
@@ -219,7 +212,7 @@ public class TestNGResult extends BaseResult implements Serializable {
         for (PackageResult pkgResult : packageMap.values()) {
             pkgResult.tally();
             if (this.startTime > pkgResult.getStartTime()) {
-                startTime = pkgResult.getStartTime(); //cf. ClassResult#tally()
+                startTime = pkgResult.getStartTime(); // cf. ClassResult#tally()
             }
             if (this.endTime < pkgResult.getEndTime()) {
                 endTime = pkgResult.getEndTime();
