@@ -1,8 +1,7 @@
 package hudson.plugins.testng;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.PrintStream;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import hudson.FilePath;
 import hudson.Launcher;
@@ -10,20 +9,20 @@ import hudson.model.AbstractBuild;
 import hudson.model.BuildListener;
 import hudson.model.FreeStyleProject;
 import hudson.model.Result;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.PrintStream;
 import java.util.Map;
 import java.util.TreeMap;
 import org.jenkinsci.plugins.structs.describable.DescribableModel;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Test;
 import org.junit.Rule;
+import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 import org.jvnet.hudson.test.Issue;
 import org.jvnet.hudson.test.JenkinsRule;
 import org.jvnet.hudson.test.WithoutJenkins;
-
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 /**
  * Tests the {@link Publisher}
@@ -32,14 +31,10 @@ import static org.mockito.Mockito.when;
  */
 public class PublisherTest {
 
-    @Rule
-    public JenkinsRule r = new JenkinsRule();
-    @Rule
-    public TemporaryFolder tmp = new TemporaryFolder();
+    @Rule public JenkinsRule r = new JenkinsRule();
+    @Rule public TemporaryFolder tmp = new TemporaryFolder();
 
-    /**
-     * Reset SECURITY-2788 escape hatch before each test.
-     */
+    /** Reset SECURITY-2788 escape hatch before each test. */
     @Before
     public void disallowUnescapedHTML() {
         Publisher.setAllowUnescapedHTML(false);
@@ -127,17 +122,24 @@ public class PublisherTest {
         p.getPublishersList().add(before);
 
         /* Even though set to false by earlier calls to setters, setting is ignored */
-        Assert.assertTrue(before.getEscapeTestDescp()); // SECURITY-2788 - prevent XSS from test description
-        Assert.assertTrue(before.getEscapeExceptionMsg()); // SECURITY-2788 - prevent XSS from test exception
+        Assert.assertTrue(
+                before.getEscapeTestDescp()); // SECURITY-2788 - prevent XSS from test description
+        Assert.assertTrue(
+                before.getEscapeExceptionMsg()); // SECURITY-2788 - prevent XSS from test exception
 
         r.submit(r.createWebClient().getPage(p, "configure").getFormByName("config"));
 
         Publisher after = p.getPublishersList().get(Publisher.class);
 
-        Assert.assertTrue(after.getEscapeTestDescp()); // SECURITY-2788 - prevent XSS from test description
-        Assert.assertTrue(after.getEscapeExceptionMsg()); // SECURITY-2788 - prevent XSS from test exception
+        Assert.assertTrue(
+                after.getEscapeTestDescp()); // SECURITY-2788 - prevent XSS from test description
+        Assert.assertTrue(
+                after.getEscapeExceptionMsg()); // SECURITY-2788 - prevent XSS from test exception
 
-        r.assertEqualBeans(before, after, "reportFilenamePattern,escapeTestDescp,escapeExceptionMsg,showFailedBuilds");
+        r.assertEqualBeans(
+                before,
+                after,
+                "reportFilenamePattern,escapeTestDescp,escapeExceptionMsg,showFailedBuilds");
     }
 
     @Issue("JENKINS-27121")

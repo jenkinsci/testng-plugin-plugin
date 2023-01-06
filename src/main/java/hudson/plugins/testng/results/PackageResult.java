@@ -1,6 +1,8 @@
 package hudson.plugins.testng.results;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import hudson.model.Run;
+import hudson.plugins.testng.util.FormatUtil;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -8,30 +10,25 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import hudson.model.Run;
-import hudson.plugins.testng.util.FormatUtil;
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
 import org.kohsuke.stapler.bind.JavaScriptMethod;
 import org.kohsuke.stapler.export.Exported;
 
-/**
- * Handles package level results
- */
-@SuppressFBWarnings(value="SE_NO_SERIALVERSIONID", justification="XStream does not care")
+/** Handles package level results */
+@SuppressFBWarnings(value = "SE_NO_SERIALVERSIONID", justification = "XStream does not care")
 @SuppressWarnings("serial")
 public class PackageResult extends BaseResult {
 
     public static final String NO_PKG_NAME = "No Package";
-    //TODO: switch to using a Map instead of List
-    //list of all classes run from this package
+    // TODO: switch to using a Map instead of List
+    // list of all classes run from this package
     private List<ClassResult> classList = new ArrayList<ClassResult>();
 
-    //cached
+    // cached
     private List<MethodResult> sortedTestMethodsByStartTime = null;
 
-    //cached vars updated using tally method
+    // cached vars updated using tally method
     private transient long startTime;
     private transient long duration;
     private transient int fail;
@@ -54,8 +51,8 @@ public class PackageResult extends BaseResult {
     }
 
     /**
-     * Can't change this to return seconds as expected by {@link hudson.tasks.test.TestObject} because
-     * it has already been exported
+     * Can't change this to return seconds as expected by {@link hudson.tasks.test.TestObject}
+     * because it has already been exported
      *
      * @return duration in milliseconds
      */
@@ -97,8 +94,8 @@ public class PackageResult extends BaseResult {
     }
 
     /**
-     * Gets all the method results related to this package sorted by the time
-     * the methods were executed
+     * Gets all the method results related to this package sorted by the time the methods were
+     * executed
      *
      * @return results sorted by start time
      */
@@ -110,8 +107,8 @@ public class PackageResult extends BaseResult {
     }
 
     /**
-     * Gets table row representation for all the method results associated with
-     * this package (sorted based on start time)
+     * Gets table row representation for all the method results associated with this package (sorted
+     * based on start time)
      *
      * @return test methods sorted by start time
      */
@@ -121,17 +118,21 @@ public class PackageResult extends BaseResult {
     }
 
     /**
-     * Gets table row representation for the first {@link #MAX_EXEC_MTHD_LIST_SIZE}
-     * method results associated with this package (sorted based on start time)
+     * Gets table row representation for the first {@link #MAX_EXEC_MTHD_LIST_SIZE} method results
+     * associated with this package (sorted based on start time)
      *
      * @return first page of test results sorted by start time
      */
     @JavaScriptMethod
     public String getFirstXSortedTestMethodsByStartTime() {
-        //returning the first MAX results only
+        // returning the first MAX results only
         List<MethodResult> list = getSortedTestMethodsByStartTime();
-        list = list.subList(0, list.size() > MAX_EXEC_MTHD_LIST_SIZE
-                ? MAX_EXEC_MTHD_LIST_SIZE : list.size());
+        list =
+                list.subList(
+                        0,
+                        list.size() > MAX_EXEC_MTHD_LIST_SIZE
+                                ? MAX_EXEC_MTHD_LIST_SIZE
+                                : list.size());
         return getMethodExecutionTableContent(list);
     }
 
@@ -155,7 +156,9 @@ public class PackageResult extends BaseResult {
             sb.append(FormatUtil.formatTime(mr.getDuration()));
             sb.append("</td><td align=\"center\">");
             sb.append(mr.getStartedAt());
-            sb.append("</td><td align=\"center\"><span class=\"").append(mr.getCssClass()).append("\">");
+            sb.append("</td><td align=\"center\"><span class=\"")
+                    .append(mr.getCssClass())
+                    .append("\">");
             sb.append(mr.getStatus());
             sb.append("</span></td></tr>");
         }
@@ -177,14 +180,17 @@ public class PackageResult extends BaseResult {
             timeSeries.add(new long[] {_c.getStartTime(), _c.getEndTime() - _c.getStartTime()});
         }
 
-        Collections.sort(timeSeries, new Comparator<long[]>() {
-            public int compare(long[] ts1, long[] ts2) {
-                return ts1[0] < ts2[0] ? -1 : (ts1[0] > ts2[0] ? 1 : 0);
-            }
-        });
+        Collections.sort(
+                timeSeries,
+                new Comparator<long[]>() {
+                    public int compare(long[] ts1, long[] ts2) {
+                        return ts1[0] < ts2[0] ? -1 : (ts1[0] > ts2[0] ? 1 : 0);
+                    }
+                });
 
-        timeSeries.add(new long[] {System.currentTimeMillis(), 0}); //to help with following algorithm
-        startTime = timeSeries.get(0)[0]; //start time for all classes within this package
+        timeSeries.add(
+                new long[] {System.currentTimeMillis(), 0}); // to help with following algorithm
+        startTime = timeSeries.get(0)[0]; // start time for all classes within this package
         duration = 0;
         int activeTS = 0;
         int nextTS = 1;
@@ -199,16 +205,16 @@ public class PackageResult extends BaseResult {
             long e2 = ts2[0] + ts2[1];
 
             if (s1 <= s2 && e1 >= e2) {
-                //ts2 series is completely contained in ts1, so nothing to do
+                // ts2 series is completely contained in ts1, so nothing to do
                 nextTS++;
                 continue;
             }
 
             if (e1 <= s2) {
-                //no overlap (disjoint time series)
+                // no overlap (disjoint time series)
                 duration += ts1[1];
             } else {
-                //overlap
+                // overlap
                 duration += s2 - s1;
             }
             activeTS = nextTS;
@@ -217,19 +223,18 @@ public class PackageResult extends BaseResult {
     }
 
     /**
-     * Sorts the test method results associated with this package based on the
-     * start time for method execution
+     * Sorts the test method results associated with this package based on the start time for method
+     * execution
      */
     public void sortTestMethods() {
         this.sortedTestMethodsByStartTime = new ArrayList<MethodResult>();
-        //for each class
+        // for each class
         Map<Date, List<MethodResult>> map = new HashMap<Date, List<MethodResult>>();
         for (ClassResult aClass : classList) {
             if (aClass.getTestMethods() != null) {
                 for (MethodResult aMethod : aClass.getTestMethods()) {
                     Date startDate = aMethod.getStartedAt();
-                    if (!aMethod.getStatus().equalsIgnoreCase("skip")
-                            && startDate != null) {
+                    if (!aMethod.getStatus().equalsIgnoreCase("skip") && startDate != null) {
                         if (map.containsKey(startDate)) {
                             map.get(startDate).add(aMethod);
                         } else {
@@ -243,7 +248,7 @@ public class PackageResult extends BaseResult {
         }
         List<Date> keys = new ArrayList<Date>(map.keySet());
         Collections.sort(keys);
-        //now create the list with the order
+        // now create the list with the order
         for (Date key : keys) {
             if (map.containsKey(key)) {
                 this.sortedTestMethodsByStartTime.addAll(map.get(key));
@@ -265,10 +270,10 @@ public class PackageResult extends BaseResult {
     /**
      * {@inheritDoc}
      *
-     * Overriding so that we can be backward compatible with shared links. We changed name
-     * for classes to be simple name instead of canonical.
+     * <p>Overriding so that we can be backward compatible with shared links. We changed name for
+     * classes to be simple name instead of canonical.
      *
-     * TODO: Added this in release 1.7. Delete this method in one of the next few release.
+     * <p>TODO: Added this in release 1.7. Delete this method in one of the next few release.
      *
      * @param token fully qualified class name used to search for test results
      * @param req stapler request to search for test results
@@ -289,5 +294,4 @@ public class PackageResult extends BaseResult {
         }
         return null;
     }
-
 }

@@ -1,31 +1,28 @@
 package hudson.plugins.testng.results;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import hudson.model.Run;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import hudson.model.Run;
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
 import org.kohsuke.stapler.export.Exported;
 
-/**
- * Handle results related to a single test class
- */
-@SuppressFBWarnings(value="SE_NO_SERIALVERSIONID", justification="XStream does not care")
+/** Handle results related to a single test class */
+@SuppressFBWarnings(value = "SE_NO_SERIALVERSIONID", justification = "XStream does not care")
 @SuppressWarnings("serial")
 public class ClassResult extends BaseResult {
 
-    private String pkgName; //name of package containing this class
+    private String pkgName; // name of package containing this class
     private List<MethodResult> testMethodList = new ArrayList<MethodResult>();
 
-    //cache
-    @SuppressFBWarnings(value="SE_BAD_FIELD", justification="HashMap is Serializable")
+    // cache
+    @SuppressFBWarnings(value = "SE_BAD_FIELD", justification = "HashMap is Serializable")
     private Map<String, GroupedTestRun> testRunMap = null;
 
-    //cached values, updated via tally
+    // cached values, updated via tally
     private transient long startTime;
     private transient long endTime;
     private transient int fail;
@@ -50,8 +47,7 @@ public class ClassResult extends BaseResult {
     }
 
     /**
-     * Called only from jelly file.
-     * Returns test methods grouped by their test run.
+     * Called only from jelly file. Returns test methods grouped by their test run.
      *
      * @return test methods grouped by their test run.
      */
@@ -59,7 +55,7 @@ public class ClassResult extends BaseResult {
         if (testRunMap != null) {
             return testRunMap;
         }
-        //group all the test methods based on their run
+        // group all the test methods based on their run
         testRunMap = new HashMap<String, GroupedTestRun>();
         for (MethodResult methodResult : this.testMethodList) {
             String methodTestRunId = methodResult.getTestRunId();
@@ -67,9 +63,11 @@ public class ClassResult extends BaseResult {
             if (this.testRunMap.containsKey(methodTestRunId)) {
                 group = this.testRunMap.get(methodTestRunId);
             } else {
-                group = new GroupedTestRun(methodTestRunId,
-                        methodResult.getParentTestName(),
-                        methodResult.getParentSuiteName());
+                group =
+                        new GroupedTestRun(
+                                methodTestRunId,
+                                methodResult.getParentTestName(),
+                                methodResult.getParentSuiteName());
                 this.testRunMap.put(methodTestRunId, group);
             }
 
@@ -97,11 +95,11 @@ public class ClassResult extends BaseResult {
     }
 
     public long getStartTime() {
-        return startTime; //in ms
+        return startTime; // in ms
     }
 
     public long getEndTime() {
-        return endTime; //in ms
+        return endTime; // in ms
     }
 
     @Override
@@ -135,8 +133,8 @@ public class ClassResult extends BaseResult {
         this.fail = 0;
         this.skip = 0;
         this.pass = 0;
-        this.startTime = Long.MAX_VALUE; //start with max
-        this.endTime = 0; //start with min
+        this.startTime = Long.MAX_VALUE; // start with max
+        this.endTime = 0; // start with min
         Map<String, Integer> methodInstanceMap = new HashMap<String, Integer>();
 
         for (MethodResult methodResult : this.testMethodList) {
@@ -185,15 +183,15 @@ public class ClassResult extends BaseResult {
     }
 
     /*
-        Overriding because instead of comparing token to name, for methods,
-        we need to compare it with the safe name (which includes testUuid, if
-        applicable)
-     */
+       Overriding because instead of comparing token to name, for methods,
+       we need to compare it with the safe name (which includes testUuid, if
+       applicable)
+    */
     @Override
     public Object getDynamic(String token, StaplerRequest req, StaplerResponse rsp) {
         if (this.testMethodList != null) {
             for (MethodResult methodResult : this.testMethodList) {
-                //append the uuid as well
+                // append the uuid as well
                 if (token.equals(methodResult.getSafeName())) {
                     return methodResult;
                 }
@@ -232,5 +230,4 @@ public class ClassResult extends BaseResult {
     public boolean hasChildren() {
         return testMethodList != null && !testMethodList.isEmpty();
     }
-
 }
