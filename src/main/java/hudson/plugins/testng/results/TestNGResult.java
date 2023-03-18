@@ -37,6 +37,7 @@ public class TestNGResult extends BaseResult implements Serializable {
      * @param name input name is ignored
      * @deprecated don't use this constructor
      */
+    @Deprecated
     public TestNGResult(String name) {
         super(PluginImpl.URL);
     }
