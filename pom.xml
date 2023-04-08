@@ -61,7 +61,6 @@
     <gitHubRepo>jenkinsci/${project.artifactId}-plugin</gitHubRepo>
     <jenkins.version>2.361.4</jenkins.version>
     <spotbugs.effort>Max</spotbugs.effort>
-    <spotbugs.failOnError>true</spotbugs.failOnError>
     <!-- Not yet ready for Low threshold, too many warnings to resolve -->
     <spotbugs.threshold>Medium</spotbugs.threshold>
   </properties>
