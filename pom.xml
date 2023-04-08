@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
+
   <parent>
     <groupId>org.jenkins-ci.plugins</groupId>
     <artifactId>plugin</artifactId>
@@ -45,10 +46,7 @@
     <tag>${scmTag}</tag>
     <url>https://github.com/${gitHubRepo}</url>
   </scm>
-  <issueManagement>
-    <system>JIRA</system>
-    <url>https://issues.jenkins.io</url>
-  </issueManagement>
+
   <properties>
     <changelist>999999-SNAPSHOT</changelist>
     <gitHubRepo>jenkinsci/testng-plugin-plugin</gitHubRepo>
@@ -58,6 +56,7 @@
     <!-- Not yet ready for Low threshold, too many warnings to resolve -->
     <spotbugs.threshold>Medium</spotbugs.threshold>
   </properties>
+
   <dependencyManagement>
     <dependencies>
       <dependency>
@@ -69,7 +68,6 @@
       </dependency>
     </dependencies>
   </dependencyManagement>
-
   <dependencies>
     <dependency>
       <groupId>org.jenkins-ci.plugins</groupId>
@@ -107,18 +105,21 @@
       </exclusions>
     </dependency>
   </dependencies>
+
   <repositories>
     <repository>
       <id>repo.jenkins-ci.org</id>
       <url>https://repo.jenkins-ci.org/public/</url>
     </repository>
   </repositories>
+
   <pluginRepositories>
     <pluginRepository>
       <id>repo.jenkins-ci.org</id>
       <url>https://repo.jenkins-ci.org/public/</url>
     </pluginRepository>
   </pluginRepositories>
+
   <build>
     <pluginManagement>
       <plugins>
