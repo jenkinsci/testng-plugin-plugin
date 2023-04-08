@@ -33,7 +33,8 @@ import org.jvnet.hudson.test.TestBuilder;
  */
 public class MethodResultTest {
 
-    @Rule public JenkinsRule r = new JenkinsRule();
+    @Rule
+    public JenkinsRule r = new JenkinsRule();
 
     @Before
     public void allowUnescapedHTML() {
@@ -54,26 +55,19 @@ public class MethodResultTest {
         publisher.setReportFilenamePattern("testng.xml");
         publisher.setEscapeTestDescp(false);
         publisher.setEscapeExceptionMsg(true);
-        publisher.setFailedFails(
-                100); // this prevents default fail thresholds from determining result
+        publisher.setFailedFails(100); // this prevents default fail thresholds from determining result
         p.getPublishersList().add(publisher);
         p.onCreatedFromScratch(); // to setup project action
 
-        p.getBuildersList()
-                .add(
-                        new TestBuilder() {
-                            @Override
-                            public boolean perform(
-                                    AbstractBuild<?, ?> build,
-                                    Launcher launcher,
-                                    BuildListener listener)
-                                    throws InterruptedException, IOException {
-                                String contents =
-                                        CommonUtil.getContents(Constants.TESTNG_XML_EXP_MSG_XML);
-                                build.getWorkspace().child("testng.xml").write(contents, "UTF-8");
-                                return true;
-                            }
-                        });
+        p.getBuildersList().add(new TestBuilder() {
+            @Override
+            public boolean perform(AbstractBuild<?, ?> build, Launcher launcher, BuildListener listener)
+                    throws InterruptedException, IOException {
+                String contents = CommonUtil.getContents(Constants.TESTNG_XML_EXP_MSG_XML);
+                build.getWorkspace().child("testng.xml").write(contents, "UTF-8");
+                return true;
+            }
+        });
 
         // run build
         FreeStyleBuild build = p.scheduleBuild2(0).get();
@@ -89,8 +83,7 @@ public class MethodResultTest {
 
     @Test
     public void testEscapeExceptionMessageFalse() throws Exception {
-        PublisherTest.setAllowUnescapedHTML(
-                true); // Open the SECURITY-2788 escape hatch for this test
+        PublisherTest.setAllowUnescapedHTML(true); // Open the SECURITY-2788 escape hatch for this test
         FreeStyleProject p = r.createFreeStyleProject();
         Publisher publisher = new Publisher();
         publisher.setReportFilenamePattern("testng.xml");
@@ -99,21 +92,15 @@ public class MethodResultTest {
         p.getPublishersList().add(publisher);
         p.onCreatedFromScratch(); // to setup project action
 
-        p.getBuildersList()
-                .add(
-                        new TestBuilder() {
-                            @Override
-                            public boolean perform(
-                                    AbstractBuild<?, ?> build,
-                                    Launcher launcher,
-                                    BuildListener listener)
-                                    throws InterruptedException, IOException {
-                                String contents =
-                                        CommonUtil.getContents(Constants.TESTNG_XML_EXP_MSG_XML);
-                                build.getWorkspace().child("testng.xml").write(contents, "UTF-8");
-                                return true;
-                            }
-                        });
+        p.getBuildersList().add(new TestBuilder() {
+            @Override
+            public boolean perform(AbstractBuild<?, ?> build, Launcher launcher, BuildListener listener)
+                    throws InterruptedException, IOException {
+                String contents = CommonUtil.getContents(Constants.TESTNG_XML_EXP_MSG_XML);
+                build.getWorkspace().child("testng.xml").write(contents, "UTF-8");
+                return true;
+            }
+        });
 
         // run build
         FreeStyleBuild build = p.scheduleBuild2(0).get();
@@ -128,8 +115,7 @@ public class MethodResultTest {
 
     @Test
     public void testEscapeDescriptionFalse() throws Exception {
-        PublisherTest.setAllowUnescapedHTML(
-                true); // Open the SECURITY-2788 escape hatch for this test
+        PublisherTest.setAllowUnescapedHTML(true); // Open the SECURITY-2788 escape hatch for this test
         FreeStyleProject p = r.createFreeStyleProject();
         Publisher publisher = new Publisher();
         publisher.setReportFilenamePattern("testng.xml");
@@ -138,21 +124,15 @@ public class MethodResultTest {
         p.getPublishersList().add(publisher);
         p.onCreatedFromScratch(); // to setup project action
 
-        p.getBuildersList()
-                .add(
-                        new TestBuilder() {
-                            @Override
-                            public boolean perform(
-                                    AbstractBuild<?, ?> build,
-                                    Launcher launcher,
-                                    BuildListener listener)
-                                    throws InterruptedException, IOException {
-                                String contents =
-                                        CommonUtil.getContents(Constants.TESTNG_DESCRIPTION_HTML);
-                                build.getWorkspace().child("testng.xml").write(contents, "UTF-8");
-                                return true;
-                            }
-                        });
+        p.getBuildersList().add(new TestBuilder() {
+            @Override
+            public boolean perform(AbstractBuild<?, ?> build, Launcher launcher, BuildListener listener)
+                    throws InterruptedException, IOException {
+                String contents = CommonUtil.getContents(Constants.TESTNG_DESCRIPTION_HTML);
+                build.getWorkspace().child("testng.xml").write(contents, "UTF-8");
+                return true;
+            }
+        });
 
         // run build
         FreeStyleBuild build = p.scheduleBuild2(0).get();
@@ -176,21 +156,15 @@ public class MethodResultTest {
         p.getPublishersList().add(publisher);
         p.onCreatedFromScratch(); // to setup project action
 
-        p.getBuildersList()
-                .add(
-                        new TestBuilder() {
-                            @Override
-                            public boolean perform(
-                                    AbstractBuild<?, ?> build,
-                                    Launcher launcher,
-                                    BuildListener listener)
-                                    throws InterruptedException, IOException {
-                                String contents =
-                                        CommonUtil.getContents(Constants.TESTNG_DESCRIPTION_HTML);
-                                build.getWorkspace().child("testng.xml").write(contents, "UTF-8");
-                                return true;
-                            }
-                        });
+        p.getBuildersList().add(new TestBuilder() {
+            @Override
+            public boolean perform(AbstractBuild<?, ?> build, Launcher launcher, BuildListener listener)
+                    throws InterruptedException, IOException {
+                String contents = CommonUtil.getContents(Constants.TESTNG_DESCRIPTION_HTML);
+                build.getWorkspace().child("testng.xml").write(contents, "UTF-8");
+                return true;
+            }
+        });
 
         // run build
         FreeStyleBuild build = p.scheduleBuild2(0).get();
@@ -214,8 +188,7 @@ public class MethodResultTest {
      */
     @Test
     public void testMultilineDescriptionAndExceptionMessage() throws Exception {
-        PublisherTest.setAllowUnescapedHTML(
-                true); // Open the SECURITY-2788 escape hatch for this test
+        PublisherTest.setAllowUnescapedHTML(true); // Open the SECURITY-2788 escape hatch for this test
         FreeStyleProject p = r.createFreeStyleProject();
         Publisher publisher = new Publisher();
         publisher.setReportFilenamePattern("testng.xml");
@@ -224,23 +197,15 @@ public class MethodResultTest {
         p.getPublishersList().add(publisher);
         p.onCreatedFromScratch(); // to setup project action
 
-        p.getBuildersList()
-                .add(
-                        new TestBuilder() {
-                            @Override
-                            public boolean perform(
-                                    AbstractBuild<?, ?> build,
-                                    Launcher launcher,
-                                    BuildListener listener)
-                                    throws InterruptedException, IOException {
-                                String contents =
-                                        CommonUtil.getContents(
-                                                Constants
-                                                        .TESTNG_MULTILINE_EXCEPTION_AND_DESCRIPTION);
-                                build.getWorkspace().child("testng.xml").write(contents, "UTF-8");
-                                return true;
-                            }
-                        });
+        p.getBuildersList().add(new TestBuilder() {
+            @Override
+            public boolean perform(AbstractBuild<?, ?> build, Launcher launcher, BuildListener listener)
+                    throws InterruptedException, IOException {
+                String contents = CommonUtil.getContents(Constants.TESTNG_MULTILINE_EXCEPTION_AND_DESCRIPTION);
+                build.getWorkspace().child("testng.xml").write(contents, "UTF-8");
+                return true;
+            }
+        });
 
         // run build
         FreeStyleBuild build = p.scheduleBuild2(0).get();
@@ -263,31 +228,21 @@ public class MethodResultTest {
         p.getPublishersList().add(publisher);
         p.onCreatedFromScratch(); // to setup project action
 
-        p.getBuildersList()
-                .add(
-                        new TestBuilder() {
-                            @Override
-                            public boolean perform(
-                                    AbstractBuild<?, ?> build,
-                                    Launcher launcher,
-                                    BuildListener listener)
-                                    throws InterruptedException, IOException {
-                                String contents =
-                                        CommonUtil.getContents(
-                                                Constants.TESTNG_XML_REPORTER_LOG_OUTPUT);
-                                build.getWorkspace().child("testng.xml").write(contents, "UTF-8");
-                                return true;
-                            }
-                        });
+        p.getBuildersList().add(new TestBuilder() {
+            @Override
+            public boolean perform(AbstractBuild<?, ?> build, Launcher launcher, BuildListener listener)
+                    throws InterruptedException, IOException {
+                String contents = CommonUtil.getContents(Constants.TESTNG_XML_REPORTER_LOG_OUTPUT);
+                build.getWorkspace().child("testng.xml").write(contents, "UTF-8");
+                return true;
+            }
+        });
 
         // run build
         FreeStyleBuild build = p.scheduleBuild2(0).get();
 
         // Compare output
-        String methodUrl =
-                build.getUrl()
-                        + PluginImpl.URL
-                        + "/org.example.test/ExampleIntegrationTest/FirstTest";
+        String methodUrl = build.getUrl() + PluginImpl.URL + "/org.example.test/ExampleIntegrationTest/FirstTest";
         HtmlPage page = r.createWebClient().goTo(methodUrl);
         HtmlElement reporterOutput = page.getHtmlElementById("reporter-output");
         String contents = reporterOutput.getTextContent();
@@ -308,29 +263,21 @@ public class MethodResultTest {
         p.getPublishersList().add(publisher);
         p.onCreatedFromScratch(); // to setup project action
 
-        p.getBuildersList()
-                .add(
-                        new TestBuilder() {
-                            @Override
-                            public boolean perform(
-                                    AbstractBuild<?, ?> build,
-                                    Launcher launcher,
-                                    BuildListener listener)
-                                    throws InterruptedException, IOException {
-                                String contents =
-                                        CommonUtil.getContents(Constants.TESTNG_XML_TESTNG);
-                                build.getWorkspace().child("testng.xml").write(contents, "UTF-8");
-                                return true;
-                            }
-                        });
+        p.getBuildersList().add(new TestBuilder() {
+            @Override
+            public boolean perform(AbstractBuild<?, ?> build, Launcher launcher, BuildListener listener)
+                    throws InterruptedException, IOException {
+                String contents = CommonUtil.getContents(Constants.TESTNG_XML_TESTNG);
+                build.getWorkspace().child("testng.xml").write(contents, "UTF-8");
+                return true;
+            }
+        });
 
         // run build
         FreeStyleBuild build = p.scheduleBuild2(0).get();
         TestNGResult testngResult =
                 (TestNGResult) build.getAction(AbstractTestResultAction.class).getResult();
-        TestResult methodResult =
-                testngResult.findCorrespondingResult(
-                        PluginImpl.URL + "/test/Test1/includedGroups_1");
+        TestResult methodResult = testngResult.findCorrespondingResult(PluginImpl.URL + "/test/Test1/includedGroups_1");
 
         // Compare output for a method
         String urlPrefix = build.getUrl() + PluginImpl.URL;
@@ -342,9 +289,7 @@ public class MethodResultTest {
         assertTrue(element.getAttribute("href").endsWith(urlPrefix + "/test/Test1"));
 
         // duration string
-        r.assertStringContains(
-                page.getHtmlElementById("report").getTextContent(),
-                methodResult.getDurationString());
+        r.assertStringContains(page.getHtmlElementById("report").getTextContent(), methodResult.getDurationString());
 
         // header containing method name
         element = (HtmlElement) page.getElementsByTagName("h1").get(0);
@@ -374,9 +319,7 @@ public class MethodResultTest {
         assertElementNotPresent(page, "exp-msg");
 
         // method run using two parameters
-        page =
-                r.createWebClient()
-                        .goTo(urlPrefix + "/test.dataprovider/Sample1Test/verifyNames_1/");
+        page = r.createWebClient().goTo(urlPrefix + "/test.dataprovider/Sample1Test/verifyNames_1/");
         element = (HtmlElement) page.getHtmlElementById("params");
         contents = element.getTextContent();
         // information about class and time taken
@@ -399,21 +342,15 @@ public class MethodResultTest {
         p.getPublishersList().add(publisher);
         p.onCreatedFromScratch(); // to setup project action
 
-        p.getBuildersList()
-                .add(
-                        new TestBuilder() {
-                            @Override
-                            public boolean perform(
-                                    AbstractBuild<?, ?> build,
-                                    Launcher launcher,
-                                    BuildListener listener)
-                                    throws InterruptedException, IOException {
-                                String contents =
-                                        CommonUtil.getContents(Constants.TESTNG_XML_DATAPROVIDER);
-                                build.getWorkspace().child("testng.xml").write(contents, "UTF-8");
-                                return true;
-                            }
-                        });
+        p.getBuildersList().add(new TestBuilder() {
+            @Override
+            public boolean perform(AbstractBuild<?, ?> build, Launcher launcher, BuildListener listener)
+                    throws InterruptedException, IOException {
+                String contents = CommonUtil.getContents(Constants.TESTNG_XML_DATAPROVIDER);
+                build.getWorkspace().child("testng.xml").write(contents, "UTF-8");
+                return true;
+            }
+        });
 
         // run build
         FreeStyleBuild build = p.scheduleBuild2(0).get();
@@ -445,9 +382,7 @@ public class MethodResultTest {
         element = page.getHtmlElementById("exp-msg");
         r.assertStringContains(element.getTextContent(), "(none)");
         element = page.getHtmlElementById("exp-st");
-        r.assertStringContains(
-                element.getTextContent(),
-                "org.jenkins.TestDataProvider.test(TestDataProvider.java:15)");
+        r.assertStringContains(element.getTextContent(), "org.jenkins.TestDataProvider.test(TestDataProvider.java:15)");
 
         // compare output for a dp method that passed
         page = wc.goTo(urlPrefix + "/org.jenkins/TestDataProvider/test_2/");
@@ -484,21 +419,15 @@ public class MethodResultTest {
         p.getPublishersList().add(publisher);
         p.onCreatedFromScratch(); // to setup project action
 
-        p.getBuildersList()
-                .add(
-                        new TestBuilder() {
-                            @Override
-                            public boolean perform(
-                                    AbstractBuild<?, ?> build,
-                                    Launcher launcher,
-                                    BuildListener listener)
-                                    throws InterruptedException, IOException {
-                                String contents =
-                                        CommonUtil.getContents(Constants.TESTNG_XML_INSTANCE_NAME);
-                                build.getWorkspace().child("testng.xml").write(contents, "UTF-8");
-                                return true;
-                            }
-                        });
+        p.getBuildersList().add(new TestBuilder() {
+            @Override
+            public boolean perform(AbstractBuild<?, ?> build, Launcher launcher, BuildListener listener)
+                    throws InterruptedException, IOException {
+                String contents = CommonUtil.getContents(Constants.TESTNG_XML_INSTANCE_NAME);
+                build.getWorkspace().child("testng.xml").write(contents, "UTF-8");
+                return true;
+            }
+        });
 
         // run build
         FreeStyleBuild build = p.scheduleBuild2(0).get();
@@ -506,8 +435,7 @@ public class MethodResultTest {
         // Compare output for a dp method that failed
         String urlPrefix = build.getUrl() + PluginImpl.URL;
         JenkinsRule.WebClient wc = r.createWebClient();
-        HtmlPage page =
-                wc.goTo(urlPrefix + "/testng.instancename/MyITestFactoryTest/factoryTest1/");
+        HtmlPage page = wc.goTo(urlPrefix + "/testng.instancename/MyITestFactoryTest/factoryTest1/");
 
         // method instance name information
         HtmlElement element = page.getHtmlElementById("inst-name");

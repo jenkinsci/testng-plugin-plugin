@@ -30,8 +30,7 @@ public class TestResultHistoryUtil {
         // Doesn't make sense to return a build that is still running.
         // We can compare results with a previous build that completed
         Run<?, ?> previousBuild = owner.getPreviousCompletedBuild();
-        if (previousBuild != null
-                && previousBuild.getAction(TestNGTestResultBuildAction.class) != null) {
+        if (previousBuild != null && previousBuild.getAction(TestNGTestResultBuildAction.class) != null) {
             return previousBuild.getAction(TestNGTestResultBuildAction.class).getResult();
         } else {
             return new TestNGResult();
@@ -68,19 +67,13 @@ public class TestResultHistoryUtil {
 
         return "<ul>"
                 + diff(prevTotalTestCount, tr.getTotalCount(), "Total Tests")
-                + diff(
-                        prevFailedConfigurationCount,
-                        tr.getFailedConfigCount(),
-                        "Failed Configurations")
+                + diff(prevFailedConfigurationCount, tr.getFailedConfigCount(), "Failed Configurations")
                 + printTestsUrls(tr.getFailedConfigs())
                 + diff(prevFailedTestCount, tr.getFailCount(), "Failed Tests")
                 + printTestsUrls(tr.getFailedTests())
                 + diff(prevSkippedTestCount, tr.getSkipCount(), "Skipped Tests")
                 + printTestsUrls(tr.getSkippedTests())
-                + diff(
-                        prevSkippedConfigurationCount,
-                        tr.getSkippedConfigCount(),
-                        "Skipped Configurations")
+                + diff(prevSkippedConfigurationCount, tr.getSkippedConfigCount(), "Skipped Configurations")
                 + printTestsUrls(tr.getSkippedConfigs())
                 + "</ul>";
     }

@@ -43,24 +43,22 @@ public class GraphHelper {
     /** Do not instantiate GraphHelper. */
     private GraphHelper() {}
 
-    public static void redirectWhenGraphUnsupported(StaplerResponse rsp, StaplerRequest req)
-            throws IOException {
+    public static void redirectWhenGraphUnsupported(StaplerResponse rsp, StaplerRequest req) throws IOException {
         // not available. send out error message
         rsp.sendRedirect2(req.getContextPath() + "/images/headless.png");
     }
 
     public static JFreeChart createChart(final StaplerRequest req, CategoryDataset dataset) {
-        final JFreeChart chart =
-                ChartFactory.createStackedAreaChart(
-                        null, // chart title
-                        null, // unused
-                        "Tests Count", // range axis label
-                        dataset, // data
-                        PlotOrientation.VERTICAL, // orientation
-                        true, // include legend
-                        true, // tooltips
-                        false // urls
-                        );
+        final JFreeChart chart = ChartFactory.createStackedAreaChart(
+                null, // chart title
+                null, // unused
+                "Tests Count", // range axis label
+                dataset, // data
+                PlotOrientation.VERTICAL, // orientation
+                true, // include legend
+                true, // tooltips
+                false // urls
+                );
 
         // NOW DO SOME OPTIONAL CUSTOMISATION OF THE CHART...
         final LegendTitle legend = chart.getLegend();
@@ -87,46 +85,35 @@ public class GraphHelper {
         final NumberAxis rangeAxis = (NumberAxis) plot.getRangeAxis();
         rangeAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
 
-        StackedAreaRenderer ar =
-                new StackedAreaRenderer2() {
-                    @Override
-                    public String generateURL(CategoryDataset dataset, int row, int column) {
-                        NumberOnlyBuildLabel label =
-                                (NumberOnlyBuildLabel) dataset.getColumnKey(column);
-                        String path = req.getParameter("rel");
-                        return (path == null ? "" : path)
-                                + label.getRun().getNumber()
-                                + "/"
-                                + PluginImpl.URL
-                                + "/";
-                    }
+        StackedAreaRenderer ar = new StackedAreaRenderer2() {
+            @Override
+            public String generateURL(CategoryDataset dataset, int row, int column) {
+                NumberOnlyBuildLabel label = (NumberOnlyBuildLabel) dataset.getColumnKey(column);
+                String path = req.getParameter("rel");
+                return (path == null ? "" : path) + label.getRun().getNumber() + "/" + PluginImpl.URL + "/";
+            }
 
-                    @Override
-                    public String generateToolTip(CategoryDataset dataset, int row, int column) {
-                        NumberOnlyBuildLabel label =
-                                (NumberOnlyBuildLabel) dataset.getColumnKey(column);
-                        TestNGTestResultBuildAction report =
-                                label.getRun().getAction(TestNGTestResultBuildAction.class);
-                        if (report == null) {
-                            // there are no testng results associated with this build
-                            return "";
-                        }
-                        switch (row) {
-                            case 0:
-                                return String.valueOf(report.getFailCount()) + " Failure(s)";
-                            case 1:
-                                return String.valueOf(
-                                                report.getTotalCount()
-                                                        - report.getFailCount()
-                                                        - report.getSkipCount())
-                                        + " Pass";
-                            case 2:
-                                return String.valueOf(report.getSkipCount()) + " Skip(s)";
-                            default:
-                                return "";
-                        }
-                    }
-                };
+            @Override
+            public String generateToolTip(CategoryDataset dataset, int row, int column) {
+                NumberOnlyBuildLabel label = (NumberOnlyBuildLabel) dataset.getColumnKey(column);
+                TestNGTestResultBuildAction report = label.getRun().getAction(TestNGTestResultBuildAction.class);
+                if (report == null) {
+                    // there are no testng results associated with this build
+                    return "";
+                }
+                switch (row) {
+                    case 0:
+                        return String.valueOf(report.getFailCount()) + " Failure(s)";
+                    case 1:
+                        return String.valueOf(report.getTotalCount() - report.getFailCount() - report.getSkipCount())
+                                + " Pass";
+                    case 2:
+                        return String.valueOf(report.getSkipCount()) + " Skip(s)";
+                    default:
+                        return "";
+                }
+            }
+        };
 
         plot.setRenderer(ar);
         ar.setSeriesPaint(0, ColorPalette.RED); // Failures
@@ -158,17 +145,16 @@ public class GraphHelper {
             final Map<NumberOnlyBuildLabel, String> statusMap,
             final String methodUrl) {
 
-        final JFreeChart chart =
-                ChartFactory.createBarChart(
-                        null, // chart title
-                        null, // unused
-                        "Duration (secs)", // range axis label
-                        dataset, // data
-                        PlotOrientation.VERTICAL, // orientation
-                        true, // include legend
-                        true, // tooltips
-                        true // urls
-                        );
+        final JFreeChart chart = ChartFactory.createBarChart(
+                null, // chart title
+                null, // unused
+                "Duration (secs)", // range axis label
+                dataset, // data
+                PlotOrientation.VERTICAL, // orientation
+                true, // include legend
+                true, // tooltips
+                true // urls
+                );
 
         // NOW DO SOME OPTIONAL CUSTOMISATION OF THE CHART...
         chart.setBackgroundPaint(Color.white);
@@ -193,61 +179,55 @@ public class GraphHelper {
         final NumberAxis rangeAxis = (NumberAxis) plot.getRangeAxis();
         rangeAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
 
-        BarRenderer br =
-                new BarRenderer() {
+        BarRenderer br = new BarRenderer() {
 
-                    Map<String, Paint> statusPaintMap = new HashMap<String, Paint>();
+            Map<String, Paint> statusPaintMap = new HashMap<String, Paint>();
 
-                    {
-                        statusPaintMap.put("PASS", ColorPalette.BLUE);
-                        statusPaintMap.put("SKIP", ColorPalette.YELLOW);
-                        statusPaintMap.put("FAIL", ColorPalette.RED);
-                    }
+            {
+                statusPaintMap.put("PASS", ColorPalette.BLUE);
+                statusPaintMap.put("SKIP", ColorPalette.YELLOW);
+                statusPaintMap.put("FAIL", ColorPalette.RED);
+            }
 
-                    /**
-                     * Returns the paint for an item. Overrides the default behavior inherited from
-                     * AbstractSeriesRenderer.
-                     *
-                     * @param row the series.
-                     * @param column the category.
-                     * @return The item color.
-                     */
-                    public Paint getItemPaint(final int row, final int column) {
-                        NumberOnlyBuildLabel label =
-                                (NumberOnlyBuildLabel) dataset.getColumnKey(column);
-                        Paint paint = statusPaintMap.get(statusMap.get(label));
-                        // when the status of test method is unknown, use gray color
-                        return paint == null ? Color.gray : paint;
-                    }
-                };
+            /**
+             * Returns the paint for an item. Overrides the default behavior inherited from
+             * AbstractSeriesRenderer.
+             *
+             * @param row the series.
+             * @param column the category.
+             * @return The item color.
+             */
+            public Paint getItemPaint(final int row, final int column) {
+                NumberOnlyBuildLabel label = (NumberOnlyBuildLabel) dataset.getColumnKey(column);
+                Paint paint = statusPaintMap.get(statusMap.get(label));
+                // when the status of test method is unknown, use gray color
+                return paint == null ? Color.gray : paint;
+            }
+        };
 
-        br.setBaseToolTipGenerator(
-                new CategoryToolTipGenerator() {
-                    public String generateToolTip(CategoryDataset dataset, int row, int column) {
-                        NumberOnlyBuildLabel label =
-                                (NumberOnlyBuildLabel) dataset.getColumnKey(column);
-                        if ("UNKNOWN".equals(statusMap.get(label))) {
-                            return "unknown";
-                        }
-                        // values are in seconds
-                        float value = dataset.getValue(row, column).floatValue();
-                        DecimalFormat df = new DecimalFormat("0.000");
-                        return df.format(value) + " secs";
-                    }
-                });
+        br.setBaseToolTipGenerator(new CategoryToolTipGenerator() {
+            public String generateToolTip(CategoryDataset dataset, int row, int column) {
+                NumberOnlyBuildLabel label = (NumberOnlyBuildLabel) dataset.getColumnKey(column);
+                if ("UNKNOWN".equals(statusMap.get(label))) {
+                    return "unknown";
+                }
+                // values are in seconds
+                float value = dataset.getValue(row, column).floatValue();
+                DecimalFormat df = new DecimalFormat("0.000");
+                return df.format(value) + " secs";
+            }
+        });
 
-        br.setBaseItemURLGenerator(
-                new CategoryURLGenerator() {
-                    public String generateURL(CategoryDataset dataset, int series, int category) {
-                        NumberOnlyBuildLabel label =
-                                (NumberOnlyBuildLabel) dataset.getColumnKey(category);
-                        if ("UNKNOWN".equals(statusMap.get(label))) {
-                            // no link when method result doesn't exist
-                            return null;
-                        }
-                        return getUpUrl(label.getRun()) + label.getRun().getNumber() + methodUrl;
-                    }
-                });
+        br.setBaseItemURLGenerator(new CategoryURLGenerator() {
+            public String generateURL(CategoryDataset dataset, int series, int category) {
+                NumberOnlyBuildLabel label = (NumberOnlyBuildLabel) dataset.getColumnKey(category);
+                if ("UNKNOWN".equals(statusMap.get(label))) {
+                    // no link when method result doesn't exist
+                    return null;
+                }
+                return getUpUrl(label.getRun()) + label.getRun().getNumber() + methodUrl;
+            }
+        });
 
         br.setItemMargin(0.0);
         br.setMinimumBarLength(5);

@@ -174,11 +174,7 @@ public class TestNGResult extends BaseResult implements Serializable {
                         + "totalTests=%d, "
                         + "failedTests=%d, skippedTests=%d, failedConfigs=%d, "
                         + "skippedConfigs=%d}", // name,
-                passCount + failCount + skipCount,
-                failCount,
-                skipCount,
-                failedConfigCount,
-                skippedConfigCount);
+                passCount + failCount + skipCount, failCount, skipCount, failedConfigCount, skippedConfigCount);
     }
 
     /** Updates the calculated fields */

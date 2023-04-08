@@ -63,11 +63,8 @@ public class ClassResult extends BaseResult {
             if (this.testRunMap.containsKey(methodTestRunId)) {
                 group = this.testRunMap.get(methodTestRunId);
             } else {
-                group =
-                        new GroupedTestRun(
-                                methodTestRunId,
-                                methodResult.getParentTestName(),
-                                methodResult.getParentSuiteName());
+                group = new GroupedTestRun(
+                        methodTestRunId, methodResult.getParentTestName(), methodResult.getParentSuiteName());
                 this.testRunMap.put(methodTestRunId, group);
             }
 

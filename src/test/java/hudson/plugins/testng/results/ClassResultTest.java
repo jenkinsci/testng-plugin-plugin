@@ -37,7 +37,8 @@ import org.jvnet.hudson.test.TestBuilder;
  */
 public class ClassResultTest {
 
-    @Rule public JenkinsRule r = new JenkinsRule();
+    @Rule
+    public JenkinsRule r = new JenkinsRule();
 
     /**
      * Test using precheckins.legacyops
@@ -57,28 +58,21 @@ public class ClassResultTest {
         p.getPublishersList().add(publisher);
         p.onCreatedFromScratch(); // to setup project action
 
-        p.getBuildersList()
-                .add(
-                        new TestBuilder() {
-                            @Override
-                            public boolean perform(
-                                    AbstractBuild<?, ?> build,
-                                    Launcher launcher,
-                                    BuildListener listener)
-                                    throws InterruptedException, IOException {
-                                String contents =
-                                        CommonUtil.getContents(Constants.TESTNG_XML_PRECHECKINS);
-                                build.getWorkspace().child("testng.xml").write(contents, "UTF-8");
-                                return true;
-                            }
-                        });
+        p.getBuildersList().add(new TestBuilder() {
+            @Override
+            public boolean perform(AbstractBuild<?, ?> build, Launcher launcher, BuildListener listener)
+                    throws InterruptedException, IOException {
+                String contents = CommonUtil.getContents(Constants.TESTNG_XML_PRECHECKINS);
+                build.getWorkspace().child("testng.xml").write(contents, "UTF-8");
+                return true;
+            }
+        });
 
         // run build
         FreeStyleBuild build = p.scheduleBuild2(0).get();
         TestNGResult testngResult =
                 (TestNGResult) build.getAction(AbstractTestResultAction.class).getResult();
-        TestResult classResult =
-                testngResult.findCorrespondingResult(PluginImpl.URL + "/precheckins/LegacyOps");
+        TestResult classResult = testngResult.findCorrespondingResult(PluginImpl.URL + "/precheckins/LegacyOps");
         Map<String, GroupedTestRun> testRunMap = ((ClassResult) classResult).getTestRunMap();
 
         // Get page
@@ -86,13 +80,11 @@ public class ClassResultTest {
         HtmlPage page = r.createWebClient().goTo(urlPrefix + "/precheckins/LegacyOps/");
 
         List<HtmlElement> elements =
-                DomNodeUtil.selectNodes(
-                        page, "//div[starts-with(@id, 'run-')]/span[@id='run-info']");
+                DomNodeUtil.selectNodes(page, "//div[starts-with(@id, 'run-')]/span[@id='run-info']");
 
         assertEquals(testRunMap.values().size(), elements.size());
 
-        Set<String> values =
-                new HashSet<String>(); // will verify that testName|suiteName are not repeated
+        Set<String> values = new HashSet<String>(); // will verify that testName|suiteName are not repeated
         for (HtmlElement element : elements) {
             String content = element.getTextContent();
             content = content.replace("(from test '", "");
@@ -108,8 +100,7 @@ public class ClassResultTest {
                     break;
                 }
             }
-            assertTrue(
-                    "Failed to find testname " + testName + " and suitename " + suiteName, found);
+            assertTrue("Failed to find testname " + testName + " and suitename " + suiteName, found);
             values.add(suiteName + "|" + testName);
         }
 
@@ -172,28 +163,21 @@ public class ClassResultTest {
         p.getPublishersList().add(publisher);
         p.onCreatedFromScratch(); // to setup project action
 
-        p.getBuildersList()
-                .add(
-                        new TestBuilder() {
-                            @Override
-                            public boolean perform(
-                                    AbstractBuild<?, ?> build,
-                                    Launcher launcher,
-                                    BuildListener listener)
-                                    throws InterruptedException, IOException {
-                                String contents =
-                                        CommonUtil.getContents(Constants.TESTNG_XML_TESTNG);
-                                build.getWorkspace().child("testng.xml").write(contents, "UTF-8");
-                                return true;
-                            }
-                        });
+        p.getBuildersList().add(new TestBuilder() {
+            @Override
+            public boolean perform(AbstractBuild<?, ?> build, Launcher launcher, BuildListener listener)
+                    throws InterruptedException, IOException {
+                String contents = CommonUtil.getContents(Constants.TESTNG_XML_TESTNG);
+                build.getWorkspace().child("testng.xml").write(contents, "UTF-8");
+                return true;
+            }
+        });
 
         // run build
         FreeStyleBuild build = p.scheduleBuild2(0).get();
         TestNGResult testngResult =
                 (TestNGResult) build.getAction(AbstractTestResultAction.class).getResult();
-        TestResult classResult =
-                testngResult.findCorrespondingResult(PluginImpl.URL + "/test/CommandLineTest");
+        TestResult classResult = testngResult.findCorrespondingResult(PluginImpl.URL + "/test/CommandLineTest");
         Map<String, GroupedTestRun> testRunMap = ((ClassResult) classResult).getTestRunMap();
 
         // Get page
@@ -201,25 +185,19 @@ public class ClassResultTest {
         HtmlPage page = r.createWebClient().goTo(urlPrefix + "/test/CommandLineTest");
 
         List<HtmlElement> elements =
-                DomNodeUtil.selectNodes(
-                        page, "//div[starts-with(@id, 'run-')]/table[@id='config']");
+                DomNodeUtil.selectNodes(page, "//div[starts-with(@id, 'run-')]/table[@id='config']");
         // there are no configuration methods
         assertEquals(0, elements.size());
         r.assertStringContains(
-                page.getElementById("run-0").getTextContent(),
-                "No Configuration method was found in this class");
+                page.getElementById("run-0").getTextContent(), "No Configuration method was found in this class");
 
         // use first test with show more section
-        elements =
-                DomNodeUtil.selectNodes(
-                        page,
-                        "//div[starts-with(@id, 'run-')]/table[@id='test']/tbody/tr/td/div[@id='junitParsing_1']");
+        elements = DomNodeUtil.selectNodes(
+                page, "//div[starts-with(@id, 'run-')]/table[@id='test']/tbody/tr/td/div[@id='junitParsing_1']");
         assertEquals(1, elements.size());
         HtmlElement showMore = elements.get(0);
-        elements =
-                DomNodeUtil.selectNodes(
-                        page,
-                        "//div[starts-with(@id, 'run-')]/table[@id='test']/tbody/tr/td/div[@id='junitParsing_2']");
+        elements = DomNodeUtil.selectNodes(
+                page, "//div[starts-with(@id, 'run-')]/table[@id='test']/tbody/tr/td/div[@id='junitParsing_2']");
         assertEquals(1, elements.size());
         HtmlElement moreSection = elements.get(0);
 

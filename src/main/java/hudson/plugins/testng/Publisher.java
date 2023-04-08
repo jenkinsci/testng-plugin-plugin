@@ -44,7 +44,8 @@ public class Publisher extends Recorder implements SimpleBuildStep {
     // should failed builds be included in graphs or not
     private boolean showFailedBuilds = false;
     // v1.11 - marked transient and here just for backward compatibility
-    @Deprecated public transient boolean unstableOnSkippedTests;
+    @Deprecated
+    public transient boolean unstableOnSkippedTests;
     // number of skips that will trigger "Unstable"
     private Integer unstableSkips = 100;
     // number of fails that will trigger "Unstable"
@@ -58,9 +59,7 @@ public class Publisher extends Recorder implements SimpleBuildStep {
     /** SECURITY-2788 - do not allow unescaped HTML in description or exception message */
     /* Log a warning if the value is set to true */
     private static final boolean ALLOW_UNESCAPED_HTML =
-            Boolean.valueOf(
-                    System.getProperty(
-                            "hudson.plugins.testng.Publisher.allowUnescapedHTML", "false"));
+            Boolean.valueOf(System.getProperty("hudson.plugins.testng.Publisher.allowUnescapedHTML", "false"));
 
     private static boolean allowUnescapedHTML = ALLOW_UNESCAPED_HTML;
 
@@ -82,7 +81,8 @@ public class Publisher extends Recorder implements SimpleBuildStep {
         }
     }
 
-    @Extension public static final DescriptorImpl DESCRIPTOR = new DescriptorImpl();
+    @Extension
+    public static final DescriptorImpl DESCRIPTOR = new DescriptorImpl();
 
     @DataBoundConstructor
     public Publisher() {}
@@ -205,8 +205,7 @@ public class Publisher extends Recorder implements SimpleBuildStep {
 
     /** {@inheritDoc} */
     @Override
-    public void perform(
-            Run<?, ?> build, FilePath workspace, Launcher launcher, final TaskListener listener)
+    public void perform(Run<?, ?> build, FilePath workspace, Launcher launcher, final TaskListener listener)
             throws InterruptedException, IOException {
 
         PrintStream logger = listener.getLogger();
@@ -227,8 +226,7 @@ public class Publisher extends Recorder implements SimpleBuildStep {
         }
 
         logger.println("TestNG Reports Processing: START");
-        logger.println(
-                "Looking for TestNG results report in workspace using pattern: " + pathsPattern);
+        logger.println("Looking for TestNG results report in workspace using pattern: " + pathsPattern);
         FilePath[] paths = locateReports(workspace, pathsPattern);
 
         if (paths.length == 0) {
@@ -263,66 +261,55 @@ public class Publisher extends Recorder implements SimpleBuildStep {
         if (results.getTestList().size() > 0) {
             // create an individual report for all of the results and add it to the build
             build.addAction(
-                    new TestNGTestResultBuildAction(
-                            results, escapeTestDescp, escapeExceptionMsg, showFailedBuilds));
+                    new TestNGTestResultBuildAction(results, escapeTestDescp, escapeExceptionMsg, showFailedBuilds));
             if (failureOnFailedTestConfig && results.getFailedConfigCount() > 0) {
                 logger.println("Failed configuration methods found. Marking build as FAILURE.");
                 build.setResult(Result.FAILURE);
             } else {
                 if (thresholdMode == 1) { // number of tests
                     if (results.getFailCount() > failedFails) {
-                        logger.println(
-                                String.format(
-                                        "%d tests failed, which exceeded threshold of %d. Marking build as FAILURE",
-                                        results.getFailCount(), failedFails));
+                        logger.println(String.format(
+                                "%d tests failed, which exceeded threshold of %d. Marking build as FAILURE",
+                                results.getFailCount(), failedFails));
                         build.setResult(Result.FAILURE);
                     } else if (results.getSkipCount() > failedSkips) {
-                        logger.println(
-                                String.format(
-                                        "%d tests were skipped, which exceeded threshold of %d. Marking build as FAILURE",
-                                        results.getSkipCount(), failedSkips));
+                        logger.println(String.format(
+                                "%d tests were skipped, which exceeded threshold of %d. Marking build as FAILURE",
+                                results.getSkipCount(), failedSkips));
                         build.setResult(Result.FAILURE);
                     } else if (results.getFailCount() > unstableFails) {
-                        logger.println(
-                                String.format(
-                                        "%d tests failed, which exceeded threshold of %d. Marking build as UNSTABLE",
-                                        results.getFailCount(), unstableFails));
+                        logger.println(String.format(
+                                "%d tests failed, which exceeded threshold of %d. Marking build as UNSTABLE",
+                                results.getFailCount(), unstableFails));
                         build.setResult(Result.UNSTABLE);
                     } else if (results.getSkipCount() > unstableSkips) {
-                        logger.println(
-                                String.format(
-                                        "%d tests were skipped, which exceeded threshold of %d. Marking build as UNSTABLE",
-                                        results.getSkipCount(), unstableSkips));
+                        logger.println(String.format(
+                                "%d tests were skipped, which exceeded threshold of %d. Marking build as UNSTABLE",
+                                results.getSkipCount(), unstableSkips));
                         build.setResult(Result.UNSTABLE);
                     }
                 } else if (thresholdMode == 2) { // percentage of tests
-                    float failedPercent =
-                            100 * results.getFailCount() / (float) results.getTotalCount();
-                    float skipPercent =
-                            100 * results.getSkipCount() / (float) results.getTotalCount();
+                    float failedPercent = 100 * results.getFailCount() / (float) results.getTotalCount();
+                    float skipPercent = 100 * results.getSkipCount() / (float) results.getTotalCount();
                     if (failedPercent > failedFails) {
-                        logger.println(
-                                String.format(
-                                        "%f%% of tests failed, which exceeded threshold of %d%%. Marking build as FAILURE",
-                                        failedPercent, failedFails));
+                        logger.println(String.format(
+                                "%f%% of tests failed, which exceeded threshold of %d%%. Marking build as FAILURE",
+                                failedPercent, failedFails));
                         build.setResult(Result.FAILURE);
                     } else if (skipPercent > failedSkips) {
-                        logger.println(
-                                String.format(
-                                        "%f%% of tests were skipped, which exceeded threshold of %d%%. Marking build as FAILURE",
-                                        skipPercent, failedSkips));
+                        logger.println(String.format(
+                                "%f%% of tests were skipped, which exceeded threshold of %d%%. Marking build as FAILURE",
+                                skipPercent, failedSkips));
                         build.setResult(Result.FAILURE);
                     } else if (failedPercent > unstableFails) {
-                        logger.println(
-                                String.format(
-                                        "%f%% of tests failed, which exceeded threshold of %d%%. Marking build as UNSTABLE",
-                                        failedPercent, unstableFails));
+                        logger.println(String.format(
+                                "%f%% of tests failed, which exceeded threshold of %d%%. Marking build as UNSTABLE",
+                                failedPercent, unstableFails));
                         build.setResult(Result.UNSTABLE);
                     } else if (skipPercent > unstableSkips) {
-                        logger.println(
-                                String.format(
-                                        "%f%% of tests were skipped, which exceeded threshold of %d%%. Marking build as UNSTABLE",
-                                        skipPercent, unstableSkips));
+                        logger.println(String.format(
+                                "%f%% of tests were skipped, which exceeded threshold of %d%%. Marking build as UNSTABLE",
+                                skipPercent, unstableSkips));
                         build.setResult(Result.UNSTABLE);
                     }
                 } else {
@@ -425,9 +412,7 @@ public class Publisher extends Recorder implements SimpleBuildStep {
                     filePathList.add(report);
                 } else {
                     logger.println(
-                            report.getName()
-                                    + " was last modified before "
-                                    + "this build started. Ignoring it.");
+                            report.getName() + " was last modified before " + "this build started. Ignoring it.");
                 }
             } catch (IOException e) {
                 // just log the exception
@@ -488,9 +473,8 @@ public class Publisher extends Recorder implements SimpleBuildStep {
                     return FormValidation.error("Value should be greater than 0");
                 }
                 if (val > 100) {
-                    return FormValidation.ok(
-                            "NOTE: value greater than 100 only make sense when Threshold Mode "
-                                    + "is set to 'Number of Tests'");
+                    return FormValidation.ok("NOTE: value greater than 100 only make sense when Threshold Mode "
+                            + "is set to 'Number of Tests'");
                 }
                 return FormValidation.ok();
             } catch (NumberFormatException ex) {

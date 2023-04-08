@@ -130,8 +130,7 @@ public abstract class BaseResult extends TabulatedResult implements ModelObject,
             for (TestResult result : this.getChildren()) {
                 if (sepIdx < 0 && childId.equals(result.getSafeName())) {
                     return result;
-                } else if (sepIdx > 0
-                        && result.getSafeName().equals(childId.substring(0, sepIdx))) {
+                } else if (sepIdx > 0 && result.getSafeName().equals(childId.substring(0, sepIdx))) {
                     return result.findCorrespondingResult(childId);
                 }
             }

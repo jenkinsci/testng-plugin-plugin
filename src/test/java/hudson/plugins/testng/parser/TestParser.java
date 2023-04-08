@@ -19,7 +19,8 @@ public class TestParser {
         URL resource = CommonUtil.getResource(Constants.TESTNG_XML_PRECHECKINS);
         Assert.assertNotNull(resource);
         TestNGResult results = CommonUtil.getResults(resource.getFile());
-        Assert.assertFalse("Collection shouldn't have been empty", results.getTestList().isEmpty());
+        Assert.assertFalse(
+                "Collection shouldn't have been empty", results.getTestList().isEmpty());
     }
 
     @Test
@@ -27,12 +28,14 @@ public class TestParser {
         URL resource = CommonUtil.getResource(Constants.TESTNG_XML_SAME_TEST_NAME);
         Assert.assertNotNull(resource);
         TestNGResult results = CommonUtil.getResults(resource.getFile());
-        Assert.assertFalse("Collection shouldn't have been empty", results.getTestList().isEmpty());
+        Assert.assertFalse(
+                "Collection shouldn't have been empty", results.getTestList().isEmpty());
         Assert.assertEquals(2, results.getTestList().size());
         results.tally();
         Assert.assertEquals(1, results.getPackageNames().size());
         Assert.assertEquals(
-                3, results.getPackageMap().values().iterator().next().getChildren().size());
+                3,
+                results.getPackageMap().values().iterator().next().getChildren().size());
         Assert.assertEquals(4, results.getPassCount());
         Assert.assertEquals(4, results.getPassedTests().size());
     }
@@ -42,7 +45,8 @@ public class TestParser {
         URL resource = CommonUtil.getResource(Constants.TESTNG_XML_DATAPROVIDER);
         Assert.assertNotNull(resource);
         TestNGResult results = CommonUtil.getResults(resource.getFile());
-        Assert.assertFalse("Collection shouldn't have been empty", results.getTestList().isEmpty());
+        Assert.assertFalse(
+                "Collection shouldn't have been empty", results.getTestList().isEmpty());
 
         // This test assumes that there is only 1 package in
         // sample-testng-dp-result that contains tests that add to 12 ms
@@ -66,17 +70,15 @@ public class TestParser {
 
     @Test
     public void parseTestNG() {
-        TestNGResult results =
-                CommonUtil.getResults(
-                        CommonUtil.getResource(Constants.TESTNG_XML_TESTNG).getFile());
+        TestNGResult results = CommonUtil.getResults(
+                CommonUtil.getResource(Constants.TESTNG_XML_TESTNG).getFile());
         results.tally();
     }
 
     @Test
     public void testParseEmptyException() {
-        TestNGResult results =
-                CommonUtil.getResults(
-                        CommonUtil.getResource(Constants.TESTNG_XML_EMPTY_EXCEPTION).getFile());
+        TestNGResult results = CommonUtil.getResults(
+                CommonUtil.getResource(Constants.TESTNG_XML_EMPTY_EXCEPTION).getFile());
         results.tally();
         Assert.assertEquals(1, results.getPassCount());
         MethodResult mr = results.getPassedTests().get(0);
@@ -99,12 +101,14 @@ public class TestParser {
         URL resource = TestParser.class.getClassLoader().getResource(filename);
         Assert.assertNotNull(resource);
         TestNGResult results = CommonUtil.getResults(resource.getFile());
-        Assert.assertFalse("Collection shouldn't have been empty", results.getTestList().isEmpty());
+        Assert.assertFalse(
+                "Collection shouldn't have been empty", results.getTestList().isEmpty());
         Assert.assertEquals(1, results.getTestList().size());
         results.tally();
         Assert.assertEquals(1, results.getPackageNames().size());
         Assert.assertEquals(
-                1, results.getPackageMap().values().iterator().next().getChildren().size());
+                1,
+                results.getPackageMap().values().iterator().next().getChildren().size());
         Assert.assertEquals(1, results.getPassCount());
         Assert.assertEquals(1, results.getPassedTests().size());
         Assert.assertEquals(1, results.getFailedTests().size());

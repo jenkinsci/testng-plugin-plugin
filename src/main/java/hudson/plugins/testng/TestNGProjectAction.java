@@ -32,10 +32,7 @@ public class TestNGProjectAction extends TestResultProjectAction implements Prom
     private transient boolean showFailedBuilds;
 
     public TestNGProjectAction(
-            Job<?, ?> project,
-            boolean escapeTestDescp,
-            boolean escapeExceptionMsg,
-            boolean showFailedBuilds) {
+            Job<?, ?> project, boolean escapeTestDescp, boolean escapeExceptionMsg, boolean showFailedBuilds) {
         super(project);
         if (Publisher.getAllowUnescapedHTML()) {
             this.escapeExceptionMsg = escapeExceptionMsg;
@@ -198,19 +195,14 @@ public class TestNGProjectAction extends TestResultProjectAction implements Prom
         return null;
     }
 
-    protected void populateDataSetBuilder(
-            DataSetBuilder<String, ChartUtil.NumberOnlyBuildLabel> dataset) {
+    protected void populateDataSetBuilder(DataSetBuilder<String, ChartUtil.NumberOnlyBuildLabel> dataset) {
         if (!(job instanceof LazyBuildMixIn.LazyLoadingJob)) {
             return;
         }
 
         // cf. AbstractTestResultAction.getPreviousResult(Class, false)
-        SortedMap<Integer, Run<?, ?>> loadedBuilds =
-                (SortedMap<Integer, Run<?, ?>>)
-                        ((LazyLoadingJob<?, ?>) job)
-                                .getLazyBuildMixIn()
-                                ._getRuns()
-                                .getLoadedBuilds();
+        SortedMap<Integer, Run<?, ?>> loadedBuilds = (SortedMap<Integer, Run<?, ?>>)
+                ((LazyLoadingJob<?, ?>) job).getLazyBuildMixIn()._getRuns().getLoadedBuilds();
         for (Run<?, ?> build : loadedBuilds.values()) {
             ChartUtil.NumberOnlyBuildLabel label = new ChartUtil.NumberOnlyBuildLabel(build);
             TestNGTestResultBuildAction action = build.getAction(getBuildActionClass());
@@ -227,10 +219,7 @@ public class TestNGProjectAction extends TestResultProjectAction implements Prom
             }
 
             if (action != null) {
-                dataset.add(
-                        action.getTotalCount() - action.getFailCount() - action.getSkipCount(),
-                        "Passed",
-                        label);
+                dataset.add(action.getTotalCount() - action.getFailCount() - action.getSkipCount(), "Passed", label);
                 dataset.add(action.getFailCount(), "Failed", label);
                 dataset.add(action.getSkipCount(), "Skipped", label);
             }

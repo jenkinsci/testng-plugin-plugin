@@ -34,7 +34,8 @@ import org.jvnet.hudson.test.TestBuilder;
  */
 public class PackageResultTest {
 
-    @Rule public JenkinsRule r = new JenkinsRule();
+    @Rule
+    public JenkinsRule r = new JenkinsRule();
 
     /**
      * Test using precheckins
@@ -53,36 +54,27 @@ public class PackageResultTest {
         p.getPublishersList().add(publisher);
         p.onCreatedFromScratch(); // to setup project action
 
-        p.getBuildersList()
-                .add(
-                        new TestBuilder() {
-                            @Override
-                            public boolean perform(
-                                    AbstractBuild<?, ?> build,
-                                    Launcher launcher,
-                                    BuildListener listener)
-                                    throws InterruptedException, IOException {
-                                String contents =
-                                        CommonUtil.getContents(Constants.TESTNG_XML_PRECHECKINS);
-                                build.getWorkspace().child("testng.xml").write(contents, "UTF-8");
-                                return true;
-                            }
-                        });
+        p.getBuildersList().add(new TestBuilder() {
+            @Override
+            public boolean perform(AbstractBuild<?, ?> build, Launcher launcher, BuildListener listener)
+                    throws InterruptedException, IOException {
+                String contents = CommonUtil.getContents(Constants.TESTNG_XML_PRECHECKINS);
+                build.getWorkspace().child("testng.xml").write(contents, "UTF-8");
+                return true;
+            }
+        });
 
         // run build
         FreeStyleBuild build = p.scheduleBuild2(0).get();
         TestNGResult testngResult =
                 (TestNGResult) build.getAction(AbstractTestResultAction.class).getResult();
-        PackageResult pkgResult =
-                (PackageResult)
-                        testngResult.findCorrespondingResult(PluginImpl.URL + "/precheckins");
+        PackageResult pkgResult = (PackageResult) testngResult.findCorrespondingResult(PluginImpl.URL + "/precheckins");
 
         // Get page
         String urlPrefix = build.getUrl() + PluginImpl.URL;
         HtmlPage page = r.createWebClient().goTo(urlPrefix + "/precheckins");
 
-        List<HtmlElement> elements =
-                DomNodeUtil.selectNodes(page, "//table[@id='allClasses']/tbody/tr/td/a");
+        List<HtmlElement> elements = DomNodeUtil.selectNodes(page, "//table[@id='allClasses']/tbody/tr/td/a");
 
         // ensure correct number of classes is displayed
         assertEquals(pkgResult.getChildren().size(), elements.size());
@@ -114,9 +106,7 @@ public class PackageResultTest {
         HtmlElement divShowAllLink = page.getHtmlElementById("showAllLink");
         assertNotNull(divShowAllLink);
         assertEquals(
-                "Showing only first "
-                        + PackageResult.MAX_EXEC_MTHD_LIST_SIZE
-                        + " test methods. Click to see all",
+                "Showing only first " + PackageResult.MAX_EXEC_MTHD_LIST_SIZE + " test methods. Click to see all",
                 divShowAllLink.getTextContent());
 
         elements = DomNodeUtil.selectNodes(page, "//tbody[@id='sortedMethods']/tr");
@@ -173,22 +163,15 @@ public class PackageResultTest {
         p.getPublishersList().add(publisher);
         p.onCreatedFromScratch(); // to setup project action
 
-        p.getBuildersList()
-                .add(
-                        new TestBuilder() {
-                            @Override
-                            public boolean perform(
-                                    AbstractBuild<?, ?> build,
-                                    Launcher launcher,
-                                    BuildListener listener)
-                                    throws InterruptedException, IOException {
-                                String contents =
-                                        CommonUtil.getContents(
-                                                Constants.TESTNG_XML_EMPTY_EXCEPTION);
-                                build.getWorkspace().child("testng.xml").write(contents, "UTF-8");
-                                return true;
-                            }
-                        });
+        p.getBuildersList().add(new TestBuilder() {
+            @Override
+            public boolean perform(AbstractBuild<?, ?> build, Launcher launcher, BuildListener listener)
+                    throws InterruptedException, IOException {
+                String contents = CommonUtil.getContents(Constants.TESTNG_XML_EMPTY_EXCEPTION);
+                build.getWorkspace().child("testng.xml").write(contents, "UTF-8");
+                return true;
+            }
+        });
 
         // run build
         FreeStyleBuild build = p.scheduleBuild2(0).get();

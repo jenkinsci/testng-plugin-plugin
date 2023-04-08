@@ -29,7 +29,8 @@ import org.jvnet.hudson.test.TestBuilder;
  */
 public class TestNGProjectActionTest {
 
-    @Rule public JenkinsRule r = new JenkinsRule();
+    @Rule
+    public JenkinsRule r = new JenkinsRule();
 
     @Before
     public void allowUnescapedHTML() {
@@ -63,22 +64,16 @@ public class TestNGProjectActionTest {
         p.getPublishersList().add(publisher);
         p.onCreatedFromScratch(); // to setup project action
 
-        p.getBuildersList()
-                .add(
-                        new TestBuilder() {
-                            @Override
-                            public boolean perform(
-                                    AbstractBuild<?, ?> build,
-                                    Launcher launcher,
-                                    BuildListener listener)
-                                    throws InterruptedException, IOException {
-                                // any testng xml will do
-                                String contents =
-                                        CommonUtil.getContents(Constants.TESTNG_XML_EXP_MSG_XML);
-                                build.getWorkspace().child("some.xml").write(contents, "UTF-8");
-                                return true;
-                            }
-                        });
+        p.getBuildersList().add(new TestBuilder() {
+            @Override
+            public boolean perform(AbstractBuild<?, ?> build, Launcher launcher, BuildListener listener)
+                    throws InterruptedException, IOException {
+                // any testng xml will do
+                String contents = CommonUtil.getContents(Constants.TESTNG_XML_EXP_MSG_XML);
+                build.getWorkspace().child("some.xml").write(contents, "UTF-8");
+                return true;
+            }
+        });
 
         // run build
         FreeStyleBuild build = p.scheduleBuild2(0).get();
@@ -87,15 +82,14 @@ public class TestNGProjectActionTest {
         Assert.assertNotNull(build.getAction(AbstractTestResultAction.class));
         TestResult testResult;
         Assert.assertNotNull(
-                testResult =
-                        (TestResult) build.getAction(AbstractTestResultAction.class).getResult());
+                testResult = (TestResult)
+                        build.getAction(AbstractTestResultAction.class).getResult());
         Assert.assertTrue(testResult.getTotalCount() > 0);
 
         // assert on project action
         TestNGProjectAction projAction;
         Assert.assertNotNull(projAction = build.getProject().getAction(TestNGProjectAction.class));
-        Assert.assertFalse(
-                projAction.getEscapeTestDescp()); // Relies on SECURITY-2788 escape hatch being open
+        Assert.assertFalse(projAction.getEscapeTestDescp()); // Relies on SECURITY-2788 escape hatch being open
         Assert.assertTrue(projAction.getEscapeExceptionMsg());
         Assert.assertSame(testResult, projAction.getLastCompletedBuildAction().getResult());
 
@@ -113,22 +107,16 @@ public class TestNGProjectActionTest {
         p.getPublishersList().add(publisher);
         p.onCreatedFromScratch(); // to setup project action
 
-        p.getBuildersList()
-                .add(
-                        new TestBuilder() {
-                            @Override
-                            public boolean perform(
-                                    AbstractBuild<?, ?> build,
-                                    Launcher launcher,
-                                    BuildListener listener)
-                                    throws InterruptedException, IOException {
-                                // any testng xml will do
-                                String contents =
-                                        CommonUtil.getContents(Constants.TESTNG_XML_EXP_MSG_XML);
-                                build.getWorkspace().child("some.xml").write(contents, "UTF-8");
-                                return true;
-                            }
-                        });
+        p.getBuildersList().add(new TestBuilder() {
+            @Override
+            public boolean perform(AbstractBuild<?, ?> build, Launcher launcher, BuildListener listener)
+                    throws InterruptedException, IOException {
+                // any testng xml will do
+                String contents = CommonUtil.getContents(Constants.TESTNG_XML_EXP_MSG_XML);
+                build.getWorkspace().child("some.xml").write(contents, "UTF-8");
+                return true;
+            }
+        });
 
         // run build
         int buildNumber = 5;
@@ -157,8 +145,8 @@ public class TestNGProjectActionTest {
                 (buildNumber - buildsToRemove.length), dataSetBuilder.build().getColumnCount());
     }
 
-    private FreeStyleProject runNewProjectWithTestNGResults(
-            boolean escapeTestDescp, boolean escapeExceptionMsg) throws Exception {
+    private FreeStyleProject runNewProjectWithTestNGResults(boolean escapeTestDescp, boolean escapeExceptionMsg)
+            throws Exception {
         FreeStyleProject project = r.createFreeStyleProject();
         Publisher publisher = new Publisher();
         publisher.setReportFilenamePattern("some.xml");
@@ -167,22 +155,16 @@ public class TestNGProjectActionTest {
         project.getPublishersList().add(publisher);
         project.onCreatedFromScratch(); // to setup project action
 
-        project.getBuildersList()
-                .add(
-                        new TestBuilder() {
-                            @Override
-                            public boolean perform(
-                                    AbstractBuild<?, ?> build,
-                                    Launcher launcher,
-                                    BuildListener listener)
-                                    throws InterruptedException, IOException {
-                                // any testng xml will do
-                                String contents =
-                                        CommonUtil.getContents(Constants.TESTNG_XML_EXP_MSG_XML);
-                                build.getWorkspace().child("some.xml").write(contents, "UTF-8");
-                                return true;
-                            }
-                        });
+        project.getBuildersList().add(new TestBuilder() {
+            @Override
+            public boolean perform(AbstractBuild<?, ?> build, Launcher launcher, BuildListener listener)
+                    throws InterruptedException, IOException {
+                // any testng xml will do
+                String contents = CommonUtil.getContents(Constants.TESTNG_XML_EXP_MSG_XML);
+                build.getWorkspace().child("some.xml").write(contents, "UTF-8");
+                return true;
+            }
+        });
 
         project.scheduleBuild2(0).get();
         return project;

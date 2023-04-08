@@ -33,8 +33,7 @@ import org.kohsuke.stapler.StaplerResponse;
 public class TestNGTestResultBuildAction extends AbstractTestResultAction
         implements Serializable, SimpleBuildStep.LastBuildAction {
 
-    private static final Logger LOGGER =
-            Logger.getLogger(TestNGTestResultBuildAction.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(TestNGTestResultBuildAction.class.getName());
 
     /** Unique identifier for this class. */
     private static final long serialVersionUID = 31415926L;
@@ -56,10 +55,7 @@ public class TestNGTestResultBuildAction extends AbstractTestResultAction
     private final boolean showFailedBuilds;
 
     public TestNGTestResultBuildAction(
-            TestNGResult testngResults,
-            boolean escapeTestDescp,
-            boolean escapeExceptionMsg,
-            boolean showFailedBuilds) {
+            TestNGResult testngResults, boolean escapeTestDescp, boolean escapeExceptionMsg, boolean showFailedBuilds) {
         if (testngResults != null) {
             this.testngResultRef = new WeakReference<TestNGResult>(testngResults);
 
@@ -82,9 +78,7 @@ public class TestNGTestResultBuildAction extends AbstractTestResultAction
         int savedFailCount = failCount;
         int savedSkipCount = skipCount;
         count(testngResults);
-        if (passCount != savedPassCount
-                || failCount != savedFailCount
-                || skipCount != savedSkipCount) {
+        if (passCount != savedPassCount || failCount != savedFailCount || skipCount != savedSkipCount) {
             LOGGER.log(Level.FINE, "saving {0}", owner);
             try {
                 owner.save();
@@ -233,7 +227,6 @@ public class TestNGTestResultBuildAction extends AbstractTestResultAction
     @Override
     public Collection<? extends Action> getProjectActions() {
         return Collections.singleton(
-                new TestNGProjectAction(
-                        run.getParent(), escapeTestDescp, escapeExceptionMsg, showFailedBuilds));
+                new TestNGProjectAction(run.getParent(), escapeTestDescp, escapeExceptionMsg, showFailedBuilds));
     }
 }

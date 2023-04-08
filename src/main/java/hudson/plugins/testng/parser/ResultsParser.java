@@ -374,11 +374,7 @@ public class ResultsParser {
 
     private void finishException() {
         MethodResultException mrEx =
-                new MethodResultException(
-                        exceptionName,
-                        currentMessage,
-                        currentShortStackTrace,
-                        currentFullStackTrace);
+                new MethodResultException(exceptionName, currentMessage, currentShortStackTrace, currentFullStackTrace);
         currentMethod.setException(mrEx);
 
         mrEx = null;
@@ -434,18 +430,17 @@ public class ResultsParser {
             log("Unable to parse started-at value: " + startedAt);
         }
 
-        currentMethod =
-                new MethodResult(
-                        name,
-                        status,
-                        description,
-                        duration,
-                        startedAtDate == null ? -1 : startedAtDate.getTime(),
-                        isConfig,
-                        currentTestRunId,
-                        currentTest.getName(),
-                        currentSuite,
-                        testInstanceName);
+        currentMethod = new MethodResult(
+                name,
+                status,
+                description,
+                duration,
+                startedAtDate == null ? -1 : startedAtDate.getTime(),
+                isConfig,
+                currentTestRunId,
+                currentTest.getName(),
+                currentSuite,
+                testInstanceName);
         List<String> groups = methodGroupMap.get(currentClass.getCanonicalName() + "|" + name);
         if (groups != null) {
             currentMethod.setGroups(groups);
@@ -524,11 +519,9 @@ public class ResultsParser {
         return xmlPullParser.getAttributeValue(null, attr);
     }
 
-    private XmlPullParser createXmlPullParser(BufferedInputStream bufferedInputStream)
-            throws XmlPullParserException {
+    private XmlPullParser createXmlPullParser(BufferedInputStream bufferedInputStream) throws XmlPullParserException {
         if (PARSER_FACTORY == null) {
-            throw new XmlPullParserException(
-                    "XML Parser Factory has not been initialized properly");
+            throw new XmlPullParserException("XML Parser Factory has not been initialized properly");
         }
         XmlPullParser parser = PARSER_FACTORY.newPullParser();
         parser.setInput(bufferedInputStream, null);

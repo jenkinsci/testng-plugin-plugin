@@ -5,8 +5,7 @@ import java.io.Serializable;
 
 @SuppressFBWarnings(
         value = "NM_CLASS_NOT_EXCEPTION",
-        justification =
-                "Not an exception, but represents one associated with a test result parsed by this plugin")
+        justification = "Not an exception, but represents one associated with a test result parsed by this plugin")
 @SuppressWarnings("serial")
 public class MethodResultException implements Serializable {
 
@@ -14,8 +13,7 @@ public class MethodResultException implements Serializable {
     private String message;
     private String stackTrace;
 
-    public MethodResultException(
-            String exceptionName, String message, String shortStackTrace, String fullStackTrace) {
+    public MethodResultException(String exceptionName, String message, String shortStackTrace, String fullStackTrace) {
         this.message = message == null ? null : message.trim();
         this.exceptionName = exceptionName;
         trySettingData(shortStackTrace, fullStackTrace);

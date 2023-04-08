@@ -39,9 +39,11 @@ import org.jvnet.hudson.test.TestBuilder;
  */
 public class TestNGTestResultBuildActionTest {
 
-    @ClassRule public static BuildWatcher buildWatcher = new BuildWatcher();
+    @ClassRule
+    public static BuildWatcher buildWatcher = new BuildWatcher();
 
-    @Rule public JenkinsRule r = new JenkinsRule();
+    @Rule
+    public JenkinsRule r = new JenkinsRule();
 
     /**
      * Test using precheckins xml
@@ -56,21 +58,15 @@ public class TestNGTestResultBuildActionTest {
         p.getPublishersList().add(publisher);
         p.onCreatedFromScratch(); // to setup project action
 
-        p.getBuildersList()
-                .add(
-                        new TestBuilder() {
-                            @Override
-                            public boolean perform(
-                                    AbstractBuild<?, ?> build,
-                                    Launcher launcher,
-                                    BuildListener listener)
-                                    throws InterruptedException, IOException {
-                                String contents =
-                                        CommonUtil.getContents(Constants.TESTNG_XML_PRECHECKINS);
-                                build.getWorkspace().child("testng.xml").write(contents, "UTF-8");
-                                return true;
-                            }
-                        });
+        p.getBuildersList().add(new TestBuilder() {
+            @Override
+            public boolean perform(AbstractBuild<?, ?> build, Launcher launcher, BuildListener listener)
+                    throws InterruptedException, IOException {
+                String contents = CommonUtil.getContents(Constants.TESTNG_XML_PRECHECKINS);
+                build.getWorkspace().child("testng.xml").write(contents, "UTF-8");
+                return true;
+            }
+        });
 
         // run build
         FreeStyleBuild build = p.scheduleBuild2(0).get();
@@ -81,10 +77,8 @@ public class TestNGTestResultBuildActionTest {
         HtmlPage page = r.createWebClient().goTo(build.getUrl() + PluginImpl.URL);
 
         // make sure no cell is empty
-        List<HtmlElement> elements =
-                DomNodeUtil.selectNodes(
-                        page,
-                        "//table[substring(@id, string-length(@id)- string-length('-tbl') +1)]/*/tr/td");
+        List<HtmlElement> elements = DomNodeUtil.selectNodes(
+                page, "//table[substring(@id, string-length(@id)- string-length('-tbl') +1)]/*/tr/td");
         for (HtmlElement element : elements) {
             assertTrue(!element.getTextContent().isEmpty());
         }
@@ -95,8 +89,7 @@ public class TestNGTestResultBuildActionTest {
         assertEquals(1, elements.size());
         MethodResult mr = testngResult.getFailedTests().get(0);
         assertEquals(
-                r.getURL() + mr.getRun().getUrl() + mr.getId(),
-                elements.get(0).getAttribute("href"));
+                r.getURL() + mr.getRun().getUrl() + mr.getId(), elements.get(0).getAttribute("href"));
         assertEquals(
                 ((ClassResult) mr.getParent()).getCanonicalName() + "." + mr.getName(),
                 elements.get(0).getTextContent());
@@ -107,8 +100,7 @@ public class TestNGTestResultBuildActionTest {
         assertEquals(3, elements.size());
         mr = testngResult.getFailedConfigs().get(0);
         assertEquals(
-                r.getURL() + mr.getRun().getUrl() + mr.getId(),
-                elements.get(2).getAttribute("href"));
+                r.getURL() + mr.getRun().getUrl() + mr.getId(), elements.get(2).getAttribute("href"));
         assertEquals(
                 ((ClassResult) mr.getParent()).getCanonicalName() + "." + mr.getName(),
                 elements.get(2).getTextContent());
@@ -118,8 +110,7 @@ public class TestNGTestResultBuildActionTest {
         assertEquals(1, elements.size());
         mr = testngResult.getSkippedTests().get(0);
         assertEquals(
-                r.getURL() + mr.getRun().getUrl() + mr.getId(),
-                elements.get(0).getAttribute("href"));
+                r.getURL() + mr.getRun().getUrl() + mr.getId(), elements.get(0).getAttribute("href"));
         assertEquals(
                 ((ClassResult) mr.getParent()).getCanonicalName() + "." + mr.getName(),
                 elements.get(0).getTextContent());
@@ -169,21 +160,15 @@ public class TestNGTestResultBuildActionTest {
         p.getPublishersList().add(publisher);
         p.onCreatedFromScratch(); // to setup project action
 
-        p.getBuildersList()
-                .add(
-                        new TestBuilder() {
-                            @Override
-                            public boolean perform(
-                                    AbstractBuild<?, ?> build,
-                                    Launcher launcher,
-                                    BuildListener listener)
-                                    throws InterruptedException, IOException {
-                                String contents =
-                                        CommonUtil.getContents(Constants.TESTNG_XML_TESTNG);
-                                build.getWorkspace().child("testng.xml").write(contents, "UTF-8");
-                                return true;
-                            }
-                        });
+        p.getBuildersList().add(new TestBuilder() {
+            @Override
+            public boolean perform(AbstractBuild<?, ?> build, Launcher launcher, BuildListener listener)
+                    throws InterruptedException, IOException {
+                String contents = CommonUtil.getContents(Constants.TESTNG_XML_TESTNG);
+                build.getWorkspace().child("testng.xml").write(contents, "UTF-8");
+                return true;
+            }
+        });
 
         // run build
         FreeStyleBuild build = p.scheduleBuild2(0).get();
@@ -194,10 +179,8 @@ public class TestNGTestResultBuildActionTest {
         HtmlPage page = r.createWebClient().goTo(build.getUrl() + PluginImpl.URL);
 
         // make sure no cell is empty
-        List<HtmlElement> elements =
-                DomNodeUtil.selectNodes(
-                        page,
-                        "//table[substring(@id, string-length(@id)- string-length('-tbl') +1)]/*/tr/td");
+        List<HtmlElement> elements = DomNodeUtil.selectNodes(
+                page, "//table[substring(@id, string-length(@id)- string-length('-tbl') +1)]/*/tr/td");
         for (HtmlElement element : elements) {
             assertTrue(!element.getTextContent().isEmpty());
         }
@@ -252,28 +235,21 @@ public class TestNGTestResultBuildActionTest {
         FreeStyleProject p = r.createFreeStyleProject();
         Publisher publisher = new Publisher();
         publisher.setReportFilenamePattern("testng.xml");
-        publisher.setFailedSkips(
-                100); // these prevent the skip that results from config failure from determining
+        publisher.setFailedSkips(100); // these prevent the skip that results from config failure from determining
         // result
         publisher.setUnstableSkips(100);
         p.getPublishersList().add(publisher);
         p.onCreatedFromScratch(); // to setup project action
 
-        p.getBuildersList()
-                .add(
-                        new TestBuilder() {
-                            @Override
-                            public boolean perform(
-                                    AbstractBuild<?, ?> build,
-                                    Launcher launcher,
-                                    BuildListener listener)
-                                    throws InterruptedException, IOException {
-                                String contents =
-                                        CommonUtil.getContents(Constants.TESTNG_FAILED_TEST_CONFIG);
-                                build.getWorkspace().child("testng.xml").write(contents, "UTF-8");
-                                return true;
-                            }
-                        });
+        p.getBuildersList().add(new TestBuilder() {
+            @Override
+            public boolean perform(AbstractBuild<?, ?> build, Launcher launcher, BuildListener listener)
+                    throws InterruptedException, IOException {
+                String contents = CommonUtil.getContents(Constants.TESTNG_FAILED_TEST_CONFIG);
+                build.getWorkspace().child("testng.xml").write(contents, "UTF-8");
+                return true;
+            }
+        });
 
         // run build
         FreeStyleBuild build = p.scheduleBuild2(0).get();
@@ -286,28 +262,21 @@ public class TestNGTestResultBuildActionTest {
         Publisher publisher = new Publisher();
         publisher.setReportFilenamePattern("testng.xml");
         publisher.setFailureOnFailedTestConfig(true);
-        publisher.setFailedSkips(
-                10); // these prevent the skip that results from config failure from determining
+        publisher.setFailedSkips(10); // these prevent the skip that results from config failure from determining
         // result
         publisher.setUnstableSkips(10);
         p.getPublishersList().add(publisher);
         p.onCreatedFromScratch(); // to setup project action
 
-        p.getBuildersList()
-                .add(
-                        new TestBuilder() {
-                            @Override
-                            public boolean perform(
-                                    AbstractBuild<?, ?> build,
-                                    Launcher launcher,
-                                    BuildListener listener)
-                                    throws InterruptedException, IOException {
-                                String contents =
-                                        CommonUtil.getContents(Constants.TESTNG_FAILED_TEST_CONFIG);
-                                build.getWorkspace().child("testng.xml").write(contents, "UTF-8");
-                                return true;
-                            }
-                        });
+        p.getBuildersList().add(new TestBuilder() {
+            @Override
+            public boolean perform(AbstractBuild<?, ?> build, Launcher launcher, BuildListener listener)
+                    throws InterruptedException, IOException {
+                String contents = CommonUtil.getContents(Constants.TESTNG_FAILED_TEST_CONFIG);
+                build.getWorkspace().child("testng.xml").write(contents, "UTF-8");
+                return true;
+            }
+        });
 
         // run build
         FreeStyleBuild build = p.scheduleBuild2(0).get();
@@ -322,21 +291,15 @@ public class TestNGTestResultBuildActionTest {
         p.getPublishersList().add(publisher);
         p.onCreatedFromScratch(); // to setup project action
 
-        p.getBuildersList()
-                .add(
-                        new TestBuilder() {
-                            @Override
-                            public boolean perform(
-                                    AbstractBuild<?, ?> build,
-                                    Launcher launcher,
-                                    BuildListener listener)
-                                    throws InterruptedException, IOException {
-                                String contents =
-                                        CommonUtil.getContents(Constants.TESTNG_SKIPPED_TEST);
-                                build.getWorkspace().child("testng.xml").write(contents, "UTF-8");
-                                return true;
-                            }
-                        });
+        p.getBuildersList().add(new TestBuilder() {
+            @Override
+            public boolean perform(AbstractBuild<?, ?> build, Launcher launcher, BuildListener listener)
+                    throws InterruptedException, IOException {
+                String contents = CommonUtil.getContents(Constants.TESTNG_SKIPPED_TEST);
+                build.getWorkspace().child("testng.xml").write(contents, "UTF-8");
+                return true;
+            }
+        });
 
         // run build
         FreeStyleBuild build = p.scheduleBuild2(0).get();
@@ -353,21 +316,15 @@ public class TestNGTestResultBuildActionTest {
         p.getPublishersList().add(publisher);
         p.onCreatedFromScratch(); // to setup project action
 
-        p.getBuildersList()
-                .add(
-                        new TestBuilder() {
-                            @Override
-                            public boolean perform(
-                                    AbstractBuild<?, ?> build,
-                                    Launcher launcher,
-                                    BuildListener listener)
-                                    throws InterruptedException, IOException {
-                                String contents =
-                                        CommonUtil.getContents(Constants.TESTNG_SKIPPED_TEST);
-                                build.getWorkspace().child("testng.xml").write(contents, "UTF-8");
-                                return true;
-                            }
-                        });
+        p.getBuildersList().add(new TestBuilder() {
+            @Override
+            public boolean perform(AbstractBuild<?, ?> build, Launcher launcher, BuildListener listener)
+                    throws InterruptedException, IOException {
+                String contents = CommonUtil.getContents(Constants.TESTNG_SKIPPED_TEST);
+                build.getWorkspace().child("testng.xml").write(contents, "UTF-8");
+                return true;
+            }
+        });
 
         // run build
         FreeStyleBuild build = p.scheduleBuild2(0).get();
@@ -384,21 +341,15 @@ public class TestNGTestResultBuildActionTest {
         p.getPublishersList().add(publisher);
         p.onCreatedFromScratch(); // to setup project action
 
-        p.getBuildersList()
-                .add(
-                        new TestBuilder() {
-                            @Override
-                            public boolean perform(
-                                    AbstractBuild<?, ?> build,
-                                    Launcher launcher,
-                                    BuildListener listener)
-                                    throws InterruptedException, IOException {
-                                String contents =
-                                        CommonUtil.getContents(Constants.TESTNG_SKIPPED_TEST);
-                                build.getWorkspace().child("testng.xml").write(contents, "UTF-8");
-                                return true;
-                            }
-                        });
+        p.getBuildersList().add(new TestBuilder() {
+            @Override
+            public boolean perform(AbstractBuild<?, ?> build, Launcher launcher, BuildListener listener)
+                    throws InterruptedException, IOException {
+                String contents = CommonUtil.getContents(Constants.TESTNG_SKIPPED_TEST);
+                build.getWorkspace().child("testng.xml").write(contents, "UTF-8");
+                return true;
+            }
+        });
 
         // run build
         FreeStyleBuild build = p.scheduleBuild2(0).get();
@@ -421,21 +372,15 @@ public class TestNGTestResultBuildActionTest {
         p.getPublishersList().add(publisher);
         p.onCreatedFromScratch(); // to setup project action
 
-        p.getBuildersList()
-                .add(
-                        new TestBuilder() {
-                            @Override
-                            public boolean perform(
-                                    AbstractBuild<?, ?> build,
-                                    Launcher launcher,
-                                    BuildListener listener)
-                                    throws InterruptedException, IOException {
-                                String contents =
-                                        CommonUtil.getContents(Constants.TESTNG_FAILED_TEST);
-                                build.getWorkspace().child("testng.xml").write(contents, "UTF-8");
-                                return true;
-                            }
-                        });
+        p.getBuildersList().add(new TestBuilder() {
+            @Override
+            public boolean perform(AbstractBuild<?, ?> build, Launcher launcher, BuildListener listener)
+                    throws InterruptedException, IOException {
+                String contents = CommonUtil.getContents(Constants.TESTNG_FAILED_TEST);
+                build.getWorkspace().child("testng.xml").write(contents, "UTF-8");
+                return true;
+            }
+        });
 
         // run build
         FreeStyleBuild build = p.scheduleBuild2(0).get();
@@ -455,12 +400,11 @@ public class TestNGTestResultBuildActionTest {
         }
         WorkflowJob p = r.jenkins.createProject(WorkflowJob.class, "p");
         String contents = CommonUtil.getContents(Constants.TESTNG_FAILED_TEST);
-        p.setDefinition(
-                new CpsFlowDefinition(
-                        "node {\n  writeFile(file: 'testng-results.xml', text: '''"
-                                + contents
-                                + "''')\n  step([$class: 'Publisher'])\n}\n",
-                        true));
+        p.setDefinition(new CpsFlowDefinition(
+                "node {\n  writeFile(file: 'testng-results.xml', text: '''"
+                        + contents
+                        + "''')\n  step([$class: 'Publisher'])\n}\n",
+                true));
         WorkflowRun build = p.scheduleBuild2(0).get();
         r.assertBuildStatus(Result.UNSTABLE, build);
         TestNGTestResultBuildAction action = build.getAction(TestNGTestResultBuildAction.class);
@@ -470,8 +414,7 @@ public class TestNGTestResultBuildActionTest {
                 "checking result details",
                 "TestNGResult {totalTests=2, failedTests=1, skippedTests=0, failedConfigs=0, skippedConfigs=0}",
                 result.toString());
-        r.assertLogContains(
-                "tests failed, which exceeded threshold of 0%. Marking build as UNSTABLE", build);
+        r.assertLogContains("tests failed, which exceeded threshold of 0%. Marking build as UNSTABLE", build);
     }
 
     @Issue("JENKINS-27121")
@@ -487,12 +430,9 @@ public class TestNGTestResultBuildActionTest {
         }
         WorkflowJob p = r.jenkins.createProject(WorkflowJob.class, "p");
         String contents = CommonUtil.getContents(Constants.TESTNG_FAILED_TEST);
-        p.setDefinition(
-                new CpsFlowDefinition(
-                        "node {\n  writeFile(file: 'testng-results.xml', text: '''"
-                                + contents
-                                + "''')\n  testNG()\n}\n",
-                        true));
+        p.setDefinition(new CpsFlowDefinition(
+                "node {\n  writeFile(file: 'testng-results.xml', text: '''" + contents + "''')\n  testNG()\n}\n",
+                true));
         WorkflowRun build = p.scheduleBuild2(0).get();
         r.assertBuildStatus(Result.UNSTABLE, build);
         TestNGTestResultBuildAction action = build.getAction(TestNGTestResultBuildAction.class);
@@ -502,8 +442,7 @@ public class TestNGTestResultBuildActionTest {
                 "checking result details",
                 "TestNGResult {totalTests=2, failedTests=1, skippedTests=0, failedConfigs=0, skippedConfigs=0}",
                 result.toString());
-        r.assertLogContains(
-                "tests failed, which exceeded threshold of 0%. Marking build as UNSTABLE", build);
+        r.assertLogContains("tests failed, which exceeded threshold of 0%. Marking build as UNSTABLE", build);
     }
 
     @Test
@@ -516,21 +455,15 @@ public class TestNGTestResultBuildActionTest {
         p.getPublishersList().add(publisher);
         p.onCreatedFromScratch(); // to setup project action
 
-        p.getBuildersList()
-                .add(
-                        new TestBuilder() {
-                            @Override
-                            public boolean perform(
-                                    AbstractBuild<?, ?> build,
-                                    Launcher launcher,
-                                    BuildListener listener)
-                                    throws InterruptedException, IOException {
-                                String contents =
-                                        CommonUtil.getContents(Constants.TESTNG_FAILED_TEST);
-                                build.getWorkspace().child("testng.xml").write(contents, "UTF-8");
-                                return true;
-                            }
-                        });
+        p.getBuildersList().add(new TestBuilder() {
+            @Override
+            public boolean perform(AbstractBuild<?, ?> build, Launcher launcher, BuildListener listener)
+                    throws InterruptedException, IOException {
+                String contents = CommonUtil.getContents(Constants.TESTNG_FAILED_TEST);
+                build.getWorkspace().child("testng.xml").write(contents, "UTF-8");
+                return true;
+            }
+        });
 
         // run build
         FreeStyleBuild build = p.scheduleBuild2(0).get();
@@ -546,21 +479,15 @@ public class TestNGTestResultBuildActionTest {
         p.getPublishersList().add(publisher);
         p.onCreatedFromScratch(); // to setup project action
 
-        p.getBuildersList()
-                .add(
-                        new TestBuilder() {
-                            @Override
-                            public boolean perform(
-                                    AbstractBuild<?, ?> build,
-                                    Launcher launcher,
-                                    BuildListener listener)
-                                    throws InterruptedException, IOException {
-                                String contents =
-                                        CommonUtil.getContents(Constants.TESTNG_FAILED_TEST);
-                                build.getWorkspace().child("testng.xml").write(contents, "UTF-8");
-                                return true;
-                            }
-                        });
+        p.getBuildersList().add(new TestBuilder() {
+            @Override
+            public boolean perform(AbstractBuild<?, ?> build, Launcher launcher, BuildListener listener)
+                    throws InterruptedException, IOException {
+                String contents = CommonUtil.getContents(Constants.TESTNG_FAILED_TEST);
+                build.getWorkspace().child("testng.xml").write(contents, "UTF-8");
+                return true;
+            }
+        });
 
         // run build
         FreeStyleBuild build = p.scheduleBuild2(0).get();

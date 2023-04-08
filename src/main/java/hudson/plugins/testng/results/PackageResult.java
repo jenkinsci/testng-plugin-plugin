@@ -127,12 +127,7 @@ public class PackageResult extends BaseResult {
     public String getFirstXSortedTestMethodsByStartTime() {
         // returning the first MAX results only
         List<MethodResult> list = getSortedTestMethodsByStartTime();
-        list =
-                list.subList(
-                        0,
-                        list.size() > MAX_EXEC_MTHD_LIST_SIZE
-                                ? MAX_EXEC_MTHD_LIST_SIZE
-                                : list.size());
+        list = list.subList(0, list.size() > MAX_EXEC_MTHD_LIST_SIZE ? MAX_EXEC_MTHD_LIST_SIZE : list.size());
         return getMethodExecutionTableContent(list);
     }
 
@@ -180,16 +175,13 @@ public class PackageResult extends BaseResult {
             timeSeries.add(new long[] {_c.getStartTime(), _c.getEndTime() - _c.getStartTime()});
         }
 
-        Collections.sort(
-                timeSeries,
-                new Comparator<long[]>() {
-                    public int compare(long[] ts1, long[] ts2) {
-                        return ts1[0] < ts2[0] ? -1 : (ts1[0] > ts2[0] ? 1 : 0);
-                    }
-                });
+        Collections.sort(timeSeries, new Comparator<long[]>() {
+            public int compare(long[] ts1, long[] ts2) {
+                return ts1[0] < ts2[0] ? -1 : (ts1[0] > ts2[0] ? 1 : 0);
+            }
+        });
 
-        timeSeries.add(
-                new long[] {System.currentTimeMillis(), 0}); // to help with following algorithm
+        timeSeries.add(new long[] {System.currentTimeMillis(), 0}); // to help with following algorithm
         startTime = timeSeries.get(0)[0]; // start time for all classes within this package
         duration = 0;
         int activeTS = 0;
