@@ -15,7 +15,7 @@ import hudson.plugins.testng.CommonUtil;
 import hudson.plugins.testng.Constants;
 import hudson.plugins.testng.PluginImpl;
 import hudson.plugins.testng.Publisher;
-import hudson.plugins.testng.PublisherTest; // Special case for SECURITY-2788 method
+import hudson.plugins.testng.PublisherTest;
 import hudson.tasks.test.AbstractTestResultAction;
 import hudson.tasks.test.TestResult;
 import java.io.IOException;
