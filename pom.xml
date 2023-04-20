@@ -5,7 +5,7 @@
   <parent>
     <groupId>org.jenkins-ci.plugins</groupId>
     <artifactId>plugin</artifactId>
-    <version>4.60</version>
+    <version>4.61</version>
     <relativePath />
   </parent>
 
@@ -63,6 +63,7 @@
     <spotbugs.effort>Max</spotbugs.effort>
     <!-- Not yet ready for Low threshold, too many warnings to resolve -->
     <spotbugs.threshold>Medium</spotbugs.threshold>
+    <spotless.check.skip>false</spotless.check.skip>
   </properties>
 
   <dependencyManagement>
