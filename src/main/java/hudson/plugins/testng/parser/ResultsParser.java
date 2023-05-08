@@ -1,6 +1,7 @@
 package hudson.plugins.testng.parser;
 
 import hudson.FilePath;
+import hudson.Util;
 import hudson.plugins.testng.results.ClassResult;
 import hudson.plugins.testng.results.MethodResult;
 import hudson.plugins.testng.results.MethodResultException;
@@ -314,7 +315,7 @@ public class ResultsParser {
 
     private void endLine() {
         if (currentMethod != null) {
-            reporterOutputBuilder.append(currentLine).append("<br/>");
+            reporterOutputBuilder.append(Util.escape(currentLine)).append("<br/>");
         }
     }
 

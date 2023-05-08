@@ -1,6 +1,7 @@
 package hudson.plugins.testng.results;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import hudson.Util;
 import hudson.model.Run;
 import hudson.plugins.testng.util.FormatUtil;
 import java.util.ArrayList;
@@ -142,11 +143,11 @@ public class PackageResult extends BaseResult {
 
         for (MethodResult mr : mrList) {
             sb.append("<tr><td align=\"left\">");
-            sb.append("<a href=\"").append(mr.getUpUrl()).append("\">");
-            sb.append(mr.getParent().getName()).append(".").append(mr.getName());
+            sb.append("<a href=\"").append(Util.escape(mr.getUpUrl())).append("\">");
+            sb.append(Util.escape(mr.getParent().getName())).append(".").append(Util.escape(mr.getName()));
             sb.append("</a>");
             sb.append("</td><td align=\"left\">");
-            sb.append(mr.getDescription());
+            sb.append(Util.escape(mr.getDescription()));
             sb.append("</td><td align=\"center\">");
             sb.append(FormatUtil.formatTime(mr.getDuration()));
             sb.append("</td><td align=\"center\">");
@@ -154,7 +155,7 @@ public class PackageResult extends BaseResult {
             sb.append("</td><td align=\"center\"><span class=\"")
                     .append(mr.getCssClass())
                     .append("\">");
-            sb.append(mr.getStatus());
+            sb.append(Util.escape(mr.getStatus()));
             sb.append("</span></td></tr>");
         }
         return sb.toString();

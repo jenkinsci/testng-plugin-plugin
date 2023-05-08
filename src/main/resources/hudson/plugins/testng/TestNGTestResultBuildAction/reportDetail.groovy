@@ -1,5 +1,6 @@
 package hudson.plugins.testng.TestNGTestResultBuildAction
 
+import hudson.Functions
 import hudson.plugins.testng.util.FormatUtil
 
 f = namespace(lib.FormTagLib)
@@ -29,12 +30,14 @@ if (my.result.failCount != 0) {
         }
         tbody() {
             for (failedTest in my.result.failedTests) {
+                def failedTestSafeId = Functions.jsStringEscape(failedTest.id)
+                def failedTestSafeUpUrl = Functions.jsStringEscape(failedTest.upUrl)
                 tr() {
                     td(align: "left") {
-                        a(id: "${failedTest.id}-showlink", href:"javascript:showStackTrace('${failedTest.id}', '${failedTest.upUrl}/summary')") {
+                        a(id: "${failedTest.id}-showlink", href:"javascript:showStackTrace('${failedTestSafeId}', '${failedTestSafeUpUrl}/summary')") {
                             text(">>>")
                         }
-                        a(style: "display:none", id: "${failedTest.id}-hidelink", href:"javascript:hideStackTrace('${failedTest.id}')") {
+                        a(style: "display:none", id: "${failedTest.id}-hidelink", href:"javascript:hideStackTrace('${failedTestSafeId}')") {
                             text("<<<")
                         }
                         text(" ")
@@ -114,7 +117,7 @@ table(id:"all-tbl", border:"1px", class:"pane sortable") {
             def prevPkg = pkg.previousResult
             tr() {
                 td(align: "left") {
-                    a(href:"${pkg.name}") { text("${pkg.name}") }
+                    a(href:"${FormatUtil.escapeJS(pkg.name)}") { text("${pkg.name}") }
                 }
                 td(align: "center") {
                     text("${FormatUtil.formatTime(pkg.duration)}")
@@ -168,13 +171,15 @@ def printMethods(type, tableName, methodList, showMoreArrows) {
         }
         tbody() {
             for (method in methodList) {
+                def methodSafeId = Functions.jsStringEscape(method.id)
+                def methodSafeUpUrl = Functions.jsStringEscape(method.upUrl)
                 tr() {
                     td(align: "left") {
                         if (showMoreArrows) {
-                            a(id: "${method.id}-showlink", href:"javascript:showStackTrace('${method.id}', '${method.upUrl}/summary')") {
+                            a(id: "${method.id}-showlink", href:"javascript:showStackTrace('${methodSafeId}', '${methodSafeUpUrl}/summary')") {
                                 text(">>>")
                             }
-                            a(style: "display:none", id: "${method.id}-hidelink", href:"javascript:hideStackTrace('${method.id}')") {
+                            a(style: "display:none", id: "${method.id}-hidelink", href:"javascript:hideStackTrace('${methodSafeId}')") {
                                 text("<<<")
                             }
                             text(" ")

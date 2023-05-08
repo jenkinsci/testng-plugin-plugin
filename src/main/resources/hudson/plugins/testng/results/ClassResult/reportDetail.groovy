@@ -1,5 +1,6 @@
 package hudson.plugins.testng.results.ClassResult
 
+import hudson.Functions
 import hudson.plugins.testng.util.FormatUtil
 import org.apache.commons.lang.StringUtils
 
@@ -43,6 +44,7 @@ for (group in my.testRunMap.values()) {
                 }
                 tbody() {
                     for(method in group.testMethods) {
+                        def methodJsSafeName = Functions.jsStringEscape(method.safeName)
                         tr() {
                             td(align:"left") {
                                 a(href:"${method.upUrl}") {
@@ -51,7 +53,7 @@ for (group in my.testRunMap.values()) {
                                 if (method.groups || method.testInstanceName || method.parameters?.size() > 0) {
                                     div(id:"${method.safeName}_1", style:"display:inline") {
                                         text(" (")
-                                        a(href:"javascript:showMore(\"${method.safeName}\")") {
+                                        a(href:"javascript:showMore(\"${methodJsSafeName}\")") {
                                             raw("&hellip;")
                                         }
                                         text(")")
