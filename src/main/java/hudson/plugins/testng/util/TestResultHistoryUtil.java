@@ -2,6 +2,7 @@ package hudson.plugins.testng.util;
 
 import java.util.List;
 
+import hudson.Util;
 import hudson.model.Run;
 import hudson.plugins.testng.TestNGTestResultBuildAction;
 import hudson.plugins.testng.results.ClassResult;
@@ -111,19 +112,19 @@ public class TestResultHistoryUtil {
                   htmlStr.append("</OL></LI>");
                }
                firstGroup = false;
-               testName = methodResult.getParentTestName();
-               suiteName = methodResult.getParentSuiteName();
+               testName = Util.escape(methodResult.getParentTestName());
+               suiteName = Util.escape(methodResult.getParentSuiteName());
                htmlStr.append("<LI style=\"list-style-type:none\"><b>").append(suiteName).append(" / ").append(testName).append("</b>");
                htmlStr.append("<OL start=\"").append(testIndex).append("\">");
             }
             htmlStr.append("<LI>");
             if (methodResult.getParent() instanceof ClassResult) {
-               htmlStr.append("<a href=\"").append(methodResult.getUpUrl());
+               htmlStr.append("<a href=\"").append(Util.escape(methodResult.getUpUrl()));
                htmlStr.append("\">");
-               htmlStr.append(((ClassResult)methodResult.getParent()).getCanonicalName());
-               htmlStr.append(".").append(methodResult.getName()).append("</a>");
+               htmlStr.append(Util.escape(((ClassResult) methodResult.getParent()).getCanonicalName()));
+               htmlStr.append(".").append(Util.escape(methodResult.getName())).append("</a>");
             } else {
-               htmlStr.append(methodResult.getName());
+               htmlStr.append(Util.escape(methodResult.getName()));
             }
             htmlStr.append("</LI>");
             testIndex++;

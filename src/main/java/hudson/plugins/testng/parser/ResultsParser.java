@@ -18,6 +18,7 @@ import java.util.UUID;
 import java.util.logging.Logger;
 
 import hudson.FilePath;
+import hudson.Util;
 import hudson.plugins.testng.results.ClassResult;
 import hudson.plugins.testng.results.MethodResult;
 import hudson.plugins.testng.results.MethodResultException;
@@ -301,7 +302,7 @@ public class ResultsParser {
    {
        if (currentMethod != null)
        {
-           reporterOutputBuilder.append(currentLine).append("<br/>");
+           reporterOutputBuilder.append(Util.escape(currentLine)).append("<br/>");
        }
    }
 

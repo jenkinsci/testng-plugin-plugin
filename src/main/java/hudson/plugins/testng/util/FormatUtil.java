@@ -79,6 +79,25 @@ public class FormatUtil {
       return str;
    }
 
+   public static String escapeJS(String str) {
+       if (str == null) {
+           return "";
+       }
+       StringBuilder buf = new StringBuilder(str.length() + 64);
+       for (int i = 0; i < str.length(); i++) {
+           char ch = str.charAt(i);
+           if (ch == '<') buf.append("&lt;");
+           else if (ch == '>') buf.append("&gt;");
+           else if (ch == '&') buf.append("&amp;");
+           else if (ch == '\'') buf.append("&apos;");
+           else if (ch == '\"') buf.append("&quot;");
+           else if (ch == ':') buf.append("&#58;");
+           else if (ch == '%') buf.append("&#37;");
+           else buf.append(ch);
+       }
+       return buf.toString();
+   }
+
    /**
     * Formats the stack trace for easier readability
     * @param stackTrace a stack trace

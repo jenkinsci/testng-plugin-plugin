@@ -13,7 +13,7 @@
             <j:otherwise>
                 <j:if test="${it.errorStackTrace != null}">
                     <h3>Stack Trace</h3>
-                    <pre><j:out value="${it.errorStackTrace}"/></pre>
+                    <pre><st:out value="${it.errorStackTrace}"/></pre>
                 </j:if>
             </j:otherwise>
       </j:choose>
