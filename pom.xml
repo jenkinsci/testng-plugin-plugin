@@ -13,7 +13,9 @@
   <version>${changelist}</version>
   <packaging>hpi</packaging>
   <name>TestNG Results Plugin</name>
-  <url>https://github.com/${gitHubRepo}</url>
+  <!-- url using more typical form does not work as expected -->
+  <!-- declare exact path to documentation -->
+  <url>https://github.com/jenkinsci/testng-plugin-plugin/blob/master/README.md</url>
 
   <licenses>
     <license>
