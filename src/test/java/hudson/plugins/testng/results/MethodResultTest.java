@@ -1,10 +1,8 @@
 package hudson.plugins.testng.results;
 
-import static com.gargoylesoftware.htmlunit.WebAssert.*;
+import static org.htmlunit.WebAssert.*;
 import static org.junit.Assert.*;
 
-import com.gargoylesoftware.htmlunit.html.HtmlElement;
-import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import hudson.Launcher;
 import hudson.model.AbstractBuild;
 import hudson.model.BuildListener;
@@ -19,6 +17,8 @@ import hudson.plugins.testng.PublisherTest;
 import hudson.tasks.test.AbstractTestResultAction;
 import hudson.tasks.test.TestResult;
 import java.io.IOException;
+import org.htmlunit.html.HtmlElement;
+import org.htmlunit.html.HtmlPage;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
