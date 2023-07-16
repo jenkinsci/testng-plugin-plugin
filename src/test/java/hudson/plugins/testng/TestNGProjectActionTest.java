@@ -97,8 +97,8 @@ public class TestNGProjectActionTest {
         Assert.assertTrue(summary.contains("gov.nasa.jpl.FoobarTests.b"));
     }
 
-    @Test
     // For JENKINS-32746: TestNG Results Trend graph doesn't show all build results
+    @Test
     public void testHistoryRemoval() throws Exception {
         FreeStyleProject p = r.createFreeStyleProject();
         Publisher publisher = new Publisher();
