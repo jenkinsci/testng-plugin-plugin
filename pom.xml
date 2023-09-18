@@ -81,6 +81,11 @@
   </dependencyManagement>
   <dependencies>
     <dependency>
+      <groupId>io.github.x-stream</groupId>
+      <artifactId>mxparser</artifactId>
+      <version>1.2.2</version>
+    </dependency>
+    <dependency>
       <groupId>org.jenkins-ci.plugins</groupId>
       <artifactId>junit</artifactId>
     </dependency>
