@@ -87,7 +87,7 @@ Results**. This option allows you to configure the following properties:
 
 ### Pipeline in Jenkinsfile
 
-The link:https://www.jenkins.io/redirect/pipeline-snippet-generator[Pipeline Syntax Snippet Generator] guides the user to select TestNG report options.
+The [Pipeline Syntax Snippet Generator](https://www.jenkins.io/redirect/pipeline-snippet-generator) guides the user to select TestNG report options.
 Add the `testNG` step to declarative Pipeline in a `post` section.
 
 ```
