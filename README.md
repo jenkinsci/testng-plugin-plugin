@@ -131,3 +131,8 @@ Current releases of the TestNG plugin always escape test description and test ex
 If test description or test exceptions messages must not be escaped and administrators accept the risk of disabling this security safeguard, set the Java property
 `hudson.plugins.testng.Publisher.allowUnescapedHTML=true`
 from the command line that starts the Jenkins controller.
+
+## Release Notes
+
+* For recent versions, see [GitHub Releases](https://github.com/jenkinsci/testng-plugin-plugin/releases)
+* For versions 1.15 and older, see the [changelog archive](https://github.com/jenkinsci/testng-plugin-plugin/blob/552.va20eb2369116/CHANGELOG.md)
