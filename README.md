@@ -13,6 +13,10 @@ The data is parsed using the output generated using
 trend graph and all details about which tests that failed are also
 presented.
 
+## Plugin tutorial
+
+[![User tutorial by Darin Pope](images/plugin-tutorial-video.png)](https://www.youtube.com/watch?v=Mr0mohlaQEY)
+
 ## Features
 
 The page layouts are intentionally designed to look very similar to
