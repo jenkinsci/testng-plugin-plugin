@@ -457,7 +457,7 @@ public class Publisher extends Recorder implements SimpleBuildStep {
         }
 
         @Override
-        public hudson.tasks.Publisher newInstance(@NonNull StaplerRequest req, JSONObject formData)
+        public hudson.tasks.Publisher newInstance(@NonNull StaplerRequest2 req, JSONObject formData)
                 throws FormException {
             return req.bindJSON(Publisher.class, formData);
         }
