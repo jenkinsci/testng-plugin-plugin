@@ -61,8 +61,8 @@
   <properties>
     <changelist>999999-SNAPSHOT</changelist>
     <gitHubRepo>jenkinsci/${project.artifactId}-plugin</gitHubRepo>
-    <jenkins.baseline>2.440</jenkins.baseline>
-    <jenkins.version>${jenkins.baseline}.3</jenkins.version>
+    <jenkins.baseline>2.452</jenkins.baseline>
+    <jenkins.version>${jenkins.baseline}.4</jenkins.version>
     <spotbugs.effort>Max</spotbugs.effort>
     <!-- Not yet ready for Low threshold, too many warnings to resolve -->
     <spotbugs.threshold>Medium</spotbugs.threshold>
@@ -74,7 +74,7 @@
       <dependency>
         <groupId>io.jenkins.tools.bom</groupId>
         <artifactId>bom-${jenkins.baseline}.x</artifactId>
-        <version>3435.v238d66a_043fb_</version>
+        <version>3482.vc10d4f6da_28a_</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
