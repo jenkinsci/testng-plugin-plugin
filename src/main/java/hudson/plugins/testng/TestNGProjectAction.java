@@ -17,8 +17,8 @@ import jenkins.model.lazy.LazyBuildMixIn;
 import jenkins.model.lazy.LazyBuildMixIn.LazyLoadingJob;
 import org.jfree.chart.JFreeChart;
 import org.kohsuke.stapler.Stapler;
-import org.kohsuke.stapler.StaplerRequest;
-import org.kohsuke.stapler.StaplerResponse;
+import org.kohsuke.stapler.StaplerRequest2;
+import org.kohsuke.stapler.StaplerResponse2;
 
 /**
  * Action to associate the TestNG reports with the project
@@ -110,7 +110,7 @@ public class TestNGProjectAction extends TestResultProjectAction implements Prom
      * @throws IOException -
      */
     // @org.kohsuke.stapler.verb.POST // POST blocks graph rendering in groovy web page
-    public void doGraph(final StaplerRequest req, StaplerResponse rsp) throws IOException {
+    public void doGraph(final StaplerRequest2 req, StaplerResponse2 rsp) throws IOException {
         if (newGraphNotNeeded(req, rsp)) {
             return;
         }
@@ -139,13 +139,13 @@ public class TestNGProjectAction extends TestResultProjectAction implements Prom
      * @param rsp response
      * @return true, if new image does NOT need to be generated, false otherwise
      */
-    private boolean newGraphNotNeeded(final StaplerRequest req, StaplerResponse rsp) {
+    private boolean newGraphNotNeeded(final StaplerRequest2 req, StaplerResponse2 rsp) {
         Calendar t = getProject().getLastCompletedBuild().getTimestamp();
         return req.checkIfModified(t, rsp);
     }
 
     // @org.kohsuke.stapler.verb.POST // POST blocks rendering in groovy defined web page
-    public void doGraphMap(final StaplerRequest req, StaplerResponse rsp) throws IOException {
+    public void doGraphMap(final StaplerRequest2 req, StaplerResponse2 rsp) throws IOException {
         if (newGraphNotNeeded(req, rsp)) {
             return;
         }

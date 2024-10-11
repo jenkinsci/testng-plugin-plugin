@@ -10,8 +10,8 @@ import hudson.util.Graph;
 import java.io.IOException;
 import java.util.*;
 import org.jfree.chart.JFreeChart;
-import org.kohsuke.stapler.StaplerRequest;
-import org.kohsuke.stapler.StaplerResponse;
+import org.kohsuke.stapler.StaplerRequest2;
+import org.kohsuke.stapler.StaplerResponse2;
 import org.kohsuke.stapler.export.Exported;
 import org.kohsuke.stapler.verb.POST;
 
@@ -242,7 +242,7 @@ public class MethodResult extends BaseResult {
      * @throws IOException on IO error
      */
     @POST
-    public void doGraph(final StaplerRequest req, StaplerResponse rsp) throws IOException {
+    public void doGraph(final StaplerRequest2 req, StaplerResponse2 rsp) throws IOException {
         // Test result graphs should be visible to any user
         // with READ permission. Declaring a checkPermission
         // would be redundant.
@@ -261,7 +261,7 @@ public class MethodResult extends BaseResult {
      * @throws IOException on IO error
      */
     @POST
-    public void doGraphMap(final StaplerRequest req, StaplerResponse rsp) throws IOException {
+    public void doGraphMap(final StaplerRequest2 req, StaplerResponse2 rsp) throws IOException {
         Graph g = getGraph(req, rsp);
         if (g != null) {
             g.doMap(req, rsp);
@@ -275,7 +275,7 @@ public class MethodResult extends BaseResult {
      * @param rsp response
      * @return a graph
      */
-    private hudson.util.Graph getGraph(final StaplerRequest req, StaplerResponse rsp) {
+    private hudson.util.Graph getGraph(final StaplerRequest2 req, StaplerResponse2 rsp) {
         Calendar t = getRun().getParent().getLastCompletedBuild().getTimestamp();
         if (req.checkIfModified(t, rsp)) {
             return null;
