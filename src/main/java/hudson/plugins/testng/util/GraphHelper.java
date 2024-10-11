@@ -31,8 +31,8 @@ import org.jfree.data.category.CategoryDataset;
 import org.jfree.ui.RectangleEdge;
 import org.jfree.ui.RectangleInsets;
 import org.kohsuke.stapler.Stapler;
-import org.kohsuke.stapler.StaplerRequest;
-import org.kohsuke.stapler.StaplerResponse;
+import org.kohsuke.stapler.StaplerRequest2;
+import org.kohsuke.stapler.StaplerResponse2;
 
 /** Helper class for trend graph generation */
 @SuppressFBWarnings(
@@ -43,12 +43,12 @@ public class GraphHelper {
     /** Do not instantiate GraphHelper. */
     private GraphHelper() {}
 
-    public static void redirectWhenGraphUnsupported(StaplerResponse rsp, StaplerRequest req) throws IOException {
+    public static void redirectWhenGraphUnsupported(StaplerResponse2 rsp, StaplerRequest2 req) throws IOException {
         // not available. send out error message
         rsp.sendRedirect2(req.getContextPath() + "/images/headless.png");
     }
 
-    public static JFreeChart createChart(final StaplerRequest req, CategoryDataset dataset) {
+    public static JFreeChart createChart(final StaplerRequest2 req, CategoryDataset dataset) {
         final JFreeChart chart = ChartFactory.createStackedAreaChart(
                 null, // chart title
                 null, // unused
@@ -140,7 +140,7 @@ public class GraphHelper {
      * @return the chart
      */
     public static JFreeChart createMethodChart(
-            StaplerRequest req,
+            StaplerRequest2 req,
             final CategoryDataset dataset,
             final Map<NumberOnlyBuildLabel, String> statusMap,
             final String methodUrl) {
