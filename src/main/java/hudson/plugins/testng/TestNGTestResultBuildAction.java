@@ -11,6 +11,7 @@ import hudson.tasks.junit.CaseResult;
 import hudson.tasks.test.AbstractTestResultAction;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.io.Serial;
 import java.io.Serializable;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
@@ -36,6 +37,7 @@ public class TestNGTestResultBuildAction extends AbstractTestResultAction
     private static final Logger LOGGER = Logger.getLogger(TestNGTestResultBuildAction.class.getName());
 
     /** Unique identifier for this class. */
+    @Serial
     private static final long serialVersionUID = 31415926L;
 
     /**

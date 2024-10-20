@@ -216,10 +216,10 @@ public class Publisher extends Recorder implements SimpleBuildStep {
         }
 
         String pathsPattern;
-        if (build instanceof AbstractBuild) {
+        if (build instanceof AbstractBuild<?, ?> abstractBuild) {
             // replace any variables in the user specified pattern
             EnvVars env = build.getEnvironment(listener);
-            env.overrideAll(((AbstractBuild) build).getBuildVariables());
+            env.overrideAll(abstractBuild.getBuildVariables());
             pathsPattern = env.expand(reportFilenamePattern);
         } else {
             pathsPattern = reportFilenamePattern;
@@ -268,48 +268,45 @@ public class Publisher extends Recorder implements SimpleBuildStep {
             } else {
                 if (thresholdMode == 1) { // number of tests
                     if (results.getFailCount() > failedFails) {
-                        logger.println(String.format(
-                                "%d tests failed, which exceeded threshold of %d. Marking build as FAILURE",
-                                results.getFailCount(), failedFails));
+                        logger.println("%d tests failed, which exceeded threshold of %d. Marking build as FAILURE"
+                                .formatted(results.getFailCount(), failedFails));
                         build.setResult(Result.FAILURE);
                     } else if (results.getSkipCount() > failedSkips) {
-                        logger.println(String.format(
-                                "%d tests were skipped, which exceeded threshold of %d. Marking build as FAILURE",
-                                results.getSkipCount(), failedSkips));
+                        logger.println("%d tests were skipped, which exceeded threshold of %d. Marking build as FAILURE"
+                                .formatted(results.getSkipCount(), failedSkips));
                         build.setResult(Result.FAILURE);
                     } else if (results.getFailCount() > unstableFails) {
-                        logger.println(String.format(
-                                "%d tests failed, which exceeded threshold of %d. Marking build as UNSTABLE",
-                                results.getFailCount(), unstableFails));
+                        logger.println("%d tests failed, which exceeded threshold of %d. Marking build as UNSTABLE"
+                                .formatted(results.getFailCount(), unstableFails));
                         build.setResult(Result.UNSTABLE);
                     } else if (results.getSkipCount() > unstableSkips) {
-                        logger.println(String.format(
-                                "%d tests were skipped, which exceeded threshold of %d. Marking build as UNSTABLE",
-                                results.getSkipCount(), unstableSkips));
+                        logger.println(
+                                "%d tests were skipped, which exceeded threshold of %d. Marking build as UNSTABLE"
+                                        .formatted(results.getSkipCount(), unstableSkips));
                         build.setResult(Result.UNSTABLE);
                     }
                 } else if (thresholdMode == 2) { // percentage of tests
                     float failedPercent = 100 * results.getFailCount() / (float) results.getTotalCount();
                     float skipPercent = 100 * results.getSkipCount() / (float) results.getTotalCount();
                     if (failedPercent > failedFails) {
-                        logger.println(String.format(
-                                "%f%% of tests failed, which exceeded threshold of %d%%. Marking build as FAILURE",
-                                failedPercent, failedFails));
+                        logger.println(
+                                "%f%% of tests failed, which exceeded threshold of %d%%. Marking build as FAILURE"
+                                        .formatted(failedPercent, failedFails));
                         build.setResult(Result.FAILURE);
                     } else if (skipPercent > failedSkips) {
-                        logger.println(String.format(
-                                "%f%% of tests were skipped, which exceeded threshold of %d%%. Marking build as FAILURE",
-                                skipPercent, failedSkips));
+                        logger.println(
+                                "%f%% of tests were skipped, which exceeded threshold of %d%%. Marking build as FAILURE"
+                                        .formatted(skipPercent, failedSkips));
                         build.setResult(Result.FAILURE);
                     } else if (failedPercent > unstableFails) {
-                        logger.println(String.format(
-                                "%f%% of tests failed, which exceeded threshold of %d%%. Marking build as UNSTABLE",
-                                failedPercent, unstableFails));
+                        logger.println(
+                                "%f%% of tests failed, which exceeded threshold of %d%%. Marking build as UNSTABLE"
+                                        .formatted(failedPercent, unstableFails));
                         build.setResult(Result.UNSTABLE);
                     } else if (skipPercent > unstableSkips) {
-                        logger.println(String.format(
-                                "%f%% of tests were skipped, which exceeded threshold of %d%%. Marking build as UNSTABLE",
-                                skipPercent, unstableSkips));
+                        logger.println(
+                                "%f%% of tests were skipped, which exceeded threshold of %d%%. Marking build as UNSTABLE"
+                                        .formatted(skipPercent, unstableSkips));
                         build.setResult(Result.UNSTABLE);
                     }
                 } else {
