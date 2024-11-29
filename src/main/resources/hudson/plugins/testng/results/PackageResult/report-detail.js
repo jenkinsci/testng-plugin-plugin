@@ -14,7 +14,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const showAllButton = document.querySelector(".testng-show-all-exec-methods");
     if (showAllButton !== null) {
-        showAllButton.addEventListener("click", () => {
+        showAllButton.addEventListener("click", (event) => {
+            event.preventDefault();
             showAllExecMthds();
         });
     }

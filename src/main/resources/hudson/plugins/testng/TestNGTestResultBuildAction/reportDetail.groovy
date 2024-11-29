@@ -14,7 +14,7 @@ script(src: "${resURL}/plugin/testng-plugin/js/toggle_mthd_summary.js")
 h2("Failed Tests")
 
 if (my.result.failCount != 0) {
-    a(class: "testng-toggle-table", "data-toggle-table-id": "fail-tbl") {
+    a(href: "", class: "testng-toggle-table", "data-toggle-table-id": "fail-tbl") {
         text("hide/expand the table")
     }
     table(id:"fail-tbl", border:"1px", class:"pane sortable") {
@@ -34,11 +34,11 @@ if (my.result.failCount != 0) {
                 def failedTestSafeUpUrl = Functions.jsStringEscape(failedTest.upUrl)
                 tr() {
                     td(align: "left") {
-                        a(id: "${failedTest.id}-showlink", class: "testng-show-stack-trace",
+                        a(href: "", id: "${failedTest.id}-showlink", class: "testng-show-stack-trace",
                                 "data-failed-test-safe-id": "${failedTestSafeId}", "data-failed-test-safe-up-url": "${failedTestSafeUpUrl}/summary") {
                             text(">>>")
                         }
-                        a(style: "display:none", id: "${failedTest.id}-hidelink", class: "testng-hide-stack-trace",
+                        a(href: "", style: "display:none", id: "${failedTest.id}-hidelink", class: "testng-hide-stack-trace",
                                 "data-failed-test-safe-id": "${failedTestSafeId}") {
                             text("<<<")
                         }
@@ -78,7 +78,7 @@ if (my.result.skippedConfigCount != 0) {
 
 h2("All Tests (grouped by their packages)")
 
-a(class: "testng-toggle-table", "data-toggle-table-id": "all-tbl") {
+a(href: "", class: "testng-toggle-table", "data-toggle-table-id": "all-tbl") {
     text("hide/expand the table")
 }
 
@@ -160,7 +160,7 @@ table(id:"all-tbl", border:"1px", class:"pane sortable") {
  * @return nothing
  */
 def printMethods(type, tableName, methodList, showMoreArrows) {
-    a(class: "testng-toggle-table", "data-toggle-table-id": "${tableName}") {
+    a(href: "", class: "testng-toggle-table", "data-toggle-table-id": "${tableName}") {
         text("hide/expand the table")
     }
     table(id:tableName, border:"1px", class:"pane sortable") {
@@ -178,11 +178,11 @@ def printMethods(type, tableName, methodList, showMoreArrows) {
                 tr() {
                     td(align: "left") {
                         if (showMoreArrows) {
-                            a(id: "${method.id}-showlink", class: "testng-show-stack-trace",
+                            a(href: "", id: "${method.id}-showlink", class: "testng-show-stack-trace",
                                     "data-failed-test-safe-id": "${methodSafeId}", "data-failed-test-safe-up-url": "${methodSafeUpUrl}/summary") {
                                 text(">>>")
                             }
-                            a(style: "display:none", id: "${method.id}-hidelink", class: "testng-hide-stack-trace",
+                            a(href: "", style: "display:none", id: "${method.id}-hidelink", class: "testng-hide-stack-trace",
                                     "data-failed-test-safe-id": "${methodSafeId}") {
                                 text("<<<")
                             }

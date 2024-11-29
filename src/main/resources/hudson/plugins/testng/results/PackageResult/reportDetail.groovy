@@ -13,7 +13,7 @@ st.bind(var:"thisPkgResult", value: my)
 st.adjunct(includes: "hudson.plugins.testng.results.PackageResult.report-detail")
 
 h2("All Classes")
-a(class: "testng-toggle-table", "data-toggle-table-id": "allClasses") {
+a(href: "", class: "testng-toggle-table", "data-toggle-table-id": "allClasses") {
     text("hide/expand the table")
 }
 
@@ -93,13 +93,13 @@ if (my.sortedTestMethodsByStartTime) {
         div(id:"showAllLink") {
             p() {
                 text("Showing only first ${my.MAX_EXEC_MTHD_LIST_SIZE} test methods. ")
-                a(class: "testng-show-all-exec-methods") {
+                a(href: "", class: "testng-show-all-exec-methods") {
                     text("Click to see all")
                 }
             }
         }
     }
-    a(class: "testng-toggle-table", "data-toggle-table-id": "exec-tbl") {
+    a(href: "", class: "testng-toggle-table", "data-toggle-table-id": "exec-tbl") {
         text("hide/expand the table")
     }
     table(border:"1px", class:"pane sortable", id:"exec-tbl") {

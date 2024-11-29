@@ -10,6 +10,7 @@ function toggleTable(id) {
 document.addEventListener("DOMContentLoaded", () => {
     document.querySelectorAll(".testng-toggle-table").forEach((toggle) => {
         toggle.addEventListener("click", (event) => {
+            event.preventDefault();
             const { toggleTableId } = event.target.dataset;
 
             toggleTable(toggleTableId);

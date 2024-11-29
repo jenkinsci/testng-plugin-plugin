@@ -6,6 +6,7 @@ function showMore(id) {
 document.addEventListener("DOMContentLoaded", () => {
     document.querySelectorAll(".testng-show-more").forEach((button) => {
         button.addEventListener("click", (event) => {
+            event.preventDefault();
             const { methodName } = event.target.dataset;
 
             showMore(methodName);

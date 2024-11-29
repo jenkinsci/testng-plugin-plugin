@@ -19,6 +19,7 @@ function hideStackTrace(id) {
 document.addEventListener("DOMContentLoaded", () => {
     document.querySelectorAll(".testng-show-stack-trace").forEach((button) => {
         button.addEventListener("click", (event) => {
+            event.preventDefault();
             const { failedTestSafeId, failedTestSafeUpUrl } = event.target.closest(".testng-show-stack-trace").dataset;
 
             showStackTrace(failedTestSafeId, failedTestSafeUpUrl);
@@ -27,6 +28,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     document.querySelectorAll(".testng-hide-stack-trace").forEach((button) => {
         button.addEventListener("click", (event) => {
+            event.preventDefault();
             const { failedTestSafeId } = event.target.closest(".testng-hide-stack-trace").dataset;
 
             hideStackTrace(failedTestSafeId);

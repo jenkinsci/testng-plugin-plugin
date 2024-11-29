@@ -53,7 +53,7 @@ for (group in my.testRunMap.values()) {
                                 if (method.groups || method.testInstanceName || method.parameters?.size() > 0) {
                                     div(id:"${method.safeName}_1", style:"display:inline") {
                                         text(" (")
-                                        a(class: "testng-show-more", "data-method-name": "${methodJsSafeName}") {
+                                        a(href: "", class: "testng-show-more", "data-method-name": "${methodJsSafeName}") {
                                             raw("&hellip;")
                                         }
                                         text(")")
