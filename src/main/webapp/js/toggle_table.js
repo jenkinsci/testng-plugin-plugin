@@ -6,3 +6,13 @@ function toggleTable(id) {
         document.getElementById(id).style.display = "none";
     }
 }
+
+document.addEventListener("DOMContentLoaded", () => {
+    document.querySelectorAll(".testng-toggle-table").forEach((toggle) => {
+        toggle.addEventListener("click", (event) => {
+            const { toggleTableId } = event.target.dataset;
+
+            toggleTable(toggleTableId);
+        });
+    });
+});

@@ -8,13 +8,13 @@ l = namespace(lib.LayoutTagLib)
 t = namespace("/lib/hudson")
 st = namespace("jelly:stapler")
 
-script(src: "${app.rootUrl}/plugin/testng-plugin/js/toggle_table.js")
-script(src: "${app.rootUrl}/plugin/testng-plugin/js/toggle_mthd_summary.js")
+script(src: "${resURL}/plugin/testng-plugin/js/toggle_table.js")
+script(src: "${resURL}/plugin/testng-plugin/js/toggle_mthd_summary.js")
 
 h2("Failed Tests")
 
 if (my.result.failCount != 0) {
-    a(href: "javascript:toggleTable('fail-tbl')") {
+    a(class: "testng-toggle-table", "data-toggle-table-id": "fail-tbl") {
         text("hide/expand the table")
     }
     table(id:"fail-tbl", border:"1px", class:"pane sortable") {
@@ -34,10 +34,12 @@ if (my.result.failCount != 0) {
                 def failedTestSafeUpUrl = Functions.jsStringEscape(failedTest.upUrl)
                 tr() {
                     td(align: "left") {
-                        a(id: "${failedTest.id}-showlink", href:"javascript:showStackTrace('${failedTestSafeId}', '${failedTestSafeUpUrl}/summary')") {
+                        a(id: "${failedTest.id}-showlink", class: "testng-show-stack-trace",
+                                "data-failed-test-safe-id": "${failedTestSafeId}", "data-failed-test-safe-up-url": "${failedTestSafeUpUrl}/summary") {
                             text(">>>")
                         }
-                        a(style: "display:none", id: "${failedTest.id}-hidelink", href:"javascript:hideStackTrace('${failedTestSafeId}')") {
+                        a(style: "display:none", id: "${failedTest.id}-hidelink", class: "testng-hide-stack-trace",
+                                "data-failed-test-safe-id": "${failedTestSafeId}") {
                             text("<<<")
                         }
                         text(" ")
@@ -76,7 +78,7 @@ if (my.result.skippedConfigCount != 0) {
 
 h2("All Tests (grouped by their packages)")
 
-a(href:"javascript:toggleTable('all-tbl')") {
+a(class: "testng-toggle-table", "data-toggle-table-id": "all-tbl") {
     text("hide/expand the table")
 }
 
@@ -158,7 +160,7 @@ table(id:"all-tbl", border:"1px", class:"pane sortable") {
  * @return nothing
  */
 def printMethods(type, tableName, methodList, showMoreArrows) {
-    a(href: "javascript:toggleTable('${tableName}')") {
+    a(class: "testng-toggle-table", "data-toggle-table-id": "${tableName}") {
         text("hide/expand the table")
     }
     table(id:tableName, border:"1px", class:"pane sortable") {
@@ -176,10 +178,12 @@ def printMethods(type, tableName, methodList, showMoreArrows) {
                 tr() {
                     td(align: "left") {
                         if (showMoreArrows) {
-                            a(id: "${method.id}-showlink", href:"javascript:showStackTrace('${methodSafeId}', '${methodSafeUpUrl}/summary')") {
+                            a(id: "${method.id}-showlink", class: "testng-show-stack-trace",
+                                    "data-failed-test-safe-id": "${methodSafeId}", "data-failed-test-safe-up-url": "${methodSafeUpUrl}/summary") {
                                 text(">>>")
                             }
-                            a(style: "display:none", id: "${method.id}-hidelink", href:"javascript:hideStackTrace('${methodSafeId}')") {
+                            a(style: "display:none", id: "${method.id}-hidelink", class: "testng-hide-stack-trace",
+                                    "data-failed-test-safe-id": "${methodSafeId}") {
                                 text("<<<")
                             }
                             text(" ")
