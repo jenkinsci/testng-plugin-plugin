@@ -7,20 +7,13 @@ l = namespace(lib.LayoutTagLib)
 t = namespace("/lib/hudson")
 st = namespace("jelly:stapler")
 
-script(src:"${app.rootUrl}/plugin/testng-plugin/js/toggle_table.js")
+script(src:"${resURL}/plugin/testng-plugin/js/toggle_table.js")
 //see https://issues.jenkins-ci.org/browse/JENKINS-18867 & https://issues.jenkins-ci.org/browse/JENKINS-18875
-st.bind(var:"thisPkgResult", value:my)
-script() {
-    text("//Loads data for all the methods")
-    text("\nfunction showAllExecMthds() {")
-    text("\nthisPkgResult.getAllSortedTestMethodsByStartTime(function(t) {")
-    text("\ndocument.getElementById('sortedMethods').innerHTML = t.responseObject();")
-    text("\n})")
-    text("\ndocument.getElementById(\"showAllLink\").style.display = \"none\"; }")
-}
+st.bind(var:"thisPkgResult", value: my)
+st.adjunct(includes: "hudson.plugins.testng.results.PackageResult.report-detail")
 
 h2("All Classes")
-a(href:"javascript:toggleTable('allClasses')") {
+a(class: "testng-toggle-table", "data-toggle-table-id": "allClasses") {
     text("hide/expand the table")
 }
 
@@ -100,13 +93,13 @@ if (my.sortedTestMethodsByStartTime) {
         div(id:"showAllLink") {
             p() {
                 text("Showing only first ${my.MAX_EXEC_MTHD_LIST_SIZE} test methods. ")
-                a(href:"javascript:showAllExecMthds()") {
+                a(class: "testng-show-all-exec-methods") {
                     text("Click to see all")
                 }
             }
         }
     }
-    a(href:"javascript:toggleTable('exec-tbl')") {
+    a(class: "testng-toggle-table", "data-toggle-table-id": "exec-tbl") {
         text("hide/expand the table")
     }
     table(border:"1px", class:"pane sortable", id:"exec-tbl") {
@@ -135,13 +128,4 @@ if (my.sortedTestMethodsByStartTime) {
     }
 } else {
     div("No Tests found or all Tests were skipped")
-}
-
-//following script loads the initial table data
-script() {
-    text("\nvar foo = ")
-    st.bind(value:my)
-    text("\nfoo.getFirstXSortedTestMethodsByStartTime(function(t) {")
-    text("\ndocument.getElementById('sortedMethods').innerHTML = t.responseObject();")
-    text("\n})")
 }
