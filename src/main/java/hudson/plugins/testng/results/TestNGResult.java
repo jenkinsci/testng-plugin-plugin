@@ -3,6 +3,7 @@ package hudson.plugins.testng.results;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import hudson.model.Run;
 import hudson.plugins.testng.PluginImpl;
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.*;
 import org.kohsuke.stapler.export.Exported;
@@ -17,7 +18,9 @@ import org.kohsuke.stapler.export.Exported;
 @SuppressFBWarnings(value = "SE_BAD_FIELD", justification = "ArrayList is Serializable")
 public class TestNGResult extends BaseResult implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = -3491974223665601995L;
+
     private List<TestNGTestResult> testList = new ArrayList<TestNGTestResult>();
     private List<MethodResult> passedTests = new ArrayList<MethodResult>();
     private List<MethodResult> failedTests = new ArrayList<MethodResult>();
@@ -169,12 +172,12 @@ public class TestNGResult extends BaseResult implements Serializable {
 
     @Override
     public String toString() {
-        return String.format(
-                "TestNGResult {"
+        return ("TestNGResult {"
                         + "totalTests=%d, "
                         + "failedTests=%d, skippedTests=%d, failedConfigs=%d, "
-                        + "skippedConfigs=%d}", // name,
-                passCount + failCount + skipCount, failCount, skipCount, failedConfigCount, skippedConfigCount);
+                        + "skippedConfigs=%d}")
+                .formatted( // name,
+                        passCount + failCount + skipCount, failCount, skipCount, failedConfigCount, skippedConfigCount);
     }
 
     /** Updates the calculated fields */
