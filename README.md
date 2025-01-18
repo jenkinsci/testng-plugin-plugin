@@ -1,6 +1,6 @@
 # TestNG Plugin
 
-This plugin allows you to publish [TestNG](https://testng.org/doc/) test results generated
+This plugin allows you to publish [TestNG](https://testng.org/#_testng_documentation) test results generated
 using `org.testng.reporters.XMLReporter`. TestNG result xml file contains
 more information than the junit report xml file . This plugin exposes
 the extra information in graph and table reports.
