@@ -11,6 +11,7 @@ import hudson.tasks.junit.CaseResult;
 import hudson.tasks.test.AbstractTestResultAction;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.io.Serial;
 import java.io.Serializable;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
@@ -21,8 +22,8 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import jenkins.tasks.SimpleBuildStep;
-import org.kohsuke.stapler.StaplerRequest;
-import org.kohsuke.stapler.StaplerResponse;
+import org.kohsuke.stapler.StaplerRequest2;
+import org.kohsuke.stapler.StaplerResponse2;
 
 /**
  * TestNG build action that exposes the results per build
@@ -36,6 +37,7 @@ public class TestNGTestResultBuildAction extends AbstractTestResultAction
     private static final Logger LOGGER = Logger.getLogger(TestNGTestResultBuildAction.class.getName());
 
     /** Unique identifier for this class. */
+    @Serial
     private static final long serialVersionUID = 31415926L;
 
     /**
@@ -167,7 +169,7 @@ public class TestNGTestResultBuildAction extends AbstractTestResultAction
         return PluginImpl.URL;
     }
 
-    public Object getDynamic(String token, StaplerRequest req, StaplerResponse rsp) {
+    public Object getDynamic(String token, StaplerRequest2 req, StaplerResponse2 rsp) {
         return getResult().getDynamic(token, req, rsp);
     }
 
