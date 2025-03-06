@@ -1,5 +1,6 @@
 package hudson.plugins.testng;
 
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -11,43 +12,44 @@ import hudson.model.FreeStyleProject;
 import hudson.model.Result;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
 import java.io.PrintStream;
 import java.util.Map;
 import java.util.TreeMap;
 import org.jenkinsci.plugins.structs.describable.DescribableModel;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 import org.jvnet.hudson.test.Issue;
 import org.jvnet.hudson.test.JenkinsRule;
 import org.jvnet.hudson.test.WithoutJenkins;
+import org.jvnet.hudson.test.junit.jupiter.WithJenkins;
 
 /**
  * Tests the {@link Publisher}
  *
  * @author nullin
  */
+@WithJenkins
 public class PublisherTest {
 
-    @Rule
-    public JenkinsRule r = new JenkinsRule();
+    private JenkinsRule r;
 
-    @Rule
-    public TemporaryFolder tmp = new TemporaryFolder();
+    @TempDir
+    private File tmp;
 
     /** Reset SECURITY-2788 escape hatch before each test. */
-    @Before
-    public void disallowUnescapedHTML() {
+    @BeforeEach
+    void disallowUnescapedHTML(JenkinsRule r) {
+        this.r = r;
         Publisher.setAllowUnescapedHTML(false);
     }
 
     @WithoutJenkins
     @Test
-    public void testLocateReports() throws Exception {
+    void testLocateReports() throws Exception {
         // Create a temporary workspace in the system
-        File w = tmp.newFolder();
+        File w = newFolder(tmp, "junit");
         FilePath workspace = new FilePath(w);
         // Create 4 files in the workspace
         File f1 = File.createTempFile("testng-results", ".xml", w);
@@ -71,22 +73,22 @@ public class PublisherTest {
         // Look for files in the entire workspace recursively without providing
         // the includes parameter
         FilePath[] reports = Publisher.locateReports(workspace, "**/testng*.xml");
-        Assert.assertEquals(2, reports.length);
+        assertEquals(2, reports.length);
         // Generate a includes string and look for files
         String includes = f1.getName() + "; " + f2.getName() + "; " + d1.getName();
         reports = Publisher.locateReports(workspace, includes);
-        Assert.assertEquals(3, reports.length);
+        assertEquals(3, reports.length);
         // Save files in local workspace
         FilePath local = workspace.child("publishertest_localfolder");
         boolean saved = Publisher.saveReports(local, reports, System.out);
-        Assert.assertTrue(saved);
-        Assert.assertEquals(3, local.list().size());
+        assertTrue(saved);
+        assertEquals(3, local.list().size());
         local.deleteRecursive();
     }
 
     @WithoutJenkins
     @Test
-    public void testBuildAborted() throws Exception {
+    void testBuildAborted() throws Exception {
         Publisher publisher = new Publisher();
         publisher.setReportFilenamePattern("testng.xml");
         publisher.setEscapeTestDescp(false);
@@ -105,11 +107,11 @@ public class PublisherTest {
         publisher.perform(buildMock, buildMock.getWorkspace(), launcherMock, listenerMock);
 
         String str = os.toString();
-        Assert.assertTrue(str.contains("Build Aborted"));
+        assertTrue(str.contains("Build Aborted"));
     }
 
     @Test
-    public void testRoundTrip() throws Exception {
+    void testRoundTrip() throws Exception {
         FreeStyleProject p = r.createFreeStyleProject();
         Publisher before = new Publisher();
         before.setReportFilenamePattern("");
@@ -125,15 +127,15 @@ public class PublisherTest {
         p.getPublishersList().add(before);
 
         /* Even though set to false by earlier calls to setters, setting is ignored */
-        Assert.assertTrue(before.getEscapeTestDescp()); // SECURITY-2788 - prevent XSS from test description
-        Assert.assertTrue(before.getEscapeExceptionMsg()); // SECURITY-2788 - prevent XSS from test exception
+        assertTrue(before.getEscapeTestDescp()); // SECURITY-2788 - prevent XSS from test description
+        assertTrue(before.getEscapeExceptionMsg()); // SECURITY-2788 - prevent XSS from test exception
 
         r.submit(r.createWebClient().getPage(p, "configure").getFormByName("config"));
 
         Publisher after = p.getPublishersList().get(Publisher.class);
 
-        Assert.assertTrue(after.getEscapeTestDescp()); // SECURITY-2788 - prevent XSS from test description
-        Assert.assertTrue(after.getEscapeExceptionMsg()); // SECURITY-2788 - prevent XSS from test exception
+        assertTrue(after.getEscapeTestDescp()); // SECURITY-2788 - prevent XSS from test description
+        assertTrue(after.getEscapeExceptionMsg()); // SECURITY-2788 - prevent XSS from test exception
 
         r.assertEqualBeans(before, after, "reportFilenamePattern,escapeTestDescp,escapeExceptionMsg,showFailedBuilds");
     }
@@ -141,45 +143,54 @@ public class PublisherTest {
     @Issue("JENKINS-27121")
     @WithoutJenkins
     @Test
-    public void testDefaultFields() throws Exception {
-        DescribableModel<Publisher> model = new DescribableModel<Publisher>(Publisher.class);
-        Map<String, Object> args = new TreeMap<String, Object>();
+    void testDefaultFields() {
+        DescribableModel<Publisher> model = new DescribableModel<>(Publisher.class);
+        Map<String, Object> args = new TreeMap<>();
         Publisher p = model.instantiate(args);
-        Assert.assertEquals("**/testng-results.xml", p.getReportFilenamePattern());
-        Assert.assertTrue(p.getEscapeExceptionMsg());
-        Assert.assertTrue(p.getEscapeTestDescp());
-        Assert.assertFalse(p.getShowFailedBuilds());
-        Assert.assertEquals(args, model.uninstantiate(model.instantiate(args)));
+        assertEquals("**/testng-results.xml", p.getReportFilenamePattern());
+        assertTrue(p.getEscapeExceptionMsg());
+        assertTrue(p.getEscapeTestDescp());
+        assertFalse(p.getShowFailedBuilds());
+        assertEquals(args, model.uninstantiate(model.instantiate(args)));
         args.put("reportFilenamePattern", "results.xml");
-        Assert.assertEquals(args, model.uninstantiate(model.instantiate(args)));
+        assertEquals(args, model.uninstantiate(model.instantiate(args)));
         args.put("showFailedBuilds", true);
-        Assert.assertEquals(args, model.uninstantiate(model.instantiate(args)));
+        assertEquals(args, model.uninstantiate(model.instantiate(args)));
     }
 
     @Issue("SECURITY-2788")
     @WithoutJenkins
     @Test
-    public void testUnescapedFields() throws Exception {
+    void testUnescapedFields() {
         Publisher.setAllowUnescapedHTML(true);
         DescribableModel<Publisher> model = new DescribableModel<>(Publisher.class);
         Map<String, Object> args = new TreeMap<>();
         Publisher p = model.instantiate(args);
 
-        Assert.assertTrue(p.getEscapeExceptionMsg());
+        assertTrue(p.getEscapeExceptionMsg());
         p.setEscapeExceptionMsg(false);
-        Assert.assertFalse(p.getEscapeExceptionMsg());
+        assertFalse(p.getEscapeExceptionMsg());
         p.setEscapeExceptionMsg(true);
-        Assert.assertTrue(p.getEscapeExceptionMsg());
+        assertTrue(p.getEscapeExceptionMsg());
 
-        Assert.assertTrue(p.getEscapeTestDescp());
+        assertTrue(p.getEscapeTestDescp());
         p.setEscapeTestDescp(false);
-        Assert.assertFalse(p.getEscapeTestDescp());
+        assertFalse(p.getEscapeTestDescp());
         p.setEscapeTestDescp(true);
-        Assert.assertTrue(p.getEscapeTestDescp());
+        assertTrue(p.getEscapeTestDescp());
     }
 
     /* Used by other tests to modify allowUnescapedHTML flag */
     public static void setAllowUnescapedHTML(boolean value) {
         Publisher.setAllowUnescapedHTML(value);
+    }
+
+    private static File newFolder(File root, String... subDirs) throws IOException {
+        String subFolder = String.join("/", subDirs);
+        File result = new File(root, subFolder);
+        if (!result.mkdirs()) {
+            throw new IOException("Couldn't create folders " + root);
+        }
+        return result;
     }
 }

@@ -1,7 +1,9 @@
 package hudson.plugins.testng;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assumptions.assumeFalse;
 
+import hudson.Functions;
 import hudson.Launcher;
 import hudson.model.AbstractBuild;
 import hudson.model.BuildListener;
@@ -24,26 +26,19 @@ import org.htmlunit.html.HtmlPage;
 import org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition;
 import org.jenkinsci.plugins.workflow.job.WorkflowJob;
 import org.jenkinsci.plugins.workflow.job.WorkflowRun;
-import org.junit.ClassRule;
-import org.junit.Rule;
-import org.junit.Test;
-import org.jvnet.hudson.test.BuildWatcher;
+import org.junit.jupiter.api.Test;
 import org.jvnet.hudson.test.Issue;
 import org.jvnet.hudson.test.JenkinsRule;
 import org.jvnet.hudson.test.TestBuilder;
+import org.jvnet.hudson.test.junit.jupiter.WithJenkins;
 
 /**
  * Tests for {@link TestNGTestResultBuildAction}'s view page
  *
  * @author nullin
  */
-public class TestNGTestResultBuildActionTest {
-
-    @ClassRule
-    public static BuildWatcher buildWatcher = new BuildWatcher();
-
-    @Rule
-    public JenkinsRule r = new JenkinsRule();
+@WithJenkins
+class TestNGTestResultBuildActionTest {
 
     /**
      * Test using precheckins xml
@@ -51,7 +46,7 @@ public class TestNGTestResultBuildActionTest {
      * @throws Exception
      */
     @Test
-    public void testBuildAction_1() throws Exception {
+    void testBuildAction_1(JenkinsRule r) throws Exception {
         FreeStyleProject p = r.createFreeStyleProject();
         Publisher publisher = new Publisher();
         publisher.setReportFilenamePattern("testng.xml");
@@ -80,7 +75,7 @@ public class TestNGTestResultBuildActionTest {
         List<HtmlElement> elements = DomNodeUtil.selectNodes(
                 page, "//table[substring(@id, string-length(@id)- string-length('-tbl') +1)]/*/tr/td");
         for (HtmlElement element : elements) {
-            assertTrue(!element.getTextContent().isEmpty());
+            assertFalse(element.getTextContent().isEmpty());
         }
 
         // ensure only one failed test
@@ -122,16 +117,16 @@ public class TestNGTestResultBuildActionTest {
         // check list of packages and links
         elements = DomNodeUtil.selectNodes(page, "//table[@id='all-tbl']/tbody/tr/td/a");
         Map<String, PackageResult> pkgMap = testngResult.getPackageMap();
-        assertEquals(pkgMap.keySet().size(), elements.size());
+        assertEquals(pkgMap.size(), elements.size());
 
         // verify links to packages
-        List<String> linksInPage = new ArrayList<String>();
+        List<String> linksInPage = new ArrayList<>();
         for (HtmlElement element : elements) {
             linksInPage.add(element.getAttribute("href"));
         }
         Collections.sort(linksInPage);
 
-        List<String> linksFromResult = new ArrayList<String>();
+        List<String> linksFromResult = new ArrayList<>();
         for (PackageResult pr : pkgMap.values()) {
             linksFromResult.add(pr.getName());
         }
@@ -153,7 +148,7 @@ public class TestNGTestResultBuildActionTest {
      * @throws Exception
      */
     @Test
-    public void testBuildAction_2() throws Exception {
+    void testBuildAction_2(JenkinsRule r) throws Exception {
         FreeStyleProject p = r.createFreeStyleProject();
         Publisher publisher = new Publisher();
         publisher.setReportFilenamePattern("testng.xml");
@@ -182,7 +177,7 @@ public class TestNGTestResultBuildActionTest {
         List<HtmlElement> elements = DomNodeUtil.selectNodes(
                 page, "//table[substring(@id, string-length(@id)- string-length('-tbl') +1)]/*/tr/td");
         for (HtmlElement element : elements) {
-            assertTrue(!element.getTextContent().isEmpty());
+            assertFalse(element.getTextContent().isEmpty());
         }
 
         // ensure only one failed test
@@ -204,16 +199,16 @@ public class TestNGTestResultBuildActionTest {
         // check list of packages and links
         elements = DomNodeUtil.selectNodes(page, "//table[@id='all-tbl']/tbody/tr/td/a");
         Map<String, PackageResult> pkgMap = testngResult.getPackageMap();
-        assertEquals(pkgMap.keySet().size(), elements.size());
+        assertEquals(pkgMap.size(), elements.size());
 
         // verify links to packages
-        List<String> linksInPage = new ArrayList<String>();
+        List<String> linksInPage = new ArrayList<>();
         for (HtmlElement element : elements) {
             linksInPage.add(element.getAttribute("href"));
         }
         Collections.sort(linksInPage);
 
-        List<String> linksFromResult = new ArrayList<String>();
+        List<String> linksFromResult = new ArrayList<>();
         for (PackageResult pr : pkgMap.values()) {
             linksFromResult.add(pr.getName());
         }
@@ -231,7 +226,7 @@ public class TestNGTestResultBuildActionTest {
     }
 
     @Test
-    public void test_failed_config_default_setting() throws Exception {
+    void test_failed_config_default_setting(JenkinsRule r) throws Exception {
         FreeStyleProject p = r.createFreeStyleProject();
         Publisher publisher = new Publisher();
         publisher.setReportFilenamePattern("testng.xml");
@@ -257,7 +252,7 @@ public class TestNGTestResultBuildActionTest {
     }
 
     @Test
-    public void test_failed_config_enabled_failedbuild() throws Exception {
+    void test_failed_config_enabled_failedbuild(JenkinsRule r) throws Exception {
         FreeStyleProject p = r.createFreeStyleProject();
         Publisher publisher = new Publisher();
         publisher.setReportFilenamePattern("testng.xml");
@@ -284,7 +279,7 @@ public class TestNGTestResultBuildActionTest {
     }
 
     @Test
-    public void test_threshold_for_skips_default() throws Exception {
+    void test_threshold_for_skips_default(JenkinsRule r) throws Exception {
         FreeStyleProject p = r.createFreeStyleProject();
         Publisher publisher = new Publisher();
         publisher.setReportFilenamePattern("testng.xml");
@@ -307,7 +302,7 @@ public class TestNGTestResultBuildActionTest {
     }
 
     @Test
-    public void test_threshold_for_skips_failure() throws Exception {
+    void test_threshold_for_skips_failure(JenkinsRule r) throws Exception {
         FreeStyleProject p = r.createFreeStyleProject();
         Publisher publisher = new Publisher();
         publisher.setReportFilenamePattern("testng.xml");
@@ -332,7 +327,7 @@ public class TestNGTestResultBuildActionTest {
     }
 
     @Test
-    public void test_threshold_for_skips_unstable() throws Exception {
+    void test_threshold_for_skips_unstable(JenkinsRule r) throws Exception {
         FreeStyleProject p = r.createFreeStyleProject();
         Publisher publisher = new Publisher();
         publisher.setReportFilenamePattern("testng.xml");
@@ -357,15 +352,14 @@ public class TestNGTestResultBuildActionTest {
     }
 
     @Test
-    public void test_threshold_for_fails_default() throws Exception {
-        if (isWindows()) {
-            /* Fails to delete a file on Windows agents of ci.jenkins.io.
-             * Likely indicates a bug somewhere, but I'd rather have most
-             * of the tests passing on ci.jenkins.io Windows rather than
-             * blocking all Windows tests until this can be investigated.
-             */
-            return;
-        }
+    void test_threshold_for_fails_default(JenkinsRule r) throws Exception {
+        assumeFalse(Functions.isWindows());
+        /* Fails to delete a file on Windows agents of ci.jenkins.io.
+         * Likely indicates a bug somewhere, but I'd rather have most
+         * of the tests passing on ci.jenkins.io Windows rather than
+         * blocking all Windows tests until this can be investigated.
+         */
+
         FreeStyleProject p = r.createFreeStyleProject();
         Publisher publisher = new Publisher();
         publisher.setReportFilenamePattern("testng.xml");
@@ -389,15 +383,14 @@ public class TestNGTestResultBuildActionTest {
 
     @Issue("JENKINS-27121")
     @Test
-    public void test_threshold_for_fails_default_pipeline() throws Exception {
-        if (isWindows()) {
-            /* Fails to delete a file on Windows agents of ci.jenkins.io.
-             * Likely indicates a bug somewhere, but I'd rather have most
-             * of the tests passing on ci.jenkins.io Windows rather than
-             * blocking all Windows tests until this can be investigated.
-             */
-            return;
-        }
+    void test_threshold_for_fails_default_pipeline(JenkinsRule r) throws Exception {
+        assumeFalse(Functions.isWindows());
+        /* Fails to delete a file on Windows agents of ci.jenkins.io.
+         * Likely indicates a bug somewhere, but I'd rather have most
+         * of the tests passing on ci.jenkins.io Windows rather than
+         * blocking all Windows tests until this can be investigated.
+         */
+
         WorkflowJob p = r.jenkins.createProject(WorkflowJob.class, "p");
         String contents = CommonUtil.getContents(Constants.TESTNG_FAILED_TEST);
         p.setDefinition(new CpsFlowDefinition(
@@ -411,23 +404,22 @@ public class TestNGTestResultBuildActionTest {
         assertNotNull(action);
         TestNGResult result = action.getResult();
         assertEquals(
-                "checking result details",
                 "TestNGResult {totalTests=2, failedTests=1, skippedTests=0, failedConfigs=0, skippedConfigs=0}",
-                result.toString());
+                result.toString(),
+                "checking result details");
         r.assertLogContains("tests failed, which exceeded threshold of 0%. Marking build as UNSTABLE", build);
     }
 
     @Issue("JENKINS-27121")
     @Test
-    public void test_threshold_for_fails_default_pipeline_using_symbol() throws Exception {
-        if (isWindows()) {
-            /* Fails to delete a file on Windows agents of ci.jenkins.io.
-             * Likely indicates a bug somewhere, but I'd rather have most
-             * of the tests passing on ci.jenkins.io Windows rather than
-             * blocking all Windows tests until this can be investigated.
-             */
-            return;
-        }
+    void test_threshold_for_fails_default_pipeline_using_symbol(JenkinsRule r) throws Exception {
+        assumeFalse(Functions.isWindows());
+        /* Fails to delete a file on Windows agents of ci.jenkins.io.
+         * Likely indicates a bug somewhere, but I'd rather have most
+         * of the tests passing on ci.jenkins.io Windows rather than
+         * blocking all Windows tests until this can be investigated.
+         */
+
         WorkflowJob p = r.jenkins.createProject(WorkflowJob.class, "p");
         String contents = CommonUtil.getContents(Constants.TESTNG_FAILED_TEST);
         p.setDefinition(new CpsFlowDefinition(
@@ -439,14 +431,14 @@ public class TestNGTestResultBuildActionTest {
         assertNotNull(action);
         TestNGResult result = action.getResult();
         assertEquals(
-                "checking result details",
                 "TestNGResult {totalTests=2, failedTests=1, skippedTests=0, failedConfigs=0, skippedConfigs=0}",
-                result.toString());
+                result.toString(),
+                "checking result details");
         r.assertLogContains("tests failed, which exceeded threshold of 0%. Marking build as UNSTABLE", build);
     }
 
     @Test
-    public void test_threshold_for_fails_failure() throws Exception {
+    void test_threshold_for_fails_failure(JenkinsRule r) throws Exception {
         FreeStyleProject p = r.createFreeStyleProject();
         Publisher publisher = new Publisher();
         publisher.setReportFilenamePattern("testng.xml");
@@ -471,7 +463,7 @@ public class TestNGTestResultBuildActionTest {
     }
 
     @Test
-    public void test_threshold_for_fails_unstable() throws Exception {
+    void test_threshold_for_fails_unstable(JenkinsRule r) throws Exception {
         FreeStyleProject p = r.createFreeStyleProject();
         Publisher publisher = new Publisher();
         publisher.setReportFilenamePattern("testng.xml");
@@ -492,9 +484,5 @@ public class TestNGTestResultBuildActionTest {
         // run build
         FreeStyleBuild build = p.scheduleBuild2(0).get();
         assertSame(Result.UNSTABLE, build.getResult());
-    }
-
-    private boolean isWindows() {
-        return java.io.File.pathSeparatorChar == ';';
     }
 }

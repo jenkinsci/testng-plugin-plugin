@@ -1,7 +1,6 @@
 package hudson.plugins.testng;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 import hudson.Launcher;
 import hudson.model.AbstractBuild;
@@ -14,32 +13,32 @@ import hudson.tasks.test.TestResult;
 import hudson.util.ChartUtil;
 import hudson.util.DataSetBuilder;
 import java.io.IOException;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.jvnet.hudson.test.JenkinsRule;
 import org.jvnet.hudson.test.TestBuilder;
+import org.jvnet.hudson.test.junit.jupiter.WithJenkins;
 
 /**
  * Tests for {@link TestNGProjectAction}
  *
  * @author nullin
  */
-public class TestNGProjectActionTest {
+@WithJenkins
+class TestNGProjectActionTest {
 
-    @Rule
-    public JenkinsRule r = new JenkinsRule();
+    private JenkinsRule r;
 
-    @Before
-    public void allowUnescapedHTML() {
+    @BeforeEach
+    void allowUnescapedHTML(JenkinsRule r) {
+        this.r = r;
         /* Open the SECURITY-2788 escape hatch */
         Publisher.setAllowUnescapedHTML(true);
     }
 
-    @After
-    public void disallowUnescapedHTML() {
+    @AfterEach
+    void disallowUnescapedHTML() {
         /* Close the SECURITY-2788 escape hatch */
         Publisher.setAllowUnescapedHTML(false);
     }
@@ -55,7 +54,7 @@ public class TestNGProjectActionTest {
      * @throws Exception
      */
     @Test
-    public void testSettings() throws Exception {
+    void testSettings() throws Exception {
         FreeStyleProject p = r.createFreeStyleProject();
         Publisher publisher = new Publisher();
         publisher.setReportFilenamePattern("some.xml");
@@ -79,27 +78,27 @@ public class TestNGProjectActionTest {
         FreeStyleBuild build = p.scheduleBuild2(0).get();
 
         // assert of test result
-        Assert.assertNotNull(build.getAction(AbstractTestResultAction.class));
+        assertNotNull(build.getAction(AbstractTestResultAction.class));
         TestResult testResult;
-        Assert.assertNotNull(
+        assertNotNull(
                 testResult = (TestResult)
                         build.getAction(AbstractTestResultAction.class).getResult());
-        Assert.assertTrue(testResult.getTotalCount() > 0);
+        assertTrue(testResult.getTotalCount() > 0);
 
         // assert on project action
         TestNGProjectAction projAction;
-        Assert.assertNotNull(projAction = build.getProject().getAction(TestNGProjectAction.class));
-        Assert.assertFalse(projAction.getEscapeTestDescp()); // Relies on SECURITY-2788 escape hatch being open
-        Assert.assertTrue(projAction.getEscapeExceptionMsg());
-        Assert.assertSame(testResult, projAction.getLastCompletedBuildAction().getResult());
+        assertNotNull(projAction = build.getProject().getAction(TestNGProjectAction.class));
+        assertFalse(projAction.getEscapeTestDescp()); // Relies on SECURITY-2788 escape hatch being open
+        assertTrue(projAction.getEscapeExceptionMsg());
+        assertSame(testResult, projAction.getLastCompletedBuildAction().getResult());
 
         String summary = TestResultHistoryUtil.toSummary(projAction.getLastCompletedBuildAction());
-        Assert.assertTrue(summary.contains("gov.nasa.jpl.FoobarTests.b"));
+        assertTrue(summary.contains("gov.nasa.jpl.FoobarTests.b"));
     }
 
     // For JENKINS-32746: TestNG Results Trend graph doesn't show all build results
     @Test
-    public void testHistoryRemoval() throws Exception {
+    void testHistoryRemoval() throws Exception {
         FreeStyleProject p = r.createFreeStyleProject();
         Publisher publisher = new Publisher();
         publisher.setReportFilenamePattern("some.xml");
@@ -127,21 +126,20 @@ public class TestNGProjectActionTest {
 
         TestNGProjectAction action = p.getAction(TestNGProjectAction.class);
 
-        DataSetBuilder<String, ChartUtil.NumberOnlyBuildLabel> dataSetBuilder =
-                new DataSetBuilder<String, ChartUtil.NumberOnlyBuildLabel>();
+        DataSetBuilder<String, ChartUtil.NumberOnlyBuildLabel> dataSetBuilder = new DataSetBuilder<>();
         action.populateDataSetBuilder(dataSetBuilder);
 
-        Assert.assertEquals(buildNumber, dataSetBuilder.build().getColumnCount());
+        assertEquals(buildNumber, dataSetBuilder.build().getColumnCount());
 
         int[] buildsToRemove = {2, 3};
         for (int buildToRemove : buildsToRemove) {
             builds[buildToRemove].delete();
         }
 
-        dataSetBuilder = new DataSetBuilder<String, ChartUtil.NumberOnlyBuildLabel>();
+        dataSetBuilder = new DataSetBuilder<>();
         action.populateDataSetBuilder(dataSetBuilder);
 
-        Assert.assertEquals(
+        assertEquals(
                 (buildNumber - buildsToRemove.length), dataSetBuilder.build().getColumnCount());
     }
 
@@ -171,7 +169,7 @@ public class TestNGProjectActionTest {
     }
 
     @Test
-    public void testGetEscapeTestDescp() throws Exception {
+    void testGetEscapeTestDescp() throws Exception {
         Publisher.setAllowUnescapedHTML(false); // Close the escape hatch for this test
         FreeStyleProject project = runNewProjectWithTestNGResults(false, false);
         /* false ignored because hatch is closed */
@@ -180,7 +178,7 @@ public class TestNGProjectActionTest {
     }
 
     @Test
-    public void testGetEscapeTestDescpAllowXSS() throws Exception {
+    void testGetEscapeTestDescpAllowXSS() throws Exception {
         Publisher.setAllowUnescapedHTML(true); // Open the escape hatch for this test
         FreeStyleProject project = runNewProjectWithTestNGResults(false, false);
         /* false honored because hatch is open */
@@ -189,7 +187,7 @@ public class TestNGProjectActionTest {
     }
 
     @Test
-    public void testGetEscapeExceptionMsg() throws Exception {
+    void testGetEscapeExceptionMsg() throws Exception {
         Publisher.setAllowUnescapedHTML(false); // Close the escape hatch for this test
         FreeStyleProject project = runNewProjectWithTestNGResults(false, false);
         /* false ignored because hatch is closed */
@@ -198,7 +196,7 @@ public class TestNGProjectActionTest {
     }
 
     @Test
-    public void testGetEscapeExceptionMsgAllowXSS() throws Exception {
+    void testGetEscapeExceptionMsgAllowXSS() throws Exception {
         Publisher.setAllowUnescapedHTML(true); // Open the escape hatch for this test
         FreeStyleProject project = runNewProjectWithTestNGResults(false, false);
         /* false honored because hatch is open */

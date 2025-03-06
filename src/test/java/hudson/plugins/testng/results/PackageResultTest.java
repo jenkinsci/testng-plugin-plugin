@@ -1,7 +1,7 @@
 package hudson.plugins.testng.results;
 
 import static org.htmlunit.WebAssert.*;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import hudson.Launcher;
 import hudson.model.AbstractBuild;
@@ -20,10 +20,10 @@ import java.util.List;
 import org.htmlunit.html.DomNodeUtil;
 import org.htmlunit.html.HtmlElement;
 import org.htmlunit.html.HtmlPage;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.jvnet.hudson.test.JenkinsRule;
 import org.jvnet.hudson.test.TestBuilder;
+import org.jvnet.hudson.test.junit.jupiter.WithJenkins;
 
 /**
  * Tests for {@link PackageResult}'s view page
@@ -32,10 +32,8 @@ import org.jvnet.hudson.test.TestBuilder;
  *
  * @author nullin
  */
-public class PackageResultTest {
-
-    @Rule
-    public JenkinsRule r = new JenkinsRule();
+@WithJenkins
+class PackageResultTest {
 
     /**
      * Test using precheckins
@@ -47,7 +45,7 @@ public class PackageResultTest {
      * @throws Exception
      */
     @Test
-    public void testPrecheckinPackageResults() throws Exception {
+    void testPrecheckinPackageResults(JenkinsRule r) throws Exception {
         FreeStyleProject p = r.createFreeStyleProject();
         Publisher publisher = new Publisher();
         publisher.setReportFilenamePattern("testng.xml");
@@ -80,13 +78,13 @@ public class PackageResultTest {
         assertEquals(pkgResult.getChildren().size(), elements.size());
 
         // verify links to classes
-        List<String> linksInPage = new ArrayList<String>();
+        List<String> linksInPage = new ArrayList<>();
         for (HtmlElement element : elements) {
             linksInPage.add(element.getAttribute("href"));
         }
         Collections.sort(linksInPage);
 
-        List<String> linksFromResult = new ArrayList<String>();
+        List<String> linksFromResult = new ArrayList<>();
         for (ClassResult cr : pkgResult.getChildren()) {
             // would have used cr.getUpUrl() but for some reason
             // as part of test, Jenkins.instance.rootUrl() returns 'null'
@@ -156,7 +154,7 @@ public class PackageResultTest {
      * @throws Exception
      */
     @Test
-    public void testMyPackagePackageResults() throws Exception {
+    void testMyPackagePackageResults(JenkinsRule r) throws Exception {
         FreeStyleProject p = r.createFreeStyleProject();
         Publisher publisher = new Publisher();
         publisher.setReportFilenamePattern("testng.xml");

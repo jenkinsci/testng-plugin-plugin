@@ -1,6 +1,6 @@
 package hudson.plugins.testng.results;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import hudson.Launcher;
 import hudson.model.AbstractBuild;
@@ -23,10 +23,10 @@ import java.util.Set;
 import org.htmlunit.html.DomNodeUtil;
 import org.htmlunit.html.HtmlElement;
 import org.htmlunit.html.HtmlPage;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.jvnet.hudson.test.JenkinsRule;
 import org.jvnet.hudson.test.TestBuilder;
+import org.jvnet.hudson.test.junit.jupiter.WithJenkins;
 
 /**
  * Tests for {@link ClassResult}'s view page
@@ -35,10 +35,8 @@ import org.jvnet.hudson.test.TestBuilder;
  *
  * @author nullin
  */
-public class ClassResultTest {
-
-    @Rule
-    public JenkinsRule r = new JenkinsRule();
+@WithJenkins
+class ClassResultTest {
 
     /**
      * Test using precheckins.legacyops
@@ -49,7 +47,7 @@ public class ClassResultTest {
      * @throws Exception
      */
     @Test
-    public void testPrecheckinLegacyOpsClassResults() throws Exception {
+    void testPrecheckinLegacyOpsClassResults(JenkinsRule r) throws Exception {
         FreeStyleProject p = r.createFreeStyleProject();
         Publisher publisher = new Publisher();
         publisher.setReportFilenamePattern("testng.xml");
@@ -82,9 +80,9 @@ public class ClassResultTest {
         List<HtmlElement> elements =
                 DomNodeUtil.selectNodes(page, "//div[starts-with(@id, 'run-')]/span[@id='run-info']");
 
-        assertEquals(testRunMap.values().size(), elements.size());
+        assertEquals(testRunMap.size(), elements.size());
 
-        Set<String> values = new HashSet<String>(); // will verify that testName|suiteName are not repeated
+        Set<String> values = new HashSet<>(); // will verify that testName|suiteName are not repeated
         for (HtmlElement element : elements) {
             String content = element.getTextContent();
             content = content.replace("(from test '", "");
@@ -100,7 +98,7 @@ public class ClassResultTest {
                     break;
                 }
             }
-            assertTrue("Failed to find testname " + testName + " and suitename " + suiteName, found);
+            assertTrue(found, "Failed to find testname " + testName + " and suitename " + suiteName);
             values.add(suiteName + "|" + testName);
         }
 
@@ -125,17 +123,17 @@ public class ClassResultTest {
         assertEquals(1, skipCount);
 
         // unique set of values for test name and suite name combinations
-        assertEquals(testRunMap.values().size(), values.size());
+        assertEquals(testRunMap.size(), values.size());
 
         // verify all links
         elements = DomNodeUtil.selectNodes(page, "//div[starts-with(@id, 'run-')]/table/*/tr/td/a");
-        List<String> linksInPage = new ArrayList<String>();
+        List<String> linksInPage = new ArrayList<>();
         for (HtmlElement element : elements) {
             linksInPage.add(element.getAttribute("href"));
         }
         Collections.sort(linksInPage);
 
-        List<String> linksFromResult = new ArrayList<String>();
+        List<String> linksFromResult = new ArrayList<>();
         for (MethodResult mr : ((ClassResult) classResult).getChildren()) {
             // would have used mr.getUpUrl() but for some reason
             // as part of test, Jenkins.instance.rootUrl() returns 'null'
@@ -154,7 +152,7 @@ public class ClassResultTest {
      * @throws Exception
      */
     @Test
-    public void testClassResults() throws Exception {
+    void testClassResults(JenkinsRule r) throws Exception {
         FreeStyleProject p = r.createFreeStyleProject();
         Publisher publisher = new Publisher();
         publisher.setReportFilenamePattern("testng.xml");
