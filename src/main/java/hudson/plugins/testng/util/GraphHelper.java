@@ -242,6 +242,6 @@ public class GraphHelper {
 
     /** cf. {@link AbstractBuild#getUpUrl} */
     private static String getUpUrl(Run<?, ?> run) {
-        return Functions.getNearestAncestorUrl(Stapler.getCurrentRequest(), run.getParent()) + '/';
+        return Functions.getNearestAncestorUrl(Stapler.getCurrentRequest2(), run.getParent()) + '/';
     }
 }
