@@ -1,9 +1,9 @@
 # Contributing to the plugin
 
-Plugin source code is hosted on [GitHub](https://github.com/jenkinsci/apache-httpcomponents-client-4-api-plugin).
+Plugin source code is hosted on [GitHub](https://github.com/jenkinsci/testng-plugin-plugin).
 New feature proposals and bug fix proposals should be submitted as
 [GitHub pull requests](https://help.github.com/articles/creating-a-pull-request).
-Your pull request will be evaluated by the [Jenkins job](https://ci.jenkins.io/job/Plugins/job/apache-httpcomponents-client-4-api-plugin/).
+Your pull request will be evaluated by the [Jenkins job](https://ci.jenkins.io/job/Plugins/job/testng-plugin-plugin/).
 
 Before submitting your change, please assure that you've added tests which verify your change.
 
@@ -16,7 +16,7 @@ Before submitting a pull request, confirm the formatting is correct with:
 
 ## Code Coverage
 
-[JaCoCo code coverage](https://www.jacoco.org/jacoco/) reporting is available as a maven target and can be displayed by the [Jenkins warnings next generation plugin](https://plugins.jenkins.io/warnings-ng/).
+[JaCoCo code coverage](https://www.jacoco.org/jacoco/) reporting is available as a maven target and can be displayed by the [Jenkins warnings plugin](https://plugins.jenkins.io/warnings-ng/).
 Please try to improve code coverage with tests when you submit.
 * `mvn -P enable-jacoco clean install jacoco:report` to report code coverage with JaCoCo.
 
@@ -38,7 +38,8 @@ Click on them to find a list of class names.
 
 The lines of the code will be covered in three different colors, red, green, and orange.
 Red lines are not covered in the tests.
-Green lines are covered with tests.
+Orange lines are partially covered in the tests.
+Green lines are fully covered in the tests.
 
 ## Maintaining automated tests
 
