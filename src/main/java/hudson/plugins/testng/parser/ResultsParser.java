@@ -172,8 +172,7 @@ public class ResultsParser {
                     int eventType = xmlPullParser.getEventType();
 
                     switch (eventType) {
-                            // all opening tags
-                        case XmlPullParser.START_TAG:
+                        case XmlPullParser.START_TAG: // all opening tags
                             switch (tag) {
                                 case SUITE:
                                     startSuite(get("name"));
@@ -230,8 +229,7 @@ public class ResultsParser {
                                     // TODO: log ignored tags
                             }
                             break;
-                            // all closing tags
-                        case XmlPullParser.END_TAG:
+                        case XmlPullParser.END_TAG: // all closing tags
                             switch (tag) {
                                 case SUITE:
                                     finishSuite();
@@ -274,8 +272,7 @@ public class ResultsParser {
                                     // TODO: log ignored tags
                             }
                             break;
-                            // all cdata reading
-                        case XmlPullParser.CDSECT:
+                        case XmlPullParser.CDSECT: // all cdata reading
                             handleCDATA();
                             break;
                         default:
