@@ -226,7 +226,7 @@ public class ResultsParser {
                                     currentCDATAParent = TAGS.FULL_STACKTRACE;
                                     break;
                                 default:
-                                    // TODO: log ignored tags
+                                // TODO: log ignored tags
                             }
                             break;
                         case XmlPullParser.END_TAG: // all closing tags
@@ -269,14 +269,14 @@ public class ResultsParser {
                                     currentCDATAParent = TAGS.UNKNOWN;
                                     break;
                                 default:
-                                    // TODO: log ignored tags
+                                // TODO: log ignored tags
                             }
                             break;
                         case XmlPullParser.CDSECT: // all cdata reading
                             handleCDATA();
                             break;
                         default:
-                            // ignore others
+                        // ignore others
                     }
                 }
                 finalResults.addUniqueTests(testList);
@@ -409,7 +409,7 @@ public class ResultsParser {
                 currentLine = xmlPullParser.getText();
                 break;
             case UNKNOWN:
-                // do nothing
+            // do nothing
         }
     }
 
