@@ -172,8 +172,7 @@ public class ResultsParser {
                     int eventType = xmlPullParser.getEventType();
 
                     switch (eventType) {
-                            // all opening tags
-                        case XmlPullParser.START_TAG:
+                        case XmlPullParser.START_TAG: // all opening tags
                             switch (tag) {
                                 case SUITE:
                                     startSuite(get("name"));
@@ -227,11 +226,10 @@ public class ResultsParser {
                                     currentCDATAParent = TAGS.FULL_STACKTRACE;
                                     break;
                                 default:
-                                    // TODO: log ignored tags
+                                // TODO: log ignored tags
                             }
                             break;
-                            // all closing tags
-                        case XmlPullParser.END_TAG:
+                        case XmlPullParser.END_TAG: // all closing tags
                             switch (tag) {
                                 case SUITE:
                                     finishSuite();
@@ -271,15 +269,14 @@ public class ResultsParser {
                                     currentCDATAParent = TAGS.UNKNOWN;
                                     break;
                                 default:
-                                    // TODO: log ignored tags
+                                // TODO: log ignored tags
                             }
                             break;
-                            // all cdata reading
-                        case XmlPullParser.CDSECT:
+                        case XmlPullParser.CDSECT: // all cdata reading
                             handleCDATA();
                             break;
                         default:
-                            // ignore others
+                        // ignore others
                     }
                 }
                 finalResults.addUniqueTests(testList);
@@ -412,7 +409,7 @@ public class ResultsParser {
                 currentLine = xmlPullParser.getText();
                 break;
             case UNKNOWN:
-                // do nothing
+            // do nothing
         }
     }
 

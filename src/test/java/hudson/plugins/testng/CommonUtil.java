@@ -19,16 +19,13 @@ public class CommonUtil {
 
     public static String getContents(String filepath) throws IOException {
         InputStream is = CommonUtil.class.getClassLoader().getResourceAsStream(filepath);
-        BufferedReader reader = new BufferedReader(new InputStreamReader(is));
-        try {
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(is))) {
             String line;
-            StringBuilder sb = new StringBuilder("");
+            StringBuilder sb = new StringBuilder();
             while ((line = reader.readLine()) != null) {
                 sb.append(line).append("\n");
             }
             return sb.toString();
-        } finally {
-            reader.close();
         }
     }
 

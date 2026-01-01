@@ -1,7 +1,7 @@
 package hudson.plugins.testng.results;
 
 import static org.htmlunit.WebAssert.*;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import hudson.Launcher;
 import hudson.model.AbstractBuild;
@@ -19,37 +19,35 @@ import hudson.tasks.test.TestResult;
 import java.io.IOException;
 import org.htmlunit.html.HtmlElement;
 import org.htmlunit.html.HtmlPage;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.jvnet.hudson.test.JenkinsRule;
 import org.jvnet.hudson.test.TestBuilder;
+import org.jvnet.hudson.test.junit.jupiter.WithJenkins;
 
 /**
  * Tests for {@link MethodResult}'s view page
  *
  * @author nullin
  */
-public class MethodResultTest {
+@WithJenkins
+class MethodResultTest {
 
-    @Rule
-    public JenkinsRule r = new JenkinsRule();
-
-    @Before
-    public void allowUnescapedHTML() {
+    @BeforeEach
+    void allowUnescapedHTML() {
         /* Close the SECURITY-2788 escape hatch before starting a test */
         PublisherTest.setAllowUnescapedHTML(false);
     }
 
-    @After
-    public void disallowUnescapedHTML() {
+    @AfterEach
+    void disallowUnescapedHTML() {
         /* Close the SECURITY-2788 escape hatch after ending a test */
         PublisherTest.setAllowUnescapedHTML(false);
     }
 
     @Test
-    public void testEscapeExceptionMessageTrue() throws Exception {
+    void testEscapeExceptionMessageTrue(JenkinsRule r) throws Exception {
         FreeStyleProject p = r.createFreeStyleProject();
         Publisher publisher = new Publisher();
         publisher.setReportFilenamePattern("testng.xml");
@@ -82,7 +80,7 @@ public class MethodResultTest {
     }
 
     @Test
-    public void testEscapeExceptionMessageFalse() throws Exception {
+    void testEscapeExceptionMessageFalse(JenkinsRule r) throws Exception {
         PublisherTest.setAllowUnescapedHTML(true); // Open the SECURITY-2788 escape hatch for this test
         FreeStyleProject p = r.createFreeStyleProject();
         Publisher publisher = new Publisher();
@@ -114,7 +112,7 @@ public class MethodResultTest {
     }
 
     @Test
-    public void testEscapeDescriptionFalse() throws Exception {
+    void testEscapeDescriptionFalse(JenkinsRule r) throws Exception {
         PublisherTest.setAllowUnescapedHTML(true); // Open the SECURITY-2788 escape hatch for this test
         FreeStyleProject p = r.createFreeStyleProject();
         Publisher publisher = new Publisher();
@@ -147,7 +145,7 @@ public class MethodResultTest {
     }
 
     @Test
-    public void testEscapeDescriptionTrue() throws Exception {
+    void testEscapeDescriptionTrue(JenkinsRule r) throws Exception {
         FreeStyleProject p = r.createFreeStyleProject();
         Publisher publisher = new Publisher();
         publisher.setReportFilenamePattern("testng.xml");
@@ -187,7 +185,7 @@ public class MethodResultTest {
      * @throws Exception
      */
     @Test
-    public void testMultilineDescriptionAndExceptionMessage() throws Exception {
+    void testMultilineDescriptionAndExceptionMessage(JenkinsRule r) throws Exception {
         PublisherTest.setAllowUnescapedHTML(true); // Open the SECURITY-2788 escape hatch for this test
         FreeStyleProject p = r.createFreeStyleProject();
         Publisher publisher = new Publisher();
@@ -221,7 +219,7 @@ public class MethodResultTest {
     }
 
     @Test
-    public void testReporterLogOutput() throws Exception {
+    void testReporterLogOutput(JenkinsRule r) throws Exception {
         FreeStyleProject p = r.createFreeStyleProject();
         Publisher publisher = new Publisher();
         publisher.setReportFilenamePattern("testng.xml");
@@ -256,7 +254,7 @@ public class MethodResultTest {
      * @throws Exception
      */
     @Test
-    public void testMethodResults1() throws Exception {
+    void testMethodResults1(JenkinsRule r) throws Exception {
         FreeStyleProject p = r.createFreeStyleProject();
         Publisher publisher = new Publisher();
         publisher.setReportFilenamePattern("testng.xml");
@@ -296,13 +294,13 @@ public class MethodResultTest {
         assertEquals("includedGroups", element.getTextContent());
 
         // method status information
-        element = (HtmlElement) page.getHtmlElementById("status");
+        element = page.getHtmlElementById("status");
         assertEquals("result-passed", element.getAttribute("class"));
         assertEquals("PASS", element.getTextContent());
 
         // this method has single group
-        element = (HtmlElement) page.getHtmlElementById("groups");
-        assertEquals(element.getTextContent(), "Group(s): current");
+        element = page.getHtmlElementById("groups");
+        assertEquals("Group(s): current", element.getTextContent());
 
         // should have an img
         element = page.getHtmlElementById("report").getElementsByTagName("img").get(0);
@@ -320,7 +318,7 @@ public class MethodResultTest {
 
         // method run using two parameters
         page = r.createWebClient().goTo(urlPrefix + "/test.dataprovider/Sample1Test/verifyNames_1/");
-        element = (HtmlElement) page.getHtmlElementById("params");
+        element = page.getHtmlElementById("params");
         contents = element.getTextContent();
         // information about class and time taken
         r.assertStringContains(contents, "Parameter #1");
@@ -335,7 +333,7 @@ public class MethodResultTest {
      * @throws Exception
      */
     @Test
-    public void testMethodResults_dataProviderTests() throws Exception {
+    void testMethodResults_dataProviderTests(JenkinsRule r) throws Exception {
         FreeStyleProject p = r.createFreeStyleProject();
         Publisher publisher = new Publisher();
         publisher.setReportFilenamePattern("testng.xml");
@@ -412,7 +410,7 @@ public class MethodResultTest {
      * @throws Exception
      */
     @Test
-    public void testMethodResults_testInstanceNames() throws Exception {
+    void testMethodResults_testInstanceNames(JenkinsRule r) throws Exception {
         FreeStyleProject p = r.createFreeStyleProject();
         Publisher publisher = new Publisher();
         publisher.setReportFilenamePattern("testng.xml");

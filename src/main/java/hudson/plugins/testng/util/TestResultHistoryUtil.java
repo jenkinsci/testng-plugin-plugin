@@ -137,6 +137,6 @@ public class TestResultHistoryUtil {
             htmlStr.append("</OL></LI>");
         }
         htmlStr.append("</UL>");
-        return htmlStr.substring(0);
+        return htmlStr.toString();
     }
 }

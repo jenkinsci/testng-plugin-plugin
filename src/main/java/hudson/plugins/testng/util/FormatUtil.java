@@ -32,7 +32,7 @@ public class FormatUtil {
             byte seconds = (byte) duration;
             duration -= seconds;
             int milliseconds = Math.round(duration * 1000f);
-            return String.format("%02d:%02d:%02d.%03d", hours, minutes, seconds, milliseconds);
+            return "%02d:%02d:%02d.%03d".formatted(hours, minutes, seconds, milliseconds);
         } catch (Exception e) {
             e.printStackTrace();
             return "-1";
