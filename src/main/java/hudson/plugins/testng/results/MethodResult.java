@@ -13,7 +13,6 @@ import org.jfree.chart.JFreeChart;
 import org.kohsuke.stapler.StaplerRequest2;
 import org.kohsuke.stapler.StaplerResponse2;
 import org.kohsuke.stapler.export.Exported;
-import org.kohsuke.stapler.verb.POST;
 
 /** Handles result pertaining to a single test method */
 @SuppressWarnings("serial")
@@ -241,7 +240,8 @@ public class MethodResult extends BaseResult {
      * @param rsp response
      * @throws IOException on IO error
      */
-    @POST
+    // @POST
+    // @POST blocks rendering in groovy defined web page
     public void doGraph(final StaplerRequest2 req, StaplerResponse2 rsp) throws IOException {
         // Test result graphs should be visible to any user
         // with READ permission. Declaring a checkPermission
@@ -260,7 +260,8 @@ public class MethodResult extends BaseResult {
      * @param rsp response
      * @throws IOException on IO error
      */
-    @POST
+    // @POST
+    // @POST blocks rendering in groovy defined web page
     public void doGraphMap(final StaplerRequest2 req, StaplerResponse2 rsp) throws IOException {
         Graph g = getGraph(req, rsp);
         if (g != null) {
