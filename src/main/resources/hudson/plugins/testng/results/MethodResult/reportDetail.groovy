@@ -2,7 +2,7 @@ package hudson.plugins.testng.results.MethodResult
 
 import hudson.plugins.testng.TestNGProjectAction
 import hudson.plugins.testng.util.FormatUtil
-import org.apache.commons.lang.StringUtils
+import org.apache.commons.lang3.StringUtils
 
 f = namespace(lib.FormTagLib)
 l = namespace(lib.LayoutTagLib)
