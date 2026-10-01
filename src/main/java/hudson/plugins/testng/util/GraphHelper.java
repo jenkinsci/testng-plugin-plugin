@@ -7,7 +7,6 @@ import hudson.model.Run;
 import hudson.plugins.testng.PluginImpl;
 import hudson.plugins.testng.TestNGTestResultBuildAction;
 import hudson.util.ChartUtil.NumberOnlyBuildLabel;
-import hudson.util.ColorPalette;
 import hudson.util.ShiftedCategoryAxis;
 import hudson.util.StackedAreaRenderer2;
 import java.awt.*;
@@ -25,6 +24,7 @@ import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.renderer.category.BarRenderer;
 import org.jfree.chart.renderer.category.StackedAreaRenderer;
+import org.jfree.chart.renderer.category.StandardBarPainter;
 import org.jfree.chart.title.LegendTitle;
 import org.jfree.chart.urls.CategoryURLGenerator;
 import org.jfree.data.category.CategoryDataset;
@@ -39,6 +39,46 @@ import org.kohsuke.stapler.StaplerResponse2;
         value = "EQ_DOESNT_OVERRIDE_EQUALS",
         justification = "BarRenderer subclasses do not seem to need to override it")
 public class GraphHelper {
+
+    // Semantic success/failure/warning palette, in place of ColorPalette.RED/BLUE/YELLOW.
+    private static final Color PASS_COLOR = new Color(0x2E, 0x7D, 0x32); // green
+    private static final Color FAIL_COLOR = new Color(0xC6, 0x28, 0x28); // red
+    private static final Color SKIP_COLOR = new Color(0xF9, 0xA8, 0x25); // amber
+    private static final Color GRID_LINE_COLOR = new Color(0xE0, 0xE0, 0xE0);
+    private static final Color AXIS_LINE_COLOR = new Color(0xB0, 0xB6, 0xBE);
+    private static final Color LABEL_TEXT_COLOR = new Color(0x3D, 0x42, 0x47);
+    private static final Font AXIS_LABEL_FONT = new Font(Font.SANS_SERIF, Font.PLAIN, 11);
+    private static final Font LEGEND_FONT = new Font(Font.SANS_SERIF, Font.PLAIN, 11);
+
+    // "fg"/"grid" request params (read here) let the view recolor the chart per theme.
+    private static Color resolveColor(StaplerRequest2 req, String paramName, Color fallback) {
+        String value = req.getParameter(paramName);
+        if (value == null || value.isEmpty()) {
+            return fallback;
+        }
+        try {
+            return Color.decode(value.startsWith("#") ? value : "0x" + value);
+        } catch (NumberFormatException e) {
+            return fallback;
+        }
+    }
+
+    /** Applies the shared modern axis/legend styling to any plot built here. */
+    private static void applyModernAxisStyle(CategoryPlot plot, Color textColor, Color lineColor) {
+        CategoryAxis domainAxis = plot.getDomainAxis();
+        domainAxis.setTickLabelFont(AXIS_LABEL_FONT);
+        domainAxis.setTickLabelPaint(textColor);
+        domainAxis.setAxisLinePaint(lineColor);
+        domainAxis.setTickMarkPaint(lineColor);
+
+        NumberAxis rangeAxis = (NumberAxis) plot.getRangeAxis();
+        rangeAxis.setLabelFont(AXIS_LABEL_FONT);
+        rangeAxis.setTickLabelFont(AXIS_LABEL_FONT);
+        rangeAxis.setTickLabelPaint(textColor);
+        rangeAxis.setLabelPaint(textColor);
+        rangeAxis.setAxisLinePaint(lineColor);
+        rangeAxis.setTickMarkPaint(lineColor);
+    }
 
     /** Do not instantiate GraphHelper. */
     private GraphHelper() {}
@@ -61,19 +101,27 @@ public class GraphHelper {
                 );
 
         // NOW DO SOME OPTIONAL CUSTOMISATION OF THE CHART...
+        chart.setAntiAlias(true);
+        chart.setTextAntiAlias(true);
+
+        Color textColor = resolveColor(req, "fg", LABEL_TEXT_COLOR);
+        Color gridColor = resolveColor(req, "grid", GRID_LINE_COLOR);
+
         final LegendTitle legend = chart.getLegend();
         legend.setPosition(RectangleEdge.RIGHT);
-
-        chart.setBackgroundPaint(Color.white);
+        legend.setItemFont(LEGEND_FONT);
+        legend.setItemPaint(textColor);
+        legend.setBackgroundPaint(null);
+        // Chart/plot background not set here: Graph#render() (core) overwrites it via
+        // the "graphBg"/"plotBg" request params afterward.
 
         final CategoryPlot plot = chart.getCategoryPlot();
-        plot.setBackgroundPaint(Color.WHITE);
         plot.setOutlinePaint(null);
-        plot.setForegroundAlpha(0.8f);
+        plot.setForegroundAlpha(0.9f);
         plot.setDomainGridlinesVisible(true);
-        plot.setDomainGridlinePaint(Color.white);
+        plot.setDomainGridlinePaint(gridColor);
         plot.setRangeGridlinesVisible(true);
-        plot.setRangeGridlinePaint(Color.black);
+        plot.setRangeGridlinePaint(gridColor);
 
         CategoryAxis domainAxis = new ShiftedCategoryAxis(null);
         plot.setDomainAxis(domainAxis);
@@ -84,6 +132,7 @@ public class GraphHelper {
 
         final NumberAxis rangeAxis = (NumberAxis) plot.getRangeAxis();
         rangeAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
+        applyModernAxisStyle(plot, textColor, resolveColor(req, "grid", AXIS_LINE_COLOR));
 
         StackedAreaRenderer ar = new StackedAreaRenderer2() {
             @Override
@@ -116,9 +165,9 @@ public class GraphHelper {
         };
 
         plot.setRenderer(ar);
-        ar.setSeriesPaint(0, ColorPalette.RED); // Failures
-        ar.setSeriesPaint(1, ColorPalette.BLUE); // Pass
-        ar.setSeriesPaint(2, ColorPalette.YELLOW); // Skips
+        ar.setSeriesPaint(0, FAIL_COLOR); // Failures
+        ar.setSeriesPaint(1, PASS_COLOR); // Pass
+        ar.setSeriesPaint(2, SKIP_COLOR); // Skips
 
         // crop extra space around the graph
         plot.setInsets(new RectangleInsets(0, 0, 0, 5.0));
@@ -157,17 +206,22 @@ public class GraphHelper {
                 );
 
         // NOW DO SOME OPTIONAL CUSTOMISATION OF THE CHART...
-        chart.setBackgroundPaint(Color.white);
+        chart.setAntiAlias(true);
+        chart.setTextAntiAlias(true);
+        // Chart/plot background intentionally not set -- see createChart() above.
         chart.removeLegend();
 
+        Color textColor = resolveColor(req, "fg", LABEL_TEXT_COLOR);
+        Color gridColor = resolveColor(req, "grid", GRID_LINE_COLOR);
+        Color axisLineColor = resolveColor(req, "grid", AXIS_LINE_COLOR);
+
         final CategoryPlot plot = chart.getCategoryPlot();
-        plot.setBackgroundPaint(Color.WHITE);
         plot.setOutlinePaint(null);
-        plot.setForegroundAlpha(0.8f);
+        plot.setForegroundAlpha(0.9f);
         plot.setDomainGridlinesVisible(true);
-        plot.setDomainGridlinePaint(Color.white);
+        plot.setDomainGridlinePaint(gridColor);
         plot.setRangeGridlinesVisible(true);
-        plot.setRangeGridlinePaint(Color.black);
+        plot.setRangeGridlinePaint(gridColor);
 
         CategoryAxis domainAxis = new ShiftedCategoryAxis(null);
         plot.setDomainAxis(domainAxis);
@@ -178,15 +232,16 @@ public class GraphHelper {
 
         final NumberAxis rangeAxis = (NumberAxis) plot.getRangeAxis();
         rangeAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
+        applyModernAxisStyle(plot, textColor, axisLineColor);
 
         BarRenderer br = new BarRenderer() {
 
             Map<String, Paint> statusPaintMap = new HashMap<String, Paint>();
 
             {
-                statusPaintMap.put("PASS", ColorPalette.BLUE);
-                statusPaintMap.put("SKIP", ColorPalette.YELLOW);
-                statusPaintMap.put("FAIL", ColorPalette.RED);
+                statusPaintMap.put("PASS", PASS_COLOR);
+                statusPaintMap.put("SKIP", SKIP_COLOR);
+                statusPaintMap.put("FAIL", FAIL_COLOR);
             }
 
             /**
@@ -233,6 +288,9 @@ public class GraphHelper {
         br.setMinimumBarLength(5);
         // set the base to be 1/100th of the maximum value displayed in the graph
         br.setBase(br.findRangeBounds(dataset).getUpperBound() / 100);
+        // Flat fill, no gradient/shadow, in place of JFreeChart's default 3D-ish look.
+        br.setBarPainter(new StandardBarPainter());
+        br.setShadowVisible(false);
         plot.setRenderer(br);
 
         // crop extra space around the graph

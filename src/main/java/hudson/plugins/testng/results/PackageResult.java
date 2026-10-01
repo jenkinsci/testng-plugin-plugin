@@ -154,7 +154,7 @@ public class PackageResult extends BaseResult {
             sb.append(mr.getStartedAt());
             sb.append("</td><td align=\"center\"><span class=\"")
                     .append(mr.getCssClass())
-                    .append("\">");
+                    .append(" jenkins-table__badge\">");
             sb.append(Util.escape(mr.getStatus()));
             sb.append("</span></td></tr>");
         }

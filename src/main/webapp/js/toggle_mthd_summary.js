@@ -35,3 +35,10 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 });
+
+// Prevent the copy button from also toggling the enclosing <details>.
+document.addEventListener("click", (event) => {
+    if (event.target.closest(".jenkins-copy-button")) {
+        event.preventDefault();
+    }
+});

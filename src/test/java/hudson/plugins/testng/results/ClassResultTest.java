@@ -77,19 +77,19 @@ class ClassResultTest {
         String urlPrefix = build.getUrl() + PluginImpl.URL;
         HtmlPage page = r.createWebClient().goTo(urlPrefix + "/precheckins/LegacyOps/");
 
-        List<HtmlElement> elements =
-                DomNodeUtil.selectNodes(page, "//div[starts-with(@id, 'run-')]/span[@id='run-info']");
+        List<HtmlElement> elements = DomNodeUtil.selectNodes(
+                page,
+                "//div[starts-with(@id, 'run-')]//div[@class='jenkins-card__title'][starts-with(normalize-space(text()), 'Test Methods')]");
 
         assertEquals(testRunMap.size(), elements.size());
 
         Set<String> values = new HashSet<>(); // will verify that testName|suiteName are not repeated
         for (HtmlElement element : elements) {
-            String content = element.getTextContent();
-            content = content.replace("(from test '", "");
-            String testName = content.substring(0, content.indexOf("' in suite '"));
-            String suiteName = content.replace(testName, "").replace("' in suite '", "");
-            suiteName = suiteName.substring(0, suiteName.length() - 2); // drop trailing '
-
+            String content = element.getTextContent().trim();
+            content = content.replace("Test Methods — ", "");
+            String testName = content.substring(0, content.indexOf(" / "));
+            String suiteName = content.substring(content.indexOf(" / ") + 3).trim();
+            values.add(testName + "|" + suiteName);
             boolean found = false;
             for (GroupedTestRun groupedTestRun : testRunMap.values()) {
                 if (groupedTestRun.getSuiteName().equals(suiteName)
@@ -99,13 +99,12 @@ class ClassResultTest {
                 }
             }
             assertTrue(found, "Failed to find testname " + testName + " and suitename " + suiteName);
-            values.add(suiteName + "|" + testName);
         }
 
-        elements = DomNodeUtil.selectNodes(page, "//div[starts-with(@id, 'run-')]/table/*/tr");
+        elements = DomNodeUtil.selectNodes(page, "//div[starts-with(@id, 'run-')]//table/*/tr");
         assertEquals(6 * (2 + 7), elements.size()); // total number of rows in all tables
 
-        elements = DomNodeUtil.selectNodes(page, "//div[starts-with(@id, 'run-')]/table/*/tr/td");
+        elements = DomNodeUtil.selectNodes(page, "//div[starts-with(@id, 'run-')]//table/*/tr/td");
         int failCount = 0;
         int skipCount = 0;
         for (HtmlElement element : elements) {
@@ -126,7 +125,7 @@ class ClassResultTest {
         assertEquals(testRunMap.size(), values.size());
 
         // verify all links
-        elements = DomNodeUtil.selectNodes(page, "//div[starts-with(@id, 'run-')]/table/*/tr/td/a");
+        elements = DomNodeUtil.selectNodes(page, "//div[starts-with(@id, 'run-')]//table/*/tr/td/a[not(@id)]");
         List<String> linksInPage = new ArrayList<>();
         for (HtmlElement element : elements) {
             linksInPage.add(element.getAttribute("href"));
@@ -183,7 +182,7 @@ class ClassResultTest {
         HtmlPage page = r.createWebClient().goTo(urlPrefix + "/test/CommandLineTest");
 
         List<HtmlElement> elements =
-                DomNodeUtil.selectNodes(page, "//div[starts-with(@id, 'run-')]/table[@id='config']");
+                DomNodeUtil.selectNodes(page, "//div[starts-with(@id, 'run-')]//table[@id='config']");
         // there are no configuration methods
         assertEquals(0, elements.size());
         r.assertStringContains(
@@ -191,11 +190,11 @@ class ClassResultTest {
 
         // use first test with show more section
         elements = DomNodeUtil.selectNodes(
-                page, "//div[starts-with(@id, 'run-')]/table[@id='test']/tbody/tr/td/div[@id='junitParsing_1']");
+                page, "//div[starts-with(@id, 'run-')]//table[@id='test']/tbody/tr/td/div[@id='junitParsing_1']");
         assertEquals(1, elements.size());
         HtmlElement showMore = elements.get(0);
         elements = DomNodeUtil.selectNodes(
-                page, "//div[starts-with(@id, 'run-')]/table[@id='test']/tbody/tr/td/div[@id='junitParsing_2']");
+                page, "//div[starts-with(@id, 'run-')]//table[@id='test']/tbody/tr/td/div[@id='junitParsing_2']");
         assertEquals(1, elements.size());
         HtmlElement moreSection = elements.get(0);
 

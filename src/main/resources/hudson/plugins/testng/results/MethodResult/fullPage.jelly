@@ -1,0 +1,12 @@
+<?jelly escape-by-default='true'?>
+<!-- Wraps this Method sub-page in core's l:run-subpage; see PackageResult/fullPage.jelly for the "it" swap rationale. -->
+<j:jelly xmlns:j="jelly:core" xmlns:l="/lib/layout" xmlns:st="jelly:stapler">
+  <j:set var="content" value="${it}"/>
+  <j:set var="it" value="${content.parentAction}"/>
+  <l:run-subpage>
+    <j:set var="it" value="${content}"/>
+    <link rel="stylesheet" href="${resURL}/plugin/testng-plugin/css/testng.css?v=${hudson.plugins.testng.PluginImpl.RESOURCE_VERSION}"/>
+
+    <st:include page="reportDetail.groovy" it="${content}"/>
+  </l:run-subpage>
+</j:jelly>

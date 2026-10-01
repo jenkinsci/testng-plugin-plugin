@@ -9,13 +9,8 @@ st = namespace("jelly:stapler")
 
 //displayed on the build summary page
 
-/*
-    TODO: ${my.iconFileName} doesn't work here though it used to
-    work just fine in .jelly.
-    Even though we are specifying url starting with /... it's
-    parsed as a relative url
- */
-t.summary(icon: "clipboard.png") {
+// Jenkins Symbol instead of the old "clipboard.png" bitmap.
+t.summary(icon: "symbol-list") {
     a(href: "${my.urlName}") {
         text("${my.displayName}")
     }

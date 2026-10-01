@@ -45,6 +45,10 @@ the JUnit plugin.
 
 -   Able to hide/expand tables that display package and class results
 
+![](docs/images/new-build-page-experimental.png)
+
+-   Support for new experimental Build page
+
 ## Usage
 
 Once you have configured your build to run TestNG based test cases and

@@ -23,26 +23,16 @@ public class MethodResultException implements Serializable {
         return exceptionName;
     }
 
-    /**
-     * Magic: We changed this class to remove short st and full st fields but folks will have
-     * previous builds which will have this data. With those builds, the report will display
-     * incomplete information. So, to show complete information when fields are unmarshalled from
-     * xml by jenkins, we go ahead and attempt to gather this information and update the new fields
-     * that are now used in the UI.
-     *
-     * <p>Works on/updates instance variables.
-     *
-     * @param shortStackTrace
-     * @param fullStackTrace
-     */
+    // Backfills exceptionName/stackTrace for old builds serialized before those fields existed.
     private void trySettingData(String shortStackTrace, String fullStackTrace) {
         String tmpStackTrace = shortStackTrace;
         if (((shortStackTrace == null) || "".equals(shortStackTrace)) && (fullStackTrace != null)) {
-            // overwrite short st with full st, if available
             tmpStackTrace = fullStackTrace;
         }
 
-        stackTrace = tmpStackTrace.trim();
+        // Neither stacktrace field is required by the TestNG XML schema (e.g. SkipException);
+        // treat a missing one as "" instead of throwing and aborting the whole parse.
+        stackTrace = tmpStackTrace == null ? "" : tmpStackTrace.trim();
         int index;
 
         if (message == null) {
