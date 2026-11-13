@@ -1,0 +1,141 @@
+/*
+ * TestNG plugin — styling to align with the modern Jenkins UI and the
+ * Jenkins Design Library.
+ */
+
+/* jp-pill/jp-pills: ported from junit-plugin's styles.css (not core CSS),
+   trimmed, so the app-bar header renders without a plugin dependency. */
+.jp-pills {
+    display: flex;
+    gap: var(--jenkins-border-width);
+}
+
+.jp-pills:empty {
+    display: none;
+}
+
+.jp-pill {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.375rem;
+    border-radius: 100px;
+    padding: 0 0.75rem;
+    min-height: 1.875rem;
+    font-weight: 450;
+    background: color-mix(in srgb, var(--color, var(--text-color-secondary)) 10%, transparent);
+    border: var(--jenkins-border-width) solid
+        color-mix(in srgb, var(--color, var(--text-color-secondary)) 10%, transparent);
+    color: var(--color, var(--text-color)) !important;
+}
+
+.jp-pill svg {
+    width: 1rem;
+    height: 1rem;
+}
+
+/* .jenkins-card has no margin/gap of its own outside a grid layout. */
+.jenkins-card + .jenkins-card {
+    margin-top: var(--section-padding, 1.5rem);
+}
+
+/* Drop jenkins-table's own border; our tables already sit inside a card border. */
+.jenkins-table:before {
+    border: none;
+}
+
+.testng-progress-bar {
+    display: flex;
+    width: 100%;
+    height: 10px;
+    border-radius: 6px;
+    overflow: hidden;
+    background: var(--input-color, #e9ecf1);
+    box-shadow: inset 0 0 0 1px var(--input-border, rgba(0, 0, 0, 0.08));
+}
+
+.testng-progress-bar .testng-segment {
+    height: 100%;
+    transition:
+        width 0.2s ease,
+        filter 0.15s ease;
+}
+
+.testng-progress-bar .testng-segment:hover {
+    filter: brightness(1.12);
+}
+
+.testng-progress-bar .testng-segment--pass {
+    background: var(--green, #2e7d32);
+}
+
+.testng-progress-bar .testng-segment--fail {
+    background: var(--red, #c62828);
+}
+
+.testng-progress-bar .testng-segment--skip {
+    background: var(--yellow, #f9a825);
+}
+
+.testng-graph-frame {
+    display: inline-block;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid var(--panel-border-color, #dde3ea);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+    background: var(--background, #fff);
+}
+
+.testng-collapsed {
+    display: none;
+}
+
+/* Sizing/color need full selector + !important to beat core's own
+   same-or-higher-specificity button/table rules. */
+a.testng-show-stack-trace.jenkins-button.jenkins-button--tertiary,
+a.testng-hide-stack-trace.jenkins-button.jenkins-button--tertiary {
+    color: var(--text-color-secondary, #6a6e76) !important;
+    padding: 2px !important;
+    width: 22px !important;
+    height: 22px !important;
+    min-height: 0 !important;
+    margin: 0 !important;
+}
+
+a.testng-show-stack-trace.jenkins-button.jenkins-button--tertiary:hover,
+a.testng-hide-stack-trace.jenkins-button.jenkins-button--tertiary:hover {
+    color: var(--link-color, #0b6aa2) !important;
+}
+
+.testng-code-block {
+    display: block;
+    margin-left: 15px;
+    padding: 8px 12px;
+    white-space: pre-wrap;
+    border: 1px solid var(--panel-border-color, #dde3ea);
+    border-radius: 6px;
+    background: var(--input-color, #f5f7fa);
+    color: var(--text-color, #222);
+}
+
+.testng-stacktrace-card + .testng-stacktrace-card {
+    margin-top: 8px;
+}
+
+.testng-stacktrace-card summary {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    list-style: none;
+}
+
+.testng-stacktrace-card summary::-webkit-details-marker {
+    display: none;
+}
+
+/* copyButton.jelly's root is a bare <span data-message-insecure>; no class to hook. */
+.testng-stacktrace-card summary span[data-message-insecure] {
+    margin-left: auto;
+}

@@ -13,130 +13,131 @@ script(src:"${app.rootUrl}/plugin/testng-plugin/js/show_more.js")
 
 def i = 0
 for (group in my.testRunMap.values()) {
+    def runInfo = group.testName ? " — ${group.testName} / ${group.suiteName}" : ""
     div(id: "run-${i++}") {
-        h2("Test Methods")
-        if (group.testName) {
-            span(id: "run-info") {
-                text("(from test '")
-                b("${group.testName}")
-                text("' in suite '")
-                b("${group.suiteName}')")
-            }
-        }
-
-        if (!group.testMethods.isEmpty()) {
-            table(id: "test", border:"1px", class:"pane sortable") {
-                thead() {
-                    tr() {
-                        th(class:"pane-header") {
-                            text("Method")
-                        }
-                        th(class:"pane-header", style:"width:5em", title:"Duration") {
-                            text("Duration")
-                        }
-                        th(class:"pane-header", style:"width:15em", title:"Start time") {
-                            text("Start Time")
-                        }
-                        th(class:"pane-header", style:"width:5em", title:"Status") {
-                            text("Status")
+        // Each section below is rendered as its own Design Library <l:card>
+        // (https://weekly.ci.jenkins.io/design-library/cards/) instead of a
+        // bare <h2> heading.
+        l.card(title: "Test Methods${runInfo}") {
+            if (!group.testMethods.isEmpty()) {
+                table(id: "test", class:"sortable jenkins-table jenkins-!-margin-bottom-0") {
+                    thead() {
+                        tr() {
+                            th() {
+                                text("Method")
+                            }
+                            th(align:"right", style:"width:5em", title:"Duration") {
+                                text("Duration")
+                            }
+                            th(align:"right", style:"width:15em", title:"Start time") {
+                                text("Start Time")
+                            }
+                            th(align:"center", style:"width:5em", title:"Status") {
+                                text("Status")
+                            }
                         }
                     }
-                }
-                tbody() {
-                    for(method in group.testMethods) {
-                        def methodJsSafeName = Functions.jsStringEscape(method.safeName)
-                        tr() {
-                            td(align:"left") {
-                                a(href:"${method.upUrl}") {
-                                    text("${method.name}")
-                                }
-                                if (method.groups || method.testInstanceName || method.parameters?.size() > 0) {
-                                    div(id:"${method.safeName}_1", style:"display:inline") {
-                                        text(" (")
-                                        a(href: "", class: "testng-show-more", "data-method-name": "${methodJsSafeName}") {
-                                            raw("&hellip;")
-                                        }
-                                        text(")")
+                    tbody() {
+                        for(method in group.testMethods) {
+                            def methodJsSafeName = Functions.jsStringEscape(method.safeName)
+                            tr() {
+                                td(align:"left") {
+                                    a(href:"${method.upUrl}") {
+                                        text("${method.name}")
                                     }
-                                    div(id:"${method.safeName}_2", style:"display:none") {
-                                        if (method.testInstanceName) {
-                                            div() {
-                                                text("Instance Name: ${method.testInstanceName}")
+                                    if (method.groups || method.testInstanceName || method.parameters?.size() > 0) {
+                                        div(id:"${method.safeName}_1", style:"display:inline") {
+                                            text(" (")
+                                            a(href: "", class: "testng-show-more jenkins-button jenkins-button--tertiary jenkins-button--small",
+                                                    "data-method-name": "${methodJsSafeName}") {
+                                                l.icon(class: "icon-sm", src: "symbol-expand", tooltip: "Show more")
                                             }
+                                            text(")")
                                         }
-                                        if (method.groups) {
-                                            div() {
-                                                text("Group(s): ${StringUtils.join(method.groups, ", ")}")
+                                        div(id:"${method.safeName}_2", style:"display:none") {
+                                            if (method.testInstanceName) {
+                                                div() {
+                                                    text("Instance Name: ${method.testInstanceName}")
+                                                }
                                             }
-                                        }
-                                        if (method.parameters?.size() > 0) {
-                                            div(style: "white-space:normal") {
-                                                text("Parameter(s): ${StringUtils.join(method.parameters, ", ")}")
+                                            if (method.groups) {
+                                                div() {
+                                                    text("Group(s): ${StringUtils.join(method.groups, ", ")}")
+                                                }
+                                            }
+                                            if (method.parameters?.size() > 0) {
+                                                div(style: "white-space:normal") {
+                                                    text("Parameter(s): ${StringUtils.join(method.parameters, ", ")}")
+                                                }
                                             }
                                         }
                                     }
                                 }
-                            }
-                            td(align:"right") {
-                                text("${FormatUtil.formatTime(method.duration)}")
-                            }
-                            td(align:"right") {
-                                text("${method.startedAt}")
-                            }
-                            td(align:"center", class:"${method.cssClass}") {
-                                text("${method.status}")
-                            }
-                        }
-                    }
-                }
-            }
-        } else {
-            text("No Test method was found in this class")
-        }
-
-        h2("Configuration Methods")
-
-        if(group.configurationMethods) {
-            table(id:"config", border:"1px", class:"pane sortable") {
-                thead() {
-                    tr() {
-                        th(class:"pane-header") {
-                            text("Method")
-                        }
-                        th(class:"pane-header", style:"width:5em", title:"Duration") {
-                            text("Duration")
-                        }
-                        th(class:"pane-header", style:"width:15em", title:"Start time") {
-                            text("Start Time")
-                        }
-                        th(class:"pane-header", style:"width:5em", title:"Status") {
-                            text("Status")
-                        }
-                    }
-                }
-                tbody() {
-                    for(method in group.configurationMethods) {
-                        tr() {
-                            td(align:"left") {
-                                a(href:"${method.upUrl}") {
-                                    text("${method.name}")
+                                td(align:"right") {
+                                    text("${FormatUtil.formatTime(method.duration)}")
+                                }
+                                td(align:"right") {
+                                    text("${method.startedAt}")
+                                }
+                                td(align:"center") {
+                                    span(class:"${method.cssClass} jenkins-table__badge") {
+                                        text("${method.status}")
+                                    }
                                 }
                             }
-                            td(align:"right") {
-                                text("${FormatUtil.formatTime(method.duration)}")
+                        }
+                    }
+                }
+            } else {
+                text("No Test method was found in this class")
+            }
+        }
+
+        l.card(title: "Configuration Methods${runInfo}") {
+            if(group.configurationMethods) {
+                table(id:"config", class:"sortable jenkins-table jenkins-!-margin-bottom-0") {
+                    thead() {
+                        tr() {
+                            th() {
+                                text("Method")
                             }
-                            td(align:"right") {
-                                text("${method.startedAt}")
+                            th(align:"right", style:"width:5em", title:"Duration") {
+                                text("Duration")
                             }
-                            td(align:"center", class:"${method.cssClass}") {
-                                text("${method.status}")
+                            th(align:"right", style:"width:15em", title:"Start time") {
+                                text("Start Time")
+                            }
+                            th(align:"center", style:"width:5em", title:"Status") {
+                                text("Status")
+                            }
+                        }
+                    }
+                    tbody() {
+                        for(method in group.configurationMethods) {
+                            tr() {
+                                td(align:"left") {
+                                    a(href:"${method.upUrl}") {
+                                        text("${method.name}")
+                                    }
+                                }
+                                td(align:"right") {
+                                    text("${FormatUtil.formatTime(method.duration)}")
+                                }
+                                td(align:"right") {
+                                    text("${method.startedAt}")
+                                }
+                                td(align:"center") {
+                                    span(class:"${method.cssClass} jenkins-table__badge") {
+                                        text("${method.status}")
+                                    }
+                                }
                             }
                         }
                     }
                 }
+            } else {
+                text("No Configuration method was found in this class")
             }
-        } else {
-            text("No Configuration method was found in this class")
         }
     }
 }

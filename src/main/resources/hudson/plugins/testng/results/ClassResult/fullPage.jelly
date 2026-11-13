@@ -1,0 +1,36 @@
+<?jelly escape-by-default='true'?>
+<!-- Wraps this Class sub-page in core's l:run-subpage; see PackageResult/fullPage.jelly for the "it" swap rationale. -->
+<j:jelly xmlns:j="jelly:core" xmlns:l="/lib/layout" xmlns:st="jelly:stapler">
+  <j:set var="content" value="${it}"/>
+  <j:set var="it" value="${content.parentAction}"/>
+  <l:run-subpage>
+    <j:set var="it" value="${content}"/>
+    <link rel="stylesheet" href="${resURL}/plugin/testng-plugin/css/testng.css?v=${hudson.plugins.testng.PluginImpl.RESOURCE_VERSION}"/>
+
+    <l:app-bar title="Class ${content.name}" subtitle="${content.totalCount}">
+      <div class="jenkins-details">
+        <div class="jp-pills">
+          <j:if test="${content.failCount gt 0}">
+            <div class="jp-pill jenkins-!-error-color" tooltip="${content.failCount} failing">
+              <l:icon src="symbol-close"/>
+              ${content.failCount}
+            </div>
+          </j:if>
+          <j:if test="${content.skipCount gt 0}">
+            <div class="jp-pill jenkins-!-skipped-color" tooltip="${content.skipCount} skipped">
+              <l:icon src="symbol-warning"/>
+              ${content.skipCount}
+            </div>
+          </j:if>
+          <j:if test="${content.totalCount - content.failCount - content.skipCount gt 0}">
+            <div class="jp-pill jenkins-!-success-color" tooltip="${content.totalCount - content.failCount - content.skipCount} passing">
+              <l:icon src="symbol-check"/>
+              ${content.totalCount - content.failCount - content.skipCount}
+            </div>
+          </j:if>
+        </div>
+      </div>
+    </l:app-bar>
+    <st:include page="reportDetail.groovy" it="${content}"/>
+  </l:run-subpage>
+</j:jelly>

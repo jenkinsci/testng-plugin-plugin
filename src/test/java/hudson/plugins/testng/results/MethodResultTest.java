@@ -215,7 +215,7 @@ class MethodResultTest {
         assertEquals(2, description.getElementsByTagName("br").size());
 
         HtmlElement exp = page.getHtmlElementById("exp-msg");
-        assertEquals(4, exp.getElementsByTagName("br").size());
+        assertEquals(2, exp.getElementsByTagName("br").size());
     }
 
     @Test
@@ -242,7 +242,7 @@ class MethodResultTest {
         // Compare output
         String methodUrl = build.getUrl() + PluginImpl.URL + "/org.example.test/ExampleIntegrationTest/FirstTest";
         HtmlPage page = r.createWebClient().goTo(methodUrl);
-        HtmlElement reporterOutput = page.getHtmlElementById("reporter-output");
+        HtmlElement reporterOutput = page.getHtmlElementById("testng-card-reporter-output");
         String contents = reporterOutput.getTextContent();
         r.assertStringContains(contents, "Some Reporter.log() statement");
         r.assertStringContains(contents, "Another Reporter.log() statement");
@@ -291,12 +291,12 @@ class MethodResultTest {
 
         // header containing method name
         element = (HtmlElement) page.getElementsByTagName("h1").get(0);
-        assertEquals("includedGroups", element.getTextContent());
+        r.assertStringContains(element.getTextContent(), "includedGroups");
 
         // method status information
         element = page.getHtmlElementById("status");
-        assertEquals("result-passed", element.getAttribute("class"));
-        assertEquals("PASS", element.getTextContent());
+        assertEquals("jp-pill jenkins-!-success-color", element.getAttribute("class"));
+        r.assertStringContains(element.getTextContent(), "PASS");
 
         // this method has single group
         element = page.getHtmlElementById("groups");
@@ -306,14 +306,14 @@ class MethodResultTest {
         element = page.getHtmlElementById("report").getElementsByTagName("img").get(0);
         assertNotNull(element);
         assertEquals("trend", element.getAttribute("id"));
-        assertEquals("graph", element.getAttribute("src"));
+        assertTrue(element.getAttribute("src").contains("graph"));
         assertEquals("graphMap", element.getAttribute("lazymap"));
         assertEquals("[Method Execution Trend Chart]", element.getAttribute("alt"));
 
         // following shouldn't be present on page
         assertElementNotPresent(page, "inst-name");
         assertElementNotPresent(page, "params");
-        assertElementNotPresent(page, "reporter-output");
+        assertElementNotPresent(page, "testng-card-reporter-output");
         assertElementNotPresent(page, "exp-msg");
 
         // method run using two parameters
@@ -360,8 +360,8 @@ class MethodResultTest {
 
         // method status information
         HtmlElement element = page.getHtmlElementById("status");
-        assertEquals("result-failed", element.getAttribute("class"));
-        assertEquals("FAIL", element.getTextContent());
+        assertEquals("jp-pill jenkins-!-error-color", element.getAttribute("class"));
+        r.assertStringContains(element.getTextContent(), "FAIL");
 
         // this method has single parameter
         element = page.getHtmlElementById("params");
@@ -372,13 +372,12 @@ class MethodResultTest {
 
         // this method has no groups or reporter output
         assertElementNotPresent(page, "groups");
-        assertElementNotPresent(page, "reporter-output");
+        assertElementNotPresent(page, "testng-card-reporter-output");
 
         // this method has exception with no message
-        element = (HtmlElement) page.getElementsByTagName("h3").get(0);
-        assertEquals("Exception java.lang.AssertionError", element.getTextContent());
-        element = page.getHtmlElementById("exp-msg");
-        r.assertStringContains(element.getTextContent(), "(none)");
+        element = page.getHtmlElementById("testng-card-exception");
+        r.assertStringContains(element.getTextContent(), "Exception java.lang.AssertionError");
+        assertElementNotPresent(page, "exp-msg");
         element = page.getHtmlElementById("exp-st");
         r.assertStringContains(element.getTextContent(), "org.jenkins.TestDataProvider.test(TestDataProvider.java:15)");
 
@@ -387,8 +386,8 @@ class MethodResultTest {
 
         // method status information
         element = page.getHtmlElementById("status");
-        assertEquals("result-passed", element.getAttribute("class"));
-        assertEquals("PASS", element.getTextContent());
+        assertEquals("jp-pill jenkins-!-success-color", element.getAttribute("class"));
+        r.assertStringContains(element.getTextContent(), "PASS");
 
         // this method has single parameter
         element = page.getHtmlElementById("params");
@@ -399,7 +398,7 @@ class MethodResultTest {
 
         assertElementNotPresent(page, "inst-name");
         assertElementNotPresent(page, "groups");
-        assertElementNotPresent(page, "reporter-output");
+        assertElementNotPresent(page, "testng-card-reporter-output");
         assertElementNotPresent(page, "exp-msg");
         assertElementNotPresent(page, "exp-st");
     }

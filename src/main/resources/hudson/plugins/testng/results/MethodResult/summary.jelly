@@ -3,19 +3,32 @@
 <?jelly escape-by-default='true'?>
 <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define"
          xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form">
-  <st:contentType value="text/plain;charset=UTF-8"/>
+  <st:contentType value="text/html;charset=UTF-8"/>
+  <!-- A card per section (Error Details, Stack Trace), each with a copy button. -->
   <j:if test="${it.exception != null}">
-      <j:choose>
-            <j:when test="${it.exception.message != null}">
-                <h3>Error Details</h3>
-                <pre><st:out value="${it.errorDetails}"/></pre>
-            </j:when>
-            <j:otherwise>
-                <j:if test="${it.errorStackTrace != null}">
-                    <h3>Stack Trace</h3>
-                    <pre><st:out value="${it.errorStackTrace}"/></pre>
-                </j:if>
-            </j:otherwise>
-      </j:choose>
+    <div class="testng-stacktrace-list">
+      <j:if test="${it.exception.message != null}">
+        <div class="testng-stacktrace-card">
+          <details open="true">
+            <summary>
+              Error Details
+              <l:copyButton text="${it.exception.message}" iconOnly="true" tooltip="Copy error details"/>
+            </summary>
+            <pre class="testng-code-block" id="testng-err-${it.id}"><st:out value="${it.exception.message}"/></pre>
+          </details>
+        </div>
+      </j:if>
+      <j:if test="${it.exception.stackTrace != null and it.exception.stackTrace != ''}">
+        <div class="testng-stacktrace-card">
+          <details open="true">
+            <summary>
+              Stack Trace
+              <l:copyButton text="${it.exception.stackTrace}" iconOnly="true" tooltip="Copy stack trace"/>
+            </summary>
+            <pre class="testng-code-block" id="testng-st-${it.id}"><st:out value="${it.exception.stackTrace}"/></pre>
+          </details>
+        </div>
+      </j:if>
+    </div>
   </j:if>
 </j:jelly>

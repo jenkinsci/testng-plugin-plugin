@@ -173,6 +173,58 @@ public class TestNGTestResultBuildAction extends AbstractTestResultAction
         return getResult().getDynamic(token, req, rsp);
     }
 
+    /** Max number of individual failed/skipped test names shown per widget card. */
+    private static final int WIDGET_MAX_NAMES_PER_GROUP = 5;
+
+    // Feeds the new build-page overview card for this Tab; see widget.jelly (core).
+    public Widget getWidget() {
+        countAsNeeded();
+        TestNGResult tr = getResult();
+        List<String> lines = new ArrayList<String>();
+        lines.add(getTotalCount() + " total, " + failCount + " failed, " + skipCount + " skipped");
+        addTestNameLines(lines, "Failed", tr.getFailedTests());
+        addTestNameLines(lines, "Skipped", tr.getSkippedTests());
+        return new Widget(PluginImpl.ICON_FILE_NAME, lines);
+    }
+
+    private static void addTestNameLines(List<String> lines, String label, List<MethodResult> methods) {
+        if (methods == null || methods.isEmpty()) {
+            return;
+        }
+        int shown = 0;
+        for (MethodResult m : methods) {
+            if (shown >= WIDGET_MAX_NAMES_PER_GROUP) {
+                int remaining = methods.size() - shown;
+                lines.add("+" + remaining + " more " + label.toLowerCase() + (remaining == 1 ? "" : "s"));
+                break;
+            }
+            String name = (m.getParent() instanceof hudson.plugins.testng.results.ClassResult)
+                    ? ((hudson.plugins.testng.results.ClassResult) m.getParent()).getCanonicalName() + "." + m.getName()
+                    : m.getName();
+            lines.add(label + ": " + name);
+            shown++;
+        }
+    }
+
+    /** See {@link #getWidget()}. */
+    public static class Widget {
+        private final String symbol;
+        private final List<String> lines;
+
+        Widget(String symbol, List<String> lines) {
+            this.symbol = symbol;
+            this.lines = lines;
+        }
+
+        public String getSymbol() {
+            return symbol;
+        }
+
+        public List<String> getLines() {
+            return lines;
+        }
+    }
+
     @Override
     public Api getApi() {
         return new Api(getResult());

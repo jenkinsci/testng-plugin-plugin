@@ -26,11 +26,16 @@ div() {
             }
         }
 
-        div(id: "bar", style: "width:100%; height:1em; background-color: #729FCF") {
-            def failpc = my.failCount * 100 / my.totalCount
-            def skippc = my.skipCount * 100 / my.totalCount
-            div(style: "width:${failpc}%; height: 1em; background-color: #EF2929; float: left")
-            div(style: "width:${skippc}%; height: 1em; background-color: #FCE94F; float: left")
+        def failpc = my.failCount * 100 / my.totalCount
+        def skippc = my.skipCount * 100 / my.totalCount
+        def passpc = 100 - failpc - skippc
+        div(id: "bar", class: "testng-progress-bar") {
+            div(class: "testng-segment testng-segment--pass", style: "width:${passpc}%",
+                    title: "${my.totalCount - my.failCount - my.skipCount} passed")
+            div(class: "testng-segment testng-segment--fail", style: "width:${failpc}%",
+                    title: "${my.failCount} failed")
+            div(class: "testng-segment testng-segment--skip", style: "width:${skippc}%",
+                    title: "${my.skipCount} skipped")
         }
 
         div(id: "pass", align: "right") {

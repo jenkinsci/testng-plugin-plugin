@@ -90,15 +90,14 @@ class TestNGTestResultBuildActionTest {
                 elements.get(0).getTextContent());
 
         // ensure only one failed config method
-        elements = DomNodeUtil.selectNodes(page, "//table[@id='fail-config-tbl']/tbody/tr/td/a");
-        // asserting to 3, because a link for >>>, one for <<< and another for the method itself
-        assertEquals(3, elements.size());
+        elements = DomNodeUtil.selectNodes(page, "//table[@id='fail-config-tbl']/tbody/tr/td/a[not(@id)]");
+        assertEquals(1, elements.size());
         mr = testngResult.getFailedConfigs().get(0);
         assertEquals(
-                r.getURL() + mr.getRun().getUrl() + mr.getId(), elements.get(2).getAttribute("href"));
+                r.getURL() + mr.getRun().getUrl() + mr.getId(), elements.get(0).getAttribute("href"));
         assertEquals(
                 ((ClassResult) mr.getParent()).getCanonicalName() + "." + mr.getName(),
-                elements.get(2).getTextContent());
+                elements.get(0).getTextContent());
 
         // ensure only one skipped test method
         elements = DomNodeUtil.selectNodes(page, "//table[@id='skip-tbl']/tbody/tr/td/a");
